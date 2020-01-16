@@ -21,8 +21,8 @@ public final class BetterGUI extends JavaPlugin {
   private static BetterGUI instance;
 
   private static TaskChainFactory taskChainFactory;
-  private AddonManager addonManager = new AddonManager();
-  private CommandManager commandManager = new CommandManager();
+  private AddonManager addonManager = new AddonManager(this);
+  private CommandManager commandManager = new CommandManager(this);
 
   private ItemConfig itemConfig;
 

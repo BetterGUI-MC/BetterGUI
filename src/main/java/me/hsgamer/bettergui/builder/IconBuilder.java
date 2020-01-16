@@ -40,12 +40,12 @@ public class IconBuilder {
   }
 
   public static Icon getIcon(Menu menu, ConfigurationSection section) {
-    for (String string : section.getKeys(false)) {
-      if (string.equalsIgnoreCase("type")) {
-        String type = section.getString("type");
-        if (iconTypes.containsKey(type)) {
-          return getIcon(menu, section, iconTypes.get(type));
-        }
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>();
+    keys.putAll(section.getValues(false));
+    if (keys.containsKey("type")) {
+      String type = (String) keys.get("type");
+      if (iconTypes.containsKey(type)) {
+        return getIcon(menu, section, iconTypes.get(type));
       }
     }
     return getIcon(menu, section, SimpleIcon.class);

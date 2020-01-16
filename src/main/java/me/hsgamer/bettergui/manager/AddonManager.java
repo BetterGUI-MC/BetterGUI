@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.manager;
 
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
 import static me.hsgamer.bettergui.object.addon.AddonDescription.Settings;
 
 import java.io.BufferedReader;
@@ -20,14 +19,17 @@ import me.hsgamer.bettergui.object.addon.Addon;
 import me.hsgamer.bettergui.object.addon.AddonDescription;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class AddonManager {
 
   private Map<String, Addon> addons = new HashMap<>();
   private File addonsDir;
+  private JavaPlugin plugin;
 
-  public AddonManager() {
-    addonsDir = new File(getInstance().getDataFolder(), "addon");
+  public AddonManager(JavaPlugin plugin) {
+    this.plugin = plugin;
+    addonsDir = new File(plugin.getDataFolder(), "addon");
     if (!addonsDir.isDirectory()) {
       addonsDir.mkdirs();
     }
@@ -92,21 +94,21 @@ public class AddonManager {
         addon.setDescription(addonDescription);
         addons.put(addonDescription.getName(), addon);
       } catch (InvalidConfigurationException e) {
-        getInstance().getLogger().log(Level.WARNING, e.getMessage(), e);
+        plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
       } catch (Exception e) {
-        getInstance().getLogger().log(Level.WARNING, "Error when loading jar", e);
+        plugin.getLogger().log(Level.WARNING, "Error when loading jar", e);
       }
     }
   }
 
   public void enableAddon(String name) {
     addons.get(name).onEnable();
-    getInstance().getLogger().log(Level.INFO, "Enabled {0}", name);
+    plugin.getLogger().log(Level.INFO, "Enabled {0}", name);
   }
 
   public void disableAddon(String name) {
     addons.get(name).onDisable();
-    getInstance().getLogger().log(Level.INFO, "Disabled {0}", name);
+    plugin.getLogger().log(Level.INFO, "Disabled {0}", name);
   }
 
   public void enableAddons() {

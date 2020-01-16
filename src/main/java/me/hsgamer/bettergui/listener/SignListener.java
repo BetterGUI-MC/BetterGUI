@@ -1,5 +1,8 @@
 package me.hsgamer.bettergui.listener;
 
-public class SignListener {
+import org.bukkit.event.Listener;
+
+// TODO: Sign check
+public class SignListener implements Listener {
 
 }

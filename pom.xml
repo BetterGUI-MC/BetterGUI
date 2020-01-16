@@ -42,6 +42,7 @@
             </goals>
             <configuration>
               <createDependencyReducedPom>true</createDependencyReducedPom>
+              <minimizeJar>true</minimizeJar>
               <relocations>
                 <relocation>
                   <pattern>fr.mrmicky.fastinv</pattern>
