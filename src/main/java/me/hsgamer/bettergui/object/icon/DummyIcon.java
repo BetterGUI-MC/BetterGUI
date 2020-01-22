@@ -6,6 +6,7 @@ import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
+import me.hsgamer.bettergui.object.property.icon.Variable;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.util.XMaterial;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,6 +24,13 @@ public class DummyIcon extends Icon {
   @Override
   public void setFromSection(ConfigurationSection section) {
     itemProperties = PropertyBuilder.loadItemPropertiesFromSection(this, section);
+    for (String string : section.getKeys(false)) {
+      if (string.equalsIgnoreCase("variable")) {
+        Variable variable = new Variable(this);
+        variable.setValue(section.getConfigurationSection(string));
+        break;
+      }
+    }
   }
 
   @Nonnull
