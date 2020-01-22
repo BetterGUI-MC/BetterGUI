@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
-import me.hsgamer.bettergui.object.Variable;
+import me.hsgamer.bettergui.object.GlobalVariable;
 import me.hsgamer.bettergui.util.BukkitUtils;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.Bukkit;
@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 public class VariableManager {
 
   private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
-  private static final Map<String, Variable> variables = new HashMap<>();
+  private static final Map<String, GlobalVariable> variables = new HashMap<>();
 
   static {
     register("player", (executor, identifier) -> executor.getName());
@@ -70,7 +70,7 @@ public class VariableManager {
 
   }
 
-  public static void register(String prefix, Variable variable) {
+  public static void register(String prefix, GlobalVariable variable) {
     variables.put(prefix, variable);
   }
 
@@ -93,7 +93,7 @@ public class VariableManager {
     Matcher matcher = pattern.matcher(message);
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
-      for (Map.Entry<String, Variable> variable : variables.entrySet()) {
+      for (Map.Entry<String, GlobalVariable> variable : variables.entrySet()) {
         if (identifier.startsWith(variable.getKey())) {
           String replace = variable.getValue()
               .getReplacement(executor, identifier.substring(variable.getKey().length()));

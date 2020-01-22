@@ -25,8 +25,8 @@ public abstract class Icon {
     return name;
   }
 
-  public void registerVariable(String prefix, IconVariable variable) {
-    variables.put(prefix, variable);
+  public void registerVariable(SimpleIconVariable variable) {
+    variables.put(variable.getIdentifier(), variable);
   }
 
   public boolean hasVariables(String message) {

@@ -1,7 +1,10 @@
 package me.hsgamer.bettergui.object.requirement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
@@ -10,6 +13,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class ExpLevelRequirement extends IconRequirement<Integer> {
+
+  private Map<UUID, List<Integer>> checked = new HashMap<>();
 
   public ExpLevelRequirement(Icon icon) {
     super(icon, false);
@@ -60,12 +65,14 @@ public class ExpLevelRequirement extends IconRequirement<Integer> {
         return false;
       }
     }
+    checked.put(player.getUniqueId(), values);
     return true;
   }
 
   @Override
   public void take(Player player) {
-    getParsedValue(player)
+    checked.get(player.getUniqueId())
         .forEach(value -> player.setLevel(player.getLevel() - (value)));
+    checked.remove(player.getUniqueId());
   }
 }

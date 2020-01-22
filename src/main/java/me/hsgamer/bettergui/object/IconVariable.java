@@ -1,14 +1,8 @@
 package me.hsgamer.bettergui.object;
 
-public abstract class IconVariable implements Variable {
+public abstract class IconVariable implements GlobalVariable {
 
-  private Icon icon;
+  public abstract String getIdentifier();
 
-  public IconVariable(Icon icon) {
-    this.icon = icon;
-  }
-
-  public Icon getIcon() {
-    return icon;
-  }
+  public abstract Icon getIcon();
 }
