@@ -1,8 +1,12 @@
 package me.hsgamer.bettergui.object;
 
-public abstract class IconVariable implements GlobalVariable {
+import org.bukkit.entity.Player;
 
-  public abstract String getIdentifier();
+public interface IconVariable {
 
-  public abstract Icon getIcon();
+  String getIdentifier();
+
+  Icon getIcon();
+
+  String getReplacement(Player executor, String identifier);
 }

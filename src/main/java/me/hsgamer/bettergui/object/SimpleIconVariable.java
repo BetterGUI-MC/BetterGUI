@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.object;
 
-public abstract class SimpleIconVariable extends IconVariable {
+public abstract class SimpleIconVariable implements IconVariable {
 
   private Icon icon;
 

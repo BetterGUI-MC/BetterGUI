@@ -8,11 +8,12 @@ import java.util.UUID;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
+import me.hsgamer.bettergui.object.IconVariable;
 import me.hsgamer.bettergui.util.ExpressionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class ExpLevelRequirement extends IconRequirement<Integer> {
+public class ExpLevelRequirement extends IconRequirement<Integer> implements IconVariable {
 
   private Map<UUID, List<Integer>> checked = new HashMap<>();
 
@@ -74,5 +75,30 @@ public class ExpLevelRequirement extends IconRequirement<Integer> {
     checked.get(player.getUniqueId())
         .forEach(value -> player.setLevel(player.getLevel() - (value)));
     checked.remove(player.getUniqueId());
+  }
+
+  @Override
+  public String getIdentifier() {
+    return "require_exp";
+  }
+
+  @Override
+  public Icon getIcon() {
+    return this.icon;
+  }
+
+  @Override
+  public String getReplacement(Player executor, String identifier) {
+    List<Integer> values = getParsedValue(executor);
+    if (values.isEmpty()) {
+      return null;
+    }
+    for (Integer expLevelsPrice : values) {
+      if (expLevelsPrice > 0 && executor.getLevel() < expLevelsPrice) {
+        return String.valueOf(expLevelsPrice.intValue());
+      }
+    }
+    // TODO: Config, Send "Had met the requirements"
+    return "";
   }
 }

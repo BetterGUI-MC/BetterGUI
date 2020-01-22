@@ -29,6 +29,10 @@ public abstract class Icon {
     variables.put(variable.getIdentifier(), variable);
   }
 
+  public void registerVariable(String identifier, IconVariable variable) {
+    variables.put(identifier, variable);
+  }
+
   public boolean hasVariables(String message) {
     if (message == null) {
       return false;
