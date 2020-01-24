@@ -31,7 +31,9 @@ public abstract class IconRequirement<T> {
   }
 
   public void setValues(String input) {
-    setValues(Arrays.asList(input.split(";")));
+    List<String> list = Arrays.asList(input.split(";"));
+    list.replaceAll(String::trim);
+    setValues(list);
   }
 
   public void canTake(boolean canTake) {
