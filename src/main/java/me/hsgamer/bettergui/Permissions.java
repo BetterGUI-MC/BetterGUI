@@ -10,6 +10,8 @@ public class Permissions {
   public static final Permission ITEMS = new Permission(prefix, ".items", PermissionDefault.OP);
   public static final Permission OPEN_MENU = new Permission(prefix, ".openmenu",
       PermissionDefault.OP);
+  public static final Permission RELOAD = new Permission(prefix, ".reload",
+      PermissionDefault.OP);
 
   private Permissions() {
 

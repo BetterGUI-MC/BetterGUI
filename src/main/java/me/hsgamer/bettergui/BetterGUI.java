@@ -11,6 +11,7 @@ import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.command.ItemCommand;
 import me.hsgamer.bettergui.command.OpenCommand;
+import me.hsgamer.bettergui.command.ReloadCommand;
 import me.hsgamer.bettergui.config.impl.ItemConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.manager.AddonManager;
@@ -59,27 +60,33 @@ public final class BetterGUI extends JavaPlugin {
     addonManager.loadAddons();
 
     Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-      addonManager.enableAddons();
+      checkClass();
       loadCommands();
-      load();
+
+      // Initialize the configs
+      itemConfig = new ItemConfig(this);
+
+      loadMenuConfig();
     });
   }
 
-  public void load() {
-    // Check the classes
+  public void checkClass() {
     CommandBuilder.checkClass();
     RequirementBuilder.checkClass();
     PropertyBuilder.checkClass();
     IconBuilder.checkClass();
     MenuBuilder.checkClass();
-
-    // Initialize the files
-    itemConfig = new ItemConfig(this);
   }
 
   public void loadCommands() {
     commandManager.register(new ItemCommand());
     commandManager.register(new OpenCommand());
+    commandManager.register(new ReloadCommand());
+  }
+
+  // TODO: Load Menu from file
+  public void loadMenuConfig() {
+
   }
 
   @Override
