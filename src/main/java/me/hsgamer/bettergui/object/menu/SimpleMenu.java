@@ -114,7 +114,7 @@ public class SimpleMenu extends Menu {
         if (keys.containsKey(Settings.PERMISSION)) {
           permission = new Permission((String) keys.get(Settings.PERMISSION));
         }
-        
+
       } else if (key.equalsIgnoreCase("default-icon")) {
         defaultIcon = IconBuilder.getIcon(this, file.getConfigurationSection(key));
       } else {
