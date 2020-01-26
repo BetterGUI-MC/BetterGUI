@@ -19,6 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.permissions.Permission;
 
 public class SimpleMenu extends Menu {
 
@@ -28,6 +29,7 @@ public class SimpleMenu extends Menu {
   private Map<Integer, Icon> icons = new HashMap<>();
   private List<Command> openActions = new ArrayList<>();
   private List<Command> closeActions = new ArrayList<>();
+  private Permission permission = new Permission(getInstance().getName().toLowerCase() + "." + getName());
   private Icon defaultIcon;
 
   public SimpleMenu(String name) {
@@ -40,9 +42,11 @@ public class SimpleMenu extends Menu {
       if (key.equalsIgnoreCase("menu-settings")) {
         Map<String, Object> keys = new CaseInsensitiveStringMap<>(
             file.getConfigurationSection(key).getValues(false));
+
         if (keys.containsKey(Settings.NAME)) {
           title = (String) keys.get(Settings.NAME);
         }
+
         if (keys.containsKey(Settings.INVENTORY_TYPE)) {
           try {
             inventoryType = InventoryType.valueOf((String) keys.get(Settings.INVENTORY_TYPE));
@@ -77,6 +81,7 @@ public class SimpleMenu extends Menu {
           int temp = (int) keys.get(Settings.ROW) * 9;
           maxSlots = temp > 0 ? temp : maxSlots;
         }
+
         if (keys.containsKey(Settings.COMMAND)) {
           Object value = keys.get(Settings.COMMAND);
           List<String> commands = new ArrayList<>();
@@ -88,6 +93,7 @@ public class SimpleMenu extends Menu {
           commands.replaceAll(String::trim);
           commands.forEach(s -> getInstance().getCommandManager().registerMenuCommand(s, this));
         }
+
         if (keys.containsKey(Settings.OPEN_ACTION)) {
           Object value = keys.get(Settings.OPEN_ACTION);
           if (value instanceof List) {
@@ -104,6 +110,11 @@ public class SimpleMenu extends Menu {
             closeActions.addAll(CommandBuilder.getCommands(null, (String) value));
           }
         }
+
+        if (keys.containsKey(Settings.PERMISSION)) {
+          permission = new Permission((String) keys.get(Settings.PERMISSION));
+        }
+        
       } else if (key.equalsIgnoreCase("default-icon")) {
         defaultIcon = IconBuilder.getIcon(this, file.getConfigurationSection(key));
       } else {
@@ -144,5 +155,6 @@ public class SimpleMenu extends Menu {
     static final String COMMAND = "command";
     static final String OPEN_ACTION = "open-action";
     static final String CLOSE_ACTION = "close-action";
+    static final String PERMISSION = "permission";
   }
 }
