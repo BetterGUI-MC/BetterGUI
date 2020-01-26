@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 
 public class ConsoleCommand extends Command {
 
-  public ConsoleCommand(Icon icon, String command) {
-    super(icon, command);
+  public ConsoleCommand(String command) {
+    super(command);
   }
 
   @Override

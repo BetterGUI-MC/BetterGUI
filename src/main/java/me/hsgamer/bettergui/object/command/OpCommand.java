@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 
 public class OpCommand extends Command {
 
-  public OpCommand(Icon icon, String command) {
-    super(icon, command);
+  public OpCommand(String command) {
+    super(command);
   }
 
   @Override

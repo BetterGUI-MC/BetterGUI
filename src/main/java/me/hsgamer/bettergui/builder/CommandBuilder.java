@@ -40,7 +40,7 @@ public class CommandBuilder {
   public static void checkClass() {
     for (Class<? extends Command> clazz : commands.values()) {
       try {
-        clazz.getDeclaredConstructor(Icon.class, String.class).newInstance(null, "");
+        clazz.getDeclaredConstructor(String.class).newInstance("");
       } catch (Exception ex) {
         BetterGUI.getInstance().getLogger()
             .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
@@ -66,14 +66,22 @@ public class CommandBuilder {
         String cleanCommand = matcher.replaceFirst("").trim();
 
         try {
-          return entry.getValue().getDeclaredConstructor(Icon.class, String.class)
-              .newInstance(icon, cleanCommand);
+          Command command = entry.getValue().getDeclaredConstructor(String.class)
+              .newInstance(cleanCommand);
+          if (icon != null) {
+            command.setIcon(icon);
+          }
+          return command;
         } catch (Exception e) {
           // Checked at startup
         }
       }
     }
 
-    return new PlayerCommand(icon, input);
+    Command command = new PlayerCommand(input);
+    if (icon != null) {
+      command.setIcon(icon);
+    }
+    return command;
   }
 }

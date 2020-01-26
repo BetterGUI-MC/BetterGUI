@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 
 public class DelayCommand extends Command {
 
-  public DelayCommand(Icon icon, String command) {
-    super(icon, command);
+  public DelayCommand(String command) {
+    super(command);
   }
 
   @Override

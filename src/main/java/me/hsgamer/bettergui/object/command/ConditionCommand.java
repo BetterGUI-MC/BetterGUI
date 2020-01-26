@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 
 public class ConditionCommand extends Command {
 
-  public ConditionCommand(Icon icon, String command) {
-    super(icon, command);
+  public ConditionCommand(String command) {
+    super(command);
   }
 
   @Override

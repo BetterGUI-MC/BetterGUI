@@ -16,8 +16,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemCommand extends Command {
 
-  public ItemCommand(Icon icon, String command) {
-    super(icon, command);
+  public ItemCommand(String command) {
+    super(command);
   }
 
   private ItemStack getItemStack(Player player, String input) {
