@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.builder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
@@ -10,6 +12,7 @@ import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.object.icon.ListIcon;
 import me.hsgamer.bettergui.object.icon.SimpleIcon;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
+import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class IconBuilder {
@@ -40,8 +43,7 @@ public class IconBuilder {
   }
 
   public static Icon getIcon(Menu menu, ConfigurationSection section) {
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>();
-    keys.putAll(section.getValues(false));
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
     if (keys.containsKey("type")) {
       String type = (String) keys.get("type");
       if (iconTypes.containsKey(type)) {
@@ -62,5 +64,50 @@ public class IconBuilder {
       // Checked at startup
     }
     return null;
+  }
+
+  public static List<Integer> getSlots(ConfigurationSection section) {
+    List<Integer> slots = new ArrayList<>();
+    Map<String, Object> map = section.getValues(false);
+
+    if (map.containsKey(SlotSetting.X) || map.containsKey(SlotSetting.Y)) {
+      int x = 1;
+      int y = 1;
+      if (map.containsKey(SlotSetting.X)) {
+        x = (int) map.get(SlotSetting.X);
+      }
+      if (map.containsKey(SlotSetting.Y)) {
+        y = (int) map.get(SlotSetting.Y);
+      }
+      slots.add(y > 1 ? y * 9 + x - 1 : x - 1);
+    } else if (map.containsKey(SlotSetting.SLOT)) {
+      String input = (String) map.get(SlotSetting.SLOT);
+      for (String string : input.split(",")) {
+        if (CommonUtils.isValidPositiveInteger(string)) {
+          slots.add(Integer.parseInt(string));
+        } else {
+          String[] split = string.split("-", 2);
+          if (CommonUtils.isValidPositiveInteger(split[0]) && CommonUtils
+              .isValidPositiveInteger(split[1])) {
+            int s1 = Integer.parseInt(split[0]);
+            int s2 = Integer.parseInt(split[1]);
+            int start = Math.min(s1, s2);
+            int end = Math.max(s1, s2);
+            for (int i = start; i <= end; i++) {
+              slots.add(i);
+            }
+          }
+        }
+      }
+    }
+
+    return slots;
+  }
+
+  private static class SlotSetting {
+
+    static final String X = "position-x";
+    static final String Y = "position-y";
+    static final String SLOT = "slot";
   }
 }

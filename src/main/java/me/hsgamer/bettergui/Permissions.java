@@ -8,6 +8,8 @@ public class Permissions {
   private static String prefix = BetterGUI.getInstance().getDescription().getName().toLowerCase();
 
   public static final Permission ITEMS = new Permission(prefix, ".items", PermissionDefault.OP);
+  public static final Permission OPEN_MENU = new Permission(prefix, ".openmenu",
+      PermissionDefault.OP);
 
   private Permissions() {
 

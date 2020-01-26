@@ -6,13 +6,16 @@ import co.aikar.taskchain.TaskChainFactory;
 import fr.mrmicky.fastinv.FastInvManager;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
+import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.command.ItemCommand;
+import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.config.impl.ItemConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.CommandManager;
+import me.hsgamer.bettergui.manager.MenuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,6 +26,7 @@ public final class BetterGUI extends JavaPlugin {
   private static TaskChainFactory taskChainFactory;
   private AddonManager addonManager = new AddonManager(this);
   private CommandManager commandManager = new CommandManager(this);
+  private MenuManager menuManager = new MenuManager();
 
   private ItemConfig itemConfig;
 
@@ -67,6 +71,7 @@ public final class BetterGUI extends JavaPlugin {
     RequirementBuilder.checkClass();
     PropertyBuilder.checkClass();
     IconBuilder.checkClass();
+    MenuBuilder.checkClass();
 
     // Initialize the files
     itemConfig = new ItemConfig(this);
@@ -74,6 +79,7 @@ public final class BetterGUI extends JavaPlugin {
 
   public void loadCommands() {
     commandManager.register(new ItemCommand());
+    commandManager.register(new OpenCommand());
   }
 
   @Override
@@ -87,5 +93,9 @@ public final class BetterGUI extends JavaPlugin {
 
   public CommandManager getCommandManager() {
     return commandManager;
+  }
+
+  public MenuManager getMenuManager() {
+    return menuManager;
   }
 }

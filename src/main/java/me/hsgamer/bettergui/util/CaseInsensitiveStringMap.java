@@ -5,6 +5,15 @@ import java.util.Map;
 
 public class CaseInsensitiveStringMap<V> extends HashMap<String, V> {
 
+  public CaseInsensitiveStringMap() {
+    super();
+  }
+
+  public CaseInsensitiveStringMap(Map<? extends String, ? extends V> map) {
+    super();
+    putAll(map);
+  }
+
   @Override
   public V put(String key, V value) {
     return super.put(key.toLowerCase(), value);

@@ -2,14 +2,19 @@ package me.hsgamer.bettergui.manager;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import me.hsgamer.bettergui.object.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommandManager {
@@ -17,6 +22,7 @@ public class CommandManager {
   private Field knownCommandsField;
   private CommandMap bukkitCommandMap;
   private HashMap<String, BukkitCommand> registered = new HashMap<>();
+  private List<BukkitCommand> registeredMenuCommand = new ArrayList<>();
   private JavaPlugin plugin;
 
   public CommandManager(JavaPlugin plugin) {
@@ -55,5 +61,24 @@ public class CommandManager {
       plugin.getLogger()
           .log(Level.WARNING, "Something wrong when unregister the command", e);
     }
+  }
+
+  public void registerMenuCommand(String command, Menu menu) {
+    BukkitCommand bukkitCommand = new BukkitCommand(command) {
+      @Override
+      public boolean execute(CommandSender commandSender, String s, String[] strings) {
+        if (commandSender instanceof Player) {
+          menu.createInventory((Player) commandSender);
+        }
+        return true;
+      }
+    };
+    registeredMenuCommand.add(bukkitCommand);
+    register(bukkitCommand);
+  }
+
+  public void clearMenuCommand() {
+    registeredMenuCommand.forEach(this::unregister);
+    registeredMenuCommand.clear();
   }
 }

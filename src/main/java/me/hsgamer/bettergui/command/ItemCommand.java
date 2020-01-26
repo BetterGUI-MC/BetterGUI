@@ -17,16 +17,16 @@ public class ItemCommand extends BukkitCommand {
   }
 
   @Override
-  public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-    if (sender instanceof Player) {
-      if (sender.hasPermission(Permissions.ITEMS)) {
-        getInstance().getItemsConfig().createMenu((Player) sender);
+  public boolean execute(CommandSender commandSender, String s, String[] strings) {
+    if (commandSender instanceof Player) {
+      if (commandSender.hasPermission(Permissions.ITEMS)) {
+        getInstance().getItemsConfig().createMenu((Player) commandSender);
         return true;
       } else {
         return false;
       }
     } else {
-      sender.sendMessage(CommonUtils.colorize("&cYou should be a player to do this"));
+      commandSender.sendMessage(CommonUtils.colorize("&cYou should be a player to do this"));
       return false;
     }
   }
