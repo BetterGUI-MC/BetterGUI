@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.object.Command;
-import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.XMaterial;

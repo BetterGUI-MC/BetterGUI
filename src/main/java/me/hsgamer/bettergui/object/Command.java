@@ -25,11 +25,11 @@ public abstract class Command {
 
   public abstract void addToTaskChain(Player player, TaskChain<?> taskChain);
 
-  public void setIcon(Icon icon) {
-    this.icon = icon;
-  }
-
   protected Icon getIcon() {
     return icon;
+  }
+
+  public void setIcon(Icon icon) {
+    this.icon = icon;
   }
 }
