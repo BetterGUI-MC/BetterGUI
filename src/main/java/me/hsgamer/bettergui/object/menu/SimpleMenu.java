@@ -126,13 +126,13 @@ public class SimpleMenu extends Menu {
           if (icons.containsKey(slot)) {
             Icon tempIcon = icons.get(slot);
             if (tempIcon instanceof ParentIcon) {
-              ((ParentIcon) tempIcon).addChild(icon);
+              ((ParentIcon) tempIcon).addChild(icon.cloneIcon());
             } else {
               // TODO: Config, Override icon
             }
           } else {
             if (slot <= maxSlots) {
-              icons.put(slot, icon);
+              icons.put(slot, icon.cloneIcon());
             } else {
               // TODO: Config, Invalid slot
             }
