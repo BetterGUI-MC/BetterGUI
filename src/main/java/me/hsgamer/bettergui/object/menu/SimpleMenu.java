@@ -38,10 +38,6 @@ public class SimpleMenu extends Menu {
         if (keys.containsKey(Settings.NAME)) {
           title = (String) keys.get(Settings.NAME);
         }
-        if (keys.containsKey(Settings.ROW)) {
-          int temp = (int) keys.get(Settings.ROW) * 9;
-          maxSlots = temp > 0 ? temp : maxSlots;
-        }
         if (keys.containsKey(Settings.INVENTORY_TYPE)) {
           try {
             inventoryType = InventoryType.valueOf((String) keys.get(Settings.INVENTORY_TYPE));
@@ -68,9 +64,13 @@ public class SimpleMenu extends Menu {
               maxSlots = 9;
               break;
             default:
+              inventoryType = InventoryType.CHEST;
               getInstance().getLogger().log(Level.WARNING, "The menu \"" + file.getName()
                   + "\"'s inventory type is not supported, it will be CHEST by default");
           }
+        } else if (keys.containsKey(Settings.ROW)) {
+          int temp = (int) keys.get(Settings.ROW) * 9;
+          maxSlots = temp > 0 ? temp : maxSlots;
         }
         if (keys.containsKey(Settings.COMMAND)) {
           Object value = keys.get(Settings.COMMAND);
