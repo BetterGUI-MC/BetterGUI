@@ -29,7 +29,8 @@ public class SimpleMenu extends Menu {
   private Map<Integer, Icon> icons = new HashMap<>();
   private List<Command> openActions = new ArrayList<>();
   private List<Command> closeActions = new ArrayList<>();
-  private Permission permission = new Permission(getInstance().getName().toLowerCase() + "." + getName());
+  private Permission permission = new Permission(
+      getInstance().getName().toLowerCase() + "." + getName());
   private Icon defaultIcon;
 
   public SimpleMenu(String name) {
@@ -145,6 +146,10 @@ public class SimpleMenu extends Menu {
   @Override
   public void createInventory(Player player) {
 
+  }
+
+  public Icon getDefaultIcon() {
+    return defaultIcon;
   }
 
   private static class Settings {

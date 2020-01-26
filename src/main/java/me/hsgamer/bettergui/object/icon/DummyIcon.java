@@ -21,6 +21,13 @@ public class DummyIcon extends Icon {
     super(name, menu);
   }
 
+  public DummyIcon(Icon original) {
+    super(original);
+    if (original instanceof DummyIcon) {
+      this.itemProperties = ((DummyIcon) original).itemProperties;
+    }
+  }
+
   @Override
   public void setFromSection(ConfigurationSection section) {
     itemProperties = PropertyBuilder.loadItemPropertiesFromSection(this, section);

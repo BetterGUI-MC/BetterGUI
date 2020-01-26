@@ -1,10 +1,7 @@
 package me.hsgamer.bettergui.object.icon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
@@ -17,10 +14,17 @@ import org.bukkit.entity.Player;
 public class ListIcon extends Icon implements ParentIcon {
 
   private List<Icon> icons = new ArrayList<>();
-  private Map<UUID, Integer> indexPerPlayer = new HashMap<>();
+  private int currentIndex;
 
   public ListIcon(String name, Menu menu) {
     super(name, menu);
+  }
+
+  public ListIcon(Icon original) {
+    super(original);
+    if (original instanceof ListIcon) {
+      icons.addAll(((ListIcon) original).icons);
+    }
   }
 
   @Override
@@ -33,7 +37,7 @@ public class ListIcon extends Icon implements ParentIcon {
     for (int i = 1; i <= icons.size(); i++) {
       ClickableItem item = icons.get(i).createClickableItem(player);
       if (item != null) {
-        indexPerPlayer.put(player.getUniqueId(), i);
+        currentIndex = i;
         return item;
       }
     }
@@ -42,14 +46,13 @@ public class ListIcon extends Icon implements ParentIcon {
 
   @Override
   public ClickableItem updateClickableItem(Player player) {
-    UUID uuid = player.getUniqueId();
     ClickableItem item = null;
     for (int i = 1; i <= icons.size(); i++) {
       Icon icon = icons.get(i);
       item = icon.updateClickableItem(player);
       if (item != null) {
-        if (indexPerPlayer.containsKey(uuid) && indexPerPlayer.get(uuid) != i) {
-          indexPerPlayer.put(uuid, i);
+        if (currentIndex != i) {
+          currentIndex = i;
           return icon.createClickableItem(player);
         } else {
           break;

@@ -1,10 +1,7 @@
 package me.hsgamer.bettergui.object.icon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
@@ -16,10 +13,17 @@ import org.bukkit.entity.Player;
 public class AnimatedIcon extends Icon implements ParentIcon {
 
   private List<Icon> icons = new ArrayList<>();
-  private Map<UUID, Integer> currentFramePerPlayer = new HashMap<>();
+  private int currentIndex;
 
   public AnimatedIcon(String name, Menu menu) {
     super(name, menu);
+  }
+
+  public AnimatedIcon(Icon original) {
+    super(original);
+    if (original instanceof AnimatedIcon) {
+      this.icons = ((AnimatedIcon) original).icons;
+    }
   }
 
   @Override
@@ -29,23 +33,22 @@ public class AnimatedIcon extends Icon implements ParentIcon {
 
   @Override
   public ClickableItem createClickableItem(Player player) {
-    return icons.get(getFrame(player)).createClickableItem(player);
+    currentIndex = 0;
+    return icons.get(currentIndex).createClickableItem(player);
   }
 
   @Override
   public ClickableItem updateClickableItem(Player player) {
-    return icons.get(getFrame(player)).updateClickableItem(player);
+    return icons.get(getFrame()).updateClickableItem(player);
   }
 
-  private int getFrame(Player player) {
-    UUID uuid = player.getUniqueId();
-    if (!currentFramePerPlayer.containsKey(uuid) || currentFramePerPlayer.get(uuid) >= icons
-        .size()) {
-      currentFramePerPlayer.put(player.getUniqueId(), 1);
+  private int getFrame() {
+    if (currentIndex >= icons.size()) {
+      currentIndex = 0;
+    } else {
+      currentIndex++;
     }
-    int frame = currentFramePerPlayer.get(uuid);
-    currentFramePerPlayer.put(uuid, frame + 1);
-    return frame;
+    return currentIndex;
   }
 
   @Override

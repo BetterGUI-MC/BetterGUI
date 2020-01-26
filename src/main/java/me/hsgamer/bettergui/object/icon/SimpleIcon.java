@@ -34,6 +34,19 @@ public class SimpleIcon extends Icon {
     super(name, menu);
   }
 
+  public SimpleIcon(Icon original) {
+    super(original);
+    if (original instanceof SimpleIcon) {
+      this.itemProperties = ((SimpleIcon) original).itemProperties;
+      this.otherProperties = ((SimpleIcon) original).otherProperties;
+      this.command = ((SimpleIcon) original).command;
+      this.clickRequirement = ((SimpleIcon) original).clickRequirement;
+      this.viewRequirement = ((SimpleIcon) original).viewRequirement;
+      this.cooldown = ((SimpleIcon) original).cooldown;
+      this.closeOnClick = ((SimpleIcon) original).closeOnClick;
+    }
+  }
+
   @Override
   public void setFromSection(ConfigurationSection section) {
     itemProperties = PropertyBuilder.loadItemPropertiesFromSection(this, section);

@@ -2,23 +2,31 @@ package me.hsgamer.bettergui.object;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.manager.VariableManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public abstract class Icon {
+public abstract class Icon implements Cloneable {
 
   private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
-  private final Map<String, IconVariable> variables = new HashMap<>();
+  private Map<String, IconVariable> variables = new HashMap<>();
   private String name;
   private Menu menu;
 
   public Icon(String name, Menu menu) {
     this.name = name;
     this.menu = menu;
+  }
+
+  public Icon(Icon original) {
+    this.variables = original.variables;
+    this.name = original.name;
+    this.menu = original.menu;
   }
 
   public String getName() {
@@ -80,5 +88,15 @@ public abstract class Icon {
 
   public Menu getMenu() {
     return menu;
+  }
+
+  public Icon cloneIcon() {
+    try {
+      return getClass().getDeclaredConstructor(Icon.class).newInstance(this);
+    } catch (Exception e) {
+      BetterGUI.getInstance().getLogger()
+          .log(Level.WARNING, "There is a problem when cloning icon", e);
+      return this;
+    }
   }
 }
