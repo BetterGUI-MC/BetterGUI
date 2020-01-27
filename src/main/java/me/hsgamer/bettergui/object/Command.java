@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.object;
 
 import co.aikar.taskchain.TaskChain;
+import java.util.Optional;
 import me.hsgamer.bettergui.manager.VariableManager;
 import org.bukkit.entity.Player;
 
@@ -25,8 +26,8 @@ public abstract class Command {
 
   public abstract void addToTaskChain(Player player, TaskChain<?> taskChain);
 
-  protected Icon getIcon() {
-    return icon;
+  protected Optional<Icon> getIcon() {
+    return Optional.ofNullable(icon);
   }
 
   public void setIcon(Icon icon) {

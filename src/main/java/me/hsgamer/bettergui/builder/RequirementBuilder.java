@@ -61,16 +61,16 @@ public class RequirementBuilder {
     }
   }
 
-  public static IconRequirement<?> getRequirement(String type, Icon icon) {
+  public static Optional<IconRequirement<?>> getRequirement(String type, Icon icon) {
     if (requirements.containsKey(type)) {
       Class<? extends IconRequirement<?>> clazz = requirements.get(type);
       try {
-        return clazz.getDeclaredConstructor(Icon.class).newInstance(icon);
+        return Optional.of(clazz.getDeclaredConstructor(Icon.class).newInstance(icon));
       } catch (Exception e) {
         // IGNORED
       }
     }
-    return null;
+    return Optional.empty();
   }
 
   public static List<IconRequirement<?>> loadRequirementsFromSection(ConfigurationSection section,
@@ -78,10 +78,11 @@ public class RequirementBuilder {
     List<IconRequirement<?>> requirements = new ArrayList<>();
 
     section.getKeys(false).forEach(type -> {
-      IconRequirement<?> requirement = getRequirement(type, icon);
-      if (requirement == null) {
+      Optional<IconRequirement<?>> rawRequirement = getRequirement(type, icon);
+      if (!rawRequirement.isPresent()) {
         return;
       }
+      IconRequirement<?> requirement = rawRequirement.get();
       if (section.isConfigurationSection(type)) {
         if (section.isSet(type + Settings.VALUE)) {
           if (section.isList(type + Settings.VALUE)) {
