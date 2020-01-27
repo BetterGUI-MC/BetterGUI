@@ -36,7 +36,8 @@ public class DummyMenu extends Menu {
   public void createInventory(Player player) {
     FastInv inv = new FastInv(54, CommonUtils.colorize("&f&lItems"));
     icons.values()
-        .forEach(dummyIcon -> inv.addItem(dummyIcon.createClickableItem(player).getItem()));
+        .forEach(dummyIcon -> dummyIcon.createClickableItem(player)
+            .ifPresent(item -> inv.addItem(item.getItem())));
     inv.open(player);
   }
 

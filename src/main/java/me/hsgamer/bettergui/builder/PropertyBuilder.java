@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.builder;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
@@ -58,52 +59,10 @@ public class PropertyBuilder {
 
   public static void checkClass() {
     for (Class<? extends ItemProperty<?, ?>> clazz : itemProperties.values()) {
-      try {
-        clazz.getDeclaredConstructor(Icon.class).newInstance(new Icon("", null) {
-          @Override
-          public void setFromSection(ConfigurationSection section) {
-            // IGNORED
-          }
-
-          @Override
-          public ClickableItem createClickableItem(Player player) {
-            return null;
-          }
-
-          @Override
-          public ClickableItem updateClickableItem(Player player) {
-            return null;
-          }
-        });
-      } catch (Exception ex) {
-        getInstance().getLogger()
-            .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
-                + ". The property will be ignored", ex);
-      }
+      checkIconProperty(clazz);
     }
     for (Class<? extends IconProperty<?>> clazz : iconProperties.values()) {
-      try {
-        clazz.getDeclaredConstructor(Icon.class).newInstance(new Icon("", null) {
-          @Override
-          public void setFromSection(ConfigurationSection section) {
-            // IGNORED
-          }
-
-          @Override
-          public ClickableItem createClickableItem(Player player) {
-            return null;
-          }
-
-          @Override
-          public ClickableItem updateClickableItem(Player player) {
-            return null;
-          }
-        });
-      } catch (Exception ex) {
-        getInstance().getLogger()
-            .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
-                + ". The property will be ignored", ex);
-      }
+      checkIconProperty(clazz);
     }
     for (Class<? extends Property<?>> clazz : otherProperties.values()) {
       try {
@@ -113,6 +72,31 @@ public class PropertyBuilder {
             .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
                 + ". The property will be ignored", ex);
       }
+    }
+  }
+
+  private static void checkIconProperty(Class<? extends IconProperty<?>> clazz) {
+    try {
+      clazz.getDeclaredConstructor(Icon.class).newInstance(new Icon("", null) {
+        @Override
+        public void setFromSection(ConfigurationSection section) {
+          // IGNORED
+        }
+
+        @Override
+        public Optional<ClickableItem> createClickableItem(Player player) {
+          return Optional.empty();
+        }
+
+        @Override
+        public Optional<ClickableItem> updateClickableItem(Player player) {
+          return Optional.empty();
+        }
+      });
+    } catch (Exception ex) {
+      getInstance().getLogger()
+          .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
+              + ". The property will be ignored", ex);
     }
   }
 

@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.object.icon;
 
 import java.util.Map;
+import java.util.Optional;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
@@ -71,20 +72,20 @@ public class SimpleIcon extends Icon {
   }
 
   @Override
-  public ClickableItem createClickableItem(Player player) {
+  public Optional<ClickableItem> createClickableItem(Player player) {
     if (!viewRequirement.check(player)) {
-      return null;
+      return Optional.empty();
     }
     viewRequirement.take(player);
-    return getClickableItem(player);
+    return Optional.of(getClickableItem(player));
   }
 
   @Override
-  public ClickableItem updateClickableItem(Player player) {
+  public Optional<ClickableItem> updateClickableItem(Player player) {
     if (!viewRequirement.check(player)) {
-      return null;
+      return Optional.empty();
     }
-    return getClickableItem(player);
+    return Optional.of(getClickableItem(player));
   }
 
   private ClickableItem getClickableItem(Player player) {

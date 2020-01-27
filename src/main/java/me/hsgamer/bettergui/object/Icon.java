@@ -2,10 +2,10 @@ package me.hsgamer.bettergui.object;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nullable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.manager.VariableManager;
 import org.bukkit.configuration.ConfigurationSection;
@@ -80,11 +80,9 @@ public abstract class Icon implements Cloneable {
 
   public abstract void setFromSection(ConfigurationSection section);
 
-  @Nullable
-  public abstract ClickableItem createClickableItem(Player player);
+  public abstract Optional<ClickableItem> createClickableItem(Player player);
 
-  @Nullable
-  public abstract ClickableItem updateClickableItem(Player player);
+  public abstract Optional<ClickableItem> updateClickableItem(Player player);
 
   public Menu getMenu() {
     return menu;

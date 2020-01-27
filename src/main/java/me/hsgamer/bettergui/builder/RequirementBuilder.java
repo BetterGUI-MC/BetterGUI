@@ -5,6 +5,7 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
@@ -43,13 +44,13 @@ public class RequirementBuilder {
           }
 
           @Override
-          public ClickableItem createClickableItem(Player player) {
-            return null;
+          public Optional<ClickableItem> createClickableItem(Player player) {
+            return Optional.empty();
           }
 
           @Override
-          public ClickableItem updateClickableItem(Player player) {
-            return null;
+          public Optional<ClickableItem> updateClickableItem(Player player) {
+            return Optional.empty();
           }
         });
       } catch (Exception ex) {

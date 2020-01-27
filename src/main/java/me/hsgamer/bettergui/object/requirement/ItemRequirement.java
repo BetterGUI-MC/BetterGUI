@@ -46,7 +46,7 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
   public boolean check(Player player) {
     for (RequiredItem requiredItem : getParsedValue(player)) {
       DummyIcon dummyIcon = requiredItem.icon;
-      int amountNeeded = dummyIcon.createClickableItem(player).getItem().getAmount();
+      int amountNeeded = dummyIcon.createClickableItem(player).get().getItem().getAmount();
       int amountFound = 0;
       for (ItemStack item : player.getInventory().getContents()) {
         if (checkItem(player, dummyIcon, item, requiredItem.oldCheck)) {
@@ -65,7 +65,7 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
     for (RequiredItem requiredItem : getParsedValue(player)) {
       DummyIcon dummyIcon = requiredItem.icon;
       ItemStack[] contents = player.getInventory().getContents();
-      int amountNeeded = dummyIcon.createClickableItem(player).getItem().getAmount();
+      int amountNeeded = dummyIcon.createClickableItem(player).get().getItem().getAmount();
       for (int i = 0; i < contents.length; i++) {
         ItemStack item = contents[i];
         if (checkItem(player, dummyIcon, item, requiredItem.oldCheck)) {
@@ -86,7 +86,7 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
 
   private boolean checkItem(Player player, DummyIcon dummyIcon, ItemStack item, boolean oldCheck) {
     if (oldCheck) {
-      return item != null && item.isSimilar(dummyIcon.createClickableItem(player).getItem());
+      return item != null && item.isSimilar(dummyIcon.createClickableItem(player).get().getItem());
     } else {
       boolean notItemNeeded = true;
       for (ItemProperty<?, ?> property : dummyIcon.getItemProperties().values()) {

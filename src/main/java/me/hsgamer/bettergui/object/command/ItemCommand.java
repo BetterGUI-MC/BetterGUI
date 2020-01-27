@@ -22,7 +22,7 @@ public class ItemCommand extends Command {
   private ItemStack getItemStack(Player player, String input) {
     Map<String, DummyIcon> icons = getInstance().getItemsConfig().getMenu().getIcons();
     if (icons.containsKey(input)) {
-      return icons.get(input).createClickableItem(player).getItem();
+      return icons.get(input).createClickableItem(player).get().getItem();
     } else {
       String[] split = input.split(",", 2);
       Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(split[0]);

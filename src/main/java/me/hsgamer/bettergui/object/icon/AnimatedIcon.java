@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.object.icon;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
@@ -32,13 +33,13 @@ public class AnimatedIcon extends Icon implements ParentIcon {
   }
 
   @Override
-  public ClickableItem createClickableItem(Player player) {
+  public Optional<ClickableItem> createClickableItem(Player player) {
     currentIndex = 0;
     return icons.get(currentIndex).createClickableItem(player);
   }
 
   @Override
-  public ClickableItem updateClickableItem(Player player) {
+  public Optional<ClickableItem> updateClickableItem(Player player) {
     return icons.get(getFrame()).updateClickableItem(player);
   }
 
