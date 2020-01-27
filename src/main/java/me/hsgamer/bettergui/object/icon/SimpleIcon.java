@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.object.icon;
 
+import com.cryptomorin.xseries.XMaterial;
 import java.util.Map;
 import java.util.Optional;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
@@ -13,7 +14,6 @@ import me.hsgamer.bettergui.object.property.icon.Cooldown;
 import me.hsgamer.bettergui.object.property.icon.KeepOpen;
 import me.hsgamer.bettergui.object.property.icon.ViewRequirement;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
-import me.hsgamer.bettergui.util.XMaterial;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;

@@ -3,7 +3,6 @@ package me.hsgamer.bettergui.object.icon;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
@@ -29,7 +28,7 @@ public class AnimatedIcon extends Icon implements ParentIcon {
 
   @Override
   public void setFromSection(ConfigurationSection section) {
-    icons.add(IconBuilder.getIcon(getMenu(), section, SimpleIcon.class));
+    setChildFromSection(getMenu(), section);
   }
 
   @Override

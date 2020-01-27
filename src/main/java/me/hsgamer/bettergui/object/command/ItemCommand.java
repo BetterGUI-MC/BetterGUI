@@ -3,13 +3,13 @@ package me.hsgamer.bettergui.object.command;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import co.aikar.taskchain.TaskChain;
+import com.cryptomorin.xseries.XMaterial;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.object.requirement;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
+import com.cryptomorin.xseries.XMaterial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,6 @@ import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.object.property.item.impl.Amount;
 import me.hsgamer.bettergui.object.requirement.ItemRequirement.RequiredItem;
-import me.hsgamer.bettergui.util.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

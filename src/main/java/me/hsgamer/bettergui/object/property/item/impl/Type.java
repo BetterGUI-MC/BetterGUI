@@ -1,9 +1,9 @@
 package me.hsgamer.bettergui.object.property.item.impl;
 
+import com.cryptomorin.xseries.XMaterial;
 import java.util.Optional;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
-import me.hsgamer.bettergui.util.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
