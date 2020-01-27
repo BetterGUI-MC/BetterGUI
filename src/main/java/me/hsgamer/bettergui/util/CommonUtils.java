@@ -29,4 +29,13 @@ public class CommonUtils {
       return false;
     }
   }
+
+  public static boolean isValidInteger(String input) {
+    try {
+      Integer.parseInt(input);
+      return true;
+    } catch (NumberFormatException ex) {
+      return false;
+    }
+  }
 }
