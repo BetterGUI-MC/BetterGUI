@@ -3,34 +3,27 @@ package me.hsgamer.bettergui.object.menu;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import co.aikar.taskchain.TaskChain;
-import fr.mrmicky.fastinv.FastInv;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.manager.VariableManager;
-import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
-import me.hsgamer.bettergui.object.MenuHolder;
 import me.hsgamer.bettergui.object.ParentIcon;
+import me.hsgamer.bettergui.object.inventory.SimpleInventory;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.permissions.Permission;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 public class SimpleMenu extends Menu {
 
@@ -165,11 +158,15 @@ public class SimpleMenu extends Menu {
   @Override
   public void createInventory(Player player) {
     if (player.hasPermission(permission)) {
-      Inventory inventory;
+      SimpleInventory inventory;
       if (inventoryType.equals(InventoryType.CHEST)) {
-        inventory = new Inventory(maxSlots, VariableManager.hasVariables(title) ? VariableManager.setVariables(title, player) : title, ticks);
+        inventory = new SimpleInventory(maxSlots,
+            VariableManager.hasVariables(title) ? VariableManager.setVariables(title, player)
+                : title, icons, defaultIcon, ticks);
       } else {
-        inventory = new Inventory(inventoryType, VariableManager.hasVariables(title) ? VariableManager.setVariables(title, player) : title, ticks);
+        inventory = new SimpleInventory(inventoryType, maxSlots,
+            VariableManager.hasVariables(title) ? VariableManager.setVariables(title, player)
+                : title, icons, defaultIcon, ticks);
       }
       inventory.setPlayer(player);
       if (!openActions.isEmpty()) {
@@ -206,109 +203,5 @@ public class SimpleMenu extends Menu {
     static final String CLOSE_ACTION = "close-action";
     static final String PERMISSION = "permission";
     static final String AUTO_REFRESH = "auto-refresh";
-  }
-
-  private class Inventory extends FastInv implements MenuHolder {
-    private Map<Integer, Icon> cloneIcons = new HashMap<>();
-    private Icon cloneDefaultIcon;
-    private int ticks;
-    private BukkitTask task;
-    private Player player;
-
-    Inventory(int size, String title, int ticks) {
-      super(size, title);
-      this.ticks = ticks;
-      icons.forEach((key, value) -> cloneIcons.put(key, value.cloneIcon()));
-      if (defaultIcon != null) {
-        cloneDefaultIcon = defaultIcon.cloneIcon();
-      }
-      createItems();
-    }
-
-    Inventory(InventoryType type, String title, int ticks) {
-      super(type, title);
-      this.ticks = ticks;
-      icons.forEach((key, value) -> cloneIcons.put(key - 1, value.cloneIcon()));
-      if (defaultIcon != null) {
-        cloneDefaultIcon = defaultIcon.cloneIcon();
-      }
-      createItems();
-    }
-
-    @Override
-    public void onOpen(InventoryOpenEvent event) {
-      task = new BukkitRunnable() {
-        @Override
-        public void run() {
-          updateItems();
-          player.updateInventory();
-        }
-      }.runTaskTimerAsynchronously(getInstance(), ticks, ticks);
-    }
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-      task.cancel();
-    }
-
-    private void createDefaultItem(int slot) {
-      if (cloneDefaultIcon != null) {
-        Optional<ClickableItem> rawDefaultClickableItem = cloneDefaultIcon.createClickableItem(player);
-        if (rawDefaultClickableItem.isPresent()) {
-          ClickableItem clickableItem = rawDefaultClickableItem.get();
-          setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
-        }
-      }
-    }
-
-    private void updateDefaultItem(int slot) {
-      if (cloneDefaultIcon != null) {
-        Optional<ClickableItem> rawDefaultClickableItem = cloneDefaultIcon.updateClickableItem(player);
-        if (rawDefaultClickableItem.isPresent()) {
-          ClickableItem clickableItem = rawDefaultClickableItem.get();
-          setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
-        }
-      }
-    }
-    
-    private void createItems() {
-      for (int i = 0; i < maxSlots; i++) {
-        if (cloneIcons.containsKey(i)) {
-          Optional<ClickableItem> rawClickableItem = cloneIcons.get(i).createClickableItem(player);
-          if (rawClickableItem.isPresent()) {
-            ClickableItem clickableItem = rawClickableItem.get();
-            setItem(i, clickableItem.getItem(), clickableItem.getClickEvent());
-          } else {
-            createDefaultItem(i);
-          }
-        } else {
-          createDefaultItem(i);
-        }
-      }
-    }
-
-    private void updateItems() {
-      for (int i = 0; i < maxSlots; i++) {
-        if (cloneIcons.containsKey(i)) {
-          Optional<ClickableItem> rawClickableItem = cloneIcons.get(i).updateClickableItem(player);
-          if (rawClickableItem.isPresent()) {
-            ClickableItem clickableItem = rawClickableItem.get();
-            setItem(i, clickableItem.getItem(), clickableItem.getClickEvent());
-          } else {
-            updateDefaultItem(i);
-          }
-        } else {
-          updateDefaultItem(i);
-        }
-      }
-    }
-
-    public void setPlayer(Player player) {
-      this.player = player;
-    }
-    
-    public void open() {
-      open(player);
-    }
   }
 }
