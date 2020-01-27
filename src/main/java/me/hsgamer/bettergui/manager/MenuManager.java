@@ -29,11 +29,17 @@ public class MenuManager {
     menuMap.clear();
   }
 
-  public boolean contains(String menu) {
-    return menuMap.containsKey(menu);
+  public boolean contains(String name) {
+    return menuMap.containsKey(name);
   }
 
-  public void openMenu(String menu, Player player) {
-    menuMap.get(menu).createInventory(player);
+  public void openMenu(String name, Player player) {
+    menuMap.get(name).createInventory(player);
+  }
+
+  public void openMenu(String name, Player player, Menu parentMenu) {
+    Menu menu = menuMap.get(name);
+    menu.setParentMenu(parentMenu);
+    menu.createInventory(player);
   }
 }

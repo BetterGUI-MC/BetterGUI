@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
+import me.hsgamer.bettergui.object.command.BackCommand;
 import me.hsgamer.bettergui.object.command.ConditionCommand;
 import me.hsgamer.bettergui.object.command.ConsoleCommand;
 import me.hsgamer.bettergui.object.command.DelayCommand;
@@ -32,6 +33,7 @@ public class CommandBuilder {
     register("condition:", ConditionCommand.class);
     register("give-item:", ItemCommand.class);
     register("open:", OpenMenuCommand.class);
+    register("back", BackCommand.class);
   }
 
   public static void register(String regex, Class<? extends Command> clazz) {
