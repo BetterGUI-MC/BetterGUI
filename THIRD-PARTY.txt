@@ -1,0 +1,17 @@
+This plugin has parts of code that come from other projects:
+
+[XSeries]
+Link: https://github.com/CryptoMorin/XSeries
+License: MIT License
+
+[FastInv]
+Link: https://github.com/MrMicky-FR/FastInv
+License: MIT License
+
+[TaskChain]
+Link: https://github.com/aikar/TaskChain
+License: MIT License
+
+[EvalEx]
+Link: https://github.com/uklimaschewski/EvalEx
+License: https://github.com/uklimaschewski/EvalEx/blob/master/LICENSE

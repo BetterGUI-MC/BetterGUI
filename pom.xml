@@ -71,6 +71,12 @@
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
+      <resource>
+        <directory>.</directory>
+        <includes>
+          <include>THIRD-PARTY.txt</include>
+        </includes>
+      </resource>
     </resources>
   </build>
 
