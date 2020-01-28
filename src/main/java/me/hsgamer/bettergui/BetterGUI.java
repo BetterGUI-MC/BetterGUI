@@ -91,6 +91,8 @@ public final class BetterGUI extends JavaPlugin {
 
   @Override
   public void onDisable() {
+    commandManager.clearMenuCommand();
+    menuManager.clear();
     addonManager.disableAddons();
   }
 
