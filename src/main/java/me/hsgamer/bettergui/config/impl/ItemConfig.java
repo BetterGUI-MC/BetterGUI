@@ -11,13 +11,9 @@ public class ItemConfig extends PluginConfig {
 
   public ItemConfig(JavaPlugin plugin) {
     super(plugin, "items.yml");
-    menu = new DummyMenu("dummyitems");
-    menu.setFromFile(getConfig());
   }
 
-  @Override
-  public void reloadConfig() {
-    super.reloadConfig();
+  public void initializeMenu() {
     menu = new DummyMenu("dummyitems");
     menu.setFromFile(getConfig());
   }

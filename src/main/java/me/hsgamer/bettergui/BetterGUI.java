@@ -31,9 +31,9 @@ public final class BetterGUI extends JavaPlugin {
   private CommandManager commandManager = new CommandManager(this);
   private MenuManager menuManager = new MenuManager();
 
-  private ItemConfig itemConfig;
-  private MainConfig mainConfig;
-  private MessageConfig messageConfig;
+  private ItemConfig itemConfig = new ItemConfig(this);
+  private MainConfig mainConfig = new MainConfig(this);
+  private MessageConfig messageConfig = new MessageConfig(this);
 
   public static <T> TaskChain<T> newChain() {
     return taskChainFactory.newChain();
@@ -67,12 +67,7 @@ public final class BetterGUI extends JavaPlugin {
       checkClass();
       loadCommands();
       addonManager.enableAddons();
-
-      // Initialize the configs
-      mainConfig = new MainConfig(this);
-      messageConfig = new MessageConfig(this);
-      itemConfig = new ItemConfig(this);
-
+      itemConfig.initializeMenu();
       loadMenuConfig();
     });
   }

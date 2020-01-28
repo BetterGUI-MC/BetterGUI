@@ -18,11 +18,12 @@ public class ReloadCommand extends BukkitCommand {
     if (commandSender.hasPermission(Permissions.RELOAD)) {
       getInstance().getCommandManager().clearMenuCommand();
       getInstance().getMenuManager().clear();
-      getInstance().getAddonManager().reloadAddons();
-      getInstance().checkClass();
       getInstance().getMainConfig().reloadConfig();
       getInstance().getMessageConfig().reloadConfig();
       getInstance().getItemsConfig().reloadConfig();
+      getInstance().getAddonManager().reloadAddons();
+      getInstance().checkClass();
+      getInstance().getItemsConfig().initializeMenu();
       getInstance().loadMenuConfig();
       return true;
     } else {
