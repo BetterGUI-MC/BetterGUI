@@ -20,6 +20,8 @@ public class ReloadCommand extends BukkitCommand {
       getInstance().getMenuManager().clear();
       getInstance().getAddonManager().reloadAddons();
       getInstance().checkClass();
+      getInstance().getMainConfig().reloadConfig();
+      getInstance().getMessageConfig().reloadConfig();
       getInstance().getItemsConfig().reloadConfig();
       getInstance().loadMenuConfig();
       return true;

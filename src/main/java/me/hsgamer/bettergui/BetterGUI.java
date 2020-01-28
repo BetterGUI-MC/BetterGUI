@@ -13,6 +13,8 @@ import me.hsgamer.bettergui.command.ItemCommand;
 import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.command.ReloadCommand;
 import me.hsgamer.bettergui.config.impl.ItemConfig;
+import me.hsgamer.bettergui.config.impl.MainConfig;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.CommandManager;
@@ -30,6 +32,8 @@ public final class BetterGUI extends JavaPlugin {
   private MenuManager menuManager = new MenuManager();
 
   private ItemConfig itemConfig;
+  private MainConfig mainConfig;
+  private MessageConfig messageConfig;
 
   public static <T> TaskChain<T> newChain() {
     return taskChainFactory.newChain();
@@ -62,8 +66,11 @@ public final class BetterGUI extends JavaPlugin {
     Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
       checkClass();
       loadCommands();
+      addonManager.enableAddons();
 
       // Initialize the configs
+      mainConfig = new MainConfig(this);
+      messageConfig = new MessageConfig(this);
       itemConfig = new ItemConfig(this);
 
       loadMenuConfig();
@@ -106,5 +113,13 @@ public final class BetterGUI extends JavaPlugin {
 
   public MenuManager getMenuManager() {
     return menuManager;
+  }
+
+  public MainConfig getMainConfig() {
+    return mainConfig;
+  }
+
+  public MessageConfig getMessageConfig() {
+    return messageConfig;
   }
 }
