@@ -30,6 +30,10 @@ public class RequirementBuilder {
     register("item", ItemRequirement.class);
   }
 
+  private RequirementBuilder() {
+
+  }
+
   public static void register(String type, Class<? extends IconRequirement<?>> clazz) {
     requirements.put(type, clazz);
   }

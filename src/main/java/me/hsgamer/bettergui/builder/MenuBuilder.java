@@ -18,6 +18,10 @@ public class MenuBuilder {
     register("simple", SimpleMenu.class);
   }
 
+  private MenuBuilder() {
+
+  }
+
   public static void register(String type, Class<? extends Menu> clazz) {
     menuTypes.put(type, clazz);
   }

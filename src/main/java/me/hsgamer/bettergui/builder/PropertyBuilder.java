@@ -45,6 +45,10 @@ public class PropertyBuilder {
     registerIconProperty("keep-open", KeepOpen.class);
   }
 
+  private PropertyBuilder() {
+
+  }
+
   public static void registerItemProperty(String name, Class<? extends ItemProperty<?, ?>> clazz) {
     itemProperties.put(name, clazz);
   }

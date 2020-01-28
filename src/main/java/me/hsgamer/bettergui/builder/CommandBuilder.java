@@ -36,6 +36,10 @@ public class CommandBuilder {
     register("back", BackCommand.class);
   }
 
+  private CommandBuilder() {
+
+  }
+
   public static void register(String regex, Class<? extends Command> clazz) {
     Pattern pattern = Pattern.compile("^(?i)" + regex);
     commands.put(pattern, clazz);

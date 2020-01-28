@@ -26,6 +26,10 @@ public class IconBuilder {
     register("list", ListIcon.class);
   }
 
+  private IconBuilder() {
+
+  }
+
   public static void register(String type, Class<? extends Icon> clazz) {
     iconTypes.put(type, clazz);
   }
