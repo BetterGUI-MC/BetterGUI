@@ -29,6 +29,7 @@ public class SimpleMenu extends Menu {
 
   private InventoryType inventoryType = InventoryType.CHEST;
   private String title;
+  private boolean titleHasVariable = false;
   private int maxSlots = 27;
   private int ticks = 0;
   private Map<Integer, Icon> icons = new HashMap<>();
@@ -51,6 +52,7 @@ public class SimpleMenu extends Menu {
 
         if (keys.containsKey(Settings.NAME)) {
           title = (String) keys.get(Settings.NAME);
+          titleHasVariable = VariableManager.hasVariables(title);
         }
 
         if (keys.containsKey(Settings.INVENTORY_TYPE)) {
@@ -161,11 +163,11 @@ public class SimpleMenu extends Menu {
       SimpleInventory inventory;
       if (inventoryType.equals(InventoryType.CHEST)) {
         inventory = new SimpleInventory(maxSlots,
-            VariableManager.hasVariables(title) ? VariableManager.setVariables(title, player)
+            titleHasVariable ? VariableManager.setVariables(title, player)
                 : title, icons, defaultIcon, ticks);
       } else {
         inventory = new SimpleInventory(inventoryType, maxSlots,
-            VariableManager.hasVariables(title) ? VariableManager.setVariables(title, player)
+            titleHasVariable ? VariableManager.setVariables(title, player)
                 : title, icons, defaultIcon, ticks);
       }
       inventory.setPlayer(player);
