@@ -6,12 +6,20 @@ import com.cryptomorin.xseries.XMaterial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.object.property.item.impl.Amount;
 import me.hsgamer.bettergui.object.requirement.ItemRequirement.RequiredItem;
+import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.ItemUtils;
+import me.hsgamer.bettergui.util.VersionUtils;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,18 +43,18 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
           list.add(new RequiredItem(icon, true));
         }
       } else {
-        // TODO: Config, Send "Invalid required icons"
+        CommonUtils.sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.INVALID_REQUIRED_ITEM));
       }
     }
     return list;
   }
 
-  // TODO: Config
   @Override
   public boolean check(Player player) {
     for (RequiredItem requiredItem : getParsedValue(player)) {
       DummyIcon dummyIcon = requiredItem.icon;
-      int amountNeeded = dummyIcon.createClickableItem(player).get().getItem().getAmount();
+      ItemStack itemStack = dummyIcon.createClickableItem(player).get().getItem();
+      int amountNeeded = itemStack.getAmount();
       int amountFound = 0;
       for (ItemStack item : player.getInventory().getContents()) {
         if (checkItem(player, dummyIcon, item, requiredItem.oldCheck)) {
@@ -54,6 +62,31 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
         }
       }
       if (amountFound < amountNeeded) {
+        String message =
+            failMessage != null ? failMessage : getInstance().getMessageConfig().get(DefaultMessage.NO_REQUIRED_ITEM);
+        if (!message.isEmpty()) {
+          message = message
+              .replace("{item}",
+                  (itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName())
+                      ? itemStack.getItemMeta().getDisplayName()
+                      : itemStack.getType().name())
+              .replace("{amount}", Integer.toString(itemStack.getAmount()));
+          if (VersionUtils.isSpigot() && (boolean) getInstance().getMainConfig().get(DefaultConfig.USE_HOVER_EVENT)) {
+            String itemJson = ItemUtils.convertItemStackToJson(itemStack);
+
+            BaseComponent[] hoverEventComponents = new BaseComponent[]{
+                new TextComponent(itemJson)};
+
+            HoverEvent event = new HoverEvent(HoverEvent.Action.SHOW_ITEM, hoverEventComponents);
+
+            TextComponent component = new TextComponent(message);
+            component.setHoverEvent(event);
+
+            player.spigot().sendMessage(component);
+          } else {
+            player.sendMessage(message);
+          }
+        }
         return false;
       }
     }
@@ -88,17 +121,15 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
     if (oldCheck) {
       return item != null && item.isSimilar(dummyIcon.createClickableItem(player).get().getItem());
     } else {
-      boolean notItemNeeded = true;
       for (ItemProperty<?, ?> property : dummyIcon.getItemProperties().values()) {
         if (property instanceof Amount) {
           continue;
         }
         if (!property.compareWithItemStack(player, item)) {
-          notItemNeeded = false;
-          break;
+          return false;
         }
       }
-      return !notItemNeeded;
+      return true;
     }
   }
 

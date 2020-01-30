@@ -4,6 +4,7 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import java.util.Arrays;
 import me.hsgamer.bettergui.Permissions;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.command.CommandSender;
@@ -27,18 +28,19 @@ public class OpenCommand extends BukkitCommand {
             menuManager.openMenu(strings[0], (Player) commandSender);
             return true;
           } else {
-            commandSender.sendMessage(CommonUtils.colorize("&cThat menu does not exist"));
+            CommonUtils.sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
             return false;
           }
         } else {
-          commandSender.sendMessage(CommonUtils.colorize("&cYou should specify a menu"));
+          CommonUtils.sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.MENU_REQUIRED));
           return false;
         }
       } else {
+        CommonUtils.sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
         return false;
       }
     } else {
-      commandSender.sendMessage(CommonUtils.colorize("&cYou should be a player to do this"));
+      CommonUtils.sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
       return false;
     }
   }

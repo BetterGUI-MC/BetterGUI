@@ -2,8 +2,8 @@ package me.hsgamer.bettergui.object.command;
 
 import co.aikar.taskchain.TaskChain;
 import me.hsgamer.bettergui.object.Command;
-import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -19,7 +19,7 @@ public class DelayCommand extends Command {
     if (ExpressionUtils.isValidExpression(value)) {
       value = String.valueOf(ExpressionUtils.getResult(value).intValue());
     }
-    if (!CommonUtils.isValidPositiveInteger(value)) {
+    if (!Validate.isValidPositiveInteger(value)) {
       player.sendMessage(ChatColor.RED + "Invalid delay: " + value);
       return;
     }

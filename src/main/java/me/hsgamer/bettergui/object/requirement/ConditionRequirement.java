@@ -2,8 +2,11 @@ package me.hsgamer.bettergui.object.requirement;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
+import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -37,10 +40,10 @@ public class ConditionRequirement extends IconRequirement<Boolean> {
           player.sendMessage(failMessage);
         }
       } else {
-        // TODO: Config
-//        if (!ChestCommands.getLang().default_no_requirement_message.isEmpty()) {
-//          player.sendMessage(ChestCommands.getLang().default_no_requirement_message);
-//        }
+        String message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.NO_REQUIREMENT);
+        if (!message.isEmpty()) {
+          CommonUtils.sendMessage(player, message);
+        }
       }
       return false;
     }

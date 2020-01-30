@@ -2,9 +2,15 @@ package me.hsgamer.bettergui.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 public class CommonUtils {
+  private CommonUtils() {
+
+  }
 
   public static String colorize(String input) {
     if (input == null || input.isEmpty()) {
@@ -13,7 +19,7 @@ public class CommonUtils {
     return ChatColor.translateAlternateColorCodes('&', input);
   }
 
-  public static List<String> colorize(List<String> input) {
+  public static List<String> colorizeList(List<String> input) {
     if (input == null || input.isEmpty()) {
       return input;
     }
@@ -22,20 +28,7 @@ public class CommonUtils {
     return colorized;
   }
 
-  public static boolean isValidPositiveInteger(String input) {
-    try {
-      return Integer.parseInt(input) > 0;
-    } catch (NumberFormatException ex) {
-      return false;
-    }
-  }
-
-  public static boolean isValidInteger(String input) {
-    try {
-      Integer.parseInt(input);
-      return true;
-    } catch (NumberFormatException ex) {
-      return false;
-    }
+  public static void sendMessage(CommandSender sender, String message) {
+    sender.sendMessage(colorize(BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PREFIX) + message));
   }
 }

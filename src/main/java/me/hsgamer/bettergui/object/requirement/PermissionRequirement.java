@@ -2,8 +2,11 @@ package me.hsgamer.bettergui.object.requirement;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
+import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.entity.Player;
 
 public class PermissionRequirement extends IconRequirement<String> {
@@ -29,11 +32,10 @@ public class PermissionRequirement extends IconRequirement<String> {
             player.sendMessage(failMessage.replace("{permission}", value));
           }
         } else {
-          // TODO: Config
-//          if (!ChestCommands.getLang().default_no_icon_permission.isEmpty()) {
-//            player.sendMessage(ChestCommands.getLang().default_no_icon_permission
-//                .replace("{permission}", (String) value));
-//          }
+          String message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.NO_ICON_PERMISSION);
+          if (!message.isEmpty()) {
+            CommonUtils.sendMessage(player, message);
+          }
         }
         return false;
       }

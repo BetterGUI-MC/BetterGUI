@@ -19,13 +19,13 @@ public class SimpleInventory extends FastInv implements MenuHolder {
 
   private Map<Integer, Icon> icons = new HashMap<>();
   private Icon defaultIcon;
-  private int ticks;
+  private long ticks;
   private BukkitTask task;
   private Player player;
   private int maxSlots;
 
   public SimpleInventory(int size, String title, Map<Integer, Icon> icons, Icon defaultIcon,
-      int ticks) {
+      long ticks) {
     super(size, title);
     this.ticks = ticks;
     this.maxSlots = size;
@@ -37,7 +37,7 @@ public class SimpleInventory extends FastInv implements MenuHolder {
   }
 
   public SimpleInventory(InventoryType type, int maxSlots, String title, Map<Integer, Icon> icons,
-      Icon defaultIcon, int ticks) {
+      Icon defaultIcon, long ticks) {
     super(type, title);
     this.ticks = ticks;
     this.maxSlots = maxSlots;
@@ -50,18 +50,22 @@ public class SimpleInventory extends FastInv implements MenuHolder {
 
   @Override
   public void onOpen(InventoryOpenEvent event) {
-    task = new BukkitRunnable() {
-      @Override
-      public void run() {
-        updateItems();
-        player.updateInventory();
-      }
-    }.runTaskTimerAsynchronously(BetterGUI.getInstance(), ticks, ticks);
+    if (ticks > 0) {
+      task = new BukkitRunnable() {
+        @Override
+        public void run() {
+          updateItems();
+          player.updateInventory();
+        }
+      }.runTaskTimerAsynchronously(BetterGUI.getInstance(), ticks, ticks);
+    }
   }
 
   @Override
   public void onClose(InventoryCloseEvent event) {
-    task.cancel();
+    if (task != null) {
+      task.cancel();
+    }
   }
 
   private void createDefaultItem(int slot) {

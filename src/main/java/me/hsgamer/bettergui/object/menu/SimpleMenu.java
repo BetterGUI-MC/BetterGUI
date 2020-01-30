@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
@@ -19,6 +20,7 @@ import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.ParentIcon;
 import me.hsgamer.bettergui.object.inventory.SimpleInventory;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
+import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -31,7 +33,7 @@ public class SimpleMenu extends Menu {
   private String title;
   private boolean titleHasVariable = false;
   private int maxSlots = 27;
-  private int ticks = 0;
+  private long ticks = 0;
   private Map<Integer, Icon> icons = new HashMap<>();
   private List<Command> openActions = new ArrayList<>();
   private List<Command> closeActions = new ArrayList<>();
@@ -43,6 +45,7 @@ public class SimpleMenu extends Menu {
     super(name);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void setFromFile(FileConfiguration file) {
     for (String key : file.getKeys(false)) {
@@ -124,12 +127,7 @@ public class SimpleMenu extends Menu {
         }
 
         if (keys.containsKey(Settings.AUTO_REFRESH)) {
-          double value = (double) keys.get(Settings.AUTO_REFRESH);
-          if (value >= 0) {
-            ticks = (int) (value * 20);
-          } else {
-            // TODO: Config
-          }
+          ticks = Math.round((double) keys.get(Settings.AUTO_REFRESH) * 20);
         }
       } else if (key.equalsIgnoreCase("default-icon")) {
         defaultIcon = IconBuilder.getIcon(this, file.getConfigurationSection(key));
@@ -143,13 +141,13 @@ public class SimpleMenu extends Menu {
             if (tempIcon instanceof ParentIcon) {
               ((ParentIcon) tempIcon).addChild(icon.cloneIcon());
             } else {
-              // TODO: Config, Override icon
+              getInstance().getLogger().warning(icon.getName() + " & " + tempIcon.getMenu() + " from " + getName() + " have the same slot. Only one of them will be set");
             }
           } else {
             if (slot <= maxSlots) {
               icons.put(slot, icon.cloneIcon());
             } else {
-              // TODO: Config, Invalid slot
+              getInstance().getLogger().warning(icon.getName() + " from " + getName() + " has invalid slot (Exceed the limit)");
             }
           }
         }
@@ -187,7 +185,7 @@ public class SimpleMenu extends Menu {
       }
       inventory.open();
     } else {
-      // TODO: config
+      CommonUtils.sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
     }
   }
 

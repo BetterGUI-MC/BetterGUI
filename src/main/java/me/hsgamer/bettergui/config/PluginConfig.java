@@ -52,7 +52,7 @@ public class PluginConfig {
     return config;
   }
 
-  public <T> T get(Class<T> classType, String path, T def) {
+  public <T> T get(Class<T> classType, String path, Object def) {
     return classType.cast(getConfig().get(path, def));
   }
 }

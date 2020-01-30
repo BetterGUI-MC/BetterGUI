@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.object.IconVariable;
+import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -56,12 +58,10 @@ public class ExpLevelRequirement extends IconRequirement<Integer> implements Ico
                 failMessage.replace("{levels}", Integer.toString(expLevelsPrice)));
           }
         } else {
-          // TODO: Config
-//          if (!ChestCommands.getLang().no_exp.isEmpty()) {
-//            player.sendMessage(
-//                ChestCommands.getLang().no_exp
-//                    .replace("{levels}", Integer.toString(expLevelsPrice)));
-//          }
+          String message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.NO_EXP);
+          if (!message.isEmpty()) {
+            CommonUtils.sendMessage(player, message.replace("{levels}", Integer.toString(expLevelsPrice)));
+          }
         }
         return false;
       }
@@ -98,7 +98,6 @@ public class ExpLevelRequirement extends IconRequirement<Integer> implements Ico
         return String.valueOf(expLevelsPrice.intValue());
       }
     }
-    // TODO: Config, Send "Had met the requirements"
-    return "";
+    return BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.HAVE_MET_REQUIREMENT_PLACEHOLDER);
   }
 }

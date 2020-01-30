@@ -4,6 +4,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -62,15 +64,21 @@ public class Cooldown extends IconProperty<ConfigurationSection> {
     long time = cooldownTimePerType.getOrDefault(clickType, defaultCooldownTime);
     if (time > 0 && cooldownUntil != null && cooldownUntil > now) {
       if (cooldownMessage != null) {
-        player.sendMessage(
-            cooldownMessage.replace("{cooldown}", String.valueOf(cooldownUntil - now))
-                .replace("{cooldown_second}",
-                    String.valueOf((cooldownUntil - now) / 1000)));
+        if (!cooldownMessage.isEmpty()) {
+          player.sendMessage(
+              cooldownMessage
+                  .replace("{cooldown}", String.valueOf(cooldownUntil - now))
+                  .replace("{cooldown_second}", String.valueOf((cooldownUntil - now) / 1000))
+          );
+        }
       } else {
-        // TODO: Config
-//        player.sendMessage(ChestCommands.getLang().default_cooldown_message
-//            .replace("{cooldown}", String.valueOf(cooldownUntil - now))
-//            .replace("{cooldown_second}", String.valueOf((cooldownUntil - now) / 1000)));
+        String message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.COOLDOWN_MESSAGE);
+        if (!message.isEmpty()) {
+          CommonUtils.sendMessage(player, message
+              .replace("{cooldown}", String.valueOf(cooldownUntil - now))
+              .replace("{cooldown_second}", String.valueOf((cooldownUntil - now) / 1000))
+          );
+        }
       }
       return true;
     } else {
