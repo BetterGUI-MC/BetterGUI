@@ -43,10 +43,10 @@ public class AnimatedIcon extends Icon implements ParentIcon {
   }
 
   private int getFrame() {
-    if (currentIndex >= icons.size()) {
-      currentIndex = 0;
-    } else {
+    if (currentIndex < icons.size() - 1) {
       currentIndex++;
+    } else {
+      currentIndex = 0;
     }
     return currentIndex;
   }
