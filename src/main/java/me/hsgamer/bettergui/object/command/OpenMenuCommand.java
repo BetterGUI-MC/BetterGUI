@@ -27,7 +27,8 @@ public class OpenMenuCommand extends Command {
         taskChain.sync(() -> BetterGUI.getInstance().getMenuManager().openMenu(parsed, player));
       }
     } else {
-      CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
+      CommonUtils.sendMessage(player,
+          BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
     }
   }
 }

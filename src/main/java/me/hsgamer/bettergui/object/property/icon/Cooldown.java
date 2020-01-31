@@ -72,7 +72,8 @@ public class Cooldown extends IconProperty<ConfigurationSection> {
           );
         }
       } else {
-        String message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.COOLDOWN_MESSAGE);
+        String message = BetterGUI.getInstance().getMessageConfig()
+            .get(DefaultMessage.COOLDOWN_MESSAGE);
         if (!message.isEmpty()) {
           CommonUtils.sendMessage(player, message
               .replace("{cooldown}", String.valueOf(cooldownUntil - now))

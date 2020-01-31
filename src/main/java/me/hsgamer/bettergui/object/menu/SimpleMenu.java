@@ -141,13 +141,16 @@ public class SimpleMenu extends Menu {
             if (tempIcon instanceof ParentIcon) {
               ((ParentIcon) tempIcon).addChild(icon.cloneIcon());
             } else {
-              getInstance().getLogger().warning(icon.getName() + " & " + tempIcon.getMenu() + " from " + getName() + " have the same slot. Only one of them will be set");
+              getInstance().getLogger().warning(
+                  icon.getName() + " & " + tempIcon.getMenu() + " from " + getName()
+                      + " have the same slot. Only one of them will be set");
             }
           } else {
             if (slot <= maxSlots) {
               icons.put(slot, icon.cloneIcon());
             } else {
-              getInstance().getLogger().warning(icon.getName() + " from " + getName() + " has invalid slot (Exceed the limit)");
+              getInstance().getLogger().warning(
+                  icon.getName() + " from " + getName() + " has invalid slot (Exceed the limit)");
             }
           }
         }
@@ -185,7 +188,8 @@ public class SimpleMenu extends Menu {
       }
       inventory.open();
     } else {
-      CommonUtils.sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+      CommonUtils
+          .sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
     }
   }
 

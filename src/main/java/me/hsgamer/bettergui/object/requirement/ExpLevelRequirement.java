@@ -60,7 +60,8 @@ public class ExpLevelRequirement extends IconRequirement<Integer> implements Ico
         } else {
           String message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.NO_EXP);
           if (!message.isEmpty()) {
-            CommonUtils.sendMessage(player, message.replace("{levels}", Integer.toString(expLevelsPrice)));
+            CommonUtils
+                .sendMessage(player, message.replace("{levels}", Integer.toString(expLevelsPrice)));
           }
         }
         return false;
@@ -98,6 +99,7 @@ public class ExpLevelRequirement extends IconRequirement<Integer> implements Ico
         return String.valueOf(expLevelsPrice.intValue());
       }
     }
-    return BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.HAVE_MET_REQUIREMENT_PLACEHOLDER);
+    return BetterGUI.getInstance().getMessageConfig()
+        .get(DefaultMessage.HAVE_MET_REQUIREMENT_PLACEHOLDER);
   }
 }

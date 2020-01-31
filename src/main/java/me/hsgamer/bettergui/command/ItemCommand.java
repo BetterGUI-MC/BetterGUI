@@ -24,11 +24,13 @@ public class ItemCommand extends BukkitCommand {
         getInstance().getItemsConfig().createMenu((Player) commandSender);
         return true;
       } else {
-        CommonUtils.sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+        CommonUtils.sendMessage(commandSender,
+            getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
         return false;
       }
     } else {
-      CommonUtils.sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
+      CommonUtils.sendMessage(commandSender,
+          getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
       return false;
     }
   }

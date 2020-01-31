@@ -47,7 +47,9 @@ public class MenuBuilder {
         return getMenu(file, menuTypes.get(type));
       }
     }
-    return getMenu(file, menuTypes.getOrDefault(BetterGUI.getInstance().getMainConfig().get(DefaultConfig.DEFAULT_MENU_TYPE), SimpleMenu.class));
+    return getMenu(file, menuTypes
+        .getOrDefault(BetterGUI.getInstance().getMainConfig().get(DefaultConfig.DEFAULT_MENU_TYPE),
+            SimpleMenu.class));
   }
 
   public static <T extends Menu> T getMenu(FileConfiguration file,

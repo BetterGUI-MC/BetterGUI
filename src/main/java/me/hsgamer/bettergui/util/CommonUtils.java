@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class CommonUtils {
+
   private CommonUtils() {
 
   }
@@ -29,6 +30,7 @@ public class CommonUtils {
   }
 
   public static void sendMessage(CommandSender sender, String message) {
-    sender.sendMessage(colorize(BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PREFIX) + message));
+    sender.sendMessage(
+        colorize(BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PREFIX) + message));
   }
 }

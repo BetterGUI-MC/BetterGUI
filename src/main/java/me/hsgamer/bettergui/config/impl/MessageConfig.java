@@ -26,17 +26,21 @@ public class MessageConfig extends PluginConfig {
     SUCCESS(String.class, "success", "&aSuccess"),
     MENU_REQUIRED(String.class, "menu-required", "&cYou should specify a menu"),
     MENU_NOT_FOUND(String.class, "menu-not-found", "&cThat menu does not exist"),
-    COOLDOWN_MESSAGE(String.class, "cooldown-message", "&cWait for {cooldown_second} secs ({cooldown}) before clicking again"),
+    COOLDOWN_MESSAGE(String.class, "cooldown-message",
+        "&cWait for {cooldown_second} secs ({cooldown}) before clicking again"),
     NO_REQUIREMENT(String.class, "no-requirement", "&cYou don't meet the requirement to do this"),
     NO_EXP(String.class, "no-exp", "&cYou don't have enough xp to do this"),
     HAVE_MET_REQUIREMENT_PLACEHOLDER(String.class, "have-met-requirement-placeholder", "Yes"),
-    INVALID_REQUIRED_ITEM(String.class, "invalid-required-item", "&cUnable to get required item. Inform the staff"),
-    NO_REQUIRED_ITEM(String.class, "no-required-item", "&cYou must have &e{amount}x {item} &c(data value: {datavalue}) for this."),
-    NO_ICON_PERMISSION(String.class, "no-icon-permission", "&cYou don't have permission to do this")
-    ;
+    INVALID_REQUIRED_ITEM(String.class, "invalid-required-item",
+        "&cUnable to get required item. Inform the staff"),
+    NO_REQUIRED_ITEM(String.class, "no-required-item",
+        "&cYou must have &e{amount}x {item} &c(data value: {datavalue}) for this."),
+    NO_ICON_PERMISSION(String.class, "no-icon-permission",
+        "&cYou don't have permission to do this");
     Class<?> classType;
     String path;
     Object def;
+
     DefaultMessage(Class<?> classType, String path, Object def) {
       this.classType = classType;
       this.path = path;

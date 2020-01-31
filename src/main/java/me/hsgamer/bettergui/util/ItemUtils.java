@@ -4,12 +4,12 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import java.lang.reflect.Method;
 import java.util.logging.Level;
-import me.hsgamer.bettergui.BetterGUI;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemUtils {
+
   private static final boolean USE_ITEM_FLAGS_API;
   private static final boolean USE_ITEM_FLAGS_REFLECTION;
 

@@ -28,19 +28,23 @@ public class OpenCommand extends BukkitCommand {
             menuManager.openMenu(strings[0], (Player) commandSender);
             return true;
           } else {
-            CommonUtils.sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
+            CommonUtils.sendMessage(commandSender,
+                getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
             return false;
           }
         } else {
-          CommonUtils.sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.MENU_REQUIRED));
+          CommonUtils.sendMessage(commandSender,
+              getInstance().getMessageConfig().get(DefaultMessage.MENU_REQUIRED));
           return false;
         }
       } else {
-        CommonUtils.sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+        CommonUtils.sendMessage(commandSender,
+            getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
         return false;
       }
     } else {
-      CommonUtils.sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
+      CommonUtils.sendMessage(commandSender,
+          getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
       return false;
     }
   }

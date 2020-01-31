@@ -55,7 +55,9 @@ public class IconBuilder {
         return getIcon(menu, section, iconTypes.get(type));
       }
     }
-    return getIcon(menu, section, iconTypes.getOrDefault(BetterGUI.getInstance().getMainConfig().get(DefaultConfig.DEFAULT_ICON_TYPE), SimpleIcon.class));
+    return getIcon(menu, section, iconTypes
+        .getOrDefault(BetterGUI.getInstance().getMainConfig().get(DefaultConfig.DEFAULT_ICON_TYPE),
+            SimpleIcon.class));
   }
 
   public static <T extends Icon> T getIcon(Menu menu, ConfigurationSection section,

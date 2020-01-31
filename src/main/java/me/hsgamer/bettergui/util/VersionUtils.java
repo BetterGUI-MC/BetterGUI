@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.util;
 
 public class VersionUtils {
+
   private VersionUtils() {
 
   }

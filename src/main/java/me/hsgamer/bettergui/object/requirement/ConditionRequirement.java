@@ -40,7 +40,8 @@ public class ConditionRequirement extends IconRequirement<Boolean> {
           player.sendMessage(failMessage);
         }
       } else {
-        String message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.NO_REQUIREMENT);
+        String message = BetterGUI.getInstance().getMessageConfig()
+            .get(DefaultMessage.NO_REQUIREMENT);
         if (!message.isEmpty()) {
           CommonUtils.sendMessage(player, message);
         }

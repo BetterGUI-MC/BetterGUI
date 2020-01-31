@@ -43,7 +43,8 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
           list.add(new RequiredItem(icon, true));
         }
       } else {
-        CommonUtils.sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.INVALID_REQUIRED_ITEM));
+        CommonUtils.sendMessage(player,
+            getInstance().getMessageConfig().get(DefaultMessage.INVALID_REQUIRED_ITEM));
       }
     }
     return list;
@@ -63,7 +64,8 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
       }
       if (amountFound < amountNeeded) {
         String message =
-            failMessage != null ? failMessage : getInstance().getMessageConfig().get(DefaultMessage.NO_REQUIRED_ITEM);
+            failMessage != null ? failMessage
+                : getInstance().getMessageConfig().get(DefaultMessage.NO_REQUIRED_ITEM);
         if (!message.isEmpty()) {
           message = message
               .replace("{item}",
@@ -71,7 +73,8 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
                       ? itemStack.getItemMeta().getDisplayName()
                       : itemStack.getType().name())
               .replace("{amount}", Integer.toString(itemStack.getAmount()));
-          if (VersionUtils.isSpigot() && (boolean) getInstance().getMainConfig().get(DefaultConfig.USE_HOVER_EVENT)) {
+          if (VersionUtils.isSpigot() && (boolean) getInstance().getMainConfig()
+              .get(DefaultConfig.USE_HOVER_EVENT)) {
             String itemJson = ItemUtils.convertItemStackToJson(itemStack);
 
             BaseComponent[] hoverEventComponents = new BaseComponent[]{
