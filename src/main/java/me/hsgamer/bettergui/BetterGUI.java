@@ -4,6 +4,7 @@ import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
 import fr.mrmicky.fastinv.FastInvManager;
+import java.io.File;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
@@ -12,6 +13,7 @@ import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.command.ItemCommand;
 import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.command.ReloadCommand;
+import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.config.impl.ItemConfig;
 import me.hsgamer.bettergui.config.impl.MainConfig;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
@@ -86,9 +88,18 @@ public final class BetterGUI extends JavaPlugin {
     commandManager.register(new ReloadCommand());
   }
 
-  // TODO: Load Menu from file
   public void loadMenuConfig() {
-
+    File menusFolder = new File(getDataFolder(), "menu");
+    if (!menusFolder.isDirectory()) {
+      menusFolder.mkdirs();
+    }
+    if (menusFolder.isDirectory()) {
+      for (File subFile : menusFolder.listFiles()) {
+        menuManager.registerMenu(new PluginConfig(this, subFile).getConfig());
+      }
+    } else if (menusFolder.isFile() && menusFolder.getName().endsWith(".yml")) {
+      menuManager.registerMenu(new PluginConfig(this, menusFolder).getConfig());
+    }
   }
 
   @Override
