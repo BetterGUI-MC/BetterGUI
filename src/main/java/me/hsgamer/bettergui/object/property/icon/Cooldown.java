@@ -30,30 +30,23 @@ public class Cooldown extends IconProperty<ConfigurationSection> {
   public void setValue(Object value) {
     super.setValue(value);
     ConfigurationSection section = getValue();
-    if (section.isConfigurationSection("")) {
-      // PER CLICK TYPE
-      for (ClickType type : ClickType.values()) {
-        String subsection = type.name();
-        if (section.isSet(subsection)) {
-          long cooldown = (long) (section.getDouble(subsection) * 1000);
-          setTime(cooldown, type);
-        }
+    // PER CLICK TYPE
+    for (ClickType type : ClickType.values()) {
+      String subsection = type.name();
+      if (section.isSet(subsection)) {
+        long cooldown = (long) (section.getDouble(subsection) * 1000);
+        setTime(cooldown, type);
       }
-      // DEFAULT
-      if (section.isSet("DEFAULT")) {
-        long cooldown = (long) (section.getDouble("DEFAULT") * 1000);
-        setDefaultTime(cooldown);
-      }
-    } else if (section.isSet("")) {
-      long cooldown = (long) (section.getDouble("") * 1000);
+    }
+    // DEFAULT
+    if (section.isSet("DEFAULT")) {
+      long cooldown = (long) (section.getDouble("DEFAULT") * 1000);
       setDefaultTime(cooldown);
     }
-    ConfigurationSection parent = section.getParent();
-    parent.getKeys(false).forEach(path -> {
-      if (path.equalsIgnoreCase("COOLDOWN-MESSAGE")) {
-        setCooldownMessage(CommonUtils.colorize(section.getParent().getString(path)));
-      }
-    });
+    // MESSAGE
+    if (section.isString("MESSAGE")) {
+      setCooldownMessage(CommonUtils.colorize(section.getParent().getString("MESSAGE")));
+    }
   }
 
   public boolean isCooldown(Player player, ClickType clickType) {
