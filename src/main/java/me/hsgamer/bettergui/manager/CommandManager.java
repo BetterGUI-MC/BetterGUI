@@ -2,14 +2,14 @@ package me.hsgamer.bettergui.manager;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Menu;
+import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
@@ -22,7 +22,7 @@ public class CommandManager {
   private Field knownCommandsField;
   private CommandMap bukkitCommandMap;
   private HashMap<String, BukkitCommand> registered = new HashMap<>();
-  private List<BukkitCommand> registeredMenuCommand = new ArrayList<>();
+  private HashMap<String, BukkitCommand> registeredMenuCommand = new HashMap<>();
   private JavaPlugin plugin;
 
   public CommandManager(JavaPlugin plugin) {
@@ -40,9 +40,8 @@ public class CommandManager {
 
   public void register(BukkitCommand command) {
     String name = command.getLabel();
-    if (registered.containsValue(command)) {
-      Bukkit.getConsoleSender().sendMessage(
-          ChatColor.RED + "Duplicated " + ChatColor.WHITE + name + ChatColor.RED + " ! Ignored");
+    if (registered.containsKey(name)) {
+      plugin.getLogger().log(Level.WARNING, "Duplicated '{}' ! Ignored", name);
       return;
     }
 
@@ -64,21 +63,28 @@ public class CommandManager {
   }
 
   public void registerMenuCommand(String command, Menu menu) {
+    if (registeredMenuCommand.containsKey(command)) {
+      plugin.getLogger().log(Level.WARNING, "Duplicated '{}' ! Ignored", command);
+      return;
+    }
     BukkitCommand bukkitCommand = new BukkitCommand(command) {
       @Override
       public boolean execute(CommandSender commandSender, String s, String[] strings) {
         if (commandSender instanceof Player) {
           menu.createInventory((Player) commandSender);
+        } else {
+          CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
+              DefaultMessage.PLAYER_ONLY));
         }
         return true;
       }
     };
-    registeredMenuCommand.add(bukkitCommand);
-    register(bukkitCommand);
+    bukkitCommandMap.register(plugin.getName() + "_menu", bukkitCommand);
+    registeredMenuCommand.put(command, bukkitCommand);
   }
 
   public void clearMenuCommand() {
-    registeredMenuCommand.forEach(this::unregister);
+    registeredMenuCommand.values().forEach(this::unregister);
     registeredMenuCommand.clear();
   }
 }
