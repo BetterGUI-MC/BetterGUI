@@ -55,4 +55,8 @@ public class PluginConfig {
   public <T> T get(Class<T> classType, String path, Object def) {
     return classType.cast(getConfig().get(path, def));
   }
+
+  public String getFileName() {
+    return fileName;
+  }
 }

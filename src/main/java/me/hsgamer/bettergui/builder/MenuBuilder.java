@@ -39,28 +39,28 @@ public class MenuBuilder {
     }
   }
 
-  public static Menu getMenu(FileConfiguration file) {
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(file.getValues(false));
+  public static Menu getMenu(String name, FileConfiguration file) {
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(file.getValues(true));
     if (keys.containsKey("menu-settings.menu-type")) {
       String type = (String) keys.get("menu-settings.menu-type");
       if (menuTypes.containsKey(type)) {
-        return getMenu(file, menuTypes.get(type));
+        return getMenu(name, file, menuTypes.get(type));
       }
     }
-    return getMenu(file, menuTypes
-        .getOrDefault(BetterGUI.getInstance().getMainConfig().get(DefaultConfig.DEFAULT_MENU_TYPE),
-            SimpleMenu.class));
+    return getMenu(name, file, menuTypes
+        .get(BetterGUI.getInstance().getMainConfig().get(DefaultConfig.DEFAULT_MENU_TYPE)));
   }
 
-  public static <T extends Menu> T getMenu(FileConfiguration file,
-      Class<T> tClass) {
+  public static Menu getMenu(String name, FileConfiguration file,
+      Class<? extends Menu> tClass) {
     try {
-      T menu = tClass.getDeclaredConstructor(String.class)
-          .newInstance(file.getName());
+      Menu menu = tClass.getDeclaredConstructor(String.class)
+          .newInstance(name);
       menu.setFromFile(file);
       return menu;
     } catch (Exception ex) {
-      // Checked at startup
+      BetterGUI.getInstance().getLogger()
+          .log(Level.WARNING, "Soemthing wrong when creating the menu '" + name + "'", ex);
     }
     return null;
   }

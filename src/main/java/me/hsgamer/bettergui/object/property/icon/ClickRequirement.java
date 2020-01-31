@@ -42,16 +42,18 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
         });
       }
     }
-    List<IconRequirement<?>> requirements = RequirementBuilder
-        .loadRequirementsFromSection(getValue().getConfigurationSection("DEFAULT"),
-            getIcon());
-    defaultRequirements.addAll(requirements);
-    requirements.forEach(iconRequirement -> {
-      if (iconRequirement instanceof IconVariable) {
-        getIcon().registerVariable("default_" + ((IconVariable) iconRequirement).getIdentifier(),
-            (IconVariable) iconRequirement);
-      }
-    });
+    if (getValue().isSet("DEFAULT")) {
+      List<IconRequirement<?>> requirements = RequirementBuilder
+          .loadRequirementsFromSection(getValue().getConfigurationSection("DEFAULT"),
+              getIcon());
+      defaultRequirements.addAll(requirements);
+      requirements.forEach(iconRequirement -> {
+        if (iconRequirement instanceof IconVariable) {
+          getIcon().registerVariable("default_" + ((IconVariable) iconRequirement).getIdentifier(),
+              (IconVariable) iconRequirement);
+        }
+      });
+    }
   }
 
   public boolean check(Player player, ClickType clickType) {

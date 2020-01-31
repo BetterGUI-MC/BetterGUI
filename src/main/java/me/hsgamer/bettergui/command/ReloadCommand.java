@@ -28,7 +28,8 @@ public class ReloadCommand extends BukkitCommand {
       getInstance().getItemsConfig().initializeMenu();
       getInstance().loadMenuConfig();
       CommonUtils
-          .sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.SUCCESS));
+          .sendMessage(commandSender,
+              getInstance().getMessageConfig().get(DefaultMessage.SUCCESS));
       return true;
     } else {
       CommonUtils.sendMessage(commandSender,

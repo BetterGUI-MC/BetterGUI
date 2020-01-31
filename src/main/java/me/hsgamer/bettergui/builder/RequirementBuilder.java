@@ -80,7 +80,6 @@ public class RequirementBuilder {
   public static List<IconRequirement<?>> loadRequirementsFromSection(ConfigurationSection section,
       Icon icon) {
     List<IconRequirement<?>> requirements = new ArrayList<>();
-
     section.getKeys(false).forEach(type -> {
       Optional<IconRequirement<?>> rawRequirement = getRequirement(type, icon);
       if (!rawRequirement.isPresent()) {

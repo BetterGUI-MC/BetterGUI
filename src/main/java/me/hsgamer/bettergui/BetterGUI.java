@@ -95,10 +95,10 @@ public final class BetterGUI extends JavaPlugin {
     }
     if (menusFolder.isDirectory()) {
       for (File subFile : menusFolder.listFiles()) {
-        menuManager.registerMenu(new PluginConfig(this, subFile).getConfig());
+        menuManager.registerMenu(new PluginConfig(this, subFile));
       }
     } else if (menusFolder.isFile() && menusFolder.getName().endsWith(".yml")) {
-      menuManager.registerMenu(new PluginConfig(this, menusFolder).getConfig());
+      menuManager.registerMenu(new PluginConfig(this, menusFolder));
     }
   }
 

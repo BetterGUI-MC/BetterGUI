@@ -3,10 +3,10 @@ package me.hsgamer.bettergui.manager;
 import java.util.HashMap;
 import java.util.Map;
 import me.hsgamer.bettergui.builder.MenuBuilder;
+import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.MenuHolder;
 import me.hsgamer.bettergui.util.BukkitUtils;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 
@@ -14,8 +14,8 @@ public class MenuManager {
 
   private Map<String, Menu> menuMap = new HashMap<>();
 
-  public void registerMenu(FileConfiguration file) {
-    menuMap.put(file.getName(), MenuBuilder.getMenu(file));
+  public void registerMenu(PluginConfig file) {
+    menuMap.put(file.getFileName(), MenuBuilder.getMenu(file.getFileName(), file.getConfig()));
   }
 
   public void clear() {

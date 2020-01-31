@@ -127,7 +127,7 @@ public class SimpleMenu extends Menu {
         }
 
         if (keys.containsKey(Settings.AUTO_REFRESH)) {
-          ticks = Math.round((double) keys.get(Settings.AUTO_REFRESH) * 20);
+          ticks = (int) keys.get(Settings.AUTO_REFRESH);
         }
       } else if (key.equalsIgnoreCase("default-icon")) {
         defaultIcon = IconBuilder.getIcon(this, file.getConfigurationSection(key));
@@ -162,14 +162,14 @@ public class SimpleMenu extends Menu {
   public void createInventory(Player player) {
     if (player.hasPermission(permission)) {
       SimpleInventory inventory;
+      String parsedTitle = CommonUtils
+          .colorize(titleHasVariable ? VariableManager.setVariables(title, player)
+              : title);
       if (inventoryType.equals(InventoryType.CHEST)) {
-        inventory = new SimpleInventory(maxSlots,
-            titleHasVariable ? VariableManager.setVariables(title, player)
-                : title, icons, defaultIcon, ticks);
+        inventory = new SimpleInventory(maxSlots, parsedTitle, icons, defaultIcon, ticks);
       } else {
-        inventory = new SimpleInventory(inventoryType, maxSlots,
-            titleHasVariable ? VariableManager.setVariables(title, player)
-                : title, icons, defaultIcon, ticks);
+        inventory = new SimpleInventory(inventoryType, maxSlots, parsedTitle, icons, defaultIcon,
+            ticks);
       }
       inventory.setPlayer(player);
       if (!openActions.isEmpty()) {
@@ -189,7 +189,8 @@ public class SimpleMenu extends Menu {
       inventory.open();
     } else {
       CommonUtils
-          .sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+          .sendMessage(player,
+              getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
     }
   }
 

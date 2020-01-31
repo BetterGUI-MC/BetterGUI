@@ -116,9 +116,9 @@
       <version>3.7.2</version>
     </dependency>
     <dependency>
-      <groupId>fr.mrmicky</groupId>
+      <groupId>com.github.MrMicky-FR</groupId>
       <artifactId>FastInv</artifactId>
-      <version>3.0.2</version>
+      <version>9c59f4de0d</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

@@ -68,7 +68,9 @@ public class IconBuilder {
       icon.setFromSection(section);
       return icon;
     } catch (Exception ex) {
-      // Checked at startup
+      BetterGUI.getInstance().getLogger().log(Level.WARNING,
+          "Something wrong when creating the icon '" + section.getName() + "' in the menu '" + menu
+              .getName() + "'", ex);
     }
     return null;
   }

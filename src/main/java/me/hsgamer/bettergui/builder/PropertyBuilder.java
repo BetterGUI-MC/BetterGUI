@@ -116,7 +116,9 @@ public class PropertyBuilder {
           properties.put(path, property);
         } catch (Exception e) {
           getInstance().getLogger()
-              .log(Level.WARNING, "Something wrong when creating the property", e);
+              .log(Level.WARNING,
+                  "Something wrong when creating the property '" + path + "' in the icon '" +
+                      icon.getName() + "' in the menu '" + icon.getMenu().getName() + "'", e);
         }
       }
     });
@@ -135,7 +137,9 @@ public class PropertyBuilder {
           properties.put(path, property);
         } catch (Exception e) {
           getInstance().getLogger()
-              .log(Level.WARNING, "Something wrong when creating the property", e);
+              .log(Level.WARNING,
+                  "Something wrong when creating the property '" + path + "' in the icon '" +
+                      icon.getName() + "' in the menu '" + icon.getMenu().getName() + "'", e);
         }
       }
     });
@@ -154,7 +158,7 @@ public class PropertyBuilder {
           properties.put(path, property);
         } catch (Exception e) {
           getInstance().getLogger()
-              .log(Level.WARNING, "Something wrong when creating the property", e);
+              .log(Level.WARNING, "Something wrong when creating the property '" + path + "'", e);
         }
       }
     });
