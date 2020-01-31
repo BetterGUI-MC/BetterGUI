@@ -24,11 +24,12 @@ public class SimpleInventory extends FastInv implements MenuHolder {
   private Player player;
   private int maxSlots;
 
-  public SimpleInventory(int size, String title, Map<Integer, Icon> icons, Icon defaultIcon,
+  public SimpleInventory(Player player, int size, String title, Map<Integer, Icon> icons, Icon defaultIcon,
       long ticks) {
     super(size, title);
     this.ticks = ticks;
     this.maxSlots = size;
+    this.player = player;
     icons.forEach((key, value) -> this.icons.put(key, value.cloneIcon()));
     if (defaultIcon != null) {
       this.defaultIcon = defaultIcon.cloneIcon();
@@ -36,11 +37,12 @@ public class SimpleInventory extends FastInv implements MenuHolder {
     createItems();
   }
 
-  public SimpleInventory(InventoryType type, int maxSlots, String title, Map<Integer, Icon> icons,
+  public SimpleInventory(Player player, InventoryType type, int maxSlots, String title, Map<Integer, Icon> icons,
       Icon defaultIcon, long ticks) {
     super(type, title);
     this.ticks = ticks;
     this.maxSlots = maxSlots;
+    this.player = player;
     icons.forEach((key, value) -> this.icons.put(key - 1, value.cloneIcon()));
     if (defaultIcon != null) {
       this.defaultIcon = defaultIcon.cloneIcon();
@@ -118,10 +120,6 @@ public class SimpleInventory extends FastInv implements MenuHolder {
         updateDefaultItem(i);
       }
     }
-  }
-
-  public void setPlayer(Player player) {
-    this.player = player;
   }
 
   public void open() {

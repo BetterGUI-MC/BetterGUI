@@ -88,8 +88,8 @@ public class SimpleMenu extends Menu {
               getInstance().getLogger().log(Level.WARNING, "The menu \"" + file.getName()
                   + "\"'s inventory type is not supported, it will be CHEST by default");
           }
-        } else if (keys.containsKey(Settings.ROW)) {
-          int temp = (int) keys.get(Settings.ROW) * 9;
+        } else if (keys.containsKey(Settings.ROWS)) {
+          int temp = (int) keys.get(Settings.ROWS) * 9;
           maxSlots = temp > 0 ? temp : maxSlots;
         }
 
@@ -166,12 +166,11 @@ public class SimpleMenu extends Menu {
           .colorize(titleHasVariable ? VariableManager.setVariables(title, player)
               : title);
       if (inventoryType.equals(InventoryType.CHEST)) {
-        inventory = new SimpleInventory(maxSlots, parsedTitle, icons, defaultIcon, ticks);
+        inventory = new SimpleInventory(player, maxSlots, parsedTitle, icons, defaultIcon, ticks);
       } else {
-        inventory = new SimpleInventory(inventoryType, maxSlots, parsedTitle, icons, defaultIcon,
+        inventory = new SimpleInventory(player, inventoryType, maxSlots, parsedTitle, icons, defaultIcon,
             ticks);
       }
-      inventory.setPlayer(player);
       if (!openActions.isEmpty()) {
         inventory.addOpenHandler(event -> {
           TaskChain<?> taskChain = BetterGUI.newChain();
@@ -201,7 +200,7 @@ public class SimpleMenu extends Menu {
   private static class Settings {
 
     static final String NAME = "name";
-    static final String ROW = "row";
+    static final String ROWS = "rows";
     static final String INVENTORY_TYPE = "inventory-type";
     static final String COMMAND = "command";
     static final String OPEN_ACTION = "open-action";

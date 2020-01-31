@@ -77,7 +77,7 @@ public class IconBuilder {
 
   public static List<Integer> getSlots(ConfigurationSection section) {
     List<Integer> slots = new ArrayList<>();
-    Map<String, Object> map = section.getValues(false);
+    Map<String, Object> map = new CaseInsensitiveStringMap<>(section.getValues(false));
 
     if (map.containsKey(SlotSetting.X) || map.containsKey(SlotSetting.Y)) {
       int x = 1;
