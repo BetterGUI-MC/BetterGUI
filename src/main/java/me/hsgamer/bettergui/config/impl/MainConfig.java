@@ -8,8 +8,9 @@ public class MainConfig extends PluginConfig {
   public MainConfig(JavaPlugin plugin) {
     super(plugin, "config.yml");
     for (DefaultConfig defaultConfig : DefaultConfig.values()) {
-      getConfig().set(defaultConfig.path, defaultConfig.def);
+      getConfig().addDefault(defaultConfig.path, defaultConfig.def);
     }
+    getConfig().options().copyDefaults(true);
     saveConfig();
   }
 
@@ -19,7 +20,9 @@ public class MainConfig extends PluginConfig {
   }
 
   public enum DefaultConfig {
-    USE_HOVER_EVENT(boolean.class, "use-hover-event", true)
+    USE_HOVER_EVENT(Boolean.class, "use-hover-event", true),
+    DEFAULT_MENU_TYPE(String.class, "default-menu-type", "simple"),
+    DEFAULT_ICON_TYPE(String.class, "default-icon-type", "simple")
     ;
     Class<?> classType;
     String path;

@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.builder;
 import java.util.Map;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.menu.DummyMenu;
 import me.hsgamer.bettergui.object.menu.SimpleMenu;
@@ -46,7 +47,7 @@ public class MenuBuilder {
         return getMenu(file, menuTypes.get(type));
       }
     }
-    return getMenu(file, SimpleMenu.class);
+    return getMenu(file, menuTypes.getOrDefault(BetterGUI.getInstance().getMainConfig().get(DefaultConfig.DEFAULT_MENU_TYPE), SimpleMenu.class));
   }
 
   public static <T extends Menu> T getMenu(FileConfiguration file,

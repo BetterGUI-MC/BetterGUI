@@ -8,8 +8,9 @@ public class MessageConfig extends PluginConfig {
   public MessageConfig(JavaPlugin plugin) {
     super(plugin, "messages.yml");
     for (DefaultMessage defaultMessage : DefaultMessage.values()) {
-      getConfig().set(defaultMessage.path, defaultMessage.def);
+      getConfig().addDefault(defaultMessage.path, defaultMessage.def);
     }
+    getConfig().options().copyDefaults(true);
     saveConfig();
   }
 
