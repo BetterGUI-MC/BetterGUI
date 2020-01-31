@@ -8,19 +8,19 @@ import org.bukkit.entity.Player;
 public abstract class Command {
 
   protected final boolean hasVariables;
-  private final String command;
+  private final String string;
   private Icon icon;
 
-  public Command(String command) {
-    this.command = command;
-    this.hasVariables = VariableManager.hasVariables(command);
+  public Command(String string) {
+    this.string = string;
+    this.hasVariables = VariableManager.hasVariables(string);
   }
 
   public String getParsedCommand(Player executor) {
     if (icon != null) {
-      return hasVariables ? icon.setVariables(command, executor) : command;
+      return hasVariables ? icon.setVariables(string, executor) : string;
     } else {
-      return hasVariables ? VariableManager.setVariables(command, executor) : command;
+      return hasVariables ? VariableManager.setVariables(string, executor) : string;
     }
   }
 

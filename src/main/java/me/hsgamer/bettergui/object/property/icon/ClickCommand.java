@@ -29,8 +29,8 @@ public class ClickCommand extends IconProperty<ConfigurationSection> {
     }
   }
 
-  public TaskChain<?> getTaskChain(Player player) {
-    TaskChain<?> taskChain = BetterGUI.newChain();
+  public <T> TaskChain<T> getTaskChain(Player player) {
+    TaskChain<T> taskChain = BetterGUI.newChain();
     commands.forEach(command -> command.addToTaskChain(player, taskChain));
     return taskChain;
   }

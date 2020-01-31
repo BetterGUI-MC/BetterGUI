@@ -10,6 +10,10 @@ public class PlaceholderAPIHook {
 
   private static PlaceholderAPIPlugin placeholderAPI;
 
+  private PlaceholderAPIHook() {
+
+  }
+
   public static boolean setupPlugin() {
     if (!Bukkit.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
       return false;
