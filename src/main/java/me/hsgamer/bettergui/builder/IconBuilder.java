@@ -88,7 +88,7 @@ public class IconBuilder {
       if (map.containsKey(SlotSetting.Y)) {
         y = (int) map.get(SlotSetting.Y);
       }
-      slots.add(y > 1 ? y * 9 + x - 1 : x - 1);
+      slots.add((y - 1) * 9 + x - 1);
     } else if (map.containsKey(SlotSetting.SLOT)) {
       String input = (String) map.get(SlotSetting.SLOT);
       for (String string : input.split(",")) {

@@ -27,7 +27,7 @@ public class SimpleInventory extends FastInv implements MenuHolder {
   public SimpleInventory(Player player, int size, String title, Map<Integer, Icon> icons,
       Icon defaultIcon,
       long ticks) {
-    super(size, title);
+    super(size, title != null ? title : InventoryType.CHEST.getDefaultTitle());
     this.ticks = ticks;
     this.maxSlots = size;
     this.player = player;
@@ -41,7 +41,7 @@ public class SimpleInventory extends FastInv implements MenuHolder {
   public SimpleInventory(Player player, InventoryType type, int maxSlots, String title,
       Map<Integer, Icon> icons,
       Icon defaultIcon, long ticks) {
-    super(type, title);
+    super(type, title != null ? title : type.getDefaultTitle());
     this.ticks = ticks;
     this.maxSlots = maxSlots;
     this.player = player;

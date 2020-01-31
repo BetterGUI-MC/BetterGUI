@@ -67,21 +67,13 @@ public class SimpleMenu extends Menu {
           }
           switch (inventoryType) {
             case FURNACE:
-              maxSlots = 3;
-              break;
             case ENDER_CHEST:
             case CHEST:
-              maxSlots = 27;
-              break;
             case HOPPER:
-              maxSlots = 5;
-              break;
             case WORKBENCH:
-              maxSlots = 10;
-              break;
             case DISPENSER:
             case DROPPER:
-              maxSlots = 9;
+              maxSlots = inventoryType.getDefaultSize();
               break;
             default:
               inventoryType = InventoryType.CHEST;

@@ -23,6 +23,7 @@ public class PluginConfig {
     this.configFile = file;
     this.fileName = file.getName();
     setUpConfig();
+    getConfig().options().copyHeader(true);
     saveConfig();
   }
 
