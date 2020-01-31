@@ -168,7 +168,8 @@ public class SimpleMenu extends Menu {
       if (inventoryType.equals(InventoryType.CHEST)) {
         inventory = new SimpleInventory(player, maxSlots, parsedTitle, icons, defaultIcon, ticks);
       } else {
-        inventory = new SimpleInventory(player, inventoryType, maxSlots, parsedTitle, icons, defaultIcon,
+        inventory = new SimpleInventory(player, inventoryType, maxSlots, parsedTitle, icons,
+            defaultIcon,
             ticks);
       }
       if (!openActions.isEmpty()) {

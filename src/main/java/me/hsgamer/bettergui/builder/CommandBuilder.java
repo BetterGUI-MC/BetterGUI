@@ -31,7 +31,7 @@ public class CommandBuilder {
     register("player:", PlayerCommand.class);
     register("delay:", DelayCommand.class);
     register("condition:", ConditionCommand.class);
-    register("give-item:", ItemCommand.class);
+    register("give:", ItemCommand.class);
     register("open:", OpenMenuCommand.class);
     register("back", BackCommand.class);
   }

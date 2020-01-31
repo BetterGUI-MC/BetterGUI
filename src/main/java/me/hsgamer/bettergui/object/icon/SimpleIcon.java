@@ -103,7 +103,7 @@ public class SimpleIcon extends Icon {
       }
       clickRequirement.take(player, clickType);
       cooldown.startCooldown(player, clickType);
-      command.getTaskChain(player).execute();
+      command.getTaskChain(player, clickType).execute();
     });
   }
 
