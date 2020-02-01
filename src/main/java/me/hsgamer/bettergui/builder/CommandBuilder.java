@@ -68,6 +68,8 @@ public class CommandBuilder {
   }
 
   public static List<Command> getCommands(Icon icon, List<String> input) {
+    input.replaceAll(String::trim);
+    
     List<Command> list = new ArrayList<>();
     input.forEach(string -> list.add(getCommand(icon, string)));
     return list;
