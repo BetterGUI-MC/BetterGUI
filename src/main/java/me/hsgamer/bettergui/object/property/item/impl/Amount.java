@@ -8,7 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Amount extends ItemProperty<String, Integer> {
+public class Amount extends ItemProperty<Object, Integer> {
 
   public Amount(Icon icon) {
     super(icon);
@@ -16,19 +16,23 @@ public class Amount extends ItemProperty<String, Integer> {
 
   @Override
   public Integer getParsed(Player player) {
-    String value = getValue();
-    value = getIcon().hasVariables(value) ? getIcon().setVariables(value, player) : value;
-    if (ExpressionUtils.isValidExpression(value)) {
-      return ExpressionUtils.getResult(value).intValue();
+    if (getValue() instanceof Integer) {
+      return (Integer) getValue();
     } else {
-      try {
-        return Integer.parseInt(value);
-      } catch (NumberFormatException e) {
-        String error =
-            ChatColor.RED + "Error parsing value!" + value + " is not a valid number";
-        player.sendMessage(error);
-        BetterGUI.getInstance().getLogger().warning(error);
-        return 1;
+      String value = (String) getValue();
+      value = getIcon().hasVariables(value) ? getIcon().setVariables(value, player) : value;
+      if (ExpressionUtils.isValidExpression(value)) {
+        return ExpressionUtils.getResult(value).intValue();
+      } else {
+        try {
+          return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+          String error =
+              ChatColor.RED + "Error parsing value!" + value + " is not a valid number";
+          player.sendMessage(error);
+          BetterGUI.getInstance().getLogger().warning(error);
+          return 1;
+        }
       }
     }
   }
