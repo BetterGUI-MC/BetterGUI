@@ -9,4 +9,5 @@ public class VersionUtils {
   public static boolean isSpigot() {
     return Validate.isClassLoaded("org.bukkit.entity.Player$Spigot");
   }
+
 }

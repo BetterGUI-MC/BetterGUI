@@ -17,9 +17,11 @@ import me.hsgamer.bettergui.object.property.icon.Variable;
 import me.hsgamer.bettergui.object.property.icon.ViewRequirement;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.object.property.item.impl.Amount;
+import me.hsgamer.bettergui.object.property.item.impl.HideAttributes;
 import me.hsgamer.bettergui.object.property.item.impl.Lore;
 import me.hsgamer.bettergui.object.property.item.impl.Name;
 import me.hsgamer.bettergui.object.property.item.impl.Type;
+import me.hsgamer.bettergui.object.property.item.impl.Unbreakable;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -37,6 +39,8 @@ public class PropertyBuilder {
     registerItemProperty("type", Type.class);
     registerItemProperty("id", Type.class);
     registerItemProperty("material", Type.class);
+    registerItemProperty("hide-attributes", HideAttributes.class);
+    registerItemProperty("unbreakable", Unbreakable.class);
 
     registerIconProperty("cooldown", Cooldown.class);
     registerIconProperty("variable", Variable.class);
