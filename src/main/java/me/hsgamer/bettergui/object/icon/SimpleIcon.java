@@ -11,7 +11,7 @@ import me.hsgamer.bettergui.object.Property;
 import me.hsgamer.bettergui.object.property.icon.ClickCommand;
 import me.hsgamer.bettergui.object.property.icon.ClickRequirement;
 import me.hsgamer.bettergui.object.property.icon.Cooldown;
-import me.hsgamer.bettergui.object.property.icon.KeepOpen;
+import me.hsgamer.bettergui.object.property.icon.CloseOnClick;
 import me.hsgamer.bettergui.object.property.icon.ViewRequirement;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-// TODO : Close On Click & Keep Open
 public class SimpleIcon extends Icon {
 
   private Map<String, ItemProperty<?, ?>> itemProperties;
@@ -28,7 +27,7 @@ public class SimpleIcon extends Icon {
   private ClickCommand command = new ClickCommand(this);
   private ClickRequirement clickRequirement = new ClickRequirement(this);
   private Cooldown cooldown = new Cooldown(this);
-  private boolean closeOnClick;
+  private boolean closeOnClick = false;
   private ViewRequirement viewRequirement = new ViewRequirement(this);
 
   public SimpleIcon(String name, Menu menu) {
@@ -64,8 +63,8 @@ public class SimpleIcon extends Icon {
       if (iconProperty instanceof ViewRequirement) {
         this.viewRequirement = (ViewRequirement) iconProperty;
       }
-      if (iconProperty instanceof KeepOpen) {
-        this.closeOnClick = ((KeepOpen) iconProperty).getValue();
+      if (iconProperty instanceof CloseOnClick) {
+        this.closeOnClick = ((CloseOnClick) iconProperty).getValue();
       }
     }));
     otherProperties = PropertyBuilder.loadOtherPropertiesFromSection(section);
@@ -103,6 +102,9 @@ public class SimpleIcon extends Icon {
       }
       clickRequirement.take(player, clickType);
       cooldown.startCooldown(player, clickType);
+      if (closeOnClick) {
+        player.closeInventory();
+      }
       command.getTaskChain(player, clickType).execute();
     });
   }

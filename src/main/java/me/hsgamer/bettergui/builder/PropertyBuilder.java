@@ -12,7 +12,7 @@ import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.object.property.icon.ClickCommand;
 import me.hsgamer.bettergui.object.property.icon.ClickRequirement;
 import me.hsgamer.bettergui.object.property.icon.Cooldown;
-import me.hsgamer.bettergui.object.property.icon.KeepOpen;
+import me.hsgamer.bettergui.object.property.icon.CloseOnClick;
 import me.hsgamer.bettergui.object.property.icon.Variable;
 import me.hsgamer.bettergui.object.property.icon.ViewRequirement;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
@@ -47,7 +47,7 @@ public class PropertyBuilder {
     registerIconProperty("placeholder", Variable.class);
     registerIconProperty("view-requirement", ViewRequirement.class);
     registerIconProperty("click-requirement", ClickRequirement.class);
-    registerIconProperty("keep-open", KeepOpen.class);
+    registerIconProperty("close-on-click", CloseOnClick.class);
     registerIconProperty("command", ClickCommand.class);
   }
 

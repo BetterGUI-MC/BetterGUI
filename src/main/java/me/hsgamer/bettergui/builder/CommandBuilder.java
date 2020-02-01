@@ -14,6 +14,7 @@ import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.command.BackCommand;
 import me.hsgamer.bettergui.object.command.BroadcastCommand;
+import me.hsgamer.bettergui.object.command.CloseMenuCommand;
 import me.hsgamer.bettergui.object.command.ConditionCommand;
 import me.hsgamer.bettergui.object.command.ConsoleCommand;
 import me.hsgamer.bettergui.object.command.DelayCommand;
@@ -38,6 +39,7 @@ public class CommandBuilder {
     register("back", BackCommand.class);
     register("tell:", TellCommand.class);
     register("broadcast:", BroadcastCommand.class);
+    register("close", CloseMenuCommand.class);
   }
 
   private CommandBuilder() {

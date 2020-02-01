@@ -3,9 +3,9 @@ package me.hsgamer.bettergui.object.property.icon;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.IconProperty;
 
-public class KeepOpen extends IconProperty<Boolean> {
+public class CloseOnClick extends IconProperty<Boolean> {
 
-  public KeepOpen(Icon icon) {
+  public CloseOnClick(Icon icon) {
     super(icon);
   }
 }
