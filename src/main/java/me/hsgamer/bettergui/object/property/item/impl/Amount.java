@@ -4,6 +4,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.util.ExpressionUtils;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,9 +25,9 @@ public class Amount extends ItemProperty<Object, Integer> {
       if (ExpressionUtils.isValidExpression(value)) {
         return ExpressionUtils.getResult(value).intValue();
       } else {
-        try {
+        if (Validate.isValidInteger(value)) {
           return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
+        } else  {
           String error =
               ChatColor.RED + "Error parsing value!" + value + " is not a valid number";
           player.sendMessage(error);

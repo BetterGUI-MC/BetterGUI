@@ -17,6 +17,7 @@ import me.hsgamer.bettergui.object.property.icon.Variable;
 import me.hsgamer.bettergui.object.property.icon.ViewRequirement;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.object.property.item.impl.Amount;
+import me.hsgamer.bettergui.object.property.item.impl.Enchantment;
 import me.hsgamer.bettergui.object.property.item.impl.HideAttributes;
 import me.hsgamer.bettergui.object.property.item.impl.Lore;
 import me.hsgamer.bettergui.object.property.item.impl.Name;
@@ -41,6 +42,8 @@ public class PropertyBuilder {
     registerItemProperty("material", Type.class);
     registerItemProperty("hide-attributes", HideAttributes.class);
     registerItemProperty("unbreakable", Unbreakable.class);
+    registerItemProperty("enchantment", Enchantment.class);
+    registerItemProperty("enchant", Enchantment.class);
 
     registerIconProperty("cooldown", Cooldown.class);
     registerIconProperty("variable", Variable.class);
