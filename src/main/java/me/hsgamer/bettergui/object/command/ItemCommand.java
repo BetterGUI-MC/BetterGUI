@@ -27,16 +27,17 @@ public class ItemCommand extends Command {
       return icons.get(input).createClickableItem(player).get().getItem();
     } else {
       String[] split = input.split(",", 2);
-      Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(split[0]);
+      Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(split[0].trim());
       int amount = 1;
       if (xMaterial.isPresent()) {
         if (split.length >= 2) {
-          if (Validate.isValidInteger(split[1])) {
-            amount = Integer.parseInt(split[1]);
+          String rawInt = split[1].trim();
+          if (Validate.isValidInteger(rawInt)) {
+            amount = Integer.parseInt(rawInt);
           } else {
             CommonUtils.sendMessage(player,
                 getInstance().getMessageConfig().get(DefaultMessage.INVALID_AMOUNT)
-                    .replace("{input}", split[1]));
+                    .replace("{input}", rawInt));
           }
         }
         ItemStack itemStack = xMaterial.get().parseItem();
