@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.command;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -12,7 +12,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 public class ReloadCommand extends BukkitCommand {
 
   public ReloadCommand() {
-    super("reloadmenu", "Reload the plugin", "reloadmenu", new ArrayList<>());
+    super("reloadmenu", "Reload the plugin", "reloadmenu", Collections.singletonList("rlmenu"));
   }
 
   @Override
