@@ -10,9 +10,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class PluginConfig {
 
   private FileConfiguration config;
-  private File configFile;
-  private JavaPlugin plugin;
-  private String fileName;
+  private final File configFile;
+  private final JavaPlugin plugin;
+  private final String fileName;
 
   public PluginConfig(JavaPlugin plugin, String filename) {
     this(plugin, new File(plugin.getDataFolder(), filename));

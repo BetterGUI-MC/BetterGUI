@@ -138,8 +138,8 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
 
   static class RequiredItem {
 
-    DummyIcon icon;
-    boolean oldCheck;
+    final DummyIcon icon;
+    final boolean oldCheck;
 
     RequiredItem(DummyIcon icon, boolean oldCheck) {
       this.icon = icon;

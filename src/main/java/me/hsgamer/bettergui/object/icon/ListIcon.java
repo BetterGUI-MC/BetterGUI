@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 public class ListIcon extends Icon implements ParentIcon {
 
-  private List<Icon> icons = new ArrayList<>();
+  private final List<Icon> icons = new ArrayList<>();
   private int currentIndex;
 
   public ListIcon(String name, Menu menu) {

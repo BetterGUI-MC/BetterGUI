@@ -29,13 +29,13 @@ public final class BetterGUI extends JavaPlugin {
   private static BetterGUI instance;
 
   private static TaskChainFactory taskChainFactory;
-  private AddonManager addonManager = new AddonManager(this);
-  private CommandManager commandManager = new CommandManager(this);
-  private MenuManager menuManager = new MenuManager();
+  private final AddonManager addonManager = new AddonManager(this);
+  private final CommandManager commandManager = new CommandManager(this);
+  private final MenuManager menuManager = new MenuManager();
 
-  private ItemConfig itemConfig = new ItemConfig(this);
-  private MainConfig mainConfig = new MainConfig(this);
-  private MessageConfig messageConfig = new MessageConfig(this);
+  private final ItemConfig itemConfig = new ItemConfig(this);
+  private final MainConfig mainConfig = new MainConfig(this);
+  private final MessageConfig messageConfig = new MessageConfig(this);
 
   public static <T> TaskChain<T> newChain() {
     return taskChainFactory.newChain();

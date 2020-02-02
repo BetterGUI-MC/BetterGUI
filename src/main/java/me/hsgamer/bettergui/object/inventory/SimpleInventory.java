@@ -17,12 +17,12 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class SimpleInventory extends FastInv implements MenuHolder {
 
-  private Map<Integer, Icon> icons = new HashMap<>();
+  private final Map<Integer, Icon> icons = new HashMap<>();
   private Icon defaultIcon;
-  private long ticks;
+  private final long ticks;
   private BukkitTask task;
-  private Player player;
-  private int maxSlots;
+  private final Player player;
+  private final int maxSlots;
 
   public SimpleInventory(Player player, int size, String title, Map<Integer, Icon> icons,
       Icon defaultIcon,

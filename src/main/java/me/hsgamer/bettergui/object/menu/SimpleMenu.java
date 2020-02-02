@@ -34,9 +34,9 @@ public class SimpleMenu extends Menu {
   private boolean titleHasVariable = false;
   private int maxSlots = 27;
   private long ticks = 0;
-  private Map<Integer, Icon> icons = new HashMap<>();
-  private List<Command> openActions = new ArrayList<>();
-  private List<Command> closeActions = new ArrayList<>();
+  private final Map<Integer, Icon> icons = new HashMap<>();
+  private final List<Command> openActions = new ArrayList<>();
+  private final List<Command> closeActions = new ArrayList<>();
   private Permission permission = new Permission(
       getInstance().getName().toLowerCase() + "." + getName());
   private Icon defaultIcon;

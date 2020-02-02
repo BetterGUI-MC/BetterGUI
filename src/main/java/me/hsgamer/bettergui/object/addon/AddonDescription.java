@@ -5,9 +5,9 @@ import java.util.List;
 
 public class AddonDescription {
 
-  private String name;
-  private String version;
-  private String mainClass;
+  private final String name;
+  private final String version;
+  private final String mainClass;
   private String description = "";
   private List<String> authors = new ArrayList<>();
 

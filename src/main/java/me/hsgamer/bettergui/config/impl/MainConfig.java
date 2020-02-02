@@ -23,9 +23,9 @@ public class MainConfig extends PluginConfig {
     USE_HOVER_EVENT(Boolean.class, "use-hover-event", true),
     DEFAULT_MENU_TYPE(String.class, "default-menu-type", "simple"),
     DEFAULT_ICON_TYPE(String.class, "default-icon-type", "simple");
-    Class<?> classType;
-    String path;
-    Object def;
+    final Class<?> classType;
+    final String path;
+    final Object def;
 
     DefaultConfig(Class<?> classType, String path, Object def) {
       this.classType = classType;

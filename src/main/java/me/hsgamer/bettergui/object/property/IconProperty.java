@@ -5,7 +5,7 @@ import me.hsgamer.bettergui.object.Property;
 
 public abstract class IconProperty<V> extends Property<V> {
 
-  private Icon icon;
+  private final Icon icon;
 
   public IconProperty(Icon icon) {
     this.icon = icon;

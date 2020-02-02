@@ -8,7 +8,7 @@ public abstract class IconRequirement<T> {
 
   protected String failMessage;
   protected List<String> values;
-  protected Icon icon;
+  protected final Icon icon;
   private boolean canTake;
 
   public IconRequirement(Icon icon, boolean canTake) {

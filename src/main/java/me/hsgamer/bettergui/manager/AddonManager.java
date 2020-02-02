@@ -23,9 +23,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class AddonManager {
 
-  private Map<String, Addon> addons = new HashMap<>();
-  private File addonsDir;
-  private JavaPlugin plugin;
+  private final Map<String, Addon> addons = new HashMap<>();
+  private final File addonsDir;
+  private final JavaPlugin plugin;
 
   public AddonManager(JavaPlugin plugin) {
     this.plugin = plugin;

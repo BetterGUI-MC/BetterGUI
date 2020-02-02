@@ -16,13 +16,14 @@ import org.bukkit.event.inventory.ClickType;
 
 public class ClickCommand extends IconProperty<Object> {
 
-  private List<Command> defaultCommands = new ArrayList<>();
-  private Map<ClickType, List<Command>> commandsPerClickType = new EnumMap<>(ClickType.class);
+  private final List<Command> defaultCommands = new ArrayList<>();
+  private final Map<ClickType, List<Command>> commandsPerClickType = new EnumMap<>(ClickType.class);
 
   public ClickCommand(Icon icon) {
     super(icon);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void setValue(Object value) {
     super.setValue(value);

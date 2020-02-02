@@ -6,8 +6,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class ClickableItem {
 
-  private ItemStack item;
-  private Consumer<InventoryClickEvent> clickEvent;
+  private final ItemStack item;
+  private final Consumer<InventoryClickEvent> clickEvent;
 
   public ClickableItem(ItemStack item, Consumer<InventoryClickEvent> clickEvent) {
     this.item = item;

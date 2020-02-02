@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 
 public class ExpLevelRequirement extends IconRequirement<Integer> implements IconVariable {
 
-  private Map<UUID, List<Integer>> checked = new HashMap<>();
+  private final Map<UUID, List<Integer>> checked = new HashMap<>();
 
   public ExpLevelRequirement(Icon icon) {
     super(icon, false);

@@ -21,9 +21,9 @@ public class CommandManager {
 
   private Field knownCommandsField;
   private CommandMap bukkitCommandMap;
-  private HashMap<String, BukkitCommand> registered = new HashMap<>();
-  private HashMap<String, BukkitCommand> registeredMenuCommand = new HashMap<>();
-  private JavaPlugin plugin;
+  private final HashMap<String, BukkitCommand> registered = new HashMap<>();
+  private final HashMap<String, BukkitCommand> registeredMenuCommand = new HashMap<>();
+  private final JavaPlugin plugin;
 
   public CommandManager(JavaPlugin plugin) {
     this.plugin = plugin;

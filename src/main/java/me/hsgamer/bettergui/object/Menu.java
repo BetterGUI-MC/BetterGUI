@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public abstract class Menu {
 
-  private String name;
+  private final String name;
   private Menu parentMenu;
 
   public Menu(String name) {

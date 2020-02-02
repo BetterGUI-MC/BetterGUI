@@ -15,8 +15,8 @@ public abstract class Icon implements Cloneable {
 
   private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private Map<String, IconVariable> variables = new HashMap<>();
-  private String name;
-  private Menu menu;
+  private final String name;
+  private final Menu menu;
 
   public Icon(String name, Menu menu) {
     this.name = name;

@@ -12,7 +12,7 @@ import org.bukkit.inventory.InventoryView;
 
 public class MenuManager {
 
-  private Map<String, Menu> menuMap = new HashMap<>();
+  private final Map<String, Menu> menuMap = new HashMap<>();
 
   public void registerMenu(PluginConfig file) {
     menuMap.put(file.getFileName(), MenuBuilder.getMenu(file.getFileName(), file.getConfig()));
