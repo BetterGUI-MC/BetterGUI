@@ -72,7 +72,7 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
               .replace("{item}",
                   (itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName())
                       ? itemStack.getItemMeta().getDisplayName()
-                      : itemStack.getType().name())
+                      : XMaterial.matchXMaterial(itemStack).name())
               .replace("{amount}", Integer.toString(itemStack.getAmount()));
           if (VersionUtils.isSpigot() && (boolean) getInstance().getMainConfig()
               .get(DefaultConfig.USE_HOVER_EVENT)) {
