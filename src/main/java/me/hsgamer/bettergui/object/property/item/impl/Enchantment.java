@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
+import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -33,10 +35,8 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
         if (Validate.isValidInteger(rawlvl)) {
           lvl = Integer.parseInt(rawlvl);
         } else {
-          String error =
-              ChatColor.RED + "Error parsing value!" + rawlvl + " is not a valid number";
-          player.sendMessage(error);
-          BetterGUI.getInstance().getLogger().warning(error);
+          CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
+              DefaultMessage.INVALID_NUMBER).replace("{input}", rawlvl));
           continue;
         }
       } else {

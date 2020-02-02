@@ -29,14 +29,14 @@ import org.bukkit.permissions.Permission;
 
 public class SimpleMenu extends Menu {
 
+  private final Map<Integer, Icon> icons = new HashMap<>();
+  private final List<Command> openActions = new ArrayList<>();
+  private final List<Command> closeActions = new ArrayList<>();
   private InventoryType inventoryType = InventoryType.CHEST;
   private String title;
   private boolean titleHasVariable = false;
   private int maxSlots = 27;
   private long ticks = 0;
-  private final Map<Integer, Icon> icons = new HashMap<>();
-  private final List<Command> openActions = new ArrayList<>();
-  private final List<Command> closeActions = new ArrayList<>();
   private Permission permission = new Permission(
       getInstance().getName().toLowerCase() + "." + getName());
   private Icon defaultIcon;

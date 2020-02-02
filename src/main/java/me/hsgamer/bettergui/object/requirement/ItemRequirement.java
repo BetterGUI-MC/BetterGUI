@@ -35,10 +35,11 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
     Map<String, DummyIcon> icons = getInstance().getItemsConfig().getMenu().getIcons();
     for (String value : values) {
       String[] split = value.split(":", 2);
-      if (icons.containsKey(split[0])) {
-        DummyIcon icon = icons.get(split[0]);
+      String rawIcon = split[0].trim();
+      if (icons.containsKey(rawIcon)) {
+        DummyIcon icon = icons.get(rawIcon);
         if (split.length == 2) {
-          list.add(new RequiredItem(icon, Boolean.parseBoolean(split[1])));
+          list.add(new RequiredItem(icon, Boolean.parseBoolean(split[1].trim())));
         } else {
           list.add(new RequiredItem(icon, true));
         }
@@ -63,9 +64,9 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
         }
       }
       if (amountFound < amountNeeded) {
-        String message =
+        String message = CommonUtils.colorize(
             failMessage != null ? failMessage
-                : getInstance().getMessageConfig().get(DefaultMessage.NO_REQUIRED_ITEM);
+                : getInstance().getMessageConfig().get(DefaultMessage.NO_REQUIRED_ITEM));
         if (!message.isEmpty()) {
           message = message
               .replace("{item}",

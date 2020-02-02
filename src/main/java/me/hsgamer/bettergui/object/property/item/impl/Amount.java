@@ -1,11 +1,12 @@
 package me.hsgamer.bettergui.object.property.item.impl;
 
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
+import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
 import me.hsgamer.bettergui.util.Validate;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,10 +29,8 @@ public class Amount extends ItemProperty<Object, Integer> {
         if (Validate.isValidInteger(value)) {
           return Integer.parseInt(value);
         } else {
-          String error =
-              ChatColor.RED + "Error parsing value!" + value + " is not a valid number";
-          player.sendMessage(error);
-          BetterGUI.getInstance().getLogger().warning(error);
+          CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
+              DefaultMessage.INVALID_AMOUNT).replace("{input}", value));
           return 1;
         }
       }

@@ -12,7 +12,7 @@ import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.object.IconVariable;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
-import org.bukkit.ChatColor;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.entity.Player;
 
 public class ExpLevelRequirement extends IconRequirement<Integer> implements IconVariable {
@@ -31,13 +31,12 @@ public class ExpLevelRequirement extends IconRequirement<Integer> implements Ico
       if (ExpressionUtils.isValidExpression(parsed)) {
         list.add(ExpressionUtils.getResult(parsed).intValue());
       } else {
-        try {
+        if (Validate.isValidInteger(parsed)) {
           list.add(Integer.parseInt(parsed));
-        } catch (NumberFormatException e) {
-          String error =
-              ChatColor.RED + "Error parsing value!" + parsed + " is not a valid number";
-          player.sendMessage(error);
-          BetterGUI.getInstance().getLogger().warning(error);
+        } else {
+          CommonUtils.sendMessage(player,
+              BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
+                  .replace("{input}", parsed));
         }
       }
     });

@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 
 public abstract class IconRequirement<T> {
 
+  protected final Icon icon;
   protected String failMessage;
   protected List<String> values;
-  protected final Icon icon;
   private boolean canTake;
 
   public IconRequirement(Icon icon, boolean canTake) {

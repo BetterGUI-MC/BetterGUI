@@ -19,11 +19,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommandManager {
 
-  private Field knownCommandsField;
-  private CommandMap bukkitCommandMap;
   private final HashMap<String, BukkitCommand> registered = new HashMap<>();
   private final HashMap<String, BukkitCommand> registeredMenuCommand = new HashMap<>();
   private final JavaPlugin plugin;
+  private Field knownCommandsField;
+  private CommandMap bukkitCommandMap;
 
   public CommandManager(JavaPlugin plugin) {
     this.plugin = plugin;

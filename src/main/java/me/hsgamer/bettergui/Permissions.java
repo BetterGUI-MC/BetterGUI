@@ -5,7 +5,8 @@ import org.bukkit.permissions.PermissionDefault;
 
 public class Permissions {
 
-  private static final String prefix = BetterGUI.getInstance().getDescription().getName().toLowerCase();
+  private static final String prefix = BetterGUI.getInstance().getDescription().getName()
+      .toLowerCase();
 
   public static final Permission ITEMS = new Permission(prefix, ".items", PermissionDefault.OP);
   public static final Permission OPEN_MENU = new Permission(prefix, ".openmenu",

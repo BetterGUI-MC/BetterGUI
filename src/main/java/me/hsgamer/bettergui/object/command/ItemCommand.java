@@ -7,9 +7,11 @@ import com.cryptomorin.xseries.XMaterial;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -29,11 +31,12 @@ public class ItemCommand extends Command {
       int amount = 1;
       if (xMaterial.isPresent()) {
         if (split.length >= 2) {
-          try {
+          if (Validate.isValidInteger(split[1])) {
             amount = Integer.parseInt(split[1]);
-          } catch (NumberFormatException e) {
-            getInstance().getLogger().log(Level.WARNING, "Invalid amount on {0}", input);
-            player.sendMessage(CommonUtils.colorize("&c&lInvalid amount of items. Will set to 1"));
+          } else {
+            CommonUtils.sendMessage(player,
+                getInstance().getMessageConfig().get(DefaultMessage.INVALID_AMOUNT)
+                    .replace("{input}", split[1]));
           }
         }
         ItemStack itemStack = xMaterial.get().parseItem();
