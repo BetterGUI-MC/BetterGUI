@@ -27,23 +27,23 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
     Map<XEnchantment, Integer> enchantments = new EnumMap<>(XEnchantment.class);
     for (String string : getValue()) {
       Optional<XEnchantment> enchantment;
-      int lvl = 1;
+      int level = 1;
       if (string.contains(",")) {
         String[] split = string.split(",");
         enchantment = XEnchantment.matchXEnchantment(split[0].trim());
-        String rawlvl = split[1].trim();
-        if (Validate.isValidInteger(rawlvl)) {
-          lvl = Integer.parseInt(rawlvl);
+        String rawLevel = split[1].trim();
+        if (Validate.isValidInteger(rawLevel)) {
+          level = Integer.parseInt(rawLevel);
         } else {
           CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
-              DefaultMessage.INVALID_NUMBER).replace("{input}", rawlvl));
+              DefaultMessage.INVALID_NUMBER).replace("{input}", rawLevel));
           continue;
         }
       } else {
         enchantment = XEnchantment.matchXEnchantment(string.trim());
       }
       if (enchantment.isPresent()) {
-        enchantments.put(enchantment.get(), lvl);
+        enchantments.put(enchantment.get(), level);
       } else {
         String error =
             ChatColor.RED + "Error parsing enchantment!" + string + " is not a valid enchantment";

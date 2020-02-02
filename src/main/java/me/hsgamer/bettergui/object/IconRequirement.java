@@ -27,13 +27,12 @@ public abstract class IconRequirement<T> {
   }
 
   public void setValues(List<String> values) {
+    values.replaceAll(String::trim);
     this.values = values;
   }
 
   public void setValues(String input) {
-    List<String> list = Arrays.asList(input.split(";"));
-    list.replaceAll(String::trim);
-    setValues(list);
+    setValues(Arrays.asList(input.split(";")));
   }
 
   public void canTake(boolean canTake) {
