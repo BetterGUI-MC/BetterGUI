@@ -41,7 +41,7 @@ public class AddonManager {
     JarEntry entry = jar.getJarEntry("addon.yml");
     if (entry == null) {
       throw new NoSuchFileException(
-          "Addon '" + jar.getName() + "' doesn't contains addon.yml file");
+          "Addon '" + jar.getName() + "' doesn't contain addon.yml file");
     }
     BufferedReader reader = new BufferedReader(new InputStreamReader(jar.getInputStream(entry)));
     YamlConfiguration data = new YamlConfiguration();
