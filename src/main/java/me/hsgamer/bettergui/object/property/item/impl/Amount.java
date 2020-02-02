@@ -27,7 +27,7 @@ public class Amount extends ItemProperty<Object, Integer> {
       } else {
         if (Validate.isValidInteger(value)) {
           return Integer.parseInt(value);
-        } else  {
+        } else {
           String error =
               ChatColor.RED + "Error parsing value!" + value + " is not a valid number";
           player.sendMessage(error);

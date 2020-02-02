@@ -57,7 +57,8 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
   @Override
   public ItemStack parse(Player player, ItemStack parent) {
     ItemMeta itemMeta = parent.getItemMeta();
-    getParsed(player).forEach((enchantment, level) -> itemMeta.addEnchant(enchantment.parseEnchantment(), level, true));
+    getParsed(player).forEach(
+        (enchantment, level) -> itemMeta.addEnchant(enchantment.parseEnchantment(), level, true));
     parent.setItemMeta(itemMeta);
     return parent;
   }
@@ -69,7 +70,8 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
       return true;
     }
     Map<XEnchantment, Integer> list2 = new EnumMap<>(XEnchantment.class);
-    item.getItemMeta().getEnchants().forEach(((enchantment, integer) -> list2.put(XEnchantment.matchXEnchantment(enchantment), integer)));
+    item.getItemMeta().getEnchants().forEach(((enchantment, integer) -> list2
+        .put(XEnchantment.matchXEnchantment(enchantment), integer)));
     if (list1.size() != list2.size()) {
       return false;
     }
