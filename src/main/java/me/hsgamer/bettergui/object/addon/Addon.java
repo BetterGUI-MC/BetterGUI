@@ -22,12 +22,12 @@ public abstract class Addon {
   /**
    * Called when enabling the addon
    */
-  public abstract void onEnable();
+  public void onEnable() {}
 
   /**
    * Called when disabling the addon
    */
-  public abstract void onDisable();
+  public void onDisable() {}
 
   /**
    * Get the parent plugin
