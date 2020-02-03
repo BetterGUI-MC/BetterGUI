@@ -91,30 +91,32 @@ public class AddonManager {
 
     // Load the addon files
     for (File file : Objects.requireNonNull(addonsDir.listFiles())) {
-      try (JarFile jar = new JarFile(file)) {
-        ClassLoader loader = URLClassLoader.newInstance(
-            new URL[]{file.toURI().toURL()},
-            getClass().getClassLoader()
-        );
+      if (file.getName().endsWith(".jar")) {
+        try (JarFile jar = new JarFile(file)) {
+          ClassLoader loader = URLClassLoader.newInstance(
+              new URL[]{file.toURI().toURL()},
+              getClass().getClassLoader()
+          );
 
-        // Get addon description
-        AddonDescription addonDescription = getAddonDescription(jar);
-        if (addonMap.containsKey(addonDescription.getName())) {
-          plugin.getLogger().warning("Duplicated addon " + addonDescription.getName());
-          continue;
+          // Get addon description
+          AddonDescription addonDescription = getAddonDescription(jar);
+          if (addonMap.containsKey(addonDescription.getName())) {
+            plugin.getLogger().warning("Duplicated addon " + addonDescription.getName());
+            continue;
+          }
+
+          // Try to load the addon
+          Class<?> clazz = Class.forName(addonDescription.getMainClass(), true, loader);
+          Class<? extends Addon> newClass = clazz.asSubclass(Addon.class);
+          Constructor<? extends Addon> constructor = newClass.getConstructor();
+          Addon addon = constructor.newInstance();
+          addon.setDescription(addonDescription);
+          addonMap.put(addonDescription.getName(), addon);
+        } catch (InvalidConfigurationException e) {
+          plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
+        } catch (Exception e) {
+          plugin.getLogger().log(Level.WARNING, "Error when loading jar", e);
         }
-
-        // Try to load the addon
-        Class<?> clazz = Class.forName(addonDescription.getMainClass(), true, loader);
-        Class<? extends Addon> newClass = clazz.asSubclass(Addon.class);
-        Constructor<? extends Addon> constructor = newClass.getConstructor();
-        Addon addon = constructor.newInstance();
-        addon.setDescription(addonDescription);
-        addonMap.put(addonDescription.getName(), addon);
-      } catch (InvalidConfigurationException e) {
-        plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
-      } catch (Exception e) {
-        plugin.getLogger().log(Level.WARNING, "Error when loading jar", e);
       }
     }
 
