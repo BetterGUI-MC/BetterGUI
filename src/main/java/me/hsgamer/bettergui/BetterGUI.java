@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.command.GetAddonsCommand;
 import me.hsgamer.bettergui.command.ItemCommand;
 import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.command.ReloadCommand;
@@ -86,6 +87,7 @@ public final class BetterGUI extends JavaPlugin {
     commandManager.register(new ItemCommand());
     commandManager.register(new OpenCommand());
     commandManager.register(new ReloadCommand());
+    commandManager.register(new GetAddonsCommand());
   }
 
   public void loadMenuConfig() {

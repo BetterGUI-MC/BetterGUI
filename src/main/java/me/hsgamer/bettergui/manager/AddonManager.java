@@ -10,6 +10,7 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.NoSuchFileException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -154,6 +155,18 @@ public class AddonManager {
     addons.clear();
     loadAddons();
     enableAddons();
+  }
+
+  public Addon getAddon(String name) {
+    return addons.get(name);
+  }
+
+  public boolean isAddonLoaded(String name) {
+    return addons.containsKey(name);
+  }
+
+  public Collection<String> getLoadedAddons() {
+    return addons.keySet();
   }
 
   private Map<String, Addon> sortAddons(Map<String, Addon> original) {

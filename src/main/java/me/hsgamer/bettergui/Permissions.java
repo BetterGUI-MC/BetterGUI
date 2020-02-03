@@ -13,6 +13,8 @@ public class Permissions {
       PermissionDefault.OP);
   public static final Permission RELOAD = new Permission(prefix, ".reload",
       PermissionDefault.OP);
+  public static final Permission ADDONS = new Permission(prefix, ".addons",
+      PermissionDefault.OP);
 
   private Permissions() {
 
