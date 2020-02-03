@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
@@ -89,7 +90,7 @@ public class AddonManager {
     Map<String, Addon> addonMap = new HashMap<>();
 
     // Load the addon files
-    for (File file : addonsDir.listFiles()) {
+    for (File file : Objects.requireNonNull(addonsDir.listFiles())) {
       try (JarFile jar = new JarFile(file)) {
         ClassLoader loader = URLClassLoader.newInstance(
             new URL[]{file.toURI().toURL()},
@@ -123,7 +124,7 @@ public class AddonManager {
     for (Map.Entry<String, Addon> entry : addonMap.entrySet()) {
       Addon addon = entry.getValue();
       if (addon.onLoad()) {
-        plugin.getLogger().info("Loaded " + entry.getKey());
+        plugin.getLogger().info("Loaded " + entry.getKey() + " " + addon.getDescription().getVersion());
         finalAddons.put(entry.getKey(), addon);
       }
     }
@@ -133,13 +134,15 @@ public class AddonManager {
   }
 
   public void enableAddon(String name) {
-    addons.get(name).onEnable();
-    plugin.getLogger().log(Level.INFO, "Enabled {0}", name);
+    Addon addon = addons.get(name);
+    addon.onEnable();
+    plugin.getLogger().log(Level.INFO, "Enabled {0}", String.join(" ", name, addon.getDescription().getVersion()));
   }
 
   public void disableAddon(String name) {
-    addons.get(name).onDisable();
-    plugin.getLogger().log(Level.INFO, "Disabled {0}", name);
+    Addon addon = addons.get(name);
+    addon.onDisable();
+    plugin.getLogger().log(Level.INFO, "Disabled {0}", String.join(" ", name, addon.getDescription().getVersion()));
   }
 
   public void enableAddons() {
