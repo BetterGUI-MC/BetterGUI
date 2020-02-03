@@ -58,18 +58,39 @@ public class PropertyBuilder {
 
   }
 
+  /**
+   * Register new item property
+   *
+   * @param name the name of the type
+   * @param clazz the class
+   */
   public static void registerItemProperty(String name, Class<? extends ItemProperty<?, ?>> clazz) {
     itemProperties.put(name, clazz);
   }
 
+  /**
+   * Register new icon property
+   *
+   * @param name the name of the type
+   * @param clazz the class
+   */
   public static void registerIconProperty(String name, Class<? extends IconProperty<?>> clazz) {
     iconProperties.put(name, clazz);
   }
 
+  /**
+   * Register new other property
+   *
+   * @param name the name of the type
+   * @param clazz the class
+   */
   public static void registerOtherProperty(String name, Class<? extends Property<?>> clazz) {
     otherProperties.put(name, clazz);
   }
 
+  /**
+   * Check the integrity of the classes
+   */
   public static void checkClass() {
     for (Class<? extends ItemProperty<?, ?>> clazz : itemProperties.values()) {
       checkIconProperty(clazz);

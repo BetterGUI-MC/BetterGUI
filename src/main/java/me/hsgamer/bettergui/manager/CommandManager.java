@@ -38,6 +38,11 @@ public class CommandManager {
     }
   }
 
+  /**
+   * Register new command
+   *
+   * @param command the command object
+   */
   public void register(BukkitCommand command) {
     String name = command.getLabel();
     if (registered.containsKey(name)) {
@@ -49,6 +54,11 @@ public class CommandManager {
     registered.put(name, command);
   }
 
+  /**
+   * Unregister new command
+   *
+   * @param command the command object
+   */
   public void unregister(BukkitCommand command) {
     try {
       Map<?, ?> knownCommands = (Map<?, ?>) knownCommandsField.get(bukkitCommandMap);
@@ -62,6 +72,12 @@ public class CommandManager {
     }
   }
 
+  /**
+   * Register the command that opens the menu
+   *
+   * @param command the name of the command
+   * @param menu the menu
+   */
   public void registerMenuCommand(String command, Menu menu) {
     if (registeredMenuCommand.containsKey(command)) {
       plugin.getLogger().log(Level.WARNING, "Duplicated '{}' ! Ignored", command);

@@ -34,10 +34,19 @@ public class RequirementBuilder {
 
   }
 
+  /**
+   * Register new requirement type
+   *
+   * @param type the name of the type
+   * @param clazz the class
+   */
   public static void register(String type, Class<? extends IconRequirement<?>> clazz) {
     requirements.put(type, clazz);
   }
 
+  /**
+   * Check the integrity of the classes
+   */
   public static void checkClass() {
     for (Class<? extends IconRequirement<?>> clazz : requirements.values()) {
       try {

@@ -29,14 +29,33 @@ public class MenuManager {
     menuMap.clear();
   }
 
+  /**
+   * Check if the menu exists
+   *
+   * @param name the menu name
+   * @return true if it exists, otherwise false
+   */
   public boolean contains(String name) {
     return menuMap.containsKey(name);
   }
 
+  /**
+   * Open the menu for the player
+   *
+   * @param name the menu name
+   * @param player the player
+   */
   public void openMenu(String name, Player player) {
     menuMap.get(name).createInventory(player);
   }
 
+  /**
+   * Open the menu for the player
+   *
+   * @param name the menu name
+   * @param player the player
+   * @param parentMenu the former menu that causes the player to open this menu
+   */
   public void openMenu(String name, Player player, Menu parentMenu) {
     Menu menu = menuMap.get(name);
     menu.setParentMenu(parentMenu);

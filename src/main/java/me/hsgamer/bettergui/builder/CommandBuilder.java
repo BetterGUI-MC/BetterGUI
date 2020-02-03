@@ -46,11 +46,20 @@ public class CommandBuilder {
 
   }
 
+  /**
+   * Register new command type
+   *
+   * @param regex the regex that detects the prefix of the string
+   * @param clazz the class
+   */
   public static void register(String regex, Class<? extends Command> clazz) {
     Pattern pattern = Pattern.compile("^(?i)" + regex);
     commands.put(pattern, clazz);
   }
 
+  /**
+   * Check the integrity of the classes
+   */
   public static void checkClass() {
     for (Class<? extends Command> clazz : commands.values()) {
       try {
@@ -75,6 +84,14 @@ public class CommandBuilder {
     return list;
   }
 
+
+  /**
+   * Get Command object from a String
+   *
+   * @param icon the icon that involves the command
+   * @param input the command string
+   * @return Command Object
+   */
   public static Command getCommand(Icon icon, String input) {
     for (Entry<Pattern, Class<? extends Command>> entry : commands.entrySet()) {
       Matcher matcher = entry.getKey().matcher(input);

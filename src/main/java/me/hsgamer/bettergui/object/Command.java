@@ -16,6 +16,12 @@ public abstract class Command {
     this.hasVariables = VariableManager.hasVariables(string);
   }
 
+  /**
+   * Get the parsed command (after replacing the variables)
+   *
+   * @param executor the player involved in
+   * @return the parsed command
+   */
   public String getParsedCommand(Player executor) {
     if (icon != null) {
       return hasVariables ? icon.setVariables(string, executor) : string;
@@ -24,12 +30,28 @@ public abstract class Command {
     }
   }
 
+  /**
+   * Add the executable code to taskChain
+   *
+   * @param player the player involved in
+   * @param taskChain the TaskChain that needs adding
+   */
   public abstract void addToTaskChain(Player player, TaskChain<?> taskChain);
 
+  /**
+   * Get the icon involved in this command
+   *
+   * @return the icon
+   */
   protected Optional<Icon> getIcon() {
     return Optional.ofNullable(icon);
   }
 
+  /**
+   * Set the icon to this command
+   *
+   * @param icon the icon
+   */
   public void setIcon(Icon icon) {
     this.icon = icon;
   }

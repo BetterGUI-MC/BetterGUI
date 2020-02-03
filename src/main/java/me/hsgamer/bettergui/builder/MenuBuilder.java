@@ -23,10 +23,19 @@ public class MenuBuilder {
 
   }
 
+  /**
+   * Register new Menu type
+   *
+   * @param type the name of the type
+   * @param clazz the class
+   */
   public static void register(String type, Class<? extends Menu> clazz) {
     menuTypes.put(type, clazz);
   }
 
+  /**
+   * Check the integrity of the classes
+   */
   public static void checkClass() {
     for (Class<? extends Menu> clazz : menuTypes.values()) {
       try {

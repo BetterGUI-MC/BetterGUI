@@ -9,6 +9,7 @@ import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.object.GlobalVariable;
 import me.hsgamer.bettergui.util.BukkitUtils;
 import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -70,25 +71,39 @@ public class VariableManager {
 
   }
 
+  /**
+   * Register new variable
+   *
+   * @param prefix the prefix
+   * @param variable the Variable object
+   */
   public static void register(String prefix, GlobalVariable variable) {
     variables.put(prefix, variable);
   }
 
+  /**
+   * Check if a string contains variables
+   *
+   * @param message the string
+   * @return true if it has, otherwise false
+   */
   public static boolean hasVariables(String message) {
     if (message == null) {
       return false;
     }
-    Pattern prefixPattern = Pattern.compile("(" + String.join("|", variables.keySet()) + ").*");
-    Matcher matcher = pattern.matcher(message);
-    while (matcher.find()) {
-      String identifier = matcher.group(1).trim();
-      if (prefixPattern.matcher(identifier).find()) {
-        return true;
-      }
+    if (Validate.isMatch(message, variables.keySet())) {
+      return true;
     }
     return PlaceholderAPIHook.hasValidPlugin() && PlaceholderAPIHook.hasPlaceholders(message);
   }
 
+  /**
+   * Replace the variables of the string
+   *
+   * @param message the string
+   * @param executor the player involved in
+   * @return the replaced string
+   */
   public static String setVariables(String message, Player executor) {
     Matcher matcher = pattern.matcher(message);
     while (matcher.find()) {

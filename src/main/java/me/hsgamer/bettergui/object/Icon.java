@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.manager.VariableManager;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -33,14 +34,32 @@ public abstract class Icon implements Cloneable {
     return name;
   }
 
+  /**
+   * Register a simple icon-only variable
+   *
+   * @param variable the variable
+   */
   public void registerVariable(SimpleIconVariable variable) {
     variables.put(variable.getIdentifier(), variable);
   }
 
+  /**
+   * Register new icon-only variable
+   *
+   * @param identifier the variable
+   * @param variable the IconVariable object
+   */
   public void registerVariable(String identifier, IconVariable variable) {
     variables.put(identifier, variable);
   }
 
+
+  /**
+   * Check if the string contains variables
+   *
+   * @param message the string
+   * @return true if it has, otherwise false
+   */
   public boolean hasVariables(String message) {
     if (message == null) {
       return false;
@@ -48,17 +67,16 @@ public abstract class Icon implements Cloneable {
     if (VariableManager.hasVariables(message)) {
       return true;
     }
-    Pattern prefixPattern = Pattern.compile("(" + String.join("|", variables.keySet()) + ").*");
-    Matcher matcher = pattern.matcher(message);
-    while (matcher.find()) {
-      String identifier = matcher.group(1).trim();
-      if (prefixPattern.matcher(identifier).find()) {
-        return true;
-      }
-    }
-    return false;
+    return Validate.isMatch(message, variables.keySet());
   }
 
+  /**
+   * Replace the variables of the string
+   *
+   * @param message the string
+   * @param executor the player involved in
+   * @return the replaced string
+   */
   public String setVariables(String message, Player executor) {
     message = VariableManager.setVariables(message, executor);
     Matcher matcher = pattern.matcher(message);
@@ -78,12 +96,34 @@ public abstract class Icon implements Cloneable {
     return message;
   }
 
+  /**
+   * Called when setting options
+   *
+   * @param section the section of that icon in the config
+   */
   public abstract void setFromSection(ConfigurationSection section);
 
+  /**
+   * Called when opening the menu containing this icon
+   *
+   * @param player the player involved in
+   * @return a clickable item
+   */
   public abstract Optional<ClickableItem> createClickableItem(Player player);
 
+  /**
+   * Called when updating the menu containing this icon
+   *
+   * @param player the player involved in
+   * @return a clickable item
+   */
   public abstract Optional<ClickableItem> updateClickableItem(Player player);
 
+  /**
+   * Get the menu that contains this icon
+   *
+   * @return the menu
+   */
   public Menu getMenu() {
     return menu;
   }

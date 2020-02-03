@@ -17,18 +17,38 @@ public class AddonDescription {
     this.mainClass = mainClass;
   }
 
+  /**
+   * Get the name of the addon
+   *
+   * @return the name
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * Get the version of the addon
+   *
+   * @return the version
+   */
   public String getVersion() {
     return version;
   }
 
+  /**
+   * Get the main class of the addon
+   *
+   * @return the path to the main class
+   */
   public String getMainClass() {
     return mainClass;
   }
 
+  /**
+   * Get the authors of the addon
+   *
+   * @return the list of the authors
+   */
   public List<String> getAuthors() {
     return authors;
   }
@@ -37,6 +57,11 @@ public class AddonDescription {
     this.authors = authors;
   }
 
+  /**
+   * Get the description of the addon
+   *
+   * @return the description
+   */
   public String getDescription() {
     return description;
   }

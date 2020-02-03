@@ -31,10 +31,19 @@ public class IconBuilder {
 
   }
 
+  /**
+   * Register new Icon type
+   *
+   * @param type name of the type
+   * @param clazz the class
+   */
   public static void register(String type, Class<? extends Icon> clazz) {
     iconTypes.put(type, clazz);
   }
 
+  /**
+   * Check the integrity of the classes
+   */
   public static void checkClass() {
     for (Class<? extends Icon> clazz : iconTypes.values()) {
       try {

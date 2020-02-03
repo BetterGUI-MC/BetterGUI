@@ -92,7 +92,10 @@ public class AddonManager {
         Constructor<? extends Addon> constructor = newClass.getConstructor();
         Addon addon = constructor.newInstance();
         addon.setDescription(addonDescription);
-        addons.put(addonDescription.getName(), addon);
+        if (addon.onLoad()) {
+          plugin.getLogger().info("Loaded " + addon.getDescription().getName());
+          addons.put(addonDescription.getName(), addon);
+        }
       } catch (InvalidConfigurationException e) {
         plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
       } catch (Exception e) {
