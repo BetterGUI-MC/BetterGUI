@@ -88,10 +88,10 @@ public class VariableManager {
    * @return true if it has, otherwise false
    */
   public static boolean hasVariables(String message) {
-    if (message == null) {
+    if (message == null || message.trim().isEmpty()) {
       return false;
     }
-    if (Validate.isMatch(message, variables.keySet())) {
+    if (Validate.isMatch(message, pattern, variables.keySet())) {
       return true;
     }
     return PlaceholderAPIHook.hasValidPlugin() && PlaceholderAPIHook.hasPlaceholders(message);

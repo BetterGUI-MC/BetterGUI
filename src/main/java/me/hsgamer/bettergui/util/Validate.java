@@ -36,9 +36,9 @@ public class Validate {
     }
   }
 
-  public static boolean isMatch(String string, Collection<String> matchString) {
+  public static boolean isMatch(String string, Pattern detectPattern, Collection<String> matchString) {
     Pattern pattern = Pattern.compile("(" + String.join("|", matchString) + ").*");
-    Matcher matcher = pattern.matcher(string);
+    Matcher matcher = detectPattern.matcher(string);
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
       if (pattern.matcher(identifier).find()) {

@@ -61,13 +61,13 @@ public abstract class Icon implements Cloneable {
    * @return true if it has, otherwise false
    */
   public boolean hasVariables(String message) {
-    if (message == null) {
+    if (message == null || message.trim().isEmpty()) {
       return false;
     }
     if (VariableManager.hasVariables(message)) {
       return true;
     }
-    return Validate.isMatch(message, variables.keySet());
+    return Validate.isMatch(message, pattern, variables.keySet());
   }
 
   /**
