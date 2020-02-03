@@ -5,8 +5,8 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 /**
- * An abstract class of Requirement
- * Note: You need to set the canTake value when extending this class
+ * An abstract class of Requirement Note: You need to set the canTake value when extending this
+ * class
  *
  * @param <T> The type of the final value
  */
@@ -20,7 +20,7 @@ public abstract class IconRequirement<T> {
   /**
    * The requirement
    *
-   * @param icon the icon involved in
+   * @param icon    the icon involved in
    * @param canTake whether the plugin takes the requirements from the player
    */
   public IconRequirement(Icon icon, boolean canTake) {

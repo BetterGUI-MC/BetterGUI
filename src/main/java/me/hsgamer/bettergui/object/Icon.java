@@ -47,7 +47,7 @@ public abstract class Icon implements Cloneable {
    * Register new icon-only variable
    *
    * @param identifier the variable
-   * @param variable the IconVariable object
+   * @param variable   the IconVariable object
    */
   public void registerVariable(String identifier, IconVariable variable) {
     variables.put(identifier, variable);
@@ -73,7 +73,7 @@ public abstract class Icon implements Cloneable {
   /**
    * Replace the variables of the string
    *
-   * @param message the string
+   * @param message  the string
    * @param executor the player involved in
    * @return the replaced string
    */

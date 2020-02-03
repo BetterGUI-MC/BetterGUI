@@ -26,7 +26,7 @@ public class MenuBuilder {
   /**
    * Register new Menu type
    *
-   * @param type the name of the type
+   * @param type  the name of the type
    * @param clazz the class
    */
   public static void register(String type, Class<? extends Menu> clazz) {

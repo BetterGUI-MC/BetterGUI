@@ -11,7 +11,7 @@ public interface ParentIcon {
   /**
    * Called when adding child icons from the "child" section in the config
    *
-   * @param menu the menu containing the icon
+   * @param menu    the menu containing the icon
    * @param section the "child" section
    */
   default void setChildFromSection(Menu menu, ConfigurationSection section) {

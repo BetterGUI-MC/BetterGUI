@@ -37,7 +37,7 @@ public class RequirementBuilder {
   /**
    * Register new requirement type
    *
-   * @param type the name of the type
+   * @param type  the name of the type
    * @param clazz the class
    */
   public static void register(String type, Class<? extends IconRequirement<?>> clazz) {

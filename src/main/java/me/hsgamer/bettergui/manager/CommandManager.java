@@ -76,7 +76,7 @@ public class CommandManager {
    * Register the command that opens the menu
    *
    * @param command the name of the command
-   * @param menu the menu
+   * @param menu    the menu
    */
   public void registerMenuCommand(String command, Menu menu) {
     if (registeredMenuCommand.containsKey(command)) {

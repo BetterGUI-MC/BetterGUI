@@ -74,7 +74,7 @@ public class VariableManager {
   /**
    * Register new variable
    *
-   * @param prefix the prefix
+   * @param prefix   the prefix
    * @param variable the Variable object
    */
   public static void register(String prefix, GlobalVariable variable) {
@@ -100,7 +100,7 @@ public class VariableManager {
   /**
    * Replace the variables of the string
    *
-   * @param message the string
+   * @param message  the string
    * @param executor the player involved in
    * @return the replaced string
    */

@@ -88,7 +88,7 @@ public class CommandBuilder {
   /**
    * Get Command object from a String
    *
-   * @param icon the icon that involves the command
+   * @param icon  the icon that involves the command
    * @param input the command string
    * @return Command Object
    */

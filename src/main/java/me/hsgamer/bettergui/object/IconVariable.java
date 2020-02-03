@@ -20,7 +20,7 @@ public interface IconVariable {
   /**
    * Get the string from the variable
    *
-   * @param executor the player
+   * @param executor   the player
    * @param identifier the variable
    * @return the replaced string
    */

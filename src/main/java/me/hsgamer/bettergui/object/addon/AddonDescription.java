@@ -10,6 +10,8 @@ public class AddonDescription {
   private final String mainClass;
   private String description = "";
   private List<String> authors = new ArrayList<>();
+  private List<String> depends = new ArrayList<>();
+  private List<String> softDepends = new ArrayList<>();
 
   public AddonDescription(String name, String version, String mainClass) {
     this.name = name;
@@ -70,6 +72,32 @@ public class AddonDescription {
     this.description = description;
   }
 
+  /**
+   * Get the required dependencies of the addon
+   *
+   * @return the list of the dependencies
+   */
+  public List<String> getDepends() {
+    return depends;
+  }
+
+  public void setDepends(List<String> depends) {
+    this.depends = depends;
+  }
+
+  /**
+   * Get the soft dependencies of the addon
+   *
+   * @return the list of the dependencies
+   */
+  public List<String> getSoftDepends() {
+    return softDepends;
+  }
+
+  public void setSoftDepends(List<String> softDepends) {
+    this.softDepends = softDepends;
+  }
+
   public static class Settings {
 
     public static final String NAME = "name";
@@ -77,6 +105,8 @@ public class AddonDescription {
     public static final String CLASSPATH = "main";
     public static final String AUTHORS = "authors";
     public static final String DESCRIPTION = "description";
+    public static final String DEPEND = "depend";
+    public static final String SOFT_DEPEND = "soft-depend";
 
     private Settings() {
 

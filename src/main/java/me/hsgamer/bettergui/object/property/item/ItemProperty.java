@@ -38,7 +38,7 @@ public abstract class ItemProperty<V, L> extends IconProperty<V> {
    * Called when comparing a property from the item
    *
    * @param player the player involved in
-   * @param item the item needs comparing
+   * @param item   the item needs comparing
    * @return true if it matches, otherwise false
    */
   public abstract boolean compareWithItemStack(Player player, ItemStack item);

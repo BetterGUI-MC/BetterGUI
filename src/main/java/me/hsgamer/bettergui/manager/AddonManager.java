@@ -11,6 +11,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -72,11 +74,20 @@ public class AddonManager {
     if (data.isSet(Settings.DESCRIPTION)) {
       addonDescription.setDescription(data.getString(Settings.DESCRIPTION));
     }
+    if (data.isSet(Settings.DEPEND)) {
+      addonDescription.setDepends(data.getStringList(Settings.DEPEND));
+    }
+    if (data.isSet(Settings.SOFT_DEPEND)) {
+      addonDescription.setSoftDepends(data.getStringList(Settings.SOFT_DEPEND));
+    }
 
     return addonDescription;
   }
 
   public void loadAddons() {
+    Map<String, Addon> addonMap = new HashMap<>();
+
+    // Load the addon files
     for (File file : addonsDir.listFiles()) {
       try (JarFile jar = new JarFile(file)) {
         ClassLoader loader = URLClassLoader.newInstance(
@@ -84,7 +95,12 @@ public class AddonManager {
             getClass().getClassLoader()
         );
 
+        // Get addon description
         AddonDescription addonDescription = getAddonDescription(jar);
+        if (addonMap.containsKey(addonDescription.getName())) {
+          plugin.getLogger().warning("Duplicated addon " + addonDescription.getName());
+          continue;
+        }
 
         // Try to load the addon
         Class<?> clazz = Class.forName(addonDescription.getMainClass(), true, loader);
@@ -92,16 +108,27 @@ public class AddonManager {
         Constructor<? extends Addon> constructor = newClass.getConstructor();
         Addon addon = constructor.newInstance();
         addon.setDescription(addonDescription);
-        if (addon.onLoad()) {
-          plugin.getLogger().info("Loaded " + addon.getDescription().getName());
-          addons.put(addonDescription.getName(), addon);
-        }
+        addonMap.put(addonDescription.getName(), addon);
       } catch (InvalidConfigurationException e) {
         plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
       } catch (Exception e) {
         plugin.getLogger().log(Level.WARNING, "Error when loading jar", e);
       }
     }
+
+    // Sort and load the addons
+    addonMap = sortAddons(addonMap);
+    Map<String, Addon> finalAddons = new HashMap<>();
+    for (Map.Entry<String, Addon> entry : addonMap.entrySet()) {
+      Addon addon = entry.getValue();
+      if (addon.onLoad()) {
+        plugin.getLogger().info("Loaded " + entry.getKey());
+        finalAddons.put(entry.getKey(), addon);
+      }
+    }
+
+    // Store the final addons map
+    addons.putAll(finalAddons);
   }
 
   public void enableAddon(String name) {
@@ -127,5 +154,54 @@ public class AddonManager {
     addons.clear();
     loadAddons();
     enableAddons();
+  }
+
+  private Map<String, Addon> sortAddons(Map<String, Addon> original) {
+    Map<String, Addon> sorted = new LinkedHashMap<>();
+    Map<String, Addon> remaining = new HashMap<>();
+
+    // Start with addons with no dependency and get the remaining
+    original.forEach((name, addon) -> {
+      if (addon.getDescription().getDepends().isEmpty() && addon.getDescription().getSoftDepends()
+          .isEmpty()) {
+        sorted.put(name, addon);
+      } else {
+        remaining.put(name, addon);
+      }
+    });
+
+    // Organize the remaining
+    while (!remaining.isEmpty()) {
+      Map<String, Addon> tempMap = new HashMap<>();
+
+      remaining.forEach((name, addon) -> {
+        List<String> depends = addon.getDescription().getDepends();
+        List<String> softDepends = addon.getDescription().getSoftDepends();
+
+        // Filter
+        depends.removeIf(sorted::containsKey);
+        softDepends.removeIf(softDepend ->
+            sorted.containsKey(softDepend) || !original.containsKey(softDepend));
+
+        // Check if the required dependencies are loaded
+        for (String depend : depends) {
+          if (!original.containsKey(depend)) {
+            plugin.getLogger().warning("Missing dependency for " + name + ": " + depend);
+            return;
+          }
+        }
+
+        if (depends.isEmpty() && softDepends.isEmpty()) {
+          sorted.put(name, addon);
+        } else {
+          tempMap.put(name, addon);
+        }
+      });
+
+      remaining.clear();
+      remaining.putAll(tempMap);
+    }
+
+    return sorted;
   }
 }

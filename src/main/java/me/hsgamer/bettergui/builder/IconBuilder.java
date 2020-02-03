@@ -34,7 +34,7 @@ public class IconBuilder {
   /**
    * Register new Icon type
    *
-   * @param type name of the type
+   * @param type  name of the type
    * @param clazz the class
    */
   public static void register(String type, Class<? extends Icon> clazz) {

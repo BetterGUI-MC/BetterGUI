@@ -61,7 +61,7 @@ public class PropertyBuilder {
   /**
    * Register new item property
    *
-   * @param name the name of the type
+   * @param name  the name of the type
    * @param clazz the class
    */
   public static void registerItemProperty(String name, Class<? extends ItemProperty<?, ?>> clazz) {
@@ -71,7 +71,7 @@ public class PropertyBuilder {
   /**
    * Register new icon property
    *
-   * @param name the name of the type
+   * @param name  the name of the type
    * @param clazz the class
    */
   public static void registerIconProperty(String name, Class<? extends IconProperty<?>> clazz) {
@@ -81,7 +81,7 @@ public class PropertyBuilder {
   /**
    * Register new other property
    *
-   * @param name the name of the type
+   * @param name  the name of the type
    * @param clazz the class
    */
   public static void registerOtherProperty(String name, Class<? extends Property<?>> clazz) {

@@ -42,7 +42,7 @@ public class MenuManager {
   /**
    * Open the menu for the player
    *
-   * @param name the menu name
+   * @param name   the menu name
    * @param player the player
    */
   public void openMenu(String name, Player player) {
@@ -52,8 +52,8 @@ public class MenuManager {
   /**
    * Open the menu for the player
    *
-   * @param name the menu name
-   * @param player the player
+   * @param name       the menu name
+   * @param player     the player
    * @param parentMenu the former menu that causes the player to open this menu
    */
   public void openMenu(String name, Player player, Menu parentMenu) {

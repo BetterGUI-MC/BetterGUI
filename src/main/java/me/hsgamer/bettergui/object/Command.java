@@ -33,7 +33,7 @@ public abstract class Command {
   /**
    * Add the executable code to taskChain
    *
-   * @param player the player involved in
+   * @param player    the player involved in
    * @param taskChain the TaskChain that needs adding
    */
   public abstract void addToTaskChain(Player player, TaskChain<?> taskChain);
