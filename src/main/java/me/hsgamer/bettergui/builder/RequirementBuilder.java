@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
 
 public class RequirementBuilder {
 
-  private static final Map<String, Class<? extends IconRequirement<?>>> requirements = new CaseInsensitiveStringMap<>();
+  private static final Map<String, Class<? extends IconRequirement<?,?>>> requirements = new CaseInsensitiveStringMap<>();
 
   static {
     register("condition", ConditionRequirement.class);
@@ -40,7 +40,7 @@ public class RequirementBuilder {
    * @param type  the name of the type
    * @param clazz the class
    */
-  public static void register(String type, Class<? extends IconRequirement<?>> clazz) {
+  public static void register(String type, Class<? extends IconRequirement<?,?>> clazz) {
     requirements.put(type, clazz);
   }
 
@@ -48,7 +48,7 @@ public class RequirementBuilder {
    * Check the integrity of the classes
    */
   public static void checkClass() {
-    for (Class<? extends IconRequirement<?>> clazz : requirements.values()) {
+    for (Class<? extends IconRequirement<?,?>> clazz : requirements.values()) {
       try {
         clazz.getDeclaredConstructor(Icon.class).newInstance(new Icon("", null) {
           @Override
@@ -74,9 +74,9 @@ public class RequirementBuilder {
     }
   }
 
-  public static Optional<IconRequirement<?>> getRequirement(String type, Icon icon) {
+  public static Optional<IconRequirement<?,?>> getRequirement(String type, Icon icon) {
     if (requirements.containsKey(type)) {
-      Class<? extends IconRequirement<?>> clazz = requirements.get(type);
+      Class<? extends IconRequirement<?,?>> clazz = requirements.get(type);
       try {
         return Optional.of(clazz.getDeclaredConstructor(Icon.class).newInstance(icon));
       } catch (Exception e) {
@@ -86,22 +86,18 @@ public class RequirementBuilder {
     return Optional.empty();
   }
 
-  public static List<IconRequirement<?>> loadRequirementsFromSection(ConfigurationSection section,
+  public static List<IconRequirement<?,?>> loadRequirementsFromSection(ConfigurationSection section,
       Icon icon) {
-    List<IconRequirement<?>> requirements = new ArrayList<>();
+    List<IconRequirement<?,?>> requirements = new ArrayList<>();
     section.getKeys(false).forEach(type -> {
-      Optional<IconRequirement<?>> rawRequirement = getRequirement(type, icon);
+      Optional<IconRequirement<?,?>> rawRequirement = getRequirement(type, icon);
       if (!rawRequirement.isPresent()) {
         return;
       }
-      IconRequirement<?> requirement = rawRequirement.get();
+      IconRequirement<?,?> requirement = rawRequirement.get();
       if (section.isConfigurationSection(type)) {
         if (section.isSet(type + Settings.VALUE)) {
-          if (section.isList(type + Settings.VALUE)) {
-            requirement.setValues(section.getStringList(type + Settings.VALUE));
-          } else {
-            requirement.setValues(section.getString(type + Settings.VALUE));
-          }
+          requirement.setValue(section.get(type + Settings.VALUE));
           requirement.setFailMessage(
               CommonUtils.colorize(section.getString(type + Settings.MESSAGE)));
           requirement.canTake(section.getBoolean(type + Settings.TAKE, true));
@@ -114,11 +110,7 @@ public class RequirementBuilder {
         }
         requirements.add(requirement);
       } else if (section.isSet(type)) {
-        if (section.isList(type)) {
-          requirement.setValues(section.getStringList(type));
-        } else {
-          requirement.setValues(section.getString(type));
-        }
+        requirement.setValue(section.get(type));
         requirements.add(requirement);
       }
     });

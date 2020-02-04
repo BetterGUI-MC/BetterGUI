@@ -1,20 +1,19 @@
 package me.hsgamer.bettergui.object;
 
-import java.util.Arrays;
-import java.util.List;
 import org.bukkit.entity.Player;
 
 /**
  * An abstract class of Requirement Note: You need to set the canTake value when extending this
  * class
  *
- * @param <T> The type of the final value
+ * @param <V> The value type stored from setValue()
+ * @param <L> The type of the final value
  */
-public abstract class IconRequirement<T> {
+public abstract class IconRequirement<V,L> {
 
   protected final Icon icon;
   protected String failMessage;
-  protected List<String> values;
+  protected V value;
   private boolean canTake;
 
   /**
@@ -32,9 +31,9 @@ public abstract class IconRequirement<T> {
    * Called when getting the final values
    *
    * @param player the player involved in
-   * @return a list of final values
+   * @return the final value
    */
-  public abstract List<T> getParsedValue(Player player);
+  public abstract L getParsedValue(Player player);
 
   /**
    * Called when checking if the player meets this requirement
@@ -51,17 +50,13 @@ public abstract class IconRequirement<T> {
    */
   public abstract void take(Player player);
 
+  @SuppressWarnings("unchecked")
+  public void setValue(Object value) {
+    this.value = (V) value;
+  }
+
   public void setFailMessage(String message) {
     this.failMessage = message;
-  }
-
-  public void setValues(List<String> values) {
-    values.replaceAll(String::trim);
-    this.values = values;
-  }
-
-  public void setValues(String input) {
-    setValues(Arrays.asList(input.split(";")));
   }
 
   public void canTake(boolean canTake) {

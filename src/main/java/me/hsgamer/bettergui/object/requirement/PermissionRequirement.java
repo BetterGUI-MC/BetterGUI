@@ -9,7 +9,7 @@ import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.entity.Player;
 
-public class PermissionRequirement extends IconRequirement<String> {
+public class PermissionRequirement extends IconRequirement<List<String>, List<String>> {
 
   public PermissionRequirement(Icon icon) {
     super(icon, false);
@@ -18,8 +18,8 @@ public class PermissionRequirement extends IconRequirement<String> {
   @Override
   public List<String> getParsedValue(Player player) {
     List<String> list = new ArrayList<>();
-    values.forEach(
-        value -> list.add(icon.hasVariables(value) ? icon.setVariables(value, player) : value));
+    value.forEach(
+        s -> list.add(icon.hasVariables(s) ? icon.setVariables(s, player) : s));
     return list;
   }
 

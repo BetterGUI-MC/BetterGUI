@@ -23,7 +23,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemRequirement extends IconRequirement<RequiredItem> {
+public class ItemRequirement extends IconRequirement<List<String>, List<RequiredItem>> {
 
   public ItemRequirement(Icon icon) {
     super(icon, true);
@@ -33,8 +33,8 @@ public class ItemRequirement extends IconRequirement<RequiredItem> {
   public List<RequiredItem> getParsedValue(Player player) {
     List<RequiredItem> list = new ArrayList<>();
     Map<String, DummyIcon> icons = getInstance().getItemsConfig().getMenu().getIcons();
-    for (String value : values) {
-      String[] split = value.split(":", 2);
+    for (String s : value) {
+      String[] split = s.split(":", 2);
       String rawIcon = split[0].trim();
       if (icons.containsKey(rawIcon)) {
         DummyIcon icon = icons.get(rawIcon);
