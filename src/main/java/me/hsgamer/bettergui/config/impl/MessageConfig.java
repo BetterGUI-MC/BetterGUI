@@ -37,7 +37,8 @@ public class MessageConfig extends PluginConfig {
     NO_ICON_PERMISSION("no-icon-permission",
         "&cYou don't have permission to do this"),
     INVALID_NUMBER("invalid-number", "&cError converting! {input} is not a valid number"),
-    INVALID_AMOUNT("invalid-amount", "&cInvalid amount of {input}! Will be set to 1 by default");
+    INVALID_AMOUNT("invalid-amount", "&cInvalid amount of {input}! Will be set to 1 by default"),
+    INVALID_CONDITION("invalid-condition", "&cInvalid condition! Please inform the staff");
     final String path;
     final Object def;
 

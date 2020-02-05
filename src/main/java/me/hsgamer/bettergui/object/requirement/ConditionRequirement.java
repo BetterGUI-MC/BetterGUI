@@ -8,7 +8,6 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class ConditionRequirement extends IconRequirement<Object, Boolean> {
@@ -34,7 +33,9 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
           return false;
         }
       } else {
-        player.sendMessage(ChatColor.RED + "Invalid condition! Please inform the staff");
+        CommonUtils.sendMessage(player,
+            BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_CONDITION)
+                .replace("{input}", s));
         return false;
       }
     }

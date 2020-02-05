@@ -23,7 +23,7 @@ public class ExpLevelRequirement extends IconRequirement<Object, Integer> implem
 
   @Override
   public Integer getParsedValue(Player player) {
-    String parsed = String.valueOf(value);
+    String parsed = String.valueOf(value).trim();
     parsed = icon.hasVariables(parsed) ? icon.setVariables(parsed, player) : parsed;
     if (ExpressionUtils.isValidExpression(parsed)) {
       return ExpressionUtils.getResult(parsed).intValue();

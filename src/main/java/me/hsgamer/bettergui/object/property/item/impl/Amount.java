@@ -18,7 +18,7 @@ public class Amount extends ItemProperty<Object, Integer> {
 
   @Override
   public Integer getParsed(Player player) {
-    String value = String.valueOf(getValue());
+    String value = String.valueOf(getValue()).trim();
     value = getIcon().hasVariables(value) ? getIcon().setVariables(value, player) : value;
     if (ExpressionUtils.isValidExpression(value)) {
       return ExpressionUtils.getResult(value).intValue();

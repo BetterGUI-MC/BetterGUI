@@ -20,6 +20,7 @@ public class PermissionRequirement extends IconRequirement<List<String>, List<St
     List<String> list = new ArrayList<>();
     value.forEach(
         s -> list.add(icon.hasVariables(s) ? icon.setVariables(s, player) : s));
+    value.replaceAll(String::trim);
     return list;
   }
 
