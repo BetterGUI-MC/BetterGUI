@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.object;
 
+import java.util.List;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -31,4 +32,11 @@ public interface ParentIcon {
    * @param icon the child icon
    */
   void addChild(Icon icon);
+
+  /**
+   * Get all child icons
+   *
+   * @return the list of the child icons
+   */
+  List<Icon> getChild();
 }

@@ -65,4 +65,9 @@ public class ListIcon extends Icon implements ParentIcon {
   public void addChild(Icon icon) {
     icons.add(icon);
   }
+
+  @Override
+  public List<Icon> getChild() {
+    return icons;
+  }
 }
