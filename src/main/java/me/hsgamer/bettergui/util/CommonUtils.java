@@ -14,7 +14,7 @@ public class CommonUtils {
   }
 
   public static String colorize(String input) {
-    if (input == null || input.isEmpty()) {
+    if (input == null || input.trim().isEmpty()) {
       return input;
     }
     return ChatColor.translateAlternateColorCodes('&', input);

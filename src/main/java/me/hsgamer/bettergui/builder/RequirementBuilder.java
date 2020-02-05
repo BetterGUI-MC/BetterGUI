@@ -96,11 +96,16 @@ public class RequirementBuilder {
       }
       IconRequirement<?,?> requirement = rawRequirement.get();
       if (section.isConfigurationSection(type)) {
-        if (section.isSet(type + Settings.VALUE)) {
-          requirement.setValue(section.get(type + Settings.VALUE));
-          requirement.setFailMessage(
-              CommonUtils.colorize(section.getString(type + Settings.MESSAGE)));
-          requirement.canTake(section.getBoolean(type + Settings.TAKE, true));
+        Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
+        if (keys.containsKey(Settings.VALUE)) {
+          requirement.setValue(keys.get(Settings.VALUE));
+          if (keys.containsKey(Settings.MESSAGE)) {
+            requirement.setFailMessage(
+                CommonUtils.colorize(String.valueOf(keys.get(Settings.MESSAGE))));
+          }
+          if (keys.containsKey(Settings.TAKE)) {
+            requirement.canTake((Boolean) keys.get(Settings.TAKE));
+          }
         } else {
           getInstance().getLogger().warning(
               "The requirement \"" + type + "\" in the icon \"" + icon.getName()
@@ -120,8 +125,8 @@ public class RequirementBuilder {
 
   private static class Settings {
 
-    static final String VALUE = ".VALUE";
-    static final String MESSAGE = ".MESSAGE";
-    static final String TAKE = ".TAKE";
+    static final String VALUE = "type";
+    static final String MESSAGE = "message";
+    static final String TAKE = "take";
   }
 }
