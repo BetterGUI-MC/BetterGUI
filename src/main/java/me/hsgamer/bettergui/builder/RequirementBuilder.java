@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
 
 public class RequirementBuilder {
 
-  private static final Map<String, Class<? extends IconRequirement<?,?>>> requirements = new CaseInsensitiveStringMap<>();
+  private static final Map<String, Class<? extends IconRequirement<?, ?>>> requirements = new CaseInsensitiveStringMap<>();
 
   static {
     register("condition", ConditionRequirement.class);
@@ -40,7 +40,7 @@ public class RequirementBuilder {
    * @param type  the name of the type
    * @param clazz the class
    */
-  public static void register(String type, Class<? extends IconRequirement<?,?>> clazz) {
+  public static void register(String type, Class<? extends IconRequirement<?, ?>> clazz) {
     requirements.put(type, clazz);
   }
 
@@ -48,7 +48,7 @@ public class RequirementBuilder {
    * Check the integrity of the classes
    */
   public static void checkClass() {
-    for (Class<? extends IconRequirement<?,?>> clazz : requirements.values()) {
+    for (Class<? extends IconRequirement<?, ?>> clazz : requirements.values()) {
       try {
         clazz.getDeclaredConstructor(Icon.class).newInstance(new Icon("", null) {
           @Override
@@ -74,9 +74,9 @@ public class RequirementBuilder {
     }
   }
 
-  public static Optional<IconRequirement<?,?>> getRequirement(String type, Icon icon) {
+  public static Optional<IconRequirement<?, ?>> getRequirement(String type, Icon icon) {
     if (requirements.containsKey(type)) {
-      Class<? extends IconRequirement<?,?>> clazz = requirements.get(type);
+      Class<? extends IconRequirement<?, ?>> clazz = requirements.get(type);
       try {
         return Optional.of(clazz.getDeclaredConstructor(Icon.class).newInstance(icon));
       } catch (Exception e) {
@@ -86,17 +86,19 @@ public class RequirementBuilder {
     return Optional.empty();
   }
 
-  public static List<IconRequirement<?,?>> loadRequirementsFromSection(ConfigurationSection section,
+  public static List<IconRequirement<?, ?>> loadRequirementsFromSection(
+      ConfigurationSection section,
       Icon icon) {
-    List<IconRequirement<?,?>> requirements = new ArrayList<>();
+    List<IconRequirement<?, ?>> requirements = new ArrayList<>();
     section.getKeys(false).forEach(type -> {
-      Optional<IconRequirement<?,?>> rawRequirement = getRequirement(type, icon);
+      Optional<IconRequirement<?, ?>> rawRequirement = getRequirement(type, icon);
       if (!rawRequirement.isPresent()) {
         return;
       }
-      IconRequirement<?,?> requirement = rawRequirement.get();
+      IconRequirement<?, ?> requirement = rawRequirement.get();
       if (section.isConfigurationSection(type)) {
-        Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getConfigurationSection(type).getValues(false));
+        Map<String, Object> keys = new CaseInsensitiveStringMap<>(
+            section.getConfigurationSection(type).getValues(false));
         if (keys.containsKey(Settings.VALUE)) {
           requirement.setValue(keys.get(Settings.VALUE));
           if (keys.containsKey(Settings.MESSAGE)) {

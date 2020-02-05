@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
  * @param <V> The value type stored from setValue()
  * @param <L> The type of the final value
  */
-public abstract class IconRequirement<V,L> {
+public abstract class IconRequirement<V, L> {
 
   protected final Icon icon;
   protected String failMessage;

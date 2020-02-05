@@ -23,22 +23,18 @@ public class ExpLevelRequirement extends IconRequirement<Object, Integer> implem
 
   @Override
   public Integer getParsedValue(Player player) {
-    if (value instanceof Integer) {
-      return (Integer) value;
+    String parsed = String.valueOf(value);
+    parsed = icon.hasVariables(parsed) ? icon.setVariables(parsed, player) : parsed;
+    if (ExpressionUtils.isValidExpression(parsed)) {
+      return ExpressionUtils.getResult(parsed).intValue();
     } else {
-      String parsed = String.valueOf(value);
-      parsed = icon.hasVariables(parsed) ? icon.setVariables(parsed, player) : parsed;
-      if (ExpressionUtils.isValidExpression(parsed)) {
-        return ExpressionUtils.getResult(parsed).intValue();
+      if (Validate.isValidInteger(parsed)) {
+        return Integer.parseInt(parsed);
       } else {
-        if (Validate.isValidInteger(parsed)) {
-          return Integer.parseInt(parsed);
-        } else {
-          CommonUtils.sendMessage(player,
-              BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
-                  .replace("{input}", parsed));
-          return 0;
-        }
+        CommonUtils.sendMessage(player,
+            BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
+                .replace("{input}", parsed));
+        return 0;
       }
     }
   }

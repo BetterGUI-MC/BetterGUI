@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class ViewRequirement extends IconProperty<ConfigurationSection> {
 
-  private final List<IconRequirement<?,?>> requirements = new ArrayList<>();
+  private final List<IconRequirement<?, ?>> requirements = new ArrayList<>();
 
   public ViewRequirement(Icon icon) {
     super(icon);
@@ -24,7 +24,7 @@ public class ViewRequirement extends IconProperty<ConfigurationSection> {
   }
 
   public boolean check(Player player) {
-    for (IconRequirement<?,?> requirement : requirements) {
+    for (IconRequirement<?, ?> requirement : requirements) {
       if (!requirement.check(player)) {
         return false;
       }
@@ -33,7 +33,7 @@ public class ViewRequirement extends IconProperty<ConfigurationSection> {
   }
 
   public void take(Player player) {
-    for (IconRequirement<?,?> requirement : requirements) {
+    for (IconRequirement<?, ?> requirement : requirements) {
       if (requirement.canTake()) {
         requirement.take(player);
       }

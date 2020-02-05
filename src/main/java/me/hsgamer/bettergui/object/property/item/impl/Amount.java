@@ -18,21 +18,17 @@ public class Amount extends ItemProperty<Object, Integer> {
 
   @Override
   public Integer getParsed(Player player) {
-    if (getValue() instanceof Integer) {
-      return (Integer) getValue();
+    String value = String.valueOf(getValue());
+    value = getIcon().hasVariables(value) ? getIcon().setVariables(value, player) : value;
+    if (ExpressionUtils.isValidExpression(value)) {
+      return ExpressionUtils.getResult(value).intValue();
     } else {
-      String value = (String) getValue();
-      value = getIcon().hasVariables(value) ? getIcon().setVariables(value, player) : value;
-      if (ExpressionUtils.isValidExpression(value)) {
-        return ExpressionUtils.getResult(value).intValue();
+      if (Validate.isValidInteger(value)) {
+        return Integer.parseInt(value);
       } else {
-        if (Validate.isValidInteger(value)) {
-          return Integer.parseInt(value);
-        } else {
-          CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
-              DefaultMessage.INVALID_AMOUNT).replace("{input}", value));
-          return 1;
-        }
+        CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
+            DefaultMessage.INVALID_AMOUNT).replace("{input}", value));
+        return 1;
       }
     }
   }

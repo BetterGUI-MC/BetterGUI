@@ -15,9 +15,9 @@ import org.bukkit.event.inventory.ClickType;
 
 public class ClickRequirement extends IconProperty<ConfigurationSection> {
 
-  private final Map<ClickType, List<IconRequirement<?,?>>> requirementsPerClickType = new EnumMap<>(
+  private final Map<ClickType, List<IconRequirement<?, ?>>> requirementsPerClickType = new EnumMap<>(
       ClickType.class);
-  private final List<IconRequirement<?,?>> defaultRequirements = new ArrayList<>();
+  private final List<IconRequirement<?, ?>> defaultRequirements = new ArrayList<>();
 
   public ClickRequirement(Icon icon) {
     super(icon);
@@ -29,7 +29,7 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     for (ClickType clickType : ClickType.values()) {
       String subsection = clickType.name();
       if (getValue().isConfigurationSection(subsection)) {
-        List<IconRequirement<?,?>> requirements = RequirementBuilder
+        List<IconRequirement<?, ?>> requirements = RequirementBuilder
             .loadRequirementsFromSection(getValue().getConfigurationSection(subsection),
                 getIcon());
         requirementsPerClickType.put(clickType, requirements);
@@ -43,7 +43,7 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
       }
     }
     if (getValue().isSet("DEFAULT")) {
-      List<IconRequirement<?,?>> requirements = RequirementBuilder
+      List<IconRequirement<?, ?>> requirements = RequirementBuilder
           .loadRequirementsFromSection(getValue().getConfigurationSection("DEFAULT"),
               getIcon());
       defaultRequirements.addAll(requirements);
@@ -57,7 +57,7 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
   }
 
   public boolean check(Player player, ClickType clickType) {
-    for (IconRequirement<?,?> requirement : requirementsPerClickType
+    for (IconRequirement<?, ?> requirement : requirementsPerClickType
         .getOrDefault(clickType, defaultRequirements)) {
       if (!requirement.check(player)) {
         return false;
@@ -67,7 +67,7 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
   }
 
   public void take(Player player, ClickType clickType) {
-    for (IconRequirement<?,?> requirement : requirementsPerClickType
+    for (IconRequirement<?, ?> requirement : requirementsPerClickType
         .getOrDefault(clickType, defaultRequirements)) {
       if (requirement.canTake()) {
         requirement.take(player);
