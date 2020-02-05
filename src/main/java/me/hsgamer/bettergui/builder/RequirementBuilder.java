@@ -96,7 +96,7 @@ public class RequirementBuilder {
       }
       IconRequirement<?,?> requirement = rawRequirement.get();
       if (section.isConfigurationSection(type)) {
-        Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
+        Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getConfigurationSection(type).getValues(false));
         if (keys.containsKey(Settings.VALUE)) {
           requirement.setValue(keys.get(Settings.VALUE));
           if (keys.containsKey(Settings.MESSAGE)) {
@@ -113,11 +113,10 @@ public class RequirementBuilder {
                   + "\" doesn't have VALUE");
           return;
         }
-        requirements.add(requirement);
-      } else if (section.isSet(type)) {
+      } else {
         requirement.setValue(section.get(type));
-        requirements.add(requirement);
       }
+      requirements.add(requirement);
     });
 
     return requirements;
@@ -125,7 +124,7 @@ public class RequirementBuilder {
 
   private static class Settings {
 
-    static final String VALUE = "type";
+    static final String VALUE = "value";
     static final String MESSAGE = "message";
     static final String TAKE = "take";
   }

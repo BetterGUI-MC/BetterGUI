@@ -26,7 +26,8 @@ public class ExpLevelRequirement extends IconRequirement<Object, Integer> implem
     if (value instanceof Integer) {
       return (Integer) value;
     } else {
-      String parsed = icon.hasVariables((String) value) ? icon.setVariables((String) value, player) : (String) value;
+      String parsed = String.valueOf(value);
+      parsed = icon.hasVariables(parsed) ? icon.setVariables(parsed, player) : parsed;
       if (ExpressionUtils.isValidExpression(parsed)) {
         return ExpressionUtils.getResult(parsed).intValue();
       } else {
