@@ -5,15 +5,15 @@ import org.bukkit.permissions.PermissionDefault;
 
 public class Permissions {
 
-  private static final String prefix = BetterGUI.getInstance().getDescription().getName()
+  private static final String PREFIX = BetterGUI.getInstance().getDescription().getName()
       .toLowerCase();
 
-  public static final Permission ITEMS = new Permission(prefix, ".items", PermissionDefault.OP);
-  public static final Permission OPEN_MENU = new Permission(prefix, ".openmenu",
+  public static final Permission ITEMS = new Permission(PREFIX, ".items", PermissionDefault.OP);
+  public static final Permission OPEN_MENU = new Permission(PREFIX, ".openmenu",
       PermissionDefault.OP);
-  public static final Permission RELOAD = new Permission(prefix, ".reload",
+  public static final Permission RELOAD = new Permission(PREFIX, ".reload",
       PermissionDefault.OP);
-  public static final Permission ADDONS = new Permission(prefix, ".addons",
+  public static final Permission ADDONS = new Permission(PREFIX, ".addons",
       PermissionDefault.OP);
 
   private Permissions() {
