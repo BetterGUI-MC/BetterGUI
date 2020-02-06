@@ -2,10 +2,13 @@ package me.hsgamer.bettergui.command;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.manager.MenuManager;
+import me.hsgamer.bettergui.util.BukkitUtils;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -60,5 +63,16 @@ public class OpenCommand extends BukkitCommand {
           getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
       return false;
     }
+  }
+
+  @Override
+  public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+    List<String> list = new ArrayList<>();
+    if (args.length == 1) {
+      list.addAll(getInstance().getMenuManager().getMenuNames());
+    } else if (args.length == 2) {
+      BukkitUtils.getOnlinePlayers().forEach(player -> list.add(player.getName()));
+    }
+    return list;
   }
 }

@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.manager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.object.Menu;
@@ -60,5 +61,14 @@ public class MenuManager {
     Menu menu = menuMap.get(name);
     menu.setParentMenu(parentMenu);
     menu.createInventory(player);
+  }
+
+  /**
+   * Get the name of all menus
+   *
+   * @return the list of the names
+   */
+  public Set<String> getMenuNames() {
+    return menuMap.keySet();
   }
 }
