@@ -37,7 +37,6 @@ public class PropertyBuilder {
     registerItemProperty("name", Name.class);
     registerItemProperty("lore", Lore.class);
     registerItemProperty("amount", Amount.class);
-    registerItemProperty("type", Type.class);
     registerItemProperty("id", Type.class);
     registerItemProperty("material", Type.class);
     registerItemProperty("hide-attributes", HideAttributes.class);
