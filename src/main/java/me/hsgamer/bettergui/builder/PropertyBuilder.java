@@ -4,6 +4,7 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
@@ -23,6 +24,7 @@ import me.hsgamer.bettergui.object.property.item.impl.Lore;
 import me.hsgamer.bettergui.object.property.item.impl.Name;
 import me.hsgamer.bettergui.object.property.item.impl.Type;
 import me.hsgamer.bettergui.object.property.item.impl.Unbreakable;
+import me.hsgamer.bettergui.util.CaseInsensitiveStringLinkedMap;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -135,20 +137,20 @@ public class PropertyBuilder {
 
   public static Map<String, ItemProperty<?, ?>> loadItemPropertiesFromSection(Icon icon,
       ConfigurationSection section) {
-    Map<String, ItemProperty<?, ?>> properties = new CaseInsensitiveStringMap<>();
-    section.getKeys(false).forEach(path -> {
-      if (itemProperties.containsKey(path)) {
-        Class<? extends ItemProperty<?, ?>> clazz = itemProperties.get(path);
-        try {
-          ItemProperty<?, ?> property = clazz.getDeclaredConstructor(Icon.class).newInstance(icon);
-          property.setValue(section.get(path));
-          properties.put(path, property);
-        } catch (Exception e) {
-          getInstance().getLogger()
-              .log(Level.WARNING,
-                  "Something wrong when creating the property '" + path + "' in the icon '" +
-                      icon.getName() + "' in the menu '" + icon.getMenu().getName() + "'", e);
-        }
+    Map<String, ItemProperty<?, ?>> properties = new CaseInsensitiveStringLinkedMap<>();
+    Set<String> keys = section.getKeys(false);
+    keys.removeIf(s -> !itemProperties.containsKey(s));
+    keys.forEach(path -> {
+      Class<? extends ItemProperty<?, ?>> clazz = itemProperties.get(path);
+      try {
+        ItemProperty<?, ?> property = clazz.getDeclaredConstructor(Icon.class).newInstance(icon);
+        property.setValue(section.get(path));
+        properties.put(path, property);
+      } catch (Exception e) {
+        getInstance().getLogger()
+            .log(Level.WARNING,
+                "Something wrong when creating the property '" + path + "' in the icon '" +
+                    icon.getName() + "' in the menu '" + icon.getMenu().getName() + "'", e);
       }
     });
     return properties;
@@ -156,20 +158,20 @@ public class PropertyBuilder {
 
   public static Map<String, IconProperty<?>> loadIconPropertiesFromSection(Icon icon,
       ConfigurationSection section) {
-    Map<String, IconProperty<?>> properties = new CaseInsensitiveStringMap<>();
-    section.getKeys(false).forEach(path -> {
-      if (iconProperties.containsKey(path)) {
-        Class<? extends IconProperty<?>> clazz = iconProperties.get(path);
-        try {
-          IconProperty<?> property = clazz.getDeclaredConstructor(Icon.class).newInstance(icon);
-          property.setValue(section.get(path));
-          properties.put(path, property);
-        } catch (Exception e) {
-          getInstance().getLogger()
-              .log(Level.WARNING,
-                  "Something wrong when creating the property '" + path + "' in the icon '" +
-                      icon.getName() + "' in the menu '" + icon.getMenu().getName() + "'", e);
-        }
+    Map<String, IconProperty<?>> properties = new CaseInsensitiveStringLinkedMap<>();
+    Set<String> keys = section.getKeys(false);
+    keys.removeIf(s -> !iconProperties.containsKey(s));
+    keys.forEach(path -> {
+      Class<? extends IconProperty<?>> clazz = iconProperties.get(path);
+      try {
+        IconProperty<?> property = clazz.getDeclaredConstructor(Icon.class).newInstance(icon);
+        property.setValue(section.get(path));
+        properties.put(path, property);
+      } catch (Exception e) {
+        getInstance().getLogger()
+            .log(Level.WARNING,
+                "Something wrong when creating the property '" + path + "' in the icon '" +
+                    icon.getName() + "' in the menu '" + icon.getMenu().getName() + "'", e);
       }
     });
     return properties;
@@ -177,18 +179,18 @@ public class PropertyBuilder {
 
   public static Map<String, Property<?>> loadOtherPropertiesFromSection(
       ConfigurationSection section) {
-    Map<String, Property<?>> properties = new CaseInsensitiveStringMap<>();
-    section.getKeys(false).forEach(path -> {
-      if (otherProperties.containsKey(path)) {
-        Class<? extends Property<?>> clazz = otherProperties.get(path);
-        try {
-          Property<?> property = clazz.getDeclaredConstructor().newInstance();
-          property.setValue(section.get(path));
-          properties.put(path, property);
-        } catch (Exception e) {
-          getInstance().getLogger()
-              .log(Level.WARNING, "Something wrong when creating the property '" + path + "'", e);
-        }
+    Map<String, Property<?>> properties = new CaseInsensitiveStringLinkedMap<>();
+    Set<String> keys = section.getKeys(false);
+    keys.removeIf(s -> !otherProperties.containsKey(s));
+    keys.forEach(path -> {
+      Class<? extends Property<?>> clazz = otherProperties.get(path);
+      try {
+        Property<?> property = clazz.getDeclaredConstructor().newInstance();
+        property.setValue(section.get(path));
+        properties.put(path, property);
+      } catch (Exception e) {
+        getInstance().getLogger()
+            .log(Level.WARNING, "Something wrong when creating the property '" + path + "'", e);
       }
     });
     return properties;
