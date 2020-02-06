@@ -6,9 +6,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.NoSuchFileException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,6 +17,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.object.addon.Addon;
+import me.hsgamer.bettergui.object.addon.AddonClassLoader;
 import me.hsgamer.bettergui.object.addon.AddonDescription;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -93,11 +91,6 @@ public class AddonManager {
     for (File file : Objects.requireNonNull(addonsDir.listFiles())) {
       if (file.getName().endsWith(".jar")) {
         try (JarFile jar = new JarFile(file)) {
-          ClassLoader loader = URLClassLoader.newInstance(
-              new URL[]{file.toURI().toURL()},
-              getClass().getClassLoader()
-          );
-
           // Get addon description
           AddonDescription addonDescription = getAddonDescription(jar);
           if (addonMap.containsKey(addonDescription.getName())) {
@@ -106,12 +99,9 @@ public class AddonManager {
           }
 
           // Try to load the addon
-          Class<?> clazz = Class.forName(addonDescription.getMainClass(), true, loader);
-          Class<? extends Addon> newClass = clazz.asSubclass(Addon.class);
-          Constructor<? extends Addon> constructor = newClass.getConstructor();
-          Addon addon = constructor.newInstance();
-          addon.setDescription(addonDescription);
-          addonMap.put(addonDescription.getName(), addon);
+          AddonClassLoader loader = new AddonClassLoader(file, addonDescription,
+              getClass().getClassLoader());
+          addonMap.put(addonDescription.getName(), loader.getAddon());
         } catch (InvalidConfigurationException e) {
           plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
         } catch (Exception e) {
