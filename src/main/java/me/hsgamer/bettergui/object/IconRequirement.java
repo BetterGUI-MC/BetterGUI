@@ -16,9 +16,9 @@ import org.bukkit.entity.Player;
 public abstract class IconRequirement<V, L> {
 
   protected final Icon icon;
+  private final List<Command> failCommand = new ArrayList<>();
   protected V value;
   private boolean canTake;
-  private final List<Command> failCommand = new ArrayList<>();
 
   /**
    * The requirement
