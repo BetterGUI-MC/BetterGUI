@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.util;
 
 import com.udojava.evalex.Expression;
-import com.udojava.evalex.Expression.ExpressionException;
 import com.udojava.evalex.Expression.LazyNumber;
 import com.udojava.evalex.LazyFunction;
 import java.math.BigDecimal;
@@ -18,7 +17,7 @@ public class ExpressionUtils {
     addStringFunction(expression);
     try {
       return expression.isBoolean();
-    } catch (ExpressionException e) {
+    } catch (Exception e) {
       return false;
     }
   }
@@ -28,7 +27,7 @@ public class ExpressionUtils {
     addStringFunction(expression);
     try {
       return expression.eval();
-    } catch (ExpressionException e) {
+    } catch (Exception e) {
       return null;
     }
   }
