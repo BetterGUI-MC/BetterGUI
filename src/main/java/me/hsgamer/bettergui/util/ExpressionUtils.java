@@ -6,7 +6,6 @@ import com.udojava.evalex.Expression.LazyNumber;
 import com.udojava.evalex.LazyFunction;
 import java.math.BigDecimal;
 import java.util.List;
-import me.hsgamer.bettergui.BetterGUI;
 
 public class ExpressionUtils {
 
@@ -15,7 +14,6 @@ public class ExpressionUtils {
   }
 
   public static boolean isBoolean(String input) {
-    BetterGUI.getInstance().getLogger().info(input);
     Expression expression = new Expression(input);
     addStringFunction(expression);
     try {
