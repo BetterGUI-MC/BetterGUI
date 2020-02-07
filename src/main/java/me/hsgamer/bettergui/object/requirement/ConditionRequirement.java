@@ -45,17 +45,7 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
   @Override
   public boolean check(Player player) {
     if (getParsedValue(player).equals(Boolean.FALSE)) {
-      if (failMessage != null) {
-        if (!failMessage.isEmpty()) {
-          player.sendMessage(failMessage);
-        }
-      } else {
-        String message = BetterGUI.getInstance().getMessageConfig()
-            .get(DefaultMessage.NO_REQUIREMENT);
-        if (!message.isEmpty()) {
-          CommonUtils.sendMessage(player, message);
-        }
-      }
+      sendFailCommand(player);
       return false;
     }
     return true;

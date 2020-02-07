@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.object.ClickableItem;
+import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.object.requirement.ConditionRequirement;
@@ -15,7 +16,6 @@ import me.hsgamer.bettergui.object.requirement.ExpLevelRequirement;
 import me.hsgamer.bettergui.object.requirement.ItemRequirement;
 import me.hsgamer.bettergui.object.requirement.PermissionRequirement;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
-import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -86,6 +86,7 @@ public class RequirementBuilder {
     return Optional.empty();
   }
 
+  @SuppressWarnings("unchecked")
   public static List<IconRequirement<?, ?>> loadRequirementsFromSection(
       ConfigurationSection section,
       Icon icon) {
@@ -101,9 +102,11 @@ public class RequirementBuilder {
             section.getConfigurationSection(type).getValues(false));
         if (keys.containsKey(Settings.VALUE)) {
           requirement.setValue(keys.get(Settings.VALUE));
-          if (keys.containsKey(Settings.MESSAGE)) {
-            requirement.setFailMessage(
-                CommonUtils.colorize(String.valueOf(keys.get(Settings.MESSAGE))));
+          if (keys.containsKey(Settings.COMMAND)) {
+            List<Command> commands = new ArrayList<>();
+            ((List<String>) keys.get(Settings.COMMAND))
+                .forEach(s -> commands.add(CommandBuilder.getCommand(icon, s)));
+            requirement.setFailCommand(commands);
           }
           if (keys.containsKey(Settings.TAKE)) {
             requirement.canTake((Boolean) keys.get(Settings.TAKE));
@@ -127,7 +130,7 @@ public class RequirementBuilder {
   private static class Settings {
 
     static final String VALUE = "value";
-    static final String MESSAGE = "message";
+    static final String COMMAND = "command";
     static final String TAKE = "take";
   }
 }

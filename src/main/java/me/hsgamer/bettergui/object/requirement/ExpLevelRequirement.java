@@ -43,18 +43,7 @@ public class ExpLevelRequirement extends IconRequirement<Object, Integer> implem
   public boolean check(Player player) {
     int levels = getParsedValue(player);
     if (levels > 0 && player.getLevel() < levels) {
-      if (failMessage != null) {
-        if (!failMessage.isEmpty()) {
-          player.sendMessage(
-              failMessage.replace("{levels}", Integer.toString(levels)));
-        }
-      } else {
-        String message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.NO_EXP);
-        if (!message.isEmpty()) {
-          CommonUtils
-              .sendMessage(player, message.replace("{levels}", Integer.toString(levels)));
-        }
-      }
+      sendFailCommand(player);
       return false;
     }
     checked.put(player.getUniqueId(), levels);

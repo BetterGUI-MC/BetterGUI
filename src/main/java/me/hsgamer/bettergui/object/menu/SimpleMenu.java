@@ -98,20 +98,12 @@ public class SimpleMenu extends Menu {
         }
 
         if (keys.containsKey(Settings.OPEN_ACTION)) {
-          Object value = keys.get(Settings.OPEN_ACTION);
-          if (value instanceof List) {
-            openActions.addAll(CommandBuilder.getCommands(null, (List<String>) value));
-          } else if (value instanceof String) {
-            openActions.addAll(CommandBuilder.getCommands(null, (String) value));
-          }
+          openActions.addAll(
+              CommandBuilder.getCommands(null, (List<String>) keys.get(Settings.OPEN_ACTION)));
         }
         if (keys.containsKey(Settings.CLOSE_ACTION)) {
-          Object value = keys.get(Settings.CLOSE_ACTION);
-          if (value instanceof List) {
-            closeActions.addAll(CommandBuilder.getCommands(null, (List<String>) value));
-          } else if (value instanceof String) {
-            closeActions.addAll(CommandBuilder.getCommands(null, (String) value));
-          }
+          closeActions.addAll(
+              CommandBuilder.getCommands(null, (List<String>) keys.get(Settings.CLOSE_ACTION)));
         }
 
         if (keys.containsKey(Settings.PERMISSION)) {

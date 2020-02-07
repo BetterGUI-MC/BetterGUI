@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.builder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,10 +69,6 @@ public class CommandBuilder {
                 + ". The command will be ignored", ex);
       }
     }
-  }
-
-  public static List<Command> getCommands(Icon icon, String input) {
-    return getCommands(icon, Arrays.asList(input.split(";")));
   }
 
   public static List<Command> getCommands(Icon icon, List<String> input) {

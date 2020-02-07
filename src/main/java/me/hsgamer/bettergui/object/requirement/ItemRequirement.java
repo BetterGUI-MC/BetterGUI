@@ -6,7 +6,6 @@ import com.cryptomorin.xseries.XMaterial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
@@ -15,11 +14,6 @@ import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.object.property.item.impl.Amount;
 import me.hsgamer.bettergui.object.requirement.ItemRequirement.RequiredItem;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.ItemUtils;
-import me.hsgamer.bettergui.util.VersionUtils;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -64,33 +58,7 @@ public class ItemRequirement extends IconRequirement<List<String>, List<Required
         }
       }
       if (amountFound < amountNeeded) {
-        String message = CommonUtils.colorize(
-            failMessage != null ? failMessage
-                : getInstance().getMessageConfig().get(DefaultMessage.NO_REQUIRED_ITEM));
-        if (!message.isEmpty()) {
-          message = message
-              .replace("{item}",
-                  (itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName())
-                      ? itemStack.getItemMeta().getDisplayName()
-                      : XMaterial.matchXMaterial(itemStack).name())
-              .replace("{amount}", Integer.toString(itemStack.getAmount()));
-          if (VersionUtils.isSpigot() && (boolean) getInstance().getMainConfig()
-              .get(DefaultConfig.USE_HOVER_EVENT)) {
-            String itemJson = ItemUtils.convertItemStackToJson(itemStack);
-
-            BaseComponent[] hoverEventComponents = new BaseComponent[]{
-                new TextComponent(itemJson)};
-
-            HoverEvent event = new HoverEvent(HoverEvent.Action.SHOW_ITEM, hoverEventComponents);
-
-            TextComponent component = new TextComponent(message);
-            component.setHoverEvent(event);
-
-            player.spigot().sendMessage(component);
-          } else {
-            player.sendMessage(message);
-          }
-        }
+        sendFailCommand(player);
         return false;
       }
     }

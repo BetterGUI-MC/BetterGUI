@@ -29,30 +29,19 @@ public class ClickCommand extends IconProperty<Object> {
     super.setValue(value);
     if (getValue() instanceof List) {
       defaultCommands.addAll(CommandBuilder.getCommands(getIcon(), (List<String>) getValue()));
-    } else if (getValue() instanceof String) {
-      defaultCommands.addAll(CommandBuilder.getCommands(getIcon(), (String) getValue()));
     } else if (getValue() instanceof ConfigurationSection) {
       ConfigurationSection section = (ConfigurationSection) getValue();
       for (ClickType clickType : ClickType.values()) {
         String subsection = clickType.name();
         if (section.isSet(subsection)) {
-          List<Command> commands = new ArrayList<>();
-          if (section.isList(subsection)) {
-            commands
-                .addAll(CommandBuilder.getCommands(getIcon(), section.getStringList(subsection)));
-          } else {
-            commands.addAll(CommandBuilder.getCommands(getIcon(), section.getString(subsection)));
-          }
+          List<Command> commands = new ArrayList<>(
+              CommandBuilder.getCommands(getIcon(), section.getStringList(subsection)));
           commandsPerClickType.put(clickType, commands);
         }
       }
       if (section.isSet("DEFAULT")) {
-        List<Command> commands = new ArrayList<>();
-        if (section.isList("DEFAULT")) {
-          commands.addAll(CommandBuilder.getCommands(getIcon(), section.getStringList("DEFAULT")));
-        } else {
-          commands.addAll(CommandBuilder.getCommands(getIcon(), section.getString("DEFAULT")));
-        }
+        List<Command> commands = new ArrayList<>(
+            CommandBuilder.getCommands(getIcon(), section.getStringList("DEFAULT")));
         defaultCommands.addAll(commands);
       }
     }
