@@ -20,7 +20,6 @@ public class MainConfig extends PluginConfig {
   }
 
   public enum DefaultConfig {
-    USE_HOVER_EVENT(Boolean.class, "use-hover-event", true),
     DEFAULT_MENU_TYPE(String.class, "default-menu-type", "simple"),
     DEFAULT_ICON_TYPE(String.class, "default-icon-type", "simple");
     final Class<?> classType;
