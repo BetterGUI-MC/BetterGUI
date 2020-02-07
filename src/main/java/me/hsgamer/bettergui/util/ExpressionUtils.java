@@ -81,9 +81,9 @@ public class ExpressionUtils {
       @Override
       public LazyNumber lazyEval(List<LazyNumber> lazyParams) {
         if (lazyParams.get(0).getString().equals(lazyParams.get(1).getString())) {
-          return zero;
+          return one;
         }
-        return one;
+        return zero;
       }
     });
   }
