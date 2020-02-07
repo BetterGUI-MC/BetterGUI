@@ -92,7 +92,7 @@ public final class BetterGUI extends JavaPlugin {
 
   public void loadMenuConfig() {
     File menusFolder = new File(getDataFolder(), "menu");
-    if (!menusFolder.isDirectory()) {
+    if (!menusFolder.exists()) {
       menusFolder.mkdirs();
     }
     if (menusFolder.isDirectory()) {
