@@ -67,7 +67,7 @@ public abstract class Addon {
   }
 
   /**
-   * Create the addon's config
+   * Create the config
    */
   public void setupConfig() {
     config = new PluginConfig(getPlugin(),
@@ -75,7 +75,7 @@ public abstract class Addon {
   }
 
   /**
-   * Get the addon's config
+   * Get the config
    *
    * @return the config
    */
@@ -92,9 +92,19 @@ public abstract class Addon {
   public void reloadConfig() {
     if (config == null) {
       setupConfig();
-      return;
     } else {
       config.reloadConfig();
+    }
+  }
+
+  /**
+   * Save the config
+   */
+  public void saveConfig() {
+    if (config == null) {
+      setupConfig();
+    } else {
+      config.saveConfig();
     }
   }
 }
