@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public abstract class Addon {
 
+  private File dataFolder;
   private PluginConfig config;
   private AddonDescription description;
 
@@ -70,8 +71,7 @@ public abstract class Addon {
    * Create the config
    */
   public void setupConfig() {
-    config = new PluginConfig(getPlugin(),
-        "addon" + File.separator + description.getName() + File.separator + "config.yml");
+    config = new PluginConfig(getPlugin(), new File(getDataFolder(), "config.yml"));
   }
 
   /**
@@ -106,5 +106,21 @@ public abstract class Addon {
     } else {
       config.saveConfig();
     }
+  }
+
+  /**
+   * Get the addon's folder
+   *
+   * @return the directory for the addon
+   */
+  public File getDataFolder() {
+    if (dataFolder == null) {
+      dataFolder = new File(getPlugin().getDataFolder(),
+          "addon" + File.separator + description.getName());
+    }
+    if (!dataFolder.exists()) {
+      dataFolder.mkdirs();
+    }
+    return dataFolder;
   }
 }
