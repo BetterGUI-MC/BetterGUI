@@ -58,8 +58,8 @@ public class ItemCommand extends Command {
       taskChain.sync(() -> player.getInventory().addItem(itemStack));
     } else {
       getInstance().getLogger().log(Level.WARNING, "Invalid item on {0}", parsed);
-      player.sendMessage(
-          CommonUtils.colorize("&cInvalid item. Inform the operators about this problem"));
+      CommonUtils
+          .sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.INVALID_ITEM));
     }
   }
 }

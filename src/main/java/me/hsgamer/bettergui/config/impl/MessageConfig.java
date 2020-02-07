@@ -30,7 +30,7 @@ public class MessageConfig extends PluginConfig {
     NO_REQUIREMENT("no-requirement", "&cYou don't meet the requirement to do this"),
     NO_EXP("no-exp", "&cYou don't have enough xp to do this"),
     HAVE_MET_REQUIREMENT_PLACEHOLDER("have-met-requirement-placeholder", "Yes"),
-    INVALID_REQUIRED_ITEM("invalid-required-item",
+    INVALID_ITEM("invalid-item",
         "&cUnable to get required item. Inform the staff"),
     NO_REQUIRED_ITEM("no-required-item",
         "&cYou must have &e{amount}x {item} for this."),

@@ -45,7 +45,7 @@ public class ItemRequirement extends IconRequirement<List<String>, List<Required
         }
       } else {
         CommonUtils.sendMessage(player,
-            getInstance().getMessageConfig().get(DefaultMessage.INVALID_REQUIRED_ITEM));
+            getInstance().getMessageConfig().get(DefaultMessage.INVALID_ITEM));
       }
     }
     return list;
