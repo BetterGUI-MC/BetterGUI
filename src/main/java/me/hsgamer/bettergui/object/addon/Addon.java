@@ -1,13 +1,17 @@
 package me.hsgamer.bettergui.object.addon;
 
+import java.io.File;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.PluginConfig;
 import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * The main class of the addon
  */
 public abstract class Addon {
 
+  private PluginConfig config;
   private AddonDescription description;
 
   /**
@@ -60,5 +64,37 @@ public abstract class Addon {
    */
   public void registerCommand(BukkitCommand command) {
     getPlugin().getCommandManager().register(command);
+  }
+
+  /**
+   * Create the addon's config
+   */
+  public void setupConfig() {
+    config = new PluginConfig(getPlugin(),
+        "addon" + File.separator + description.getName() + File.separator + "config.yml");
+  }
+
+  /**
+   * Get the addon's config
+   *
+   * @return the config
+   */
+  public FileConfiguration getConfig() {
+    if (config == null) {
+      setupConfig();
+    }
+    return config.getConfig();
+  }
+
+  /**
+   * Reload the config
+   */
+  public void reloadConfig() {
+    if (config == null) {
+      setupConfig();
+      return;
+    } else {
+      config.reloadConfig();
+    }
   }
 }
