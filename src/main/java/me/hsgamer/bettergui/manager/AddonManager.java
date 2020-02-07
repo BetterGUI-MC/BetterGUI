@@ -32,7 +32,7 @@ public class AddonManager {
   public AddonManager(JavaPlugin plugin) {
     this.plugin = plugin;
     addonsDir = new File(plugin.getDataFolder(), "addon");
-    if (!addonsDir.isDirectory()) {
+    if (!addonsDir.exists()) {
       addonsDir.mkdirs();
     }
   }

@@ -5,6 +5,7 @@ import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
 import fr.mrmicky.fastinv.FastInvManager;
 import java.io.File;
+import java.util.Objects;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
@@ -96,7 +97,7 @@ public final class BetterGUI extends JavaPlugin {
       menusFolder.mkdirs();
     }
     if (menusFolder.isDirectory()) {
-      for (File subFile : menusFolder.listFiles()) {
+      for (File subFile : Objects.requireNonNull(menusFolder.listFiles())) {
         menuManager.registerMenu(new PluginConfig(this, subFile));
       }
     } else if (menusFolder.isFile() && menusFolder.getName().endsWith(".yml")) {
