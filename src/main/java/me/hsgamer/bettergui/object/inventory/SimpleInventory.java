@@ -52,6 +52,34 @@ public class SimpleInventory extends FastInv implements MenuHolder {
     createItems();
   }
 
+  public SimpleInventory(Player player, int size, Map<Integer, Icon> icons,
+      Icon defaultIcon,
+      long ticks) {
+    super(size);
+    this.ticks = ticks;
+    this.maxSlots = size;
+    this.player = player;
+    icons.forEach((key, value) -> this.icons.put(key, value.cloneIcon()));
+    if (defaultIcon != null) {
+      this.defaultIcon = defaultIcon.cloneIcon();
+    }
+    createItems();
+  }
+
+  public SimpleInventory(Player player, InventoryType type, int maxSlots,
+      Map<Integer, Icon> icons,
+      Icon defaultIcon, long ticks) {
+    super(type);
+    this.ticks = ticks;
+    this.maxSlots = maxSlots;
+    this.player = player;
+    icons.forEach((key, value) -> this.icons.put(key - 1, value.cloneIcon()));
+    if (defaultIcon != null) {
+      this.defaultIcon = defaultIcon.cloneIcon();
+    }
+    createItems();
+  }
+
   @Override
   public void onOpen(InventoryOpenEvent event) {
     if (ticks > 0) {

@@ -134,7 +134,7 @@ public class SimpleMenu extends Menu {
               ((ParentIcon) tempIcon).addChild(icon.cloneIcon());
             } else {
               getInstance().getLogger().warning(
-                  icon.getName() + " & " + tempIcon.getMenu() + " from " + getName()
+                  icon.getName() + " & " + tempIcon.getName() + " from " + getName()
                       + " have the same slot. Only one of them will be set");
             }
           } else {
@@ -158,11 +158,21 @@ public class SimpleMenu extends Menu {
           .colorize(titleHasVariable ? VariableManager.setVariables(title, player)
               : title);
       if (inventoryType.equals(InventoryType.CHEST)) {
-        inventory = new SimpleInventory(player, maxSlots, parsedTitle, icons, defaultIcon, ticks);
+        if (parsedTitle != null) {
+          inventory = new SimpleInventory(player, maxSlots, parsedTitle, icons, defaultIcon, ticks);
+        } else {
+          inventory = new SimpleInventory(player, maxSlots, icons, defaultIcon, ticks);
+        }
       } else {
-        inventory = new SimpleInventory(player, inventoryType, maxSlots, parsedTitle, icons,
-            defaultIcon,
-            ticks);
+        if (parsedTitle != null) {
+          inventory = new SimpleInventory(player, inventoryType, maxSlots, parsedTitle, icons,
+              defaultIcon,
+              ticks);
+        } else {
+          inventory = new SimpleInventory(player, inventoryType, maxSlots, icons,
+              defaultIcon,
+              ticks);
+        }
       }
       if (!openActions.isEmpty()) {
         inventory.addOpenHandler(event -> {

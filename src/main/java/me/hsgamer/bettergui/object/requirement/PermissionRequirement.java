@@ -34,7 +34,7 @@ public class PermissionRequirement extends IconRequirement<List<String>, List<St
           }
         } else {
           String message = BetterGUI.getInstance().getMessageConfig()
-              .get(DefaultMessage.NO_ICON_PERMISSION);
+              .get(DefaultMessage.NO_ICON_PERMISSION).replace("{permission}", value);
           if (!message.isEmpty()) {
             CommonUtils.sendMessage(player, message);
           }
