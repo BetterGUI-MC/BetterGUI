@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.config.impl;
 
+import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.object.menu.DummyMenu;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ public class ItemConfig extends PluginConfig {
 
   public void initializeMenu() {
     menu = new DummyMenu("dummyitems");
+    menu.setPermission(Permissions.ITEMS);
     menu.setFromFile(getConfig());
   }
 
