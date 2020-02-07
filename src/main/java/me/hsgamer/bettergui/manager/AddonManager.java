@@ -89,7 +89,7 @@ public class AddonManager {
 
     // Load the addon files
     for (File file : Objects.requireNonNull(addonsDir.listFiles())) {
-      if (file.getName().endsWith(".jar")) {
+      if (file.isFile() && file.getName().endsWith(".jar")) {
         try (JarFile jar = new JarFile(file)) {
           // Get addon description
           AddonDescription addonDescription = getAddonDescription(jar);
