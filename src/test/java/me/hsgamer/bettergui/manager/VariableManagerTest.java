@@ -28,5 +28,6 @@ class VariableManagerTest {
   void setVariables() {
     Player dummyPlayer = mock(Player.class);
     assertEquals("output1", VariableManager.setVariables("{test}", dummyPlayer));
+    assertEquals("output1", VariableManager.setVariables("{test {test}}", dummyPlayer));
   }
 }
