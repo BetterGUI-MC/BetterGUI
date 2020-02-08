@@ -99,7 +99,7 @@ public class IconBuilder {
       }
       slots.add((y - 1) * 9 + x - 1);
     } else if (map.containsKey(SlotSetting.SLOT)) {
-      String input = (String) map.get(SlotSetting.SLOT);
+      String input = String.valueOf(map.get(SlotSetting.SLOT));
       for (String string : input.split(",")) {
         if (Validate.isValidPositiveInteger(string)) {
           slots.add(Integer.parseInt(string));
