@@ -35,6 +35,7 @@ public class CommandBuilder {
     register("condition:", ConditionCommand.class);
     register("give:", ItemCommand.class);
     register("open:", OpenMenuCommand.class);
+    register("open-menu:", OpenMenuCommand.class);
     register("back-menu", BackCommand.class);
     register("tell:", TellCommand.class);
     register("broadcast:", BroadcastCommand.class);
