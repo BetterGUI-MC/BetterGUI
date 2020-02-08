@@ -83,11 +83,10 @@ public abstract class Icon implements Cloneable {
       old = message;
       message = setSingleVariables(message, executor);
     } while (hasVariables(message) && !old.equals(message));
-    return message;
+    return VariableManager.setVariables(message, executor);
   }
 
   private String setSingleVariables(String message, Player executor) {
-    message = VariableManager.setVariables(message, executor);
     Matcher matcher = pattern.matcher(message);
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
