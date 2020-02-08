@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public final class BukkitUtils {
 
@@ -40,21 +39,6 @@ public final class BukkitUtils {
       BetterGUI.getInstance().getLogger()
           .log(Level.WARNING, "Unexpected error when getting online players", e);
       return Collections.emptyList();
-    }
-  }
-
-  public static String addYamlExtension(String input) {
-    if (input == null) {
-      return null;
-    }
-    return input.toLowerCase().endsWith(".yml") ? input : input + ".yml";
-  }
-
-  public static void saveResourceSafe(Plugin plugin, String name) {
-    try {
-      plugin.saveResource(name, false);
-    } catch (Exception ignored) {
-      // IGNORED
     }
   }
 

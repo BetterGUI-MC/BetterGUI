@@ -19,11 +19,10 @@ import me.hsgamer.bettergui.object.property.icon.ViewRequirement;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.object.property.item.impl.Amount;
 import me.hsgamer.bettergui.object.property.item.impl.Enchantment;
-import me.hsgamer.bettergui.object.property.item.impl.HideAttributes;
+import me.hsgamer.bettergui.object.property.item.impl.Flag;
 import me.hsgamer.bettergui.object.property.item.impl.Lore;
 import me.hsgamer.bettergui.object.property.item.impl.Name;
 import me.hsgamer.bettergui.object.property.item.impl.Type;
-import me.hsgamer.bettergui.object.property.item.impl.Unbreakable;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringLinkedMap;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,10 +40,11 @@ public class PropertyBuilder {
     registerItemProperty("amount", Amount.class);
     registerItemProperty("id", Type.class);
     registerItemProperty("material", Type.class);
-    registerItemProperty("hide-attributes", HideAttributes.class);
-    registerItemProperty("unbreakable", Unbreakable.class);
     registerItemProperty("enchantment", Enchantment.class);
     registerItemProperty("enchant", Enchantment.class);
+    registerItemProperty("flag", Flag.class);
+    registerItemProperty("item-flags", Flag.class);
+    registerItemProperty("itemflag", Flag.class);
 
     registerIconProperty("cooldown", Cooldown.class);
     registerIconProperty("variable", Variable.class);

@@ -33,6 +33,9 @@ public class MessageConfig extends PluginConfig {
     INVALID_NUMBER("invalid-number", "&cError converting! {input} is not a valid number"),
     INVALID_AMOUNT("invalid-amount", "&cInvalid amount of {input}! Will be set to 1 by default"),
     INVALID_CONDITION("invalid-condition", "&cInvalid condition! Please inform the staff"),
+    INVALID_FLAG("invalid-flag", "&cCannot find flag '{input}'. Inform the staff"),
+    INVALID_ENCHANTMENT("invalid-enchantment",
+        "Error parsing enchantment! {input} is not a valid enchantment"),
     PLAYER_NOT_FOUND("player-not-found",
         "&cThe player is not found. Maybe he is offline or didn't join your server");
     final String path;

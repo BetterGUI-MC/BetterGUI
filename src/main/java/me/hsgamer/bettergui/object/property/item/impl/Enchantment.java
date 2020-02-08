@@ -11,7 +11,6 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.Validate;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -45,10 +44,9 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
       if (enchantment.isPresent()) {
         enchantments.put(enchantment.get(), level);
       } else {
-        String error =
-            ChatColor.RED + "Error parsing enchantment!" + string + " is not a valid enchantment";
-        player.sendMessage(error);
-        BetterGUI.getInstance().getLogger().warning(error);
+        CommonUtils.sendMessage(player,
+            BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_ENCHANTMENT)
+                .replace("{input}", string));
       }
     }
     return enchantments;
