@@ -24,7 +24,7 @@ public class Flag extends ItemProperty<List<String>, Set<ItemFlag>> {
     Set<ItemFlag> flags = new HashSet<>();
     getValue().forEach(s -> {
       try {
-        flags.add(ItemFlag.valueOf(s.trim().toUpperCase()));
+        flags.add(ItemFlag.valueOf(s.trim().toUpperCase().replace(" ", "_")));
       } catch (IllegalArgumentException e) {
         CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
             DefaultMessage.INVALID_FLAG).replace("{input}", s));
