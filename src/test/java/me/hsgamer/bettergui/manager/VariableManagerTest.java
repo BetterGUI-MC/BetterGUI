@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class VariableManagerTest {
+
   @BeforeEach
   void setup() {
     VariableManager.register("test", (player, identifier) -> "output1");
