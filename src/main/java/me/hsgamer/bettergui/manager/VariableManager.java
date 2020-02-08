@@ -105,6 +105,18 @@ public class VariableManager {
    * @return the replaced string
    */
   public static String setVariables(String message, Player executor) {
+    String old;
+    do {
+      old = message;
+      message = setSingleVariables(message, executor);
+    } while (hasVariables(message) && !old.equals(message));
+    if (PlaceholderAPIHook.hasValidPlugin()) {
+      message = PlaceholderAPIHook.setPlaceholders(message, executor);
+    }
+    return message;
+  }
+
+  private static String setSingleVariables(String message, Player executor) {
     Matcher matcher = pattern.matcher(message);
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
@@ -118,9 +130,6 @@ public class VariableManager {
           }
         }
       }
-    }
-    if (PlaceholderAPIHook.hasValidPlugin()) {
-      message = PlaceholderAPIHook.setPlaceholders(message, executor);
     }
     return message;
   }
