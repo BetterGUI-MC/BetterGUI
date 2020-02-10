@@ -65,6 +65,24 @@ public class VariableManager {
       }
       return CommonUtils.colorize("&" + color.getChar());
     });
+    register("random_", (executor, identifier) -> {
+      identifier = identifier.trim();
+      if (identifier.contains(":")) {
+        String[] split = identifier.split(":", 2);
+        String s1 = split[0].trim();
+        String s2 = split[1].trim();
+        if (Validate.isValidInteger(s1) && Validate.isValidInteger(s2)) {
+          int i1 = Integer.parseInt(s1);
+          int i2 = Integer.parseInt(s2);
+          int max = Math.max(i1, i2);
+          int min = Math.min(i1, i2);
+          return String.valueOf(min + ThreadLocalRandom.current().nextInt(max - min + 1));
+        }
+      } else if (Validate.isValidInteger(identifier)) {
+        return String.valueOf(ThreadLocalRandom.current().nextInt(Integer.parseInt(identifier)));
+      }
+      return null;
+    });
   }
 
   private VariableManager() {
