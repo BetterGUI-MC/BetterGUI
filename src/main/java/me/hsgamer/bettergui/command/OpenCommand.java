@@ -24,7 +24,6 @@ public class OpenCommand extends BukkitCommand {
 
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
-    if (commandSender instanceof Player) {
       if (commandSender.hasPermission(Permissions.OPEN_MENU)) {
         MenuManager menuManager = getInstance().getMenuManager();
         if (strings.length > 0) {
@@ -40,8 +39,14 @@ public class OpenCommand extends BukkitCommand {
                 return false;
               }
             } else {
-              menuManager.openMenu(strings[0], (Player) commandSender);
-              return true;
+              if (commandSender instanceof Player) {
+                menuManager.openMenu(strings[0], (Player) commandSender);
+                return true;
+              } else {
+                CommonUtils.sendMessage(commandSender,
+                    getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
+                return false;
+              }
             }
           } else {
             CommonUtils.sendMessage(commandSender,
@@ -58,11 +63,6 @@ public class OpenCommand extends BukkitCommand {
             getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
         return false;
       }
-    } else {
-      CommonUtils.sendMessage(commandSender,
-          getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
-      return false;
-    }
   }
 
   @Override
