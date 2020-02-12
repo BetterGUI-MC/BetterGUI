@@ -130,7 +130,7 @@ public class SimpleMenu extends Menu {
                       + " have the same slot. Only one of them will be set");
             }
           } else {
-            if (slot <= maxSlots) {
+            if (slot < maxSlots) {
               icons.put(slot, icon.cloneIcon());
             } else {
               getInstance().getLogger().warning(
