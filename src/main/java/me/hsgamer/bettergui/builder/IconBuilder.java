@@ -101,12 +101,12 @@ public class IconBuilder {
     } else if (map.containsKey(SlotSetting.SLOT)) {
       String input = String.valueOf(map.get(SlotSetting.SLOT));
       for (String string : input.split(",")) {
-        if (Validate.isValidPositiveInteger(string)) {
+        if (Validate.isValidInteger(string)) {
           slots.add(Integer.parseInt(string));
         } else {
           String[] split = string.split("-", 2);
-          if (Validate.isValidPositiveInteger(split[0]) && Validate
-              .isValidPositiveInteger(split[1])) {
+          if (Validate.isValidInteger(split[0]) && Validate
+              .isValidInteger(split[1])) {
             int s1 = Integer.parseInt(split[0]);
             int s2 = Integer.parseInt(split[1]);
             int start = Math.min(s1, s2);
