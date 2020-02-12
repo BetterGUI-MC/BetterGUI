@@ -116,12 +116,4 @@ public class SimpleIcon extends Icon {
   public Map<String, Property<?>> getOtherProperties() {
     return otherProperties;
   }
-
-  public boolean isCloseOnClick() {
-    return closeOnClick;
-  }
-
-  public void setCloseOnClick(boolean closeOnClick) {
-    this.closeOnClick = closeOnClick;
-  }
 }
