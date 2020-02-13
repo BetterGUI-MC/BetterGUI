@@ -36,7 +36,7 @@ public class ItemCommand extends Command {
             amount = Integer.parseInt(rawInt);
           } else {
             CommonUtils.sendMessage(player,
-                getInstance().getMessageConfig().get(DefaultMessage.INVALID_AMOUNT)
+                getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
                     .replace("{input}", rawInt));
           }
         }
