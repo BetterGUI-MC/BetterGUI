@@ -10,21 +10,21 @@ import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Amount extends ItemProperty<Object, Integer> {
+public class Durability extends ItemProperty<Object, Short> {
 
-  public Amount(Icon icon) {
+  public Durability(Icon icon) {
     super(icon);
   }
 
   @Override
-  public Integer getParsed(Player player) {
+  public Short getParsed(Player player) {
     String value = String.valueOf(getValue()).trim();
     value = getIcon().hasVariables(value) ? getIcon().setVariables(value, player) : value;
     if (ExpressionUtils.isValidExpression(value)) {
-      return ExpressionUtils.getResult(value).intValue();
+      return ExpressionUtils.getResult(value).shortValue();
     } else {
-      if (Validate.isValidInteger(value)) {
-        return Integer.parseInt(value);
+      if (Validate.isValidShort(value)) {
+        return Short.parseShort(value);
       } else {
         CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
             DefaultMessage.INVALID_NUMBER).replace("{input}", value));
@@ -35,12 +35,12 @@ public class Amount extends ItemProperty<Object, Integer> {
 
   @Override
   public ItemStack parse(Player player, ItemStack parent) {
-    parent.setAmount(getParsed(player));
+    parent.setDurability(getParsed(player));
     return parent;
   }
 
   @Override
   public boolean compareWithItemStack(Player player, ItemStack item) {
-    return item.getAmount() >= getParsed(player);
+    return item.getDurability() == getParsed(player);
   }
 }

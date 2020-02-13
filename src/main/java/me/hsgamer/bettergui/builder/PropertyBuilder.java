@@ -18,6 +18,7 @@ import me.hsgamer.bettergui.object.property.icon.Variable;
 import me.hsgamer.bettergui.object.property.icon.ViewRequirement;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.object.property.item.impl.Amount;
+import me.hsgamer.bettergui.object.property.item.impl.Durability;
 import me.hsgamer.bettergui.object.property.item.impl.Enchantment;
 import me.hsgamer.bettergui.object.property.item.impl.Flag;
 import me.hsgamer.bettergui.object.property.item.impl.Lore;
@@ -45,6 +46,8 @@ public class PropertyBuilder {
     registerItemProperty("flag", Flag.class);
     registerItemProperty("item-flags", Flag.class);
     registerItemProperty("itemflag", Flag.class);
+    registerItemProperty("durability", Durability.class);
+    registerItemProperty("damage", Durability.class);
 
     registerIconProperty("cooldown", Cooldown.class);
     registerIconProperty("variable", Variable.class);

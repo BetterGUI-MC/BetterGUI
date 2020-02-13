@@ -27,6 +27,15 @@ public class Validate {
     }
   }
 
+  public static boolean isValidShort(String input) {
+    try {
+      Short.parseShort(input);
+      return true;
+    } catch (NumberFormatException ex) {
+      return false;
+    }
+  }
+
   public static boolean isClassLoaded(String className) {
     try {
       Class.forName(className);

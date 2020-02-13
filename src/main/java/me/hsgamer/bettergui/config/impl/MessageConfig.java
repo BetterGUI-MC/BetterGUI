@@ -31,7 +31,6 @@ public class MessageConfig extends PluginConfig {
     INVALID_ITEM("invalid-item",
         "&cUnable to get required item. Inform the staff"),
     INVALID_NUMBER("invalid-number", "&cError converting! {input} is not a valid number"),
-    INVALID_AMOUNT("invalid-amount", "&cInvalid amount of {input}! Will be set to 1 by default"),
     INVALID_CONDITION("invalid-condition", "&cInvalid condition! Please inform the staff"),
     INVALID_FLAG("invalid-flag", "&cCannot find flag '{input}'. Inform the staff"),
     INVALID_ENCHANTMENT("invalid-enchantment",
