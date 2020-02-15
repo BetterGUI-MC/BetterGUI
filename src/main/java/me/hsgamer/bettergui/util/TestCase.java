@@ -72,6 +72,9 @@ public class TestCase<T> {
     if (predicate == null) {
       throw new NullPointerException("Predicate does not exist");
     }
+    if (testObject == null) {
+      throw new NullPointerException("Test object does not exist");
+    }
     if (predicate.test(testObject)) {
       successConsumer.accept(testObject);
       if (successNextTestCase != null) {
