@@ -49,12 +49,12 @@ public class TestCase<T> {
   }
 
   public TestCase<T> setSuccessNextTestCase(TestCase<T> testCase) {
-    setSuccessNextTestCase(t -> testCase);
+    setSuccessNextTestCase(testCase::setTestObject);
     return this;
   }
 
   public TestCase<T> setFailNextTestCase(TestCase<T> testCase) {
-    setFailNextTestCase(t -> testCase);
+    setFailNextTestCase(testCase::setTestObject);
     return this;
   }
 
