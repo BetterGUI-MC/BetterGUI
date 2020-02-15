@@ -8,6 +8,7 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
+import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.entity.Player;
 
 public class ConditionRequirement extends IconRequirement<Object, Boolean> {
@@ -26,16 +27,16 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
       split = (List<String>) value;
     }
     split.replaceAll(String::trim);
-    for (String s : split) {
-      String parsed = icon.hasVariables(s) ? icon.setVariables(s, player) : s;
-      if (ExpressionUtils.isBoolean(parsed)) {
-        if (ExpressionUtils.getResult(parsed).intValue() != 1) {
-          return false;
-        }
-      } else {
-        CommonUtils.sendMessage(player,
+
+    TestCase<String> testCase = new TestCase<String>()
+        .setPredicate(ExpressionUtils::isBoolean)
+        .setSuccessNextTestCase(new TestCase<String>()
+            .setPredicate(s1 -> ExpressionUtils.getResult(s1).intValue() == 1))
+        .setFailConsumer(s -> CommonUtils.sendMessage(player,
             BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_CONDITION)
-                .replace("{input}", s));
+                .replace("{input}", s)));
+    for (String s : split) {
+      if (!testCase.setTestObject(icon.hasVariables(s) ? icon.setVariables(s, player) : s).test()) {
         return false;
       }
     }
@@ -44,11 +45,10 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
 
   @Override
   public boolean check(Player player) {
-    if (getParsedValue(player).equals(Boolean.FALSE)) {
-      sendFailCommand(player);
-      return false;
-    }
-    return true;
+    return TestCase.create(player)
+        .setPredicate(player1 -> getParsedValue(player1).equals(Boolean.FALSE))
+        .setFailConsumer(this::sendFailCommand)
+        .test();
   }
 
   @Override

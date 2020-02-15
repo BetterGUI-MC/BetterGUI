@@ -13,6 +13,7 @@ import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.object.inventory.DummyInventory;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -84,30 +85,37 @@ public class DummyMenu extends Menu {
 
   @Override
   public void createInventory(Player player) {
-    if (player.hasPermission(permission)) {
-      DummyInventory inventory;
-      String parsedTitle = CommonUtils
-          .colorize(titleHasVariable ? VariableManager.setVariables(title, player)
-              : title);
-      if (inventoryType.equals(InventoryType.CHEST)) {
-        if (parsedTitle != null) {
-          inventory = new DummyInventory(player, maxSlots, parsedTitle, icons.values());
-        } else {
-          inventory = new DummyInventory(player, maxSlots, icons.values());
-        }
-      } else {
-        if (parsedTitle != null) {
-          inventory = new DummyInventory(player, inventoryType, parsedTitle, icons.values());
-        } else {
-          inventory = new DummyInventory(player, inventoryType, icons.values());
-        }
-      }
-      inventory.open();
-    } else {
-      CommonUtils
-          .sendMessage(player,
-              getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
-    }
+    TestCase.create(player)
+        .setPredicate(player1 -> player1.hasPermission(permission))
+        .setSuccessConsumer(player1 -> {
+          final DummyInventory[] inventory = new DummyInventory[1];
+          String parsedTitle = CommonUtils
+              .colorize(titleHasVariable ? VariableManager.setVariables(title, player1)
+                  : title);
+          TestCase.create(inventoryType)
+              .setPredicate(inventoryType1 -> inventoryType1.equals(InventoryType.CHEST))
+              .setSuccessConsumer(inventoryType1 -> {
+                if (parsedTitle != null) {
+                  inventory[0] = new DummyInventory(player1, maxSlots, parsedTitle, icons.values());
+                } else {
+                  inventory[0] = new DummyInventory(player1, maxSlots, icons.values());
+                }
+              })
+              .setFailConsumer(inventoryType1 -> {
+                if (parsedTitle != null) {
+                  inventory[0] = new DummyInventory(player1, inventoryType, parsedTitle,
+                      icons.values());
+                } else {
+                  inventory[0] = new DummyInventory(player1, inventoryType, icons.values());
+                }
+              })
+              .test();
+          inventory[0].open();
+        })
+        .setFailConsumer(player1 -> CommonUtils
+            .sendMessage(player1,
+                getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION)))
+        .test();
   }
 
   public Map<String, DummyIcon> getIcons() {

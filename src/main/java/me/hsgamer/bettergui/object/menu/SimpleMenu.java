@@ -150,26 +150,26 @@ public class SimpleMenu extends Menu {
         .setSuccessConsumer(player1 -> {
           final SimpleInventory[] inventory = new SimpleInventory[1];
           String parsedTitle = CommonUtils
-              .colorize(titleHasVariable ? VariableManager.setVariables(title, player)
+              .colorize(titleHasVariable ? VariableManager.setVariables(title, player1)
                   : title);
           TestCase.create(inventoryType)
               .setPredicate(inventoryType1 -> inventoryType1.equals(InventoryType.CHEST))
               .setSuccessConsumer(inventoryType1 -> {
                 if (parsedTitle != null) {
-                  inventory[0] = new SimpleInventory(player, maxSlots, parsedTitle, icons,
+                  inventory[0] = new SimpleInventory(player1, maxSlots, parsedTitle, icons,
                       defaultIcon, ticks);
                 } else {
-                  inventory[0] = new SimpleInventory(player, maxSlots, icons, defaultIcon, ticks);
+                  inventory[0] = new SimpleInventory(player1, maxSlots, icons, defaultIcon, ticks);
                 }
               })
               .setFailConsumer(inventoryType1 -> {
                 if (parsedTitle != null) {
-                  inventory[0] = new SimpleInventory(player, inventoryType1, maxSlots, parsedTitle,
+                  inventory[0] = new SimpleInventory(player1, inventoryType1, maxSlots, parsedTitle,
                       icons,
                       defaultIcon,
                       ticks);
                 } else {
-                  inventory[0] = new SimpleInventory(player, inventoryType1, maxSlots, icons,
+                  inventory[0] = new SimpleInventory(player1, inventoryType1, maxSlots, icons,
                       defaultIcon,
                       ticks);
                 }
