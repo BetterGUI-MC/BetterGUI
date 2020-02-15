@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.util;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class TestCase<T> {
@@ -11,8 +12,8 @@ public class TestCase<T> {
   private Consumer<T> successConsumer = t -> {
   };
   private T testObject;
-  private TestCase<?> successNextTestCase;
-  private TestCase<?> failNextTestCase;
+  private Function<T, TestCase<?>> successNextTestCase;
+  private Function<T, TestCase<?>> failNextTestCase;
 
   public TestCase() {
     super();
@@ -47,13 +48,23 @@ public class TestCase<T> {
     return this;
   }
 
-  public TestCase<T> setSuccessNextTestCase(TestCase<?> testCase) {
-    this.successNextTestCase = testCase;
+  public TestCase<T> setSuccessNextTestCase(TestCase<T> testCase) {
+    setSuccessNextTestCase(t -> testCase);
     return this;
   }
 
-  public TestCase<T> setFailNextTestCase(TestCase<?> testCase) {
-    this.failNextTestCase = testCase;
+  public TestCase<T> setFailNextTestCase(TestCase<T> testCase) {
+    setFailNextTestCase(t -> testCase);
+    return this;
+  }
+
+  public TestCase<T> setSuccessNextTestCase(Function<T, TestCase<?>> function) {
+    this.successNextTestCase = function;
+    return this;
+  }
+
+  public TestCase<T> setFailNextTestCase(Function<T, TestCase<?>> function) {
+    this.failNextTestCase = function;
     return this;
   }
 
@@ -64,14 +75,14 @@ public class TestCase<T> {
     if (predicate.test(testObject)) {
       successConsumer.accept(testObject);
       if (successNextTestCase != null) {
-        return successNextTestCase.test();
+        return successNextTestCase.apply(testObject).test();
       } else {
         return true;
       }
     } else {
       failConsumer.accept(testObject);
       if (failNextTestCase != null) {
-        return failNextTestCase.test();
+        return failNextTestCase.apply(testObject).test();
       } else {
         return false;
       }

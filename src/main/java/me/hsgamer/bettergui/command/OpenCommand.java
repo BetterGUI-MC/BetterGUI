@@ -26,29 +26,29 @@ public class OpenCommand extends BukkitCommand {
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
     MenuManager menuManager = getInstance().getMenuManager();
-    return new TestCase<CommandSender>()
-        .setTestObject(commandSender)
+    return TestCase
+        .create(commandSender)
         .setPredicate(commandSender1 -> commandSender1.hasPermission(Permissions.OPEN_MENU))
         .setFailConsumer(commandSender1 -> CommonUtils.sendMessage(commandSender1,
             getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION)))
-        .setSuccessNextTestCase(new TestCase<String[]>()
-            .setTestObject(strings)
+        .setSuccessNextTestCase(commandSender1 -> TestCase
+            .create(strings)
             .setPredicate(strings1 -> strings1.length > 0)
-            .setFailConsumer(strings1 -> CommonUtils.sendMessage(commandSender,
+            .setFailConsumer(strings1 -> CommonUtils.sendMessage(commandSender1,
                 getInstance().getMessageConfig().get(DefaultMessage.MENU_REQUIRED)))
-            .setSuccessNextTestCase(new TestCase<String[]>()
-                .setTestObject(strings)
+            .setSuccessNextTestCase(strings1 -> TestCase
+                .create(strings)
                 .setPredicate(strings2 -> menuManager.contains(strings2[0]))
-                .setFailConsumer(strings2 -> CommonUtils.sendMessage(commandSender,
+                .setFailConsumer(strings2 -> CommonUtils.sendMessage(commandSender1,
                     getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND)))
-                .setSuccessNextTestCase(new TestCase<String[]>()
-                    .setTestObject(strings)
+                .setSuccessNextTestCase(strings2 -> TestCase
+                    .create(strings)
                     .setPredicate(strings3 -> strings3.length > 1)
                     .setFailConsumer(strings3 -> {
-                      if (commandSender instanceof Player) {
-                        menuManager.openMenu(strings[0], (Player) commandSender);
+                      if (commandSender1 instanceof Player) {
+                        menuManager.openMenu(strings[0], (Player) commandSender1);
                       } else {
-                        CommonUtils.sendMessage(commandSender,
+                        CommonUtils.sendMessage(commandSender1,
                             getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
                       }
                     })
@@ -57,7 +57,7 @@ public class OpenCommand extends BukkitCommand {
                       if (player != null && player.isOnline()) {
                         menuManager.openMenu(strings[0], player);
                       } else {
-                        CommonUtils.sendMessage(commandSender,
+                        CommonUtils.sendMessage(commandSender1,
                             getInstance().getMessageConfig().get(DefaultMessage.PLAYER_NOT_FOUND));
                       }
                     })

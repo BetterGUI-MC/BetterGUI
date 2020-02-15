@@ -104,10 +104,10 @@ public class IconBuilder {
           }
           slots.add((y - 1) * 9 + x - 1);
         })
-        .setFailNextTestCase(TestCase.create(map)
-            .setPredicate(stringObjectMap -> stringObjectMap.containsKey(SlotSetting.SLOT))
-            .setSuccessConsumer(stringObjectMap -> {
-              String input = String.valueOf(stringObjectMap.get(SlotSetting.SLOT));
+        .setFailNextTestCase(stringObjectMap -> TestCase.create(stringObjectMap)
+            .setPredicate(stringObjectMap1 -> stringObjectMap1.containsKey(SlotSetting.SLOT))
+            .setSuccessConsumer(stringObjectMap1 -> {
+              String input = String.valueOf(stringObjectMap1.get(SlotSetting.SLOT));
               TestCase<String> testCase = new TestCase<String>()
                   .setPredicate(Validate::isValidInteger)
                   .setFailConsumer(s -> {
