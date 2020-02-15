@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -19,6 +20,7 @@ import java.util.logging.Level;
 import me.hsgamer.bettergui.object.addon.Addon;
 import me.hsgamer.bettergui.object.addon.AddonClassLoader;
 import me.hsgamer.bettergui.object.addon.AddonDescription;
+import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -172,14 +174,14 @@ public class AddonManager {
     Map<String, Addon> remaining = new HashMap<>();
 
     // Start with addons with no dependency and get the remaining
-    original.forEach((name, addon) -> {
-      if (addon.getDescription().getDepends().isEmpty() && addon.getDescription().getSoftDepends()
-          .isEmpty()) {
-        sorted.put(name, addon);
-      } else {
-        remaining.put(name, addon);
-      }
-    });
+    TestCase<Entry<String, Addon>> testCase = new TestCase<Map.Entry<String, Addon>>()
+        .setPredicate(
+            entry -> entry.getValue().getDescription().getDepends().isEmpty() && entry.getValue()
+                .getDescription().getSoftDepends()
+                .isEmpty())
+        .setSuccessConsumer(entry -> sorted.put(entry.getKey(), entry.getValue()))
+        .setFailConsumer(entry -> remaining.put(entry.getKey(), entry.getValue()));
+    original.entrySet().forEach(entry -> testCase.setTestObject(entry).test());
 
     // Organize the remaining
     while (!remaining.isEmpty()) {

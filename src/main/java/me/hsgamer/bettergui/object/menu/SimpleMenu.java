@@ -21,6 +21,7 @@ import me.hsgamer.bettergui.object.ParentIcon;
 import me.hsgamer.bettergui.object.inventory.SimpleInventory;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -144,48 +145,57 @@ public class SimpleMenu extends Menu {
 
   @Override
   public void createInventory(Player player) {
-    if (player.hasPermission(permission)) {
-      SimpleInventory inventory;
-      String parsedTitle = CommonUtils
-          .colorize(titleHasVariable ? VariableManager.setVariables(title, player)
-              : title);
-      if (inventoryType.equals(InventoryType.CHEST)) {
-        if (parsedTitle != null) {
-          inventory = new SimpleInventory(player, maxSlots, parsedTitle, icons, defaultIcon, ticks);
-        } else {
-          inventory = new SimpleInventory(player, maxSlots, icons, defaultIcon, ticks);
-        }
-      } else {
-        if (parsedTitle != null) {
-          inventory = new SimpleInventory(player, inventoryType, maxSlots, parsedTitle, icons,
-              defaultIcon,
-              ticks);
-        } else {
-          inventory = new SimpleInventory(player, inventoryType, maxSlots, icons,
-              defaultIcon,
-              ticks);
-        }
-      }
-      if (!openActions.isEmpty()) {
-        inventory.addOpenHandler(event -> {
-          TaskChain<?> taskChain = BetterGUI.newChain();
-          openActions.forEach(action -> action.addToTaskChain(player, taskChain));
-          taskChain.execute();
-        });
-      }
-      if (!closeActions.isEmpty()) {
-        inventory.addCloseHandler(event -> {
-          TaskChain<?> taskChain = BetterGUI.newChain();
-          closeActions.forEach(action -> action.addToTaskChain(player, taskChain));
-          taskChain.execute();
-        });
-      }
-      inventory.open();
-    } else {
-      CommonUtils
-          .sendMessage(player,
-              getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
-    }
+    TestCase.create(player)
+        .setPredicate(player1 -> player1.hasPermission(permission))
+        .setSuccessConsumer(player1 -> {
+          final SimpleInventory[] inventory = new SimpleInventory[1];
+          String parsedTitle = CommonUtils
+              .colorize(titleHasVariable ? VariableManager.setVariables(title, player)
+                  : title);
+          TestCase.create(inventoryType)
+              .setPredicate(inventoryType1 -> inventoryType1.equals(InventoryType.CHEST))
+              .setSuccessConsumer(inventoryType1 -> {
+                if (parsedTitle != null) {
+                  inventory[0] = new SimpleInventory(player, maxSlots, parsedTitle, icons,
+                      defaultIcon, ticks);
+                } else {
+                  inventory[0] = new SimpleInventory(player, maxSlots, icons, defaultIcon, ticks);
+                }
+              })
+              .setFailConsumer(inventoryType1 -> {
+                if (parsedTitle != null) {
+                  inventory[0] = new SimpleInventory(player, inventoryType1, maxSlots, parsedTitle,
+                      icons,
+                      defaultIcon,
+                      ticks);
+                } else {
+                  inventory[0] = new SimpleInventory(player, inventoryType1, maxSlots, icons,
+                      defaultIcon,
+                      ticks);
+                }
+              })
+              .test();
+
+          if (!openActions.isEmpty()) {
+            inventory[0].addOpenHandler(event -> {
+              TaskChain<?> taskChain = BetterGUI.newChain();
+              openActions.forEach(action -> action.addToTaskChain(player, taskChain));
+              taskChain.execute();
+            });
+          }
+          if (!closeActions.isEmpty()) {
+            inventory[0].addCloseHandler(event -> {
+              TaskChain<?> taskChain = BetterGUI.newChain();
+              closeActions.forEach(action -> action.addToTaskChain(player, taskChain));
+              taskChain.execute();
+            });
+          }
+          inventory[0].open();
+        })
+        .setFailConsumer(player1 -> CommonUtils
+            .sendMessage(player1,
+                getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION)))
+        .test();
   }
 
   public Icon getDefaultIcon() {

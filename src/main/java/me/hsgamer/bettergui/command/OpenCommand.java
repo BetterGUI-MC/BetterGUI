@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.util.BukkitUtils;
 import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -24,45 +25,46 @@ public class OpenCommand extends BukkitCommand {
 
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
-      if (commandSender.hasPermission(Permissions.OPEN_MENU)) {
-        MenuManager menuManager = getInstance().getMenuManager();
-        if (strings.length > 0) {
-          if (menuManager.contains(strings[0])) {
-            if (strings.length > 1) {
-              Player player = Bukkit.getPlayer(strings[1]);
-              if (player != null && player.isOnline()) {
-                menuManager.openMenu(strings[0], player);
-                return true;
-              } else {
-                CommonUtils.sendMessage(commandSender,
-                    getInstance().getMessageConfig().get(DefaultMessage.PLAYER_NOT_FOUND));
-                return false;
-              }
-            } else {
-              if (commandSender instanceof Player) {
-                menuManager.openMenu(strings[0], (Player) commandSender);
-                return true;
-              } else {
-                CommonUtils.sendMessage(commandSender,
-                    getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
-                return false;
-              }
-            }
-          } else {
-            CommonUtils.sendMessage(commandSender,
-                getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
-            return false;
-          }
-        } else {
-          CommonUtils.sendMessage(commandSender,
-              getInstance().getMessageConfig().get(DefaultMessage.MENU_REQUIRED));
-          return false;
-        }
-      } else {
-        CommonUtils.sendMessage(commandSender,
-            getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
-        return false;
-      }
+    MenuManager menuManager = getInstance().getMenuManager();
+    return new TestCase<CommandSender>()
+        .setTestObject(commandSender)
+        .setPredicate(commandSender1 -> commandSender1.hasPermission(Permissions.OPEN_MENU))
+        .setFailConsumer(commandSender1 -> CommonUtils.sendMessage(commandSender1,
+            getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION)))
+        .setSuccessNextTestCase(new TestCase<String[]>()
+            .setTestObject(strings)
+            .setPredicate(strings1 -> strings1.length > 0)
+            .setFailConsumer(strings1 -> CommonUtils.sendMessage(commandSender,
+                getInstance().getMessageConfig().get(DefaultMessage.MENU_REQUIRED)))
+            .setSuccessNextTestCase(new TestCase<String[]>()
+                .setTestObject(strings)
+                .setPredicate(strings2 -> menuManager.contains(strings2[0]))
+                .setFailConsumer(strings2 -> CommonUtils.sendMessage(commandSender,
+                    getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND)))
+                .setSuccessNextTestCase(new TestCase<String[]>()
+                    .setTestObject(strings)
+                    .setPredicate(strings3 -> strings3.length > 1)
+                    .setFailConsumer(strings3 -> {
+                      if (commandSender instanceof Player) {
+                        menuManager.openMenu(strings[0], (Player) commandSender);
+                      } else {
+                        CommonUtils.sendMessage(commandSender,
+                            getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
+                      }
+                    })
+                    .setSuccessConsumer(strings3 -> {
+                      Player player = Bukkit.getPlayer(strings[1]);
+                      if (player != null && player.isOnline()) {
+                        menuManager.openMenu(strings[0], player);
+                      } else {
+                        CommonUtils.sendMessage(commandSender,
+                            getInstance().getMessageConfig().get(DefaultMessage.PLAYER_NOT_FOUND));
+                      }
+                    })
+                )
+            )
+        )
+        .test();
   }
 
   @Override

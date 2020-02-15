@@ -13,6 +13,7 @@ import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.object.icon.ListIcon;
 import me.hsgamer.bettergui.object.icon.SimpleIcon;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
+import me.hsgamer.bettergui.util.TestCase;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -88,36 +89,46 @@ public class IconBuilder {
     List<Integer> slots = new ArrayList<>();
     Map<String, Object> map = new CaseInsensitiveStringMap<>(section.getValues(false));
 
-    if (map.containsKey(SlotSetting.X) || map.containsKey(SlotSetting.Y)) {
-      int x = 1;
-      int y = 1;
-      if (map.containsKey(SlotSetting.X)) {
-        x = (int) map.get(SlotSetting.X);
-      }
-      if (map.containsKey(SlotSetting.Y)) {
-        y = (int) map.get(SlotSetting.Y);
-      }
-      slots.add((y - 1) * 9 + x - 1);
-    } else if (map.containsKey(SlotSetting.SLOT)) {
-      String input = String.valueOf(map.get(SlotSetting.SLOT));
-      for (String string : input.split(",")) {
-        if (Validate.isValidInteger(string)) {
-          slots.add(Integer.parseInt(string));
-        } else {
-          String[] split = string.split("-", 2);
-          if (Validate.isValidInteger(split[0]) && Validate
-              .isValidInteger(split[1])) {
-            int s1 = Integer.parseInt(split[0]);
-            int s2 = Integer.parseInt(split[1]);
-            int start = Math.min(s1, s2);
-            int end = Math.max(s1, s2);
-            for (int i = start; i <= end; i++) {
-              slots.add(i);
-            }
+    TestCase.create(map)
+        .setPredicate(
+            stringObjectMap -> stringObjectMap.containsKey(SlotSetting.X) || stringObjectMap
+                .containsKey(SlotSetting.Y))
+        .setSuccessConsumer(stringObjectMap -> {
+          int x = 1;
+          int y = 1;
+          if (stringObjectMap.containsKey(SlotSetting.X)) {
+            x = (int) map.get(SlotSetting.X);
           }
-        }
-      }
-    }
+          if (stringObjectMap.containsKey(SlotSetting.Y)) {
+            y = (int) map.get(SlotSetting.Y);
+          }
+          slots.add((y - 1) * 9 + x - 1);
+        })
+        .setFailNextTestCase(TestCase.create(map)
+            .setPredicate(stringObjectMap -> stringObjectMap.containsKey(SlotSetting.SLOT))
+            .setSuccessConsumer(stringObjectMap -> {
+              String input = String.valueOf(stringObjectMap.get(SlotSetting.SLOT));
+              TestCase<String> testCase = new TestCase<String>()
+                  .setPredicate(Validate::isValidInteger)
+                  .setFailConsumer(s -> {
+                    String[] split = s.split("-", 2);
+                    if (Validate.isValidInteger(split[0]) && Validate
+                        .isValidInteger(split[1])) {
+                      int s1 = Integer.parseInt(split[0]);
+                      int s2 = Integer.parseInt(split[1]);
+                      int start = Math.min(s1, s2);
+                      int end = Math.max(s1, s2);
+                      for (int i = start; i <= end; i++) {
+                        slots.add(i);
+                      }
+                    }
+                  })
+                  .setSuccessConsumer(s -> slots.add(Integer.parseInt(s)));
+              for (String s : input.split(",")) {
+                testCase.setTestObject(s).test();
+              }
+            }))
+        .test();
 
     return slots;
   }
