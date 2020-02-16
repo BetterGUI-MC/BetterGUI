@@ -95,8 +95,11 @@ public class ItemRequirement extends IconRequirement<Object, List<RequiredItem>>
   }
 
   private boolean checkItem(Player player, DummyIcon dummyIcon, ItemStack item, boolean oldCheck) {
+    if (item == null) {
+      return false;
+    }
     if (oldCheck) {
-      return item != null && item.isSimilar(dummyIcon.createClickableItem(player).get().getItem());
+      return item.isSimilar(dummyIcon.createClickableItem(player).get().getItem());
     } else {
       for (ItemProperty<?, ?> property : dummyIcon.getItemProperties().values()) {
         if (property instanceof Amount) {
