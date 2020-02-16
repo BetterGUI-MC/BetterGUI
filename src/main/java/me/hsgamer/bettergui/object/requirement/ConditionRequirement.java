@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.object.requirement;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
@@ -22,7 +22,7 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
   public Boolean getParsedValue(Player player) {
     List<String> split;
     if (value instanceof String) {
-      split = Arrays.asList(((String) value).split(";"));
+      split = Collections.singletonList((String) value);
     } else {
       split = (List<String>) value;
     }
