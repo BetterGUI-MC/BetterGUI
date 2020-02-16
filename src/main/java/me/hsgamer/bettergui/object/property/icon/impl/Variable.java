@@ -1,4 +1,4 @@
-package me.hsgamer.bettergui.object.property.icon;
+package me.hsgamer.bettergui.object.property.icon.impl;
 
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.SimpleIconVariable;

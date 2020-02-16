@@ -7,7 +7,7 @@ import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
-import me.hsgamer.bettergui.object.property.icon.Variable;
+import me.hsgamer.bettergui.object.property.icon.impl.Variable;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

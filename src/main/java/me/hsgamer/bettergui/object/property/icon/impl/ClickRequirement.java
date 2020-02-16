@@ -1,4 +1,4 @@
-package me.hsgamer.bettergui.object.property.icon;
+package me.hsgamer.bettergui.object.property.icon.impl;
 
 import java.util.ArrayList;
 import java.util.EnumMap;

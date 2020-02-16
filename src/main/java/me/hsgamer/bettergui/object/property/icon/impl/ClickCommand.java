@@ -1,4 +1,4 @@
-package me.hsgamer.bettergui.object.property.icon;
+package me.hsgamer.bettergui.object.property.icon.impl;
 
 import co.aikar.taskchain.TaskChain;
 import java.util.ArrayList;
