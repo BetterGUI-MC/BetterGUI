@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.util;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public class TestCase<T> {
 
@@ -14,6 +15,7 @@ public class TestCase<T> {
   private T testObject;
   private Function<T, TestCase<?>> successNextTestCase;
   private Function<T, TestCase<?>> failNextTestCase;
+  private UnaryOperator<T> beforeTestOperator;
 
   public TestCase() {
     super();
@@ -68,12 +70,20 @@ public class TestCase<T> {
     return this;
   }
 
+  public TestCase<T> setBeforeTestOperator(UnaryOperator<T> beforeTestOperator) {
+    this.beforeTestOperator = beforeTestOperator;
+    return this;
+  }
+
   public boolean test() {
     if (predicate == null) {
       throw new NullPointerException("Predicate does not exist");
     }
     if (testObject == null) {
       throw new NullPointerException("Test object does not exist");
+    }
+    if (beforeTestOperator != null) {
+      testObject = beforeTestOperator.apply(testObject);
     }
     if (predicate.test(testObject)) {
       successConsumer.accept(testObject);

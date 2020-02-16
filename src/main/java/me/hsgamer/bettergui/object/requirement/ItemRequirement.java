@@ -14,6 +14,7 @@ import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.object.property.item.impl.Amount;
 import me.hsgamer.bettergui.object.requirement.ItemRequirement.RequiredItem;
 import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,20 +29,23 @@ public class ItemRequirement extends IconRequirement<Object, List<RequiredItem>>
     List<RequiredItem> list = new ArrayList<>();
     Map<String, DummyIcon> icons = getInstance().getItemsConfig().getMenu().getIcons();
 
+    TestCase<String[]> testCase = new TestCase<String[]>()
+        .setPredicate(strings -> icons.containsKey(strings[0].trim()))
+        .setBeforeTestOperator(strings -> {
+          strings[0] = strings[0].trim();
+          return strings;
+        })
+        .setSuccessNextTestCase(new TestCase<String[]>()
+            .setPredicate(strings -> strings.length == 2)
+            .setSuccessConsumer(strings -> list.add(new RequiredItem(icons.get(strings[0]),
+                Boolean.parseBoolean(strings[1].trim()))))
+            .setFailConsumer(
+                strings -> list.add(new RequiredItem(icons.get(strings[0]), true))))
+        .setFailConsumer(strings -> CommonUtils.sendMessage(player,
+            getInstance().getMessageConfig().get(DefaultMessage.INVALID_ITEM)));
     for (String s : CommonUtils.createStringListFromObject(value)) {
       String[] split = s.split(":", 2);
-      String rawIcon = split[0].trim();
-      if (icons.containsKey(rawIcon)) {
-        DummyIcon icon = icons.get(rawIcon);
-        if (split.length == 2) {
-          list.add(new RequiredItem(icon, Boolean.parseBoolean(split[1].trim())));
-        } else {
-          list.add(new RequiredItem(icon, true));
-        }
-      } else {
-        CommonUtils.sendMessage(player,
-            getInstance().getMessageConfig().get(DefaultMessage.INVALID_ITEM));
-      }
+      testCase.setTestObject(split).test();
     }
     return list;
   }
