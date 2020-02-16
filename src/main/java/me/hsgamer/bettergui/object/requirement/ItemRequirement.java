@@ -17,7 +17,7 @@ import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemRequirement extends IconRequirement<List<String>, List<RequiredItem>> {
+public class ItemRequirement extends IconRequirement<Object, List<RequiredItem>> {
 
   public ItemRequirement(Icon icon) {
     super(icon, true);
@@ -27,7 +27,8 @@ public class ItemRequirement extends IconRequirement<List<String>, List<Required
   public List<RequiredItem> getParsedValue(Player player) {
     List<RequiredItem> list = new ArrayList<>();
     Map<String, DummyIcon> icons = getInstance().getItemsConfig().getMenu().getIcons();
-    for (String s : value) {
+
+    for (String s : CommonUtils.createStringListFromObject(value)) {
       String[] split = s.split(":", 2);
       String rawIcon = split[0].trim();
       if (icons.containsKey(rawIcon)) {

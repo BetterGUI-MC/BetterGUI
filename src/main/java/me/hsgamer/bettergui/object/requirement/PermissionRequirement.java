@@ -1,12 +1,12 @@
 package me.hsgamer.bettergui.object.requirement;
 
-import java.util.ArrayList;
 import java.util.List;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
+import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.entity.Player;
 
-public class PermissionRequirement extends IconRequirement<List<String>, List<String>> {
+public class PermissionRequirement extends IconRequirement<Object, List<String>> {
 
   public PermissionRequirement(Icon icon) {
     super(icon, false);
@@ -14,10 +14,8 @@ public class PermissionRequirement extends IconRequirement<List<String>, List<St
 
   @Override
   public List<String> getParsedValue(Player player) {
-    List<String> list = new ArrayList<>();
-    value.forEach(
-        s -> list.add(icon.hasVariables(s) ? icon.setVariables(s, player) : s));
-    value.replaceAll(String::trim);
+    List<String> list = CommonUtils.createStringListFromObject(value);
+    list.replaceAll(s -> icon.hasVariables(s) ? icon.setVariables(s, player) : s);
     return list;
   }
 

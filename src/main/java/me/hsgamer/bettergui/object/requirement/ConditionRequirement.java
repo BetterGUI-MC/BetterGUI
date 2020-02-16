@@ -1,7 +1,5 @@
 package me.hsgamer.bettergui.object.requirement;
 
-import java.util.Collections;
-import java.util.List;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
@@ -20,14 +18,6 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
   @SuppressWarnings("unchecked")
   @Override
   public Boolean getParsedValue(Player player) {
-    List<String> split;
-    if (value instanceof String) {
-      split = Collections.singletonList((String) value);
-    } else {
-      split = (List<String>) value;
-    }
-    split.replaceAll(String::trim);
-
     TestCase<String> testCase = new TestCase<String>()
         .setPredicate(ExpressionUtils::isBoolean)
         .setSuccessNextTestCase(new TestCase<String>()
@@ -35,7 +25,7 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
         .setFailConsumer(s -> CommonUtils.sendMessage(player,
             BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_CONDITION)
                 .replace("{input}", s)));
-    for (String s : split) {
+    for (String s : CommonUtils.createStringListFromObject(value)) {
       if (!testCase.setTestObject(icon.hasVariables(s) ? icon.setVariables(s, player) : s).test()) {
         return false;
       }
