@@ -46,7 +46,7 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
   @Override
   public boolean check(Player player) {
     return TestCase.create(player)
-        .setPredicate(player1 -> getParsedValue(player1).equals(Boolean.FALSE))
+        .setPredicate(player1 -> getParsedValue(player1).equals(Boolean.TRUE))
         .setFailConsumer(this::sendFailCommand)
         .test();
   }
