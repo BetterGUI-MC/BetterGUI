@@ -45,7 +45,7 @@ public final class BukkitUtils {
   public static String getPing(Player player) {
     try {
       Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
-      return String.valueOf((int) entityPlayer.getClass().getField("ping").get(entityPlayer));
+      return String.valueOf(entityPlayer.getClass().getField("ping").getInt(entityPlayer));
     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e) {
       BetterGUI.getInstance().getLogger()
           .log(Level.WARNING, "Unexpected error when getting ping", e);
