@@ -4,7 +4,6 @@ import com.cryptomorin.xseries.XMaterial;
 import java.util.Optional;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -24,12 +23,7 @@ public class Type extends ItemProperty<String, Optional<XMaterial>> {
   @Override
   public ItemStack parse(Player player, ItemStack parent) {
     Optional<XMaterial> parsed = getParsed(player);
-    parsed.ifPresent(xMaterial -> {
-      Material material = xMaterial.parseMaterial();
-      if (material != null) {
-        parent.setType(material);
-      }
-    });
+    parsed.ifPresent(xMaterial -> xMaterial.setType(parent));
     return parent;
   }
 
