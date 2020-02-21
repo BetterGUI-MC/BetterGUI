@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.object.ParentIcon;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("unused")
 public class AnimatedIcon extends Icon implements ParentIcon {
 
   private List<Icon> icons = new ArrayList<>();
