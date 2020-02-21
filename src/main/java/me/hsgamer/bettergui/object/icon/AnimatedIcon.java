@@ -14,6 +14,9 @@ public class AnimatedIcon extends Icon implements ParentIcon {
 
   private List<Icon> icons = new ArrayList<>();
   private int currentIndex;
+  private int update = 0;
+  private int currentTime;
+  private Icon currentIcon;
 
   public AnimatedIcon(String name, Menu menu) {
     super(name, menu);
@@ -23,23 +26,37 @@ public class AnimatedIcon extends Icon implements ParentIcon {
     super(original);
     if (original instanceof AnimatedIcon) {
       this.icons = ((AnimatedIcon) original).icons;
+      this.update = ((AnimatedIcon) original).update;
     }
   }
 
   @Override
   public void setFromSection(ConfigurationSection section) {
     setChildFromSection(getMenu(), section);
+    section.getKeys(false).forEach(key -> {
+      if (key.equalsIgnoreCase("update")) {
+        update = section.getInt(key);
+      }
+    });
   }
 
   @Override
   public Optional<ClickableItem> createClickableItem(Player player) {
     currentIndex = 0;
-    return icons.get(currentIndex).createClickableItem(player);
+    currentIcon = icons.get(currentIndex);
+    currentTime = update;
+    return currentIcon.createClickableItem(player);
   }
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
-    return icons.get(getFrame()).updateClickableItem(player);
+    if (currentTime > 0) {
+      currentTime--;
+    } else {
+      currentIcon = icons.get(getFrame());
+      currentTime = update;
+    }
+    return currentIcon.updateClickableItem(player);
   }
 
   private int getFrame() {
