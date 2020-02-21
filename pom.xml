@@ -81,6 +81,7 @@
         <directory>.</directory>
         <includes>
           <include>THIRD-PARTY.txt</include>
+          <include>LICENSE</include>
         </includes>
       </resource>
     </resources>
