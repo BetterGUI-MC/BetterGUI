@@ -28,6 +28,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class AddonManager {
 
   private final Map<String, Addon> addons = new HashMap<>();
+  private final Map<Addon, AddonClassLoader> loaderMap = new HashMap<>();
+  private final Map<String, Class<?>> classes = new HashMap<>();
   private final File addonsDir;
   private final JavaPlugin plugin;
 
@@ -101,9 +103,12 @@ public class AddonManager {
           }
 
           // Try to load the addon
-          AddonClassLoader loader = new AddonClassLoader(file, addonDescription,
+          AddonClassLoader loader = new AddonClassLoader(this, file, addonDescription,
               getClass().getClassLoader());
+          Addon addon = loader.getAddon();
+
           addonMap.put(addonDescription.getName(), loader.getAddon());
+          loaderMap.put(addon, loader);
         } catch (InvalidConfigurationException e) {
           plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
         } catch (Exception e) {
@@ -153,6 +158,8 @@ public class AddonManager {
   public void reloadAddons() {
     disableAddons();
     addons.clear();
+    classes.clear();
+    loaderMap.clear();
     loadAddons();
     enableAddons();
   }
@@ -216,5 +223,24 @@ public class AddonManager {
     }
 
     return sorted;
+  }
+
+  public Class<?> findClass(String name) {
+    if (classes.containsKey(name)) {
+      return classes.get(name);
+    } else {
+      for (AddonClassLoader loader : loaderMap.values()) {
+        Class<?> clazz = loader.findClass(name, false);
+        if (clazz != null) {
+          classes.put(name, clazz);
+          return clazz;
+        }
+      }
+    }
+    return null;
+  }
+
+  public void putClass(String name, Class<?> clazz) {
+    classes.putIfAbsent(name, clazz);
   }
 }
