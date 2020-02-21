@@ -1,12 +1,6 @@
 package me.hsgamer.bettergui.manager;
 
-import static me.hsgamer.bettergui.object.addon.AddonDescription.Settings;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.NoSuchFileException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -14,15 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.object.addon.Addon;
 import me.hsgamer.bettergui.object.addon.AddonClassLoader;
-import me.hsgamer.bettergui.object.addon.AddonDescription;
 import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AddonManager {
@@ -39,71 +29,24 @@ public class AddonManager {
     }
   }
 
-  private AddonDescription getAddonDescription(JarFile jar)
-      throws IOException, InvalidConfigurationException {
-    // Load addon.yml file
-    JarEntry entry = jar.getJarEntry("addon.yml");
-    if (entry == null) {
-      throw new NoSuchFileException(
-          "Addon '" + jar.getName() + "' doesn't contain addon.yml file");
-    }
-    BufferedReader reader = new BufferedReader(new InputStreamReader(jar.getInputStream(entry)));
-    YamlConfiguration data = new YamlConfiguration();
-    data.load(reader);
-
-    // Load required descriptions
-    String name = data.getString(Settings.NAME);
-    String version = data.getString(Settings.VERSION);
-    String mainClass = data.getString(Settings.CLASSPATH);
-    if (name == null) {
-      throw new InvalidConfigurationException(
-          "Addon '" + jar.getName() + "' doesn't have a name on addon.yml");
-    }
-    if (version == null) {
-      throw new InvalidConfigurationException(
-          "Addon '" + jar.getName() + "' doesn't have a version on addon.yml");
-    }
-    if (mainClass == null) {
-      throw new InvalidConfigurationException(
-          "Addon '" + jar.getName() + "' doesn't have a main class on addon.yml");
-    }
-    AddonDescription addonDescription = new AddonDescription(name, version, mainClass);
-
-    // Set optional descriptions
-    if (data.isSet(Settings.AUTHORS)) {
-      addonDescription.setAuthors(data.getStringList(Settings.AUTHORS));
-    }
-    if (data.isSet(Settings.DESCRIPTION)) {
-      addonDescription.setDescription(data.getString(Settings.DESCRIPTION));
-    }
-    if (data.isSet(Settings.DEPEND)) {
-      addonDescription.setDepends(data.getStringList(Settings.DEPEND));
-    }
-    if (data.isSet(Settings.SOFT_DEPEND)) {
-      addonDescription.setSoftDepends(data.getStringList(Settings.SOFT_DEPEND));
-    }
-
-    return addonDescription;
-  }
-
   public void loadAddons() {
     Map<String, Addon> addonMap = new HashMap<>();
 
     // Load the addon files
     for (File file : Objects.requireNonNull(addonsDir.listFiles())) {
       if (file.isFile() && file.getName().endsWith(".jar")) {
-        try (JarFile jar = new JarFile(file)) {
-          // Get addon description
-          AddonDescription addonDescription = getAddonDescription(jar);
-          if (addonMap.containsKey(addonDescription.getName())) {
-            plugin.getLogger().warning("Duplicated addon " + addonDescription.getName());
+        try (AddonClassLoader loader = new AddonClassLoader(file, getClass().getClassLoader())) {
+          // Get addon
+          Addon addon = loader.getAddon();
+
+          // Check duplication
+          if (addonMap.containsKey(addon.getDescription().getName())) {
+            plugin.getLogger().warning("Duplicated addon " + addon.getDescription().getName());
             continue;
           }
 
-          // Try to load the addon
-          AddonClassLoader loader = new AddonClassLoader(file, addonDescription,
-              getClass().getClassLoader());
-          addonMap.put(addonDescription.getName(), loader.getAddon());
+          // Add to the list
+          addonMap.put(addon.getDescription().getName(), addon);
         } catch (InvalidConfigurationException e) {
           plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
         } catch (Exception e) {
