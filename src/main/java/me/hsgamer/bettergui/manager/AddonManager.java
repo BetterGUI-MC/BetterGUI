@@ -38,15 +38,16 @@ public class AddonManager {
         try (AddonClassLoader loader = new AddonClassLoader(file, getClass().getClassLoader())) {
           // Get addon
           Addon addon = loader.getAddon();
+          String name = addon.getDescription().getName();
 
           // Check duplication
-          if (addonMap.containsKey(addon.getDescription().getName())) {
-            plugin.getLogger().warning("Duplicated addon " + addon.getDescription().getName());
+          if (addonMap.containsKey(name)) {
+            plugin.getLogger().log(Level.WARNING, "Addon {} duplicated", name);
             continue;
           }
 
           // Add to the list
-          addonMap.put(addon.getDescription().getName(), addon);
+          addonMap.put(name, addon);
         } catch (InvalidConfigurationException e) {
           plugin.getLogger().log(Level.WARNING, e.getMessage(), e);
         } catch (Exception e) {
