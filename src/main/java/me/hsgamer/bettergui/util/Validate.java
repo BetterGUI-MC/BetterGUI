@@ -64,7 +64,7 @@ public class Validate {
   public static List<String> getMissingDepends(List<String> depends) {
     List<String> list = new ArrayList<>();
     for (String depend : depends) {
-      if (!Bukkit.getPluginManager().isPluginEnabled(depend)) {
+      if (Bukkit.getPluginManager().getPlugin(depend) == null) {
         list.add(depend);
       }
     }

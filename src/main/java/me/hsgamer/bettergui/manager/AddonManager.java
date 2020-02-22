@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.NoSuchFileException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -154,20 +153,6 @@ public class AddonManager {
   }
 
   public void enableAddons() {
-    // Fill all addons with missing plugin dependencies
-    List<String> missingDepend = new ArrayList<>();
-    addons.forEach((name, addon) -> {
-      List<String> missing = Validate.getMissingDepends(addon.getDescription().getPluginDepends());
-      if (!missing.isEmpty()) {
-        plugin.getLogger().warning("Missing plugin dependency for " + name + ": " + Arrays
-            .toString(missing.toArray()));
-        missingDepend.add(name);
-      }
-    });
-    for (String name : missingDepend) {
-      addons.remove(name);
-    }
-
     addons.keySet().forEach(this::enableAddon);
   }
 
@@ -222,6 +207,15 @@ public class AddonManager {
         depends.removeIf(sorted::containsKey);
         softDepends.removeIf(softDepend ->
             sorted.containsKey(softDepend) || !original.containsKey(softDepend));
+
+        // Check if the required plugins are enabled
+        List<String> missing = Validate
+            .getMissingDepends(addon.getDescription().getPluginDepends());
+        if (!missing.isEmpty()) {
+          plugin.getLogger().warning("Missing plugin dependency for " + name + ": " + Arrays
+              .toString(missing.toArray()));
+          return;
+        }
 
         // Check if the required dependencies are loaded
         for (String depend : depends) {
