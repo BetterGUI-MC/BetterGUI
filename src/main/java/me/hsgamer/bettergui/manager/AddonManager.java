@@ -188,9 +188,9 @@ public class AddonManager {
     // Start with addons with no dependency and get the remaining
     TestCase<Entry<String, Addon>> testCase = new TestCase<Map.Entry<String, Addon>>()
         .setPredicate(
-            entry -> entry.getValue().getDescription().getDepends().isEmpty() && entry.getValue()
-                .getDescription().getSoftDepends()
-                .isEmpty())
+            entry -> entry.getValue().getDescription().getDepends().isEmpty()
+                && entry.getValue().getDescription().getSoftDepends().isEmpty()
+                && entry.getValue().getDescription().getPluginDepends().isEmpty())
         .setSuccessConsumer(entry -> sorted.put(entry.getKey(), entry.getValue()))
         .setFailConsumer(entry -> remaining.put(entry.getKey(), entry.getValue()));
     original.entrySet().forEach(entry -> testCase.setTestObject(entry).test());
