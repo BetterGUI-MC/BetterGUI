@@ -1,8 +1,11 @@
 package me.hsgamer.bettergui.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.bukkit.Bukkit;
 
 public class Validate {
 
@@ -56,6 +59,16 @@ public class Validate {
       }
     }
     return false;
+  }
+
+  public static List<String> getMissingDepends(List<String> depends) {
+    List<String> list = new ArrayList<>();
+    for (String depend : depends) {
+      if (!Bukkit.getPluginManager().isPluginEnabled(depend)) {
+        list.add(depend);
+      }
+    }
+    return list;
   }
 
   public static boolean isNullOrEmpty(Collection<?> list) {

@@ -17,6 +17,9 @@ public abstract class Addon {
 
   /**
    * Called when loading the addon
+   * <p>
+   * WARNING: Don't use this to check if the required plugins are enabled Use "plugin-depend" option
+   * from addon.yml
    *
    * @return whether the addon loaded properly
    */

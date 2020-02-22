@@ -15,7 +15,8 @@ public class AddonClassLoader extends URLClassLoader {
   private Map<String, Class<?>> classes = new HashMap<>();
   private AddonManager manager;
 
-  public AddonClassLoader(AddonManager manager, File file, AddonDescription addonDescription, ClassLoader parent)
+  public AddonClassLoader(AddonManager manager, File file, AddonDescription addonDescription,
+      ClassLoader parent)
       throws MalformedURLException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException, ClassNotFoundException {
     super(new URL[]{file.toURI().toURL()}, parent);
     this.manager = manager;

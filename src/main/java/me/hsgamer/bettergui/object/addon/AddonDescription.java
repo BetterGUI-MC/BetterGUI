@@ -12,6 +12,7 @@ public class AddonDescription {
   private List<String> authors = new ArrayList<>();
   private List<String> depends = new ArrayList<>();
   private List<String> softDepends = new ArrayList<>();
+  private List<String> pluginDepends = new ArrayList<>();
 
   public AddonDescription(String name, String version, String mainClass) {
     this.name = name;
@@ -98,6 +99,20 @@ public class AddonDescription {
     this.softDepends = softDepends;
   }
 
+
+  /**
+   * Get the plugin dependencies of the addon
+   *
+   * @return the list of plugin dependencies
+   */
+  public List<String> getPluginDepends() {
+    return pluginDepends;
+  }
+
+  public void setPluginDepends(List<String> pluginDepends) {
+    this.pluginDepends = pluginDepends;
+  }
+
   public static class Settings {
 
     public static final String NAME = "name";
@@ -107,6 +122,7 @@ public class AddonDescription {
     public static final String DESCRIPTION = "description";
     public static final String DEPEND = "depend";
     public static final String SOFT_DEPEND = "soft-depend";
+    public static final String PLUGIN_DEPEND = "plugin-depend";
 
     private Settings() {
 

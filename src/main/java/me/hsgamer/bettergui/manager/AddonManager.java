@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,6 +23,7 @@ import me.hsgamer.bettergui.object.addon.Addon;
 import me.hsgamer.bettergui.object.addon.AddonClassLoader;
 import me.hsgamer.bettergui.object.addon.AddonDescription;
 import me.hsgamer.bettergui.util.TestCase;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -83,6 +86,9 @@ public class AddonManager {
     }
     if (data.isSet(Settings.SOFT_DEPEND)) {
       addonDescription.setSoftDepends(data.getStringList(Settings.SOFT_DEPEND));
+    }
+    if (data.isSet(Settings.PLUGIN_DEPEND)) {
+      addonDescription.setPluginDepends(data.getStringList(Settings.PLUGIN_DEPEND));
     }
 
     return addonDescription;
@@ -148,6 +154,20 @@ public class AddonManager {
   }
 
   public void enableAddons() {
+    // Fill all addons with missing plugin dependencies
+    List<String> missingDepend = new ArrayList<>();
+    addons.forEach((name, addon) -> {
+      List<String> missing = Validate.getMissingDepends(addon.getDescription().getPluginDepends());
+      if (!missing.isEmpty()) {
+        plugin.getLogger().warning("Missing plugin dependency for " + name + ": " + Arrays
+            .toString(missing.toArray()));
+        missingDepend.add(name);
+      }
+    });
+    for (String name : missingDepend) {
+      addons.remove(name);
+    }
+
     addons.keySet().forEach(this::enableAddon);
   }
 
