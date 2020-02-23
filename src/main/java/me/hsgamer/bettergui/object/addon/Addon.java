@@ -71,6 +71,15 @@ public abstract class Addon {
   }
 
   /**
+   * Unregister the command
+   *
+   * @param command the Command object
+   */
+  public void unregisterCommand(BukkitCommand command) {
+    getPlugin().getCommandManager().unregister(command);
+  }
+
+  /**
    * Create the config
    */
   public void setupConfig() {
