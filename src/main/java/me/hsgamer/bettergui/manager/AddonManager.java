@@ -148,6 +148,11 @@ public class AddonManager {
   public void disableAddon(String name) {
     Addon addon = addons.get(name);
     addon.onDisable();
+    try {
+      loaderMap.remove(addon).close();
+    } catch (IOException e) {
+      plugin.getLogger().log(Level.WARNING, "Error when closing ClassLoader", e);
+    }
     plugin.getLogger().log(Level.INFO, "Disabled {0}",
         String.join(" ", name, addon.getDescription().getVersion()));
   }

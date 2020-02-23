@@ -46,7 +46,7 @@ public class CommandManager {
   public void register(BukkitCommand command) {
     String name = command.getLabel();
     if (registered.containsKey(name)) {
-      plugin.getLogger().log(Level.WARNING, "Duplicated '{}' ! Ignored", name);
+      plugin.getLogger().log(Level.WARNING, "Duplicated {0} ! Ignored", name);
       return;
     }
 
@@ -66,6 +66,7 @@ public class CommandManager {
       knownCommands.values().removeIf(command::equals);
 
       command.unregister(bukkitCommandMap);
+      registered.remove(command.getLabel());
     } catch (ReflectiveOperationException e) {
       plugin.getLogger()
           .log(Level.WARNING, "Something wrong when unregister the command", e);
