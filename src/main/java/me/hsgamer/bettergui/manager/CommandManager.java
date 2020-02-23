@@ -74,6 +74,26 @@ public class CommandManager {
   }
 
   /**
+   * Unregister new command
+   *
+   * @param command the command label
+   */
+  public void unregister(String command) {
+    if (registered.containsKey(command)) {
+      try {
+        Map<?, ?> knownCommands = (Map<?, ?>) knownCommandsField.get(bukkitCommandMap);
+
+        knownCommands.values().removeIf(command::equals);
+
+        registered.remove(command).unregister(bukkitCommandMap);
+      } catch (ReflectiveOperationException e) {
+        plugin.getLogger()
+            .log(Level.WARNING, "Something wrong when unregister the command", e);
+      }
+    }
+  }
+
+  /**
    * Register the command that opens the menu
    *
    * @param command the name of the command

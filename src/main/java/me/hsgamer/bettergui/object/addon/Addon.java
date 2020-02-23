@@ -80,6 +80,15 @@ public abstract class Addon {
   }
 
   /**
+   * Unregister the command
+   *
+   * @param command the Command label
+   */
+  public void unregisterCommand(String command) {
+    getPlugin().getCommandManager().unregister(command);
+  }
+
+  /**
    * Create the config
    */
   public void setupConfig() {
