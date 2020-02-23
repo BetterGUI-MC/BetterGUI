@@ -46,7 +46,7 @@ public class CommandManager {
   public void register(BukkitCommand command) {
     String name = command.getLabel();
     if (registered.containsKey(name)) {
-      plugin.getLogger().log(Level.WARNING, "Duplicated {0} ! Ignored", name);
+      plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", name);
       return;
     }
 
