@@ -5,14 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashMap;
-import java.util.Map;
 import me.hsgamer.bettergui.manager.AddonManager;
 
 public class AddonClassLoader extends URLClassLoader {
 
   private Addon addon;
-  private Map<String, Class<?>> classes = new HashMap<>();
   private AddonManager manager;
 
   public AddonClassLoader(AddonManager manager, File file, AddonDescription addonDescription,
@@ -32,35 +29,27 @@ public class AddonClassLoader extends URLClassLoader {
     addon.setDescription(addonDescription);
   }
 
+  public Addon getAddon() {
+    return addon;
+  }
+
   @Override
   protected Class<?> findClass(String name) {
     return findClass(name, true);
   }
 
   public Class<?> findClass(String name, boolean global) {
-    Class<?> clazz = classes.get(name);
+    Class<?> clazz = null;
+    if (global) {
+      clazz = manager.findClass(addon, name);
+    }
     if (clazz == null) {
-      if (global) {
-        clazz = manager.findClass(name);
-      }
-      if (clazz == null) {
-        try {
-          clazz = super.findClass(name);
-        } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
-          // IGNORED
-        }
-        if (clazz != null) {
-          manager.putClass(name, clazz);
-        }
-      }
-      if (clazz != null) {
-        classes.put(name, clazz);
+      try {
+        clazz = super.findClass(name);
+      } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
+        // IGNORED
       }
     }
     return clazz;
-  }
-
-  public Addon getAddon() {
-    return addon;
   }
 }

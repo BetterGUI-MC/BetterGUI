@@ -31,7 +31,6 @@ public class AddonManager {
 
   private final Map<String, Addon> addons = new HashMap<>();
   private final Map<Addon, AddonClassLoader> loaderMap = new HashMap<>();
-  private final Map<String, Class<?>> classes = new HashMap<>();
   private final File addonsDir;
   private final JavaPlugin plugin;
 
@@ -168,7 +167,6 @@ public class AddonManager {
   public void reloadAddons() {
     disableAddons();
     addons.clear();
-    classes.clear();
     loaderMap.clear();
     loadAddons();
     enableAddons();
@@ -244,22 +242,16 @@ public class AddonManager {
     return sorted;
   }
 
-  public Class<?> findClass(String name) {
-    if (classes.containsKey(name)) {
-      return classes.get(name);
-    } else {
-      for (AddonClassLoader loader : loaderMap.values()) {
-        Class<?> clazz = loader.findClass(name, false);
-        if (clazz != null) {
-          classes.put(name, clazz);
-          return clazz;
-        }
+  public Class<?> findClass(Addon addon, String name) {
+    for (AddonClassLoader loader : loaderMap.values()) {
+      if (loaderMap.containsKey(addon)) {
+        continue;
+      }
+      Class<?> clazz = loader.findClass(name, false);
+      if (clazz != null) {
+        return clazz;
       }
     }
     return null;
-  }
-
-  public void putClass(String name, Class<?> clazz) {
-    classes.putIfAbsent(name, clazz);
   }
 }

@@ -81,7 +81,7 @@ public class CommandManager {
    */
   public void registerMenuCommand(String command, Menu menu) {
     if (registeredMenuCommand.containsKey(command)) {
-      plugin.getLogger().log(Level.WARNING, "Duplicated '{}' ! Ignored", command);
+      plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", command);
       return;
     }
     BukkitCommand bukkitCommand = new BukkitCommand(command) {
