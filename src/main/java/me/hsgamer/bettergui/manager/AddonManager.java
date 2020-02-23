@@ -147,11 +147,6 @@ public class AddonManager {
   public void disableAddon(String name) {
     Addon addon = addons.get(name);
     addon.onDisable();
-    try {
-      loaderMap.remove(addon).close();
-    } catch (IOException e) {
-      plugin.getLogger().log(Level.WARNING, "Error when closing ClassLoader", e);
-    }
     plugin.getLogger().log(Level.INFO, "Disabled {0}",
         String.join(" ", name, addon.getDescription().getVersion()));
   }
@@ -164,10 +159,20 @@ public class AddonManager {
     addons.keySet().forEach(this::disableAddon);
   }
 
+  private void closeClassLoader(Addon addon) {
+    if (loaderMap.containsKey(addon)) {
+      try {
+        loaderMap.remove(addon).close();
+      } catch (IOException e) {
+        plugin.getLogger().log(Level.WARNING, "Error when closing ClassLoader", e);
+      }
+    }
+  }
+
   public void reloadAddons() {
     disableAddons();
+    addons.values().forEach(this::closeClassLoader);
     addons.clear();
-    loaderMap.clear();
     loadAddons();
     enableAddons();
   }
@@ -217,6 +222,7 @@ public class AddonManager {
         if (!missing.isEmpty()) {
           plugin.getLogger().warning("Missing plugin dependency for " + name + ": " + Arrays
               .toString(missing.toArray()));
+          closeClassLoader(addon);
           return;
         }
 
@@ -224,6 +230,7 @@ public class AddonManager {
         for (String depend : depends) {
           if (!original.containsKey(depend)) {
             plugin.getLogger().warning("Missing dependency for " + name + ": " + depend);
+            closeClassLoader(addon);
             return;
           }
         }
