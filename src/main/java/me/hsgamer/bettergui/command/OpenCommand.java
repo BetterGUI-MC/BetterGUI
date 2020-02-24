@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 public class OpenCommand extends BukkitCommand {
 
   public OpenCommand() {
-    super("openmenu", "Open the specific menu", "openmenu <menu_name> [player]",
+    super("openmenu", "Open the specific menu", "/openmenu <menu_name> [player]",
         Collections.singletonList("om"));
   }
 

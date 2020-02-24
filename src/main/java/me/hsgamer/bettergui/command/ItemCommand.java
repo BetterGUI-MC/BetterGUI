@@ -20,7 +20,7 @@ public class ItemCommand extends BukkitCommand {
           getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY)));
 
   public ItemCommand() {
-    super("items", "Open the inventory that contains all items from items.yml", "items",
+    super("items", "Open the inventory that contains all items from items.yml", "/items",
         new ArrayList<>());
   }
 

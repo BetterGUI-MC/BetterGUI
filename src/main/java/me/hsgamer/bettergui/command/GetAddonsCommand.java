@@ -21,7 +21,7 @@ public class GetAddonsCommand extends BukkitCommand {
           getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION)));
 
   public GetAddonsCommand() {
-    super("addons", "Get the loaded addons", "addons",
+    super("addons", "Get the loaded addons", "/addons",
         Arrays.asList("menuaddons", "getmenuaddons"));
   }
 

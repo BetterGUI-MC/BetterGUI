@@ -124,4 +124,12 @@ public class CommandManager {
     registeredMenuCommand.values().forEach(this::unregister);
     registeredMenuCommand.clear();
   }
+
+  public Map<String, BukkitCommand> getRegistered() {
+    return registered;
+  }
+
+  public Map<String, BukkitCommand> getRegisteredMenuCommand() {
+    return registeredMenuCommand;
+  }
 }

@@ -13,7 +13,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 public class ReloadCommand extends BukkitCommand {
 
   public ReloadCommand() {
-    super("reloadmenu", "Reload the plugin", "reloadmenu",
+    super("reloadmenu", "Reload the plugin", "/reloadmenu",
         Arrays.asList("rlmenu", "reloadplugin", "rlplugin"));
   }
 
