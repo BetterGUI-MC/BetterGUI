@@ -30,8 +30,14 @@ public class CommonUtils {
   }
 
   public static void sendMessage(CommandSender sender, String message) {
-    sender.sendMessage(
-        colorize(BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PREFIX) + message));
+    sendMessage(sender, message, true);
+  }
+
+  public static void sendMessage(CommandSender sender, String message, boolean prefix) {
+    if (prefix) {
+      message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PREFIX) + message;
+    }
+    sender.sendMessage(colorize(message));
   }
 
   @SuppressWarnings("unchecked")
