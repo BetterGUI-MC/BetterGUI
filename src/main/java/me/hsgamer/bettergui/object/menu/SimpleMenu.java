@@ -61,7 +61,7 @@ public class SimpleMenu extends Menu {
 
         if (keys.containsKey(Settings.INVENTORY_TYPE)) {
           try {
-            inventoryType = InventoryType.valueOf((String) keys.get(Settings.INVENTORY_TYPE));
+            inventoryType = InventoryType.valueOf(((String) keys.get(Settings.INVENTORY_TYPE)).toUpperCase());
           } catch (IllegalArgumentException e) {
             getInstance().getLogger().log(Level.WARNING, "The menu \"" + file.getName()
                 + "\" contains an illegal inventory type, it will be CHEST by default");
