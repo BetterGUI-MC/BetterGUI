@@ -5,6 +5,8 @@ import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
 import fr.mrmicky.fastinv.FastInvManager;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
@@ -17,11 +19,13 @@ import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.command.ReloadCommand;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.config.impl.MainConfig;
+import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.CommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -71,6 +75,9 @@ public final class BetterGUI extends JavaPlugin {
       addonManager.enableAddons();
       addonManager.callPostEnable();
       loadMenuConfig();
+      if (mainConfig.get(DefaultConfig.METRICS)) {
+        enableMetrics();
+      }
     });
   }
 
@@ -101,6 +108,15 @@ public final class BetterGUI extends JavaPlugin {
     } else if (menusFolder.isFile() && menusFolder.getName().endsWith(".yml")) {
       menuManager.registerMenu(new PluginConfig(this, menusFolder));
     }
+  }
+
+  private void enableMetrics() {
+    Metrics metrics = new Metrics(this,6609);
+    metrics.addCustomChart(new Metrics.AdvancedPie("used_addons", () -> {
+      Map<String, Integer> valueMap = new HashMap<>();
+      addonManager.getLoadedAddons().forEach(addon -> valueMap.put(addon, 1));
+      return valueMap;
+    }));
   }
 
   @Override
