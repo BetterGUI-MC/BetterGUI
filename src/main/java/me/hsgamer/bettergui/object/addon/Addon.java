@@ -34,6 +34,12 @@ public abstract class Addon {
   }
 
   /**
+   * Called after all addons enabled
+   */
+  public void onPostEnable() {
+  }
+
+  /**
    * Called when disabling the addon
    */
   public void onDisable() {

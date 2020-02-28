@@ -69,6 +69,7 @@ public final class BetterGUI extends JavaPlugin {
       checkClass();
       loadCommands();
       addonManager.enableAddons();
+      addonManager.callPostEnable();
       loadMenuConfig();
     });
   }

@@ -155,6 +155,10 @@ public class AddonManager {
     addons.keySet().forEach(this::enableAddon);
   }
 
+  public void callPostEnable() {
+    addons.values().forEach(Addon::onPostEnable);
+  }
+
   public void disableAddons() {
     addons.keySet().forEach(this::disableAddon);
   }
@@ -175,6 +179,7 @@ public class AddonManager {
     addons.clear();
     loadAddons();
     enableAddons();
+    callPostEnable();
   }
 
   public Addon getAddon(String name) {
