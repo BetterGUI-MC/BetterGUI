@@ -17,7 +17,6 @@ import me.hsgamer.bettergui.object.command.CloseMenuCommand;
 import me.hsgamer.bettergui.object.command.ConditionCommand;
 import me.hsgamer.bettergui.object.command.ConsoleCommand;
 import me.hsgamer.bettergui.object.command.DelayCommand;
-import me.hsgamer.bettergui.object.command.ItemCommand;
 import me.hsgamer.bettergui.object.command.OpCommand;
 import me.hsgamer.bettergui.object.command.OpenMenuCommand;
 import me.hsgamer.bettergui.object.command.PlayerCommand;
@@ -33,7 +32,6 @@ public class CommandBuilder {
     register("player:", PlayerCommand.class);
     register("delay:", DelayCommand.class);
     register("condition:", ConditionCommand.class);
-    register("give:", ItemCommand.class);
     register("open:", OpenMenuCommand.class);
     register("open-menu:", OpenMenuCommand.class);
     register("back-menu", BackCommand.class);

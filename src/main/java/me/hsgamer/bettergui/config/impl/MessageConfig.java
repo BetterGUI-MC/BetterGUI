@@ -28,8 +28,6 @@ public class MessageConfig extends PluginConfig {
     COOLDOWN_MESSAGE("cooldown-message",
         "&cWait for {cooldown_second} secs ({cooldown}) before clicking again"),
     HAVE_MET_REQUIREMENT_PLACEHOLDER("have-met-requirement-placeholder", "Yes"),
-    INVALID_ITEM("invalid-item",
-        "&cUnable to get required item. Inform the staff"),
     INVALID_NUMBER("invalid-number", "&cError converting! {input} is not a valid number"),
     INVALID_CONDITION("invalid-condition", "&cInvalid condition! Please inform the staff"),
     INVALID_FLAG("invalid-flag", "&cCannot find flag '{input}'. Inform the staff"),

@@ -13,7 +13,6 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.object.requirement.ConditionRequirement;
 import me.hsgamer.bettergui.object.requirement.ExpLevelRequirement;
-import me.hsgamer.bettergui.object.requirement.ItemRequirement;
 import me.hsgamer.bettergui.object.requirement.PermissionRequirement;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.TestCase;
@@ -28,7 +27,6 @@ public class RequirementBuilder {
     register("condition", ConditionRequirement.class);
     register("level", ExpLevelRequirement.class);
     register("permission", PermissionRequirement.class);
-    register("item", ItemRequirement.class);
   }
 
   private RequirementBuilder() {

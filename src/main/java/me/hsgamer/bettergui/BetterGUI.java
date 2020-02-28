@@ -12,12 +12,10 @@ import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.command.GetAddonsCommand;
-import me.hsgamer.bettergui.command.ItemCommand;
 import me.hsgamer.bettergui.command.MainCommand;
 import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.command.ReloadCommand;
 import me.hsgamer.bettergui.config.PluginConfig;
-import me.hsgamer.bettergui.config.impl.ItemConfig;
 import me.hsgamer.bettergui.config.impl.MainConfig;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
@@ -36,7 +34,6 @@ public final class BetterGUI extends JavaPlugin {
   private final CommandManager commandManager = new CommandManager(this);
   private final MenuManager menuManager = new MenuManager();
 
-  private final ItemConfig itemConfig = new ItemConfig(this);
   private final MainConfig mainConfig = new MainConfig(this);
   private final MessageConfig messageConfig = new MessageConfig(this);
 
@@ -72,7 +69,6 @@ public final class BetterGUI extends JavaPlugin {
       checkClass();
       loadCommands();
       addonManager.enableAddons();
-      itemConfig.initializeMenu();
       loadMenuConfig();
     });
   }
@@ -86,7 +82,6 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   public void loadCommands() {
-    commandManager.register(new ItemCommand());
     commandManager.register(new OpenCommand());
     commandManager.register(new ReloadCommand());
     commandManager.register(new GetAddonsCommand());
@@ -112,10 +107,6 @@ public final class BetterGUI extends JavaPlugin {
     commandManager.clearMenuCommand();
     menuManager.clear();
     addonManager.disableAddons();
-  }
-
-  public ItemConfig getItemsConfig() {
-    return itemConfig;
   }
 
   public CommandManager getCommandManager() {
