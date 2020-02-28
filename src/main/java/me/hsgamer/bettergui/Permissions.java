@@ -9,9 +9,7 @@ public class Permissions {
 
   private static final String PREFIX = getInstance().getName()
       .toLowerCase();
-
-  public static final Permission ITEMS = createPermission(PREFIX + ".items", null,
-      PermissionDefault.OP);
+  
   public static final Permission OPEN_MENU = createPermission(PREFIX + ".openmenu", null,
       PermissionDefault.OP);
   public static final Permission RELOAD = createPermission(PREFIX + ".reload", null,
