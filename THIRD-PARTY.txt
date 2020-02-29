@@ -15,3 +15,8 @@ License: MIT License
 [EvalEx]
 Link: https://github.com/uklimaschewski/EvalEx
 License: https://github.com/uklimaschewski/EvalEx/blob/master/LICENSE
+
+[bStats]
+Link: https://github.com/Bastian/bStats-Metrics
+Website: https://bstats.org/
+License: GNU Lesser General Public License v3.0
