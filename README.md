@@ -1,1 +1,1 @@
-# BetterGUI ![Build Status](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/badge/icon) ![Discord](https://img.shields.io/discord/660795353037144064)
+# BetterGUI [![Build Status](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/badge/icon)](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/) [![Discord](https://img.shields.io/discord/660795353037144064)](https://discord.gg/8mJJMqH)
