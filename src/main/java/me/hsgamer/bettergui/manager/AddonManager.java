@@ -126,10 +126,17 @@ public class AddonManager {
     Map<String, Addon> finalAddons = new HashMap<>();
     for (Map.Entry<String, Addon> entry : addonMap.entrySet()) {
       Addon addon = entry.getValue();
-      if (addon.onLoad()) {
-        plugin.getLogger()
-            .info("Loaded " + entry.getKey() + " " + addon.getDescription().getVersion());
-        finalAddons.put(entry.getKey(), addon);
+      try {
+        if (addon.onLoad()) {
+          plugin.getLogger()
+              .info("Loaded " + entry.getKey() + " " + addon.getDescription().getVersion());
+          finalAddons.put(entry.getKey(), addon);
+        } else {
+          closeClassLoader(addon);
+        }
+      } catch (Exception e) {
+        plugin.getLogger().log(Level.WARNING, "Error when loading " + entry.getKey(), e);
+        closeClassLoader(addon);
       }
     }
 
@@ -139,16 +146,26 @@ public class AddonManager {
 
   public void enableAddon(String name) {
     Addon addon = addons.get(name);
-    addon.onEnable();
-    plugin.getLogger().log(Level.INFO, "Enabled {0}",
-        String.join(" ", name, addon.getDescription().getVersion()));
+    try {
+      addon.onEnable();
+      plugin.getLogger().log(Level.INFO, "Enabled {0}",
+          String.join(" ", name, addon.getDescription().getVersion()));
+    } catch (Exception e) {
+      plugin.getLogger().log(Level.WARNING, "Error when enabling " + name, e);
+      closeClassLoader(addons.remove(name));
+    }
   }
 
   public void disableAddon(String name) {
     Addon addon = addons.get(name);
-    addon.onDisable();
-    plugin.getLogger().log(Level.INFO, "Disabled {0}",
-        String.join(" ", name, addon.getDescription().getVersion()));
+    try {
+      addon.onDisable();
+      plugin.getLogger().log(Level.INFO, "Disabled {0}",
+          String.join(" ", name, addon.getDescription().getVersion()));
+    } catch (Exception e) {
+      plugin.getLogger().log(Level.WARNING, "Error when disabling " + name, e);
+      closeClassLoader(addons.remove(name));
+    }
   }
 
   public void enableAddons() {
