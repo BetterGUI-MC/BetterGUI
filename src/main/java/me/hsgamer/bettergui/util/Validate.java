@@ -29,6 +29,12 @@ public class Validate {
   }
 
   @Deprecated
+  public static boolean isValidPositiveInteger(String input) {
+    Optional<BigDecimal> number = getNumber(input);
+    return number.filter(bigDecimal -> bigDecimal.compareTo(BigDecimal.ZERO) > 0).isPresent();
+  }
+
+  @Deprecated
   public static boolean isValidInteger(String input) {
     return getNumber(input).isPresent();
   }
