@@ -30,8 +30,7 @@ public class Validate {
 
   @Deprecated
   public static boolean isValidPositiveInteger(String input) {
-    Optional<BigDecimal> number = getNumber(input);
-    return number.filter(bigDecimal -> bigDecimal.compareTo(BigDecimal.ZERO) > 0).isPresent();
+    return isValidPositiveNumber(input);
   }
 
   @Deprecated
