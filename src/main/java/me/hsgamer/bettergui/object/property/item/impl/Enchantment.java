@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.object.property.item.impl;
 
 import com.cryptomorin.xseries.XEnchantment;
+import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,9 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
         String[] split = string.split(",");
         enchantment = XEnchantment.matchXEnchantment(split[0].trim());
         String rawLevel = split[1].trim();
-        if (Validate.isValidInteger(rawLevel)) {
-          level = Integer.parseInt(rawLevel);
+        Optional<BigDecimal> optional = Validate.getNumber(rawLevel);
+        if (optional.isPresent()) {
+          level = optional.get().intValue();
         } else {
           CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
               DefaultMessage.INVALID_NUMBER).replace("{input}", rawLevel));

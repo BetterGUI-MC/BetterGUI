@@ -19,7 +19,7 @@ public class DelayCommand extends Command {
     if (ExpressionUtils.isValidExpression(value)) {
       value = String.valueOf(ExpressionUtils.getResult(value).intValue());
     }
-    if (!Validate.isValidPositiveInteger(value)) {
+    if (!Validate.isValidPositiveNumber(value)) {
       player.sendMessage(ChatColor.RED + "Invalid delay: " + value);
       return;
     }

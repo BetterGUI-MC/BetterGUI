@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.object.property.item.impl;
 
+import java.math.BigDecimal;
+import java.util.Optional;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
@@ -23,8 +25,9 @@ public class Amount extends ItemProperty<Object, Integer> {
     if (ExpressionUtils.isValidExpression(value)) {
       return ExpressionUtils.getResult(value).intValue();
     } else {
-      if (Validate.isValidInteger(value)) {
-        return Integer.parseInt(value);
+      Optional<BigDecimal> number = Validate.getNumber(value);
+      if (number.isPresent()) {
+        return number.get().intValue();
       } else {
         CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
             DefaultMessage.INVALID_NUMBER).replace("{input}", value));

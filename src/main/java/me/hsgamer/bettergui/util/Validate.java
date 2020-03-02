@@ -1,8 +1,10 @@
 package me.hsgamer.bettergui.util;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
@@ -13,30 +15,22 @@ public class Validate {
 
   }
 
-  public static boolean isValidPositiveInteger(String input) {
+  public static Optional<BigDecimal> getNumber(String input) {
     try {
-      return Integer.parseInt(input) > 0;
+      return Optional.of(new BigDecimal(input));
     } catch (NumberFormatException ex) {
-      return false;
+      return Optional.empty();
     }
   }
 
+  public static boolean isValidPositiveNumber(String input) {
+    Optional<BigDecimal> number = getNumber(input);
+    return number.filter(bigDecimal -> bigDecimal.compareTo(BigDecimal.ZERO) > 0).isPresent();
+  }
+
+  @Deprecated
   public static boolean isValidInteger(String input) {
-    try {
-      Integer.parseInt(input);
-      return true;
-    } catch (NumberFormatException ex) {
-      return false;
-    }
-  }
-
-  public static boolean isValidShort(String input) {
-    try {
-      Short.parseShort(input);
-      return true;
-    } catch (NumberFormatException ex) {
-      return false;
-    }
+    return getNumber(input).isPresent();
   }
 
   public static boolean isClassLoaded(String className) {
