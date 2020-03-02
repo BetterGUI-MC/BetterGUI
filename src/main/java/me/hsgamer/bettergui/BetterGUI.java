@@ -112,7 +112,7 @@ public final class BetterGUI extends JavaPlugin {
 
   private void enableMetrics() {
     Metrics metrics = new Metrics(this,6609);
-    metrics.addCustomChart(new Metrics.AdvancedPie("used_addons", () -> {
+    metrics.addCustomChart(new Metrics.AdvancedPie("addons", () -> {
       Map<String, Integer> valueMap = new HashMap<>();
       addonManager.getLoadedAddons().forEach(addon -> valueMap.put(addon, 1));
       return valueMap;
