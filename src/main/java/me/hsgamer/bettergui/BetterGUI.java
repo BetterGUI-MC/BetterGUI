@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
@@ -25,6 +26,7 @@ import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.CommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
+import me.hsgamer.bettergui.util.VersionChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,10 +60,32 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   @Override
-  public void onEnable() {
+  public void onLoad() {
     instance = this;
+  }
+
+  @Override
+  public void onEnable() {
     FastInvManager.register(this);
     taskChainFactory = BukkitTaskChainFactory.create(this);
+
+    getLogger().info("");
+    getLogger().info("    ____       __  __               ________  ______");
+    getLogger().info("   / __ )___  / /_/ /____  _____   / ____/ / / /  _/");
+    getLogger().info("  / __  / _ \\/ __/ __/ _ \\/ ___/  / / __/ / / // /  ");
+    getLogger().info(" / /_/ /  __/ /_/ /_/  __/ /     / /_/ / /_/ _/ /   ");
+    getLogger().info("/_____/\\___/\\__/\\__/\\___/_/      \\____/\\____/___/");
+    getLogger().info("");
+
+    getLogger().log(Level.INFO, "\t\tVersion: {0}", getDescription().getVersion());
+    new VersionChecker(this, 75620).getVersion(version -> {
+      if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+        getLogger().info("You are using the latest version");
+      } else {
+        getLogger().warning("There is an available update");
+        getLogger().warning("New Version: " + version);
+      }
+    });
 
     if (PlaceholderAPIHook.setupPlugin()) {
       getLogger().info("Hooked PlaceholderAPI");
@@ -111,7 +135,7 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   private void enableMetrics() {
-    Metrics metrics = new Metrics(this,6609);
+    Metrics metrics = new Metrics(this, 6609);
     metrics.addCustomChart(new Metrics.AdvancedPie("addons", () -> {
       Map<String, Integer> valueMap = new HashMap<>();
       addonManager.getLoadedAddons().forEach(addon -> valueMap.put(addon, 1));
