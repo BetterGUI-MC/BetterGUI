@@ -3,12 +3,11 @@ package me.hsgamer.bettergui.builder;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
-import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Property;
+import me.hsgamer.bettergui.object.icon.RawIcon;
 import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.object.property.icon.impl.ClickCommand;
 import me.hsgamer.bettergui.object.property.icon.impl.ClickRequirement;
@@ -27,7 +26,6 @@ import me.hsgamer.bettergui.object.property.item.impl.Type;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringLinkedMap;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 public class PropertyBuilder {
 
@@ -115,22 +113,7 @@ public class PropertyBuilder {
 
   private static void checkIconProperty(Class<? extends IconProperty<?>> clazz) {
     try {
-      clazz.getDeclaredConstructor(Icon.class).newInstance(new Icon("", null) {
-        @Override
-        public void setFromSection(ConfigurationSection section) {
-          // IGNORED
-        }
-
-        @Override
-        public Optional<ClickableItem> createClickableItem(Player player) {
-          return Optional.empty();
-        }
-
-        @Override
-        public Optional<ClickableItem> updateClickableItem(Player player) {
-          return Optional.empty();
-        }
-      });
+      clazz.getDeclaredConstructor(Icon.class).newInstance(new RawIcon("", null));
     } catch (Exception ex) {
       getInstance().getLogger()
           .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()

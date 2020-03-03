@@ -4,7 +4,6 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import co.aikar.taskchain.TaskChain;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,6 @@ public class SimpleMenu extends Menu {
     super(name);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void setFromFile(FileConfiguration file) {
     for (String key : file.getKeys(false)) {
@@ -88,24 +86,19 @@ public class SimpleMenu extends Menu {
         }
 
         if (keys.containsKey(Settings.COMMAND)) {
-          Object value = keys.get(Settings.COMMAND);
-          List<String> commands = new ArrayList<>();
-          if (value instanceof List) {
-            commands = (List<String>) value;
-          } else if (value instanceof String) {
-            commands = Arrays.asList(((String) value).split(";"));
-          }
-          commands.replaceAll(String::trim);
-          commands.forEach(s -> getInstance().getCommandManager().registerMenuCommand(s, this));
+          CommonUtils.createStringListFromObject(keys.get(Settings.COMMAND), true)
+              .forEach(s -> getInstance().getCommandManager().registerMenuCommand(s, this));
         }
 
         if (keys.containsKey(Settings.OPEN_ACTION)) {
           openActions.addAll(
-              CommandBuilder.getCommands(null, (List<String>) keys.get(Settings.OPEN_ACTION)));
+              CommandBuilder.getCommands(null,
+                  CommonUtils.createStringListFromObject(keys.get(Settings.OPEN_ACTION), true)));
         }
         if (keys.containsKey(Settings.CLOSE_ACTION)) {
           closeActions.addAll(
-              CommandBuilder.getCommands(null, (List<String>) keys.get(Settings.CLOSE_ACTION)));
+              CommandBuilder.getCommands(null,
+                  CommonUtils.createStringListFromObject(keys.get(Settings.CLOSE_ACTION), true)));
         }
 
         if (keys.containsKey(Settings.PERMISSION)) {

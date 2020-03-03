@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
-import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
+import me.hsgamer.bettergui.object.icon.RawIcon;
 import me.hsgamer.bettergui.object.requirement.ConditionRequirement;
 import me.hsgamer.bettergui.object.requirement.ExpLevelRequirement;
 import me.hsgamer.bettergui.object.requirement.PermissionRequirement;
@@ -18,7 +18,6 @@ import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 public class RequirementBuilder {
 
@@ -50,22 +49,7 @@ public class RequirementBuilder {
   public static void checkClass() {
     for (Class<? extends IconRequirement<?, ?>> clazz : requirements.values()) {
       try {
-        clazz.getDeclaredConstructor(Icon.class).newInstance(new Icon("", null) {
-          @Override
-          public void setFromSection(ConfigurationSection section) {
-            // IGNORED
-          }
-
-          @Override
-          public Optional<ClickableItem> createClickableItem(Player player) {
-            return Optional.empty();
-          }
-
-          @Override
-          public Optional<ClickableItem> updateClickableItem(Player player) {
-            return Optional.empty();
-          }
-        });
+        clazz.getDeclaredConstructor(Icon.class).newInstance(new RawIcon("", null));
       } catch (Exception ex) {
         getInstance().getLogger()
             .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
