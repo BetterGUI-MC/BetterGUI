@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.IconProperty;
+import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -23,27 +24,29 @@ public class ClickCommand extends IconProperty<Object> {
     super(icon);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void setValue(Object value) {
     super.setValue(value);
-    if (getValue() instanceof List) {
-      defaultCommands.addAll(CommandBuilder.getCommands(getIcon(), (List<String>) getValue()));
-    } else if (getValue() instanceof ConfigurationSection) {
+    if (getValue() instanceof ConfigurationSection) {
       ConfigurationSection section = (ConfigurationSection) getValue();
       for (ClickType clickType : ClickType.values()) {
         String subsection = clickType.name();
         if (section.isSet(subsection)) {
           List<Command> commands = new ArrayList<>(
-              CommandBuilder.getCommands(getIcon(), section.getStringList(subsection)));
+              CommandBuilder.getCommands(getIcon(),
+                  CommonUtils.createStringListFromObject(section.get(subsection), true)));
           commandsPerClickType.put(clickType, commands);
         }
       }
       if (section.isSet("DEFAULT")) {
         List<Command> commands = new ArrayList<>(
-            CommandBuilder.getCommands(getIcon(), section.getStringList("DEFAULT")));
+            CommandBuilder.getCommands(getIcon(),
+                CommonUtils.createStringListFromObject(section.get("DEFAULT"), true)));
         defaultCommands.addAll(commands);
       }
+    } else {
+      defaultCommands.addAll(CommandBuilder
+          .getCommands(getIcon(), CommonUtils.createStringListFromObject(getValue(), true)));
     }
   }
 

@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryType;
 
 public class DummyInventory extends FastInv implements MenuHolder {
 
-  private Player player;
+  private final Player player;
 
   public DummyInventory(Player player, int size, Collection<DummyIcon> icons) {
     super(size);

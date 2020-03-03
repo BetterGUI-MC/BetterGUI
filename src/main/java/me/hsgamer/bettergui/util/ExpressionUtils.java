@@ -38,7 +38,7 @@ public class ExpressionUtils {
 
   private static void addStringFunction(Expression expression) {
     expression.addLazyFunction(new LazyFunction() {
-      private LazyNumber zero = new LazyNumber() {
+      private final LazyNumber zero = new LazyNumber() {
         public BigDecimal eval() {
           return BigDecimal.ZERO;
         }
@@ -47,7 +47,7 @@ public class ExpressionUtils {
           return "0";
         }
       };
-      private LazyNumber one = new LazyNumber() {
+      private final LazyNumber one = new LazyNumber() {
         public BigDecimal eval() {
           return BigDecimal.ONE;
         }

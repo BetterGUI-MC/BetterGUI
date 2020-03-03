@@ -13,7 +13,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 
 public class MainCommand extends BukkitCommand {
 
-  private TestCase<CommandSender> testCase = new TestCase<CommandSender>()
+  private final TestCase<CommandSender> testCase = new TestCase<CommandSender>()
       .setPredicate(sender -> sender.hasPermission(Permissions.HELP))
       .setSuccessConsumer(sender -> {
         CommandManager manager = BetterGUI.getInstance().getCommandManager();

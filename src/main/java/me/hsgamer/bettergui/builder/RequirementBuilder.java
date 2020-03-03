@@ -15,6 +15,7 @@ import me.hsgamer.bettergui.object.requirement.ConditionRequirement;
 import me.hsgamer.bettergui.object.requirement.ExpLevelRequirement;
 import me.hsgamer.bettergui.object.requirement.PermissionRequirement;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
+import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -85,7 +86,6 @@ public class RequirementBuilder {
     return Optional.empty();
   }
 
-  @SuppressWarnings("unchecked")
   public static List<IconRequirement<?, ?>> loadRequirementsFromSection(
       ConfigurationSection section,
       Icon icon) {
@@ -105,7 +105,7 @@ public class RequirementBuilder {
               requirement.setValue(keys.get(Settings.VALUE));
               if (keys.containsKey(Settings.COMMAND)) {
                 List<Command> commands = new ArrayList<>();
-                ((List<String>) keys.get(Settings.COMMAND))
+                CommonUtils.createStringListFromObject(keys.get(Settings.COMMAND), true)
                     .forEach(s1 -> commands.add(CommandBuilder.getCommand(icon, s1)));
                 requirement.setFailCommand(commands);
               }

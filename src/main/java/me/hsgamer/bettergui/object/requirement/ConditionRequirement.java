@@ -15,7 +15,6 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
     super(icon, false);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public Boolean getParsedValue(Player player) {
     TestCase<String> testCase = new TestCase<String>()
@@ -25,7 +24,7 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
         .setFailConsumer(s -> CommonUtils.sendMessage(player,
             BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_CONDITION)
                 .replace("{input}", s)));
-    for (String s : CommonUtils.createStringListFromObject(value)) {
+    for (String s : CommonUtils.createStringListFromObject(value, true)) {
       if (!testCase.setTestObject(icon.hasVariables(s) ? icon.setVariables(s, player) : s).test()) {
         return false;
       }

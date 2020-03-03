@@ -10,8 +10,8 @@ import org.bukkit.plugin.Plugin;
 
 public class VersionChecker {
 
-  private Plugin plugin;
-  private int resourceId;
+  private final Plugin plugin;
+  private final int resourceId;
 
   public VersionChecker(Plugin plugin, int resourceId) {
     this.plugin = plugin;

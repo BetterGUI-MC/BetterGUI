@@ -40,15 +40,22 @@ public class CommonUtils {
     sender.sendMessage(colorize(message));
   }
 
-  @SuppressWarnings("unchecked")
+  @Deprecated
   public static List<String> createStringListFromObject(Object value) {
+    return createStringListFromObject(value, true);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static List<String> createStringListFromObject(Object value, boolean trim) {
     List<String> list = new ArrayList<>();
     if (value instanceof List) {
       list.addAll((List<String>) value);
     } else {
       list.add(String.valueOf(value));
     }
-    list.replaceAll(String::trim);
+    if (trim) {
+      list.replaceAll(String::trim);
+    }
     return list;
   }
 }

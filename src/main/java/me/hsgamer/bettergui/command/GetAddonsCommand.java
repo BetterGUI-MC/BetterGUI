@@ -12,7 +12,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 
 public class GetAddonsCommand extends BukkitCommand {
 
-  private TestCase<CommandSender> testCase = new TestCase<CommandSender>()
+  private final TestCase<CommandSender> testCase = new TestCase<CommandSender>()
       .setPredicate(commandSender -> commandSender.hasPermission(Permissions.ADDONS))
       .setSuccessConsumer(
           commandSender -> CommonUtils.sendMessage(commandSender, "&b&lLoaded Addons: &c" + String

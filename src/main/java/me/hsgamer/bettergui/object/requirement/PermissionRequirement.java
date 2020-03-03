@@ -14,7 +14,7 @@ public class PermissionRequirement extends IconRequirement<Object, List<String>>
 
   @Override
   public List<String> getParsedValue(Player player) {
-    List<String> list = CommonUtils.createStringListFromObject(value);
+    List<String> list = CommonUtils.createStringListFromObject(value, true);
     list.replaceAll(s -> icon.hasVariables(s) ? icon.setVariables(s, player) : s);
     return list;
   }

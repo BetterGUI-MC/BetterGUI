@@ -15,7 +15,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class SimpleIconPropertyBuilder {
 
-  private Icon icon;
+  private final Icon icon;
   private ClickCommand command;
   private ClickRequirement clickRequirement;
   private Cooldown cooldown;
