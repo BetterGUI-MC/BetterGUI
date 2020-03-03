@@ -7,10 +7,10 @@ assignees: ''
 
 ---
 
-**Describe the bug**
+### **Describe the bug**
 A clear and concise description of what the bug is.
 
-**To Reproduce**
+### **To Reproduce**
 Steps to reproduce the behavior:
 1. 
 2. 
@@ -18,17 +18,16 @@ Steps to reproduce the behavior:
 4.
 ...
 
-**Expected behavior**
+### **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
+### **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Version**
-Minecraft: 
-Spigot/Bukkit: 
+### **Version**
+- Minecraft: [1.12, 1.14, etc]
+- Spigot/Bukkit: [1.12, 1.14, etc] 
+- BetterGUI: [1.0, 1.1, etc]
 
-BetterGUI:
-
-**Additional context**
+### **Additional context**
 Add any other context about the problem here.
