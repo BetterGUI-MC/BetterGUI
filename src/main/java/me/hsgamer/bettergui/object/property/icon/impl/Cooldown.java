@@ -29,10 +29,9 @@ public class Cooldown extends IconProperty<ConfigurationSection> {
       ClickType.class);
   private final Map<ClickType, List<Command>> commandListPerClickType = new EnumMap<>(
       ClickType.class);
-
-  private Duration defaultCooldown = Duration.ofMillis(0);
   private final Map<UUID, Instant> defaultCooldownList = new HashMap<>();
   private final List<Command> defaultCommand = new ArrayList<>();
+  private Duration defaultCooldown = Duration.ofMillis(0);
 
   public Cooldown(Icon icon) {
     super(icon);
