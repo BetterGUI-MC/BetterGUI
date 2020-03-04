@@ -82,7 +82,7 @@ public class SimpleInventory extends FastInv implements MenuHolder {
 
   @Override
   public void onOpen(InventoryOpenEvent event) {
-    if (ticks > 0) {
+    if (ticks >= 0) {
       task = new BukkitRunnable() {
         @Override
         public void run() {

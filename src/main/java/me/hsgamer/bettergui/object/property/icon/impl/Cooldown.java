@@ -135,7 +135,8 @@ public class Cooldown extends IconProperty<ConfigurationSection> {
 
       @Override
       public String getReplacement(Player executor, String identifier) {
-        return String.valueOf(getCooldown(executor, clickType));
+        long cooldown = getCooldown(executor, clickType);
+        return String.valueOf(cooldown > 0 ? cooldown : 0);
       }
     });
   }
