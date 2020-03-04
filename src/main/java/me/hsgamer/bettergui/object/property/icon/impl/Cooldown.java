@@ -134,8 +134,29 @@ public class Cooldown extends IconProperty<ConfigurationSection> {
 
       @Override
       public String getReplacement(Player executor, String identifier) {
-        long cooldown = getCooldown(executor, clickType);
-        return String.valueOf(cooldown > 0 ? cooldown : 0);
+        long millis = getCooldown(executor, clickType);
+        millis = millis > 0 ? millis : 0;
+        int divide;
+
+        switch (identifier.toLowerCase()) {
+          case "_s":
+          case "_seconds":
+            divide = 1000;
+            break;
+          case "_m":
+          case "_minutes":
+            divide = 60000;
+            break;
+          case "_h":
+          case "_hours":
+            divide = 3600000;
+            break;
+          default:
+            divide = 1;
+            break;
+        }
+
+        return String.valueOf(millis / divide);
       }
     });
   }
