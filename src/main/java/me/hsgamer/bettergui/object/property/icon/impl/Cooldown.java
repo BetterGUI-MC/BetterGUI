@@ -1,13 +1,22 @@
 package me.hsgamer.bettergui.object.property.icon.impl;
 
+import co.aikar.taskchain.TaskChain;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.builder.CommandBuilder;
+import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
+import me.hsgamer.bettergui.object.SimpleIconVariable;
 import me.hsgamer.bettergui.object.property.IconProperty;
+import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -15,12 +24,15 @@ import org.bukkit.event.inventory.ClickType;
 
 public class Cooldown extends IconProperty<ConfigurationSection> {
 
-  private final Map<ClickType, Long> cooldownTimePerType = new EnumMap<>(ClickType.class);
-  private final Map<ClickType, Map<UUID, Long>> cooldownListPerType = new EnumMap<>(
+  private final Map<ClickType, Duration> cooldownTimePerType = new EnumMap<>(ClickType.class);
+  private final Map<ClickType, Map<UUID, Instant>> cooldownListPerType = new EnumMap<>(
       ClickType.class);
-  private final Map<UUID, Long> defaultCooldownList = new HashMap<>();
-  private long defaultCooldownTime = 0;
-  private String cooldownMessage;
+  private final Map<ClickType, List<Command>> commandListPerClickType = new EnumMap<>(
+      ClickType.class);
+
+  private Duration defaultCooldown = Duration.ofMillis(0);
+  private final Map<UUID, Instant> defaultCooldownList = new HashMap<>();
+  private final List<Command> defaultCommand = new ArrayList<>();
 
   public Cooldown(Icon icon) {
     super(icon);
@@ -29,75 +41,108 @@ public class Cooldown extends IconProperty<ConfigurationSection> {
   @Override
   public void setValue(Object value) {
     super.setValue(value);
-    ConfigurationSection section = getValue();
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(getValue().getValues(false));
     // PER CLICK TYPE
     for (ClickType type : ClickType.values()) {
       String subsection = type.name();
-      if (section.isSet(subsection)) {
-        long cooldown = (long) (section.getDouble(subsection) * 1000);
-        setTime(cooldown, type);
+      if (keys.containsKey(subsection)) {
+        createCooldown(type, keys.get(subsection));
       }
     }
     // DEFAULT
-    if (section.isSet("DEFAULT")) {
-      long cooldown = (long) (section.getDouble("DEFAULT") * 1000);
-      setDefaultTime(cooldown);
-    }
-    // MESSAGE
-    if (section.isString("MESSAGE")) {
-      setCooldownMessage(CommonUtils.colorize(section.getParent().getString("MESSAGE")));
+    if (keys.containsKey("default")) {
+      createCooldown(null, keys.get("default"));
     }
   }
 
-  public boolean isCooldown(Player player, ClickType clickType) {
-    long now = System.currentTimeMillis();
-    Map<UUID, Long> cooldownList = cooldownListPerType
-        .getOrDefault(clickType, defaultCooldownList);
-    Long cooldownUntil = cooldownList.get(player.getUniqueId());
-    long time = cooldownTimePerType.getOrDefault(clickType, defaultCooldownTime);
-    if (time > 0 && cooldownUntil != null && cooldownUntil > now) {
-      if (cooldownMessage != null) {
-        if (!cooldownMessage.isEmpty()) {
-          player.sendMessage(
-              cooldownMessage
-                  .replace("{cooldown}", String.valueOf(cooldownUntil - now))
-                  .replace("{cooldown_second}", String.valueOf((cooldownUntil - now) / 1000))
-          );
+  public void createCooldown(ClickType type, Object object) {
+    long time;
+    List<Command> commands = new ArrayList<>();
+
+    if (object instanceof ConfigurationSection) {
+      Map<String, Object> keys = new CaseInsensitiveStringMap<>(
+          ((ConfigurationSection) object).getValues(false));
+      if (keys.containsKey(Settings.VALUE)) {
+        time = (long) (Double.parseDouble(String.valueOf(keys.get(Settings.VALUE))) * 1000);
+        if (keys.containsKey(Settings.COMMAND)) {
+          commands.addAll(CommandBuilder.getCommands(getIcon(),
+              CommonUtils.createStringListFromObject(keys.get(Settings.COMMAND), true)));
         }
       } else {
-        String message = BetterGUI.getInstance().getMessageConfig()
-            .get(DefaultMessage.COOLDOWN_MESSAGE);
-        if (!message.isEmpty()) {
-          CommonUtils.sendMessage(player, message
-              .replace("{cooldown}", String.valueOf(cooldownUntil - now))
-              .replace("{cooldown_second}", String.valueOf((cooldownUntil - now) / 1000))
-          );
-        }
+        return;
       }
-      return true;
     } else {
-      return false;
+      time = (long) (Double.parseDouble(String.valueOf(object)) * 1000);
     }
-  }
 
-  public void startCooldown(Player player, ClickType clickType) {
-    long now = System.currentTimeMillis();
-    Map<UUID, Long> cooldownList = cooldownListPerType
-        .getOrDefault(clickType, defaultCooldownList);
-    long time = cooldownTimePerType.getOrDefault(clickType, defaultCooldownTime);
-    cooldownList.put(player.getUniqueId(), now + time);
+    if (type != null) {
+      setTime(time, type);
+      commandListPerClickType.put(type, commands);
+    } else {
+      setDefaultTime(time);
+      defaultCommand.addAll(commands);
+    }
+    registerVariable(type);
   }
 
   public void setTime(long time, ClickType clickType) {
-    this.cooldownTimePerType.put(clickType, time);
+    this.cooldownTimePerType.put(clickType, Duration.ofMillis(time));
     this.cooldownListPerType.put(clickType, new HashMap<>());
   }
 
   public void setDefaultTime(long time) {
-    this.defaultCooldownTime = time;
+    this.defaultCooldown = Duration.ofMillis(time);
   }
 
-  public void setCooldownMessage(String cooldownMessage) {
-    this.cooldownMessage = cooldownMessage;
+  public boolean isCooldown(Player player, ClickType clickType) {
+    return getCooldown(player, clickType) > 0;
+  }
+
+  public long getCooldown(Player player, ClickType clickType) {
+    UUID uuid = player.getUniqueId();
+    Map<UUID, Instant> cooldownList = cooldownListPerType
+        .getOrDefault(clickType, defaultCooldownList);
+    if (cooldownList.containsKey(uuid)) {
+      return Instant.now().until(cooldownList.get(uuid), ChronoUnit.MILLIS);
+    } else {
+      return 0;
+    }
+  }
+
+  public void sendFailCommand(Player player, ClickType clickType) {
+    TaskChain<?> taskChain = BetterGUI.newChain();
+    commandListPerClickType.getOrDefault(clickType, defaultCommand)
+        .forEach(command -> command.addToTaskChain(player, taskChain));
+    taskChain.execute();
+  }
+
+  public void startCooldown(Player player, ClickType clickType) {
+    UUID uuid = player.getUniqueId();
+    Map<UUID, Instant> cooldownList = cooldownListPerType
+        .getOrDefault(clickType, defaultCooldownList);
+    Duration cooldownTime = cooldownTimePerType.getOrDefault(clickType, defaultCooldown);
+    if (!(cooldownTime.isNegative() || cooldownTime.isZero())) {
+      cooldownList.put(uuid, Instant.now().plus(cooldownTime));
+    }
+  }
+
+  public void registerVariable(ClickType clickType) {
+    getIcon().registerVariable(new SimpleIconVariable(getIcon()) {
+      @Override
+      public String getIdentifier() {
+        return (clickType != null ? clickType.name().toLowerCase() : "default") + "_cooldown";
+      }
+
+      @Override
+      public String getReplacement(Player executor, String identifier) {
+        return String.valueOf(getCooldown(executor, clickType));
+      }
+    });
+  }
+
+  private static class Settings {
+
+    static final String VALUE = "value";
+    static final String COMMAND = "command";
   }
 }

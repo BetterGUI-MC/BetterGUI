@@ -9,6 +9,7 @@ import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.object.GlobalVariable;
 import me.hsgamer.bettergui.util.BukkitUtils;
 import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.ExpressionUtils;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -83,6 +84,12 @@ public class VariableManager {
       }
       return null;
     });
+    register("condition_", ((executor, identifier) -> {
+      if (ExpressionUtils.isValidExpression(identifier)) {
+        return ExpressionUtils.getResult(identifier).toPlainString();
+      }
+      return null;
+    }));
   }
 
   private VariableManager() {

@@ -25,8 +25,6 @@ public class MessageConfig extends PluginConfig {
     SUCCESS("success", "&aSuccess"),
     MENU_REQUIRED("menu-required", "&cYou should specify a menu"),
     MENU_NOT_FOUND("menu-not-found", "&cThat menu does not exist"),
-    COOLDOWN_MESSAGE("cooldown-message",
-        "&cWait for {cooldown_second} secs ({cooldown}) before clicking again"),
     HAVE_MET_REQUIREMENT_PLACEHOLDER("have-met-requirement-placeholder", "Yes"),
     INVALID_NUMBER("invalid-number", "&cError converting! {input} is not a valid number"),
     INVALID_CONDITION("invalid-condition", "&cInvalid condition! Please inform the staff"),

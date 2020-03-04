@@ -78,6 +78,7 @@ public class SimpleIconPropertyBuilder {
     return event -> {
       ClickType clickType = event.getClick();
       if (cooldown.isCooldown(player, clickType)) {
+        cooldown.sendFailCommand(player, clickType);
         return;
       }
       if (!clickRequirement.check(player, clickType)) {
