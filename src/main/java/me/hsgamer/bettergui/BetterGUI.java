@@ -5,8 +5,6 @@ import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
 import fr.mrmicky.fastinv.FastInvManager;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.builder.CommandBuilder;
@@ -140,12 +138,7 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   private void enableMetrics() {
-    Metrics metrics = new Metrics(this, 6609);
-    metrics.addCustomChart(new Metrics.AdvancedPie("addons", () -> {
-      Map<String, Integer> valueMap = new HashMap<>();
-      addonManager.getLoadedAddons().forEach(addon -> valueMap.put(addon, 1));
-      return valueMap;
-    }));
+    new Metrics(this, 6609);
   }
 
   @Override
