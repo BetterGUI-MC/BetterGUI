@@ -1,18 +1,18 @@
 package me.hsgamer.bettergui.object.addon;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.logging.Level;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Listener;
 
 /**
  * The main class of the addon
@@ -20,12 +20,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 public abstract class Addon {
 
   private File dataFolder;
+  private File jarFile;
   private PluginConfig config;
   private AddonDescription description;
   private AddonClassLoader addonClassLoader;
 
   public Addon() {
     this.addonClassLoader = (AddonClassLoader) this.getClass().getClassLoader();
+    this.jarFile = addonClassLoader.getFile();
   }
 
   protected AddonClassLoader getClassLoader() {
@@ -169,9 +171,9 @@ public abstract class Addon {
   }
 
   /**
-   * Copy resource from the addon's jar
+   * Copy the resource from the addon's jar
    *
-   * @param path path to resource
+   * @param path    path to resource
    * @param replace whether it replaces the existed one
    */
   public void saveResource(String path, boolean replace) {
@@ -180,56 +182,68 @@ public abstract class Addon {
     }
 
     path = path.replace('\\', '/');
-    InputStream in = getResource(path);
-    if (in == null) {
-      throw new IllegalArgumentException("The embedded resource '" + path + "' cannot be found");
-    }
-
-    File outFile = new File(getDataFolder(), path);
-    int lastIndex = path.lastIndexOf('/');
-    File outDir = new File(getDataFolder(), path.substring(0, Math.max(lastIndex, 0)));
-
-    if (!outDir.exists()) {
-      outDir.mkdirs();
-    }
-
-    try (OutputStream out = new FileOutputStream(outFile);) {
-      if (!outFile.exists() || replace) {
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-          out.write(buf, 0, len);
+    try (JarFile jar = new JarFile(jarFile)) {
+      JarEntry jarConfig = jar.getJarEntry(path);
+      if (jarConfig != null) {
+        try (InputStream in = jar.getInputStream(jarConfig)) {
+          if (in == null) {
+            throw new IllegalArgumentException(
+                "The embedded resource '" + path + "' cannot be found");
+          }
+          File out = new File(getDataFolder(), path);
+          out.getParentFile().mkdirs();
+          if (!out.exists() || replace) {
+            Files.copy(in, out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+          }
         }
-        in.close();
+      } else {
+        throw new IllegalArgumentException("The embedded resource '" + path + "' cannot be found");
       }
-    } catch (IOException ex) {
-      getPlugin().getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
+    } catch (IOException e) {
+      getPlugin().getLogger().warning("Could not load from jar file. " + path);
     }
   }
 
   /**
-   * Get the resource in the addon's jar
+   * Get the resource from the addon's jar
    *
    * @param path path to resource
-   * @return The InputStream of the resource, or null if it's not found
+   * @return the InputStream of the resource, or null if it's not found
    */
   public InputStream getResource(String path) {
-    if (path == null) {
-      throw new IllegalArgumentException("Filename cannot be null");
+    if (Validate.isNullOrEmpty(path)) {
+      throw new IllegalArgumentException("Path cannot be null or empty");
     }
 
-    try {
-      URL url = getClassLoader().getResource(path);
-
-      if (url == null) {
-        return null;
+    path = path.replace('\\', '/');
+    try (JarFile jar = new JarFile(jarFile)) {
+      JarEntry jarConfig = jar.getJarEntry(path);
+      if (jarConfig != null) {
+        try (InputStream in = jar.getInputStream(jarConfig)) {
+          return in;
+        }
       }
-
-      URLConnection connection = url.openConnection();
-      connection.setUseCaches(false);
-      return connection.getInputStream();
-    } catch (IOException ex) {
-      return null;
+    } catch (IOException e) {
+      getPlugin().getLogger().warning("Could not load from jar file. " + path);
     }
+    return null;
+  }
+
+  /**
+   * Register listener
+   *
+   * @param listener the listener to register
+   */
+  public void registerListener(Listener listener) {
+    getPlugin().getAddonManager().registerListener(this, listener);
+  }
+
+  /**
+   * Unregister listener
+   *
+   * @param listener the listener to unregister
+   */
+  public void unregisterListener(Listener listener) {
+    getPlugin().getAddonManager().unregisterListener(this, listener);
   }
 }

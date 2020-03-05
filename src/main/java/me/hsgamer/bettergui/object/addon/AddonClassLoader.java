@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.manager.AddonManager;
 public class AddonClassLoader extends URLClassLoader {
 
   private Addon addon;
+  private File file;
   private AddonManager manager;
 
   public AddonClassLoader(AddonManager manager, File file, AddonDescription addonDescription,
@@ -17,6 +18,7 @@ public class AddonClassLoader extends URLClassLoader {
       throws MalformedURLException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException, ClassNotFoundException {
     super(new URL[]{file.toURI().toURL()}, parent);
     this.manager = manager;
+    this.file = file;
 
     Class<?> clazz = Class.forName(addonDescription.getMainClass(), true, this);
     Class<? extends Addon> newClass;
@@ -51,5 +53,9 @@ public class AddonClassLoader extends URLClassLoader {
       }
     }
     return clazz;
+  }
+
+  public File getFile() {
+    return file;
   }
 }

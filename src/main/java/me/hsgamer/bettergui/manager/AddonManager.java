@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,12 +26,15 @@ import me.hsgamer.bettergui.util.TestCase;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AddonManager {
 
   private final Map<String, Addon> addons = new HashMap<>();
   private final Map<Addon, AddonClassLoader> loaderMap = new HashMap<>();
+  private final Map<Addon, List<Listener>> listeners = new HashMap<>();
   private final File addonsDir;
   private final JavaPlugin plugin;
 
@@ -160,6 +164,10 @@ public class AddonManager {
     Addon addon = addons.get(name);
     try {
       addon.onDisable();
+      // Unregister all listeners
+      if (listeners.containsKey(addon)) {
+        listeners.remove(addon).forEach(HandlerList::unregisterAll);
+      }
       plugin.getLogger().log(Level.INFO, "Disabled {0}",
           String.join(" ", name, addon.getDescription().getVersion()));
     } catch (Exception e) {
@@ -178,6 +186,8 @@ public class AddonManager {
 
   public void disableAddons() {
     addons.keySet().forEach(this::disableAddon);
+    addons.values().forEach(this::closeClassLoader);
+    addons.clear();
   }
 
   private void closeClassLoader(Addon addon) {
@@ -190,10 +200,26 @@ public class AddonManager {
     }
   }
 
+  public void registerListener(Addon addon, Listener listener) {
+    if (!listeners.containsKey(addon)) {
+      listeners.put(addon, new ArrayList<>());
+    }
+    plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+    listeners.get(addon).add(listener);
+  }
+
+  public void unregisterListener(Addon addon, Listener listener) {
+    if (listeners.containsKey(addon)) {
+      List<Listener> listenerList = listeners.get(addon);
+      if (listenerList.contains(listener)) {
+        listenerList.remove(listener);
+        HandlerList.unregisterAll(listener);
+      }
+    }
+  }
+
   public void reloadAddons() {
     disableAddons();
-    addons.values().forEach(this::closeClassLoader);
-    addons.clear();
     loadAddons();
     enableAddons();
     callPostEnable();
