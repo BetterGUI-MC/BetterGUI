@@ -45,7 +45,7 @@ public class SimpleInventory extends FastInv implements MenuHolder {
     this.ticks = ticks;
     this.maxSlots = maxSlots;
     this.player = player;
-    icons.forEach((key, value) -> this.icons.put(key - 1, value.cloneIcon()));
+    icons.forEach((key, value) -> this.icons.put(key, value.cloneIcon()));
     if (defaultIcon != null) {
       this.defaultIcon = defaultIcon.cloneIcon();
     }
@@ -73,7 +73,7 @@ public class SimpleInventory extends FastInv implements MenuHolder {
     this.ticks = ticks;
     this.maxSlots = maxSlots;
     this.player = player;
-    icons.forEach((key, value) -> this.icons.put(key - 1, value.cloneIcon()));
+    icons.forEach((key, value) -> this.icons.put(key, value.cloneIcon()));
     if (defaultIcon != null) {
       this.defaultIcon = defaultIcon.cloneIcon();
     }
