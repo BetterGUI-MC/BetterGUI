@@ -1,8 +1,10 @@
 package me.hsgamer.bettergui.builder;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
@@ -109,15 +111,15 @@ public class IconBuilder {
             .setSuccessConsumer(stringObjectMap1 -> {
               String input = String.valueOf(stringObjectMap1.get(SlotSetting.SLOT));
               TestCase<String> testCase = new TestCase<String>()
+                  .setBeforeTestOperator(String::trim)
                   .setPredicate(Validate::isValidInteger)
                   .setFailConsumer(s -> {
                     String[] split = s.split("-", 2);
-                    if (Validate.isValidInteger(split[0]) && Validate
-                        .isValidInteger(split[1])) {
-                      int s1 = Integer.parseInt(split[0]);
-                      int s2 = Integer.parseInt(split[1]);
-                      int start = Math.min(s1, s2);
-                      int end = Math.max(s1, s2);
+                    Optional<BigDecimal> s1 = Validate.getNumber(split[0]);
+                    Optional<BigDecimal> s2 = Validate.getNumber(split[1]);
+                    if (s1.isPresent() && s2.isPresent()) {
+                      int start = Math.min(s1.get().intValue(), s2.get().intValue());
+                      int end = Math.max(s1.get().intValue(), s2.get().intValue());
                       for (int i = start; i <= end; i++) {
                         slots.add(i);
                       }

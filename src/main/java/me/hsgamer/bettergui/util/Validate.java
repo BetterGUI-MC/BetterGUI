@@ -33,7 +33,6 @@ public class Validate {
     return isValidPositiveNumber(input);
   }
 
-  @Deprecated
   public static boolean isValidInteger(String input) {
     return getNumber(input).isPresent();
   }
