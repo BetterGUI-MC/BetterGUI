@@ -1,8 +1,16 @@
 package me.hsgamer.bettergui.object.addon;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.PluginConfig;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -14,6 +22,15 @@ public abstract class Addon {
   private File dataFolder;
   private PluginConfig config;
   private AddonDescription description;
+  private AddonClassLoader addonClassLoader;
+
+  public Addon() {
+    this.addonClassLoader = (AddonClassLoader) this.getClass().getClassLoader();
+  }
+
+  protected AddonClassLoader getClassLoader() {
+    return addonClassLoader;
+  }
 
   /**
    * Called when loading the addon
@@ -149,5 +166,70 @@ public abstract class Addon {
       dataFolder.mkdirs();
     }
     return dataFolder;
+  }
+
+  /**
+   * Copy resource from the addon's jar
+   *
+   * @param path path to resource
+   * @param replace whether it replaces the existed one
+   */
+  public void saveResource(String path, boolean replace) {
+    if (Validate.isNullOrEmpty(path)) {
+      throw new IllegalArgumentException("Path cannot be null or empty");
+    }
+
+    path = path.replace('\\', '/');
+    InputStream in = getResource(path);
+    if (in == null) {
+      throw new IllegalArgumentException("The embedded resource '" + path + "' cannot be found");
+    }
+
+    File outFile = new File(getDataFolder(), path);
+    int lastIndex = path.lastIndexOf('/');
+    File outDir = new File(getDataFolder(), path.substring(0, Math.max(lastIndex, 0)));
+
+    if (!outDir.exists()) {
+      outDir.mkdirs();
+    }
+
+    try (OutputStream out = new FileOutputStream(outFile);) {
+      if (!outFile.exists() || replace) {
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+          out.write(buf, 0, len);
+        }
+        in.close();
+      }
+    } catch (IOException ex) {
+      getPlugin().getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
+    }
+  }
+
+  /**
+   * Get the resource in the addon's jar
+   *
+   * @param path path to resource
+   * @return The InputStream of the resource, or null if it's not found
+   */
+  public InputStream getResource(String path) {
+    if (path == null) {
+      throw new IllegalArgumentException("Filename cannot be null");
+    }
+
+    try {
+      URL url = getClassLoader().getResource(path);
+
+      if (url == null) {
+        return null;
+      }
+
+      URLConnection connection = url.openConnection();
+      connection.setUseCaches(false);
+      return connection.getInputStream();
+    } catch (IOException ex) {
+      return null;
+    }
   }
 }

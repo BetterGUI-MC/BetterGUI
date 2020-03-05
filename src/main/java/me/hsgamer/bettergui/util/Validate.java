@@ -72,4 +72,8 @@ public class Validate {
   public static boolean isNullOrEmpty(Collection<?> list) {
     return list == null || list.isEmpty();
   }
+
+  public static boolean isNullOrEmpty(String string) {
+    return string == null || string.isEmpty();
+  }
 }
