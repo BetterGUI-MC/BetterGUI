@@ -17,8 +17,8 @@
 * Add this in your `<repositories>`
 ```xml
     <repository>
-      <id>codemc-snapshots</id>
-      <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+      <id>codemc-releases</id>
+      <url>https://repo.codemc.io/repository/maven-releases/</url>
     </repository>
 ```
 * Add this in your `<dependencies>`
@@ -26,7 +26,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>BetterGUI</artifactId>
-      <version>1.1-SNAPSHOT</version>
+      <version>1.1</version>
       <scope>provided</scope>
     </dependency>
 ```
