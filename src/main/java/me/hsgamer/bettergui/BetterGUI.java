@@ -127,6 +127,7 @@ public final class BetterGUI extends JavaPlugin {
     File menusFolder = new File(getDataFolder(), "menu");
     if (!menusFolder.exists()) {
       menusFolder.mkdirs();
+      saveResource("menu" + File.separator + "example.yml", false);
     }
     if (menusFolder.isDirectory()) {
       for (File subFile : Objects.requireNonNull(menusFolder.listFiles())) {

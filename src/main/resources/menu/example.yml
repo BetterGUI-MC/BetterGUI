@@ -1,0 +1,315 @@
+######################
+#+                  +#
+#   MENU SETTINGS    #
+#+                  +#
+######################
+menu-settings:
+  name: '&c&lExample Menu'
+  rows: 6
+  command: menu
+  auto-refresh: 5
+  open-action:
+  - 'tell: &eYou opened the example menu'
+  close-action:
+  - 'tell: &cYou closed the example menu'
+
+######################
+#+                  +#
+#    DEFAULT ICON    #
+#+                  +#
+######################
+default-icon:
+  type: animated
+  child:
+    frame1:
+      id: RED_STAINED_GLASS_PANE
+    frame2:
+      id: GREEN_STAINED_GLASS_PANE
+    frame3:
+      id: BLUE_STAINED_GLASS_PANE
+
+######################
+#+                  +#
+#       ITEMS        #
+#+                  +#
+######################
+# Note that the nodes is case-insensitive (except some sub-nodes)
+# You can use lowercase or uppercase whatever you want
+spawncmd:
+  COMMAND: 'spawn'
+  NAME: '{raindow}/spawn'
+  LORE:
+    - 'It justs executes /spawn'
+    - 'as the player who clicked.'
+  ID: ender_pearl
+  POSITION-X: 1
+  POSITION-Y: 1
+  
+durability-armor:
+  NAME: '&aDamaged armor'
+  LORE:
+    - 'This armor is damaged.'
+  ID: diamond helmet
+  DAMAGE: 100
+  POSITION-X: 2
+  POSITION-Y: 1
+
+enchanted-sword:
+  NAME: '&aEnchanted sword'
+  LORE:
+    - 'This sword is glowing.'
+  ID: diamond_sword
+  ENCHANTMENT: 
+  - "durability, 1"
+  POSITION-X: 3
+  POSITION-Y: 1
+  
+some-arrows:
+  NAME: '&aSome arrows'
+  LORE:
+    - 'You can set the amount of items to display.'
+  ID: arrow
+  AMOUNT: 5
+  POSITION-X: 4
+  POSITION-Y: 1
+  
+test-from-console:
+  COMMAND: 'console: say Hello {player}!'
+  NAME: '&cRuns command from the console.'
+  LORE:
+    - 'It broadcasts your name with the command /say.'
+  ID: command_block
+  POSITION-X: 5
+  POSITION-Y: 1
+  
+test-as-op:
+  COMMAND: 'op: say Hello world!'
+  NAME: '&cRuns command as OP.'
+  LORE:
+    - 'Be careful with this type of commands.'
+    - 'It will ignore nearly all the permissions.'
+  ID: command_block
+  POSITION-X: 6
+  POSITION-Y: 1
+  
+test-with-placeholder:
+  COMMAND: 
+  - "tell: &9Online players: &f{online}/{max_players}"
+  - "tell: &9Your name: &f{player}"
+  - "tell: &9The world you are in: &f{world}"
+  - "tell: &9Ping: &f{ping}"
+  NAME: '&6This message contains some placeholders'
+  LORE:
+    - 'Placeholders will be replaced when the item'
+    - 'is clicked.'
+  ID: water_bucket
+  POSITION-X: 7
+  POSITION-Y: 1
+  
+formatting-codes:
+  NAME: '&dFormatting codes'
+  LORE:
+    - 'You can use all the formatting codes!'
+    - '&fColors: &c#c &a#a &9#9 &e#e &f... ...'
+    - '&fRandom (#k): &kfy379!H'
+    - '&fBold (#l): &lexample'
+    - '&fStrikethrough (#m): &mexample'
+    - '&fUnderline (#n): &nexample'
+    - '&fItalic (#o): &oexample'
+  ID: paper
+  POSITION-X: 8
+  POSITION-Y: 1
+  
+talking-fish:
+  COMMAND: 'tell: This is a simple message, without using commands!'
+  NAME: '&3Tells you something.'
+  LORE:
+    - '&7It tells you something without commands.'
+  ID: torch
+  POSITION-X: 9
+  POSITION-Y: 1
+  
+test-multiple-command:
+  COMMAND: 
+  - 'console: Say Did you know that...'
+  - 'console: say you can run multiple commands?;'
+  NAME: '&aMultiple commands'
+  LORE:
+    - 'Example of multiple commands.'
+  ID: golden_apple
+  POSITION-X: 1
+  POSITION-Y: 2
+  
+permission:
+  COMMAND: 'tell: &a[v] You have the correct permission!'
+  NAME: '&8Permission test'
+  LORE:
+    - 'To use this item, you need the'
+    - 'permission "bettergui.test".'
+    - 'Otherwise, a configurable error'
+    - 'message will be displayed.'
+  ID: iron bars
+  POSITION-X: 2
+  POSITION-Y: 2
+  CLICK-REQUIREMENT:
+    PERMISSION:
+      VALUE: bettergui.test
+      COMMAND: 'tell: &cYou don''t have the correct permission!'
+      
+condition:
+  NAME: '&aCondition'
+  LORE:
+    - 'The command will run when the level is higher than 5.'
+  ID: grass
+  COMMAND: 
+  - "condition: {level} > 5"
+  - "tell: &aYou did it"
+  POSITION-X: 3
+  POSITION-Y: 2
+  
+test-per-click-command:
+  COMMAND:
+    LEFT: 'tell: &cYou left-clicked'
+    RIGHT: 'tell: &cYou right-clicked'
+    MIDDLE: 'tell: &cYou middle-clicked'
+    # Default for every click types
+    DEFAULT:
+    - "tell: &cUnknown click type"
+    - "tell: Left, Right, Middle only"
+  NAME: '&aCommands per clicktype'
+  LORE:
+    - 'You left-click.'
+    - 'You right-click.'
+    - 'You middle-click'
+    - 'And you get different messages.'
+  ID: redstone_block
+  POSITION-X: 4
+  POSITION-Y: 2
+  
+test-delay-command:
+  COMMAND: 
+  - 'tell: &aThis is current'
+  - 'delay: 60'
+  - 'tell: &aThis is 3 seconds later'
+  NAME: '&eDelay Command'
+  LORE:
+    - 'This is a test of delay command.'
+  ID: clock
+  POSITION-X: 5
+  POSITION-Y: 2
+
+# Simple Cooldown Example
+cooldown:
+  COMMAND: 'tell: &e You will need to wait 10 seconds to click again'
+  NAME: '&aCooldown'
+  LORE:
+    - 'This is a example of icon with cooldown'
+  COOLDOWN: 
+    DEFAULT: 10
+  ID: paper
+  POSITION-X: 6
+  POSITION-Y: 2
+  
+enchanted-sword-flag:
+  NAME: '&aEnchanted sword'
+  LORE:
+    - 'This sword is glowing. (literally)'
+  ID: diamond_sword
+  ENCHANTMENT: 
+  - "durability, 1"
+  FLAG:
+  - HIDE_ENCHANTS
+  POSITION-X: 7
+  POSITION-Y: 2
+
+# Advanced Cooldown Example
+advanced_cooldown:
+  id: paper
+  POSITION-X: 8
+  POSITION-Y: 2
+  name: '&cCooldown'
+  lore:
+  - '&eLEFT: &f{left_cooldown_h}h{left_cooldown_m}m{left_cooldown_s}s (&cTotal millis: {left_cooldown})'
+  - '&eRIGHT: &f{right_cooldown_h}h{right_cooldown_m}m{right_cooldown_s}s (&cTotal millis: {right_cooldown})'
+  - '&eMIDDLE: &f{middle_cooldown_h}h{middle_cooldown_m}m{middle_cooldown_s}s (&cTotal millis: {middle_cooldown})'
+  - '&eDEFAULT: &f{default_cooldown_h}h{default_cooldown_m}m{default_cooldown_s}s (&cTotal millis: {default_cooldown})'
+  command:
+    LEFT: 'tell: &cYou left-clicked'
+    RIGHT: 'tell: &cYou right-clicked'
+    MIDDLE: 'tell: &cYou middle-clicked'
+    DEFAULT: 'tell: &cYou clicked'
+  cooldown:
+    left: 10
+    right: 20
+    middle: 30
+    default:
+      value: 40
+      command: "tell: &cCalm down"
+      
+list-icon:
+  type: list
+  position-x: 9
+  position-y: 2
+  child:
+    world:
+      id: grass
+      name: "&aYou are in {world}"
+      view-requirement:
+        # STREQ: Compare 2 strings if they are the same
+        condition: STREQ("{world}", "world")
+    nether:
+      id: netherrack
+      name: "&cYou are in {world}"
+      view-requirement:
+        condition: STREQ("{world}", "world_nether")
+    unknown:
+      id: bedrock
+      name: "&cYou are in {world}"
+      lore:
+      - "&cUnknown world"
+      
+test-view-requirement:
+  position-x: 1
+  position-y: 3
+  id: exp_bottle
+  name: "&cA exp bottle"
+  lore:
+  - "You will see this icon when the level is higher than 5"
+  view-requirement:
+    level: 5
+    
+animated-icon:
+  position-x: 2
+  position-y: 3
+  type: animated
+  update: 2
+  child:
+    frame_icon1:
+      name: "&cFrame 1"
+      id: red_wool
+      lore:
+      - "This is part of an animated icon"
+    frame_icon2:
+      name: "&aFrame 2"
+      id: green_wool
+      lore:
+      - "This is part of an animated icon"
+    frame_icon3:
+      name: "&bFrame 3"
+      id: light_blue_wool
+      lore:
+      - "This is part of an animated icon"
+
+slot:
+  id: WHITE_STAINED_GLASS_PANE
+  slot: 45
+      
+multi-slot:
+  id: BLACK_STAINED_GLASS_PANE
+  slot: 46,47-52
+
+close-the-menu:
+  id: BARRIER
+  slot: 53
+  name: '&cClose the menu'
+  close-on-click: true
