@@ -54,16 +54,15 @@ public class VariableManager {
     register("ping", ((executor, identifier) -> BukkitUtils.getPing(executor)));
     register("rainbow", (executor, identifier) -> {
       ChatColor[] values = ChatColor.values();
-      ChatColor color = null;
-      while (color == null
-          || color.equals(ChatColor.BOLD)
+      ChatColor color;
+      do {
+        color = values[ThreadLocalRandom.current().nextInt(values.length - 1)];
+      } while (color.equals(ChatColor.BOLD)
           || color.equals(ChatColor.ITALIC)
           || color.equals(ChatColor.STRIKETHROUGH)
           || color.equals(ChatColor.RESET)
           || color.equals(ChatColor.MAGIC)
-          || color.equals(ChatColor.UNDERLINE)) {
-        color = values[ThreadLocalRandom.current().nextInt(values.length - 1)];
-      }
+          || color.equals(ChatColor.UNDERLINE));
       return CommonUtils.colorize("&" + color.getChar());
     });
     register("random_", (executor, identifier) -> {
