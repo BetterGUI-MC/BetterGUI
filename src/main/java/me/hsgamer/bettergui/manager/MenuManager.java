@@ -3,11 +3,14 @@ package me.hsgamer.bettergui.manager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.MenuHolder;
 import me.hsgamer.bettergui.util.BukkitUtils;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 
@@ -16,7 +19,14 @@ public class MenuManager {
   private final Map<String, Menu> menuMap = new HashMap<>();
 
   public void registerMenu(PluginConfig file) {
-    menuMap.put(file.getFileName(), MenuBuilder.getMenu(file.getFileName(), file.getConfig()));
+    String name = file.getFileName();
+    FileConfiguration config = file.getConfig();
+    if (menuMap.containsKey(name)) {
+      BetterGUI.getInstance().getLogger()
+          .log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
+    } else {
+      menuMap.put(name, MenuBuilder.getMenu(name, config));
+    }
   }
 
   public void clear() {
