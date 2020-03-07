@@ -5,6 +5,8 @@ import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
 import fr.mrmicky.fastinv.FastInvManager;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.builder.CommandBuilder;
@@ -129,13 +131,21 @@ public final class BetterGUI extends JavaPlugin {
       menusFolder.mkdirs();
       saveResource("menu" + File.separator + "example.yml", false);
     }
-    if (menusFolder.isDirectory()) {
-      for (File subFile : Objects.requireNonNull(menusFolder.listFiles())) {
-        menuManager.registerMenu(new PluginConfig(this, subFile));
-      }
-    } else if (menusFolder.isFile() && menusFolder.getName().endsWith(".yml")) {
-      menuManager.registerMenu(new PluginConfig(this, menusFolder));
+    for (PluginConfig pluginConfig : getMenuConfig(menusFolder)) {
+      menuManager.registerMenu(pluginConfig);
     }
+  }
+
+  private List<PluginConfig> getMenuConfig(File file) {
+    List<PluginConfig> list = new ArrayList<>();
+    if (file.isDirectory()) {
+      for (File subFile : Objects.requireNonNull(file.listFiles())) {
+        list.addAll(getMenuConfig(subFile));
+      }
+    } else if (file.isFile() && file.getName().endsWith(".yml")) {
+      list.add(new PluginConfig(this, file));
+    }
+    return list;
   }
 
   private void enableMetrics() {
