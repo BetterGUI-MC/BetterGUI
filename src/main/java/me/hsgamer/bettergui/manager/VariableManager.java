@@ -83,12 +83,13 @@ public class VariableManager {
       }
       return null;
     });
-    register("condition_", ((executor, identifier) -> {
+    register("condition_", (executor, identifier) -> {
       if (ExpressionUtils.isValidExpression(identifier)) {
         return ExpressionUtils.getResult(identifier).toPlainString();
       }
       return null;
-    }));
+    });
+    register("uuid", (executor, identifier) -> executor.getUniqueId().toString());
   }
 
   private VariableManager() {
