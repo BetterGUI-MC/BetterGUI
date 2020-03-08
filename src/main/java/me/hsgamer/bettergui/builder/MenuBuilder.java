@@ -69,7 +69,7 @@ public class MenuBuilder {
       return menu;
     } catch (Exception ex) {
       BetterGUI.getInstance().getLogger()
-          .log(Level.WARNING, "Soemthing wrong when creating the menu '" + name + "'", ex);
+          .log(Level.WARNING, "Something wrong when creating the menu '" + name + "'", ex);
     }
     return null;
   }
