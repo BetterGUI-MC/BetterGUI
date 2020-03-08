@@ -51,7 +51,7 @@ public class MenuBuilder {
   public static Menu getMenu(String name, FileConfiguration file) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(file.getValues(true));
     if (keys.containsKey("menu-settings.menu-type")) {
-      String type = (String) keys.get("menu-settings.menu-type");
+      String type = String.valueOf(keys.get("menu-settings.menu-type"));
       if (menuTypes.containsKey(type)) {
         return getMenu(name, file, menuTypes.get(type));
       }

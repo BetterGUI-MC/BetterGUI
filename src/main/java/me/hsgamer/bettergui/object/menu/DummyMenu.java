@@ -40,14 +40,14 @@ public class DummyMenu extends Menu {
         Map<String, Object> keys = new CaseInsensitiveStringMap<>(
             file.getConfigurationSection(key).getValues(false));
         if (keys.containsKey(Settings.NAME)) {
-          title = (String) keys.get(Settings.NAME);
+          title = String.valueOf(keys.get(Settings.NAME));
           titleHasVariable = VariableManager.hasVariables(title);
         }
 
         if (keys.containsKey(Settings.INVENTORY_TYPE)) {
           try {
             inventoryType = InventoryType
-                .valueOf(((String) keys.get(Settings.INVENTORY_TYPE)).toUpperCase());
+                .valueOf((String.valueOf(keys.get(Settings.INVENTORY_TYPE))).toUpperCase());
           } catch (IllegalArgumentException e) {
             getInstance().getLogger().log(Level.WARNING, "The menu \"" + file.getName()
                 + "\" contains an illegal inventory type, it will be CHEST by default");
@@ -68,12 +68,12 @@ public class DummyMenu extends Menu {
                   + "\"'s inventory type is not supported, it will be CHEST by default");
           }
         } else if (keys.containsKey(Settings.ROWS)) {
-          int temp = (int) keys.get(Settings.ROWS) * 9;
+          int temp = Integer.parseInt(String.valueOf(keys.get(Settings.ROWS))) * 9;
           maxSlots = temp > 0 ? temp : maxSlots;
         }
 
         if (keys.containsKey(Settings.PERMISSION)) {
-          permission = new Permission((String) keys.get(Settings.PERMISSION));
+          permission = new Permission(String.valueOf(keys.get(Settings.PERMISSION)));
         }
       } else if (!icons.containsKey(key)) {
         icons.put(key,

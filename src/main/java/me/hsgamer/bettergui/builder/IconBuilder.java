@@ -62,7 +62,7 @@ public class IconBuilder {
   public static Icon getIcon(Menu menu, ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
     if (keys.containsKey("type")) {
-      String type = (String) keys.get("type");
+      String type = String.valueOf(keys.get("type"));
       if (iconTypes.containsKey(type)) {
         return getIcon(menu, section, iconTypes.get(type));
       }
@@ -99,10 +99,10 @@ public class IconBuilder {
           int x = 1;
           int y = 1;
           if (stringObjectMap.containsKey(SlotSetting.X)) {
-            x = (int) map.get(SlotSetting.X);
+            x = Integer.parseInt(String.valueOf(map.get(SlotSetting.X)));
           }
           if (stringObjectMap.containsKey(SlotSetting.Y)) {
-            y = (int) map.get(SlotSetting.Y);
+            y = Integer.parseInt(String.valueOf(map.get(SlotSetting.Y)));
           }
           slots.add((y - 1) * 9 + x - 1);
         })
