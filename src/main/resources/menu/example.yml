@@ -37,9 +37,9 @@ default-icon:
 # You can use lowercase or uppercase whatever you want
 spawncmd:
   COMMAND: 'spawn'
-  NAME: '{raindow}/spawn'
+  NAME: '{rainbow}/spawn'
   LORE:
-    - 'It justs executes /spawn'
+    - 'It just executes /spawn'
     - 'as the player who clicked.'
   ID: ender_pearl
   POSITION-X: 1

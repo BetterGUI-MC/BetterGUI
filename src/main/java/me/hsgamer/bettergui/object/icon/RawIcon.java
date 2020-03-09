@@ -7,6 +7,7 @@ import me.hsgamer.bettergui.object.Menu;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("unused")
 public class RawIcon extends Icon {
 
   public RawIcon(String name, Menu menu) {

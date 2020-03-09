@@ -27,7 +27,11 @@ public class PluginConfig {
 
   private void setUpConfig() {
     if (!configFile.exists()) {
-      configFile.getParentFile().mkdirs();
+      try {
+        configFile.createNewFile();
+      } catch (IOException e) {
+        plugin.getLogger().log(Level.WARNING, "Something wrong when creating " + fileName, e);
+      }
     }
     config = YamlConfiguration.loadConfiguration(configFile);
   }

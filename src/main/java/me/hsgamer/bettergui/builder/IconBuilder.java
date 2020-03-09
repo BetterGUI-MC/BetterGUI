@@ -13,6 +13,7 @@ import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.icon.AnimatedIcon;
 import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.object.icon.ListIcon;
+import me.hsgamer.bettergui.object.icon.RawIcon;
 import me.hsgamer.bettergui.object.icon.SimpleIcon;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.TestCase;
@@ -28,6 +29,7 @@ public class IconBuilder {
     register("simple", SimpleIcon.class);
     register("animated", AnimatedIcon.class);
     register("list", ListIcon.class);
+    register("raw", RawIcon.class);
   }
 
   private IconBuilder() {
