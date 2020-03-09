@@ -29,7 +29,8 @@ public class ClickCommand extends IconProperty<Object> {
   public void setValue(Object value) {
     super.setValue(value);
     if (getValue() instanceof ConfigurationSection) {
-      Map<String, Object> keys = new CaseInsensitiveStringMap<>(((ConfigurationSection) getValue()).getValues(false));
+      Map<String, Object> keys = new CaseInsensitiveStringMap<>(
+          ((ConfigurationSection) getValue()).getValues(false));
       for (ClickType clickType : ClickType.values()) {
         String subsection = clickType.name();
         if (keys.containsKey(subsection)) {
