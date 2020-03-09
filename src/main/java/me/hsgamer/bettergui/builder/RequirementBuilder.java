@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
-import me.hsgamer.bettergui.object.icon.RawIcon;
+import me.hsgamer.bettergui.object.icon.NullIcon;
 import me.hsgamer.bettergui.object.requirement.ConditionRequirement;
 import me.hsgamer.bettergui.object.requirement.ExpLevelRequirement;
 import me.hsgamer.bettergui.object.requirement.PermissionRequirement;
@@ -49,7 +49,7 @@ public class RequirementBuilder {
   public static void checkClass() {
     for (Class<? extends IconRequirement<?, ?>> clazz : requirements.values()) {
       try {
-        clazz.getDeclaredConstructor(Icon.class).newInstance(new RawIcon("", null));
+        clazz.getDeclaredConstructor(Icon.class).newInstance(new NullIcon("", null));
       } catch (Exception ex) {
         getInstance().getLogger()
             .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()

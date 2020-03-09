@@ -7,13 +7,13 @@ import me.hsgamer.bettergui.object.Menu;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public class RawIcon extends Icon {
+public class NullIcon extends Icon {
 
-  public RawIcon(String name, Menu menu) {
+  public NullIcon(String name, Menu menu) {
     super(name, menu);
   }
 
-  public RawIcon(Icon original) {
+  public NullIcon(Icon original) {
     super(original);
   }
 
