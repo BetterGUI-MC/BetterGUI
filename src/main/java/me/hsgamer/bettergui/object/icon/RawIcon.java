@@ -8,13 +8,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 @SuppressWarnings("unused")
-public class NullIcon extends Icon {
+public class RawIcon extends Icon {
 
-  public NullIcon(String name, Menu menu) {
+  public RawIcon(String name, Menu menu) {
     super(name, menu);
   }
 
-  public NullIcon(Icon original) {
+  public RawIcon(Icon original) {
     super(original);
   }
 
