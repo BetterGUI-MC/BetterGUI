@@ -7,6 +7,7 @@ import me.hsgamer.bettergui.object.Menu;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("unused")
 public class NullIcon extends Icon {
 
   public NullIcon(String name, Menu menu) {
