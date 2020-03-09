@@ -39,7 +39,7 @@ spawncmd:
   COMMAND: 'spawn'
   NAME: '{rainbow}/spawn'
   LORE:
-    - 'It justs executes /spawn'
+    - 'It just executes /spawn'
     - 'as the player who clicked.'
   ID: ender_pearl
   POSITION-X: 1
