@@ -152,10 +152,9 @@ permission:
   POSITION-X: 2
   POSITION-Y: 2
   CLICK-REQUIREMENT:
-    DEFAULT:
-      PERMISSION:
-        VALUE: bettergui.test
-        COMMAND: 'tell: &cYou don''t have the correct permission!'
+    PERMISSION:
+      VALUE: bettergui.test
+      COMMAND: 'tell: &cYou don''t have the correct permission!'
       
 condition:
   NAME: '&aCondition'

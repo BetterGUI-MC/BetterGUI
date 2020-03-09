@@ -9,6 +9,7 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.object.IconVariable;
 import me.hsgamer.bettergui.object.property.IconProperty;
+import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -26,11 +27,13 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
   @Override
   public void setValue(Object value) {
     super.setValue(value);
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(getValue().getValues(false));
+    // Per Click Type
     for (ClickType clickType : ClickType.values()) {
       String subsection = clickType.name();
-      if (getValue().isConfigurationSection(subsection)) {
+      if (keys.containsKey(subsection)) {
         List<IconRequirement<?, ?>> requirements = RequirementBuilder
-            .loadRequirementsFromSection(getValue().getConfigurationSection(subsection),
+            .loadRequirementsFromSection((ConfigurationSection) keys.get(subsection),
                 getIcon());
         requirementsPerClickType.put(clickType, requirements);
         requirements.forEach(iconRequirement -> {
@@ -42,18 +45,25 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
         });
       }
     }
-    if (getValue().isSet("DEFAULT")) {
-      List<IconRequirement<?, ?>> requirements = RequirementBuilder
-          .loadRequirementsFromSection(getValue().getConfigurationSection("DEFAULT"),
-              getIcon());
-      defaultRequirements.addAll(requirements);
-      requirements.forEach(iconRequirement -> {
-        if (iconRequirement instanceof IconVariable) {
-          getIcon().registerVariable("default_" + ((IconVariable) iconRequirement).getIdentifier(),
-              (IconVariable) iconRequirement);
-        }
-      });
+    // Default
+    if (keys.containsKey("DEFAULT")) {
+      setDefaultRequirements((ConfigurationSection) keys.get("DEFAULT"));
     }
+    // Alternative Default
+    setDefaultRequirements(getValue());
+  }
+
+  private void setDefaultRequirements(ConfigurationSection section) {
+    List<IconRequirement<?, ?>> requirements = RequirementBuilder
+        .loadRequirementsFromSection(section,
+            getIcon());
+    defaultRequirements.addAll(requirements);
+    requirements.forEach(iconRequirement -> {
+      if (iconRequirement instanceof IconVariable) {
+        getIcon().registerVariable("default_" + ((IconVariable) iconRequirement).getIdentifier(),
+            (IconVariable) iconRequirement);
+      }
+    });
   }
 
   public boolean check(Player player, ClickType clickType) {
