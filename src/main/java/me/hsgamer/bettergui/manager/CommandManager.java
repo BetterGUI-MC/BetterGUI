@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.manager;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,8 +27,9 @@ public class CommandManager {
   public CommandManager(JavaPlugin plugin) {
     this.plugin = plugin;
     try {
-      Method getCommandMapMethod = Bukkit.getServer().getClass().getDeclaredMethod("getCommandMap");
-      bukkitCommandMap = (CommandMap) getCommandMapMethod.invoke(Bukkit.getServer());
+      Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+      commandMapField.setAccessible(true);
+      bukkitCommandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
 
       knownCommandsField = SimpleCommandMap.class.getDeclaredField("knownCommands");
       knownCommandsField.setAccessible(true);
