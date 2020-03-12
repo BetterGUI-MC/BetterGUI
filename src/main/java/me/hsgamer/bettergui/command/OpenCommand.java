@@ -46,7 +46,7 @@ public class OpenCommand extends BukkitCommand {
                     .setPredicate(strings3 -> strings3.length > 1)
                     .setFailConsumer(strings3 -> {
                       if (commandSender1 instanceof Player) {
-                        menuManager.openMenu(strings[0], (Player) commandSender1);
+                        menuManager.openMenu(strings[0], (Player) commandSender1, false);
                       } else {
                         CommonUtils.sendMessage(commandSender1,
                             getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
@@ -55,7 +55,7 @@ public class OpenCommand extends BukkitCommand {
                     .setSuccessConsumer(strings3 -> {
                       Player player = Bukkit.getPlayer(strings[1]);
                       if (player != null && player.isOnline()) {
-                        menuManager.openMenu(strings[0], player);
+                        menuManager.openMenu(strings[0], player, true);
                       } else {
                         CommonUtils.sendMessage(commandSender1,
                             getInstance().getMessageConfig().get(DefaultMessage.PLAYER_NOT_FOUND));

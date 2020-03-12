@@ -28,8 +28,9 @@ public abstract class Menu {
    * Called when opening the menu for the player
    *
    * @param player the player involved in
+   * @param bypass whether the plugin ignores the permission check
    */
-  public abstract void createInventory(Player player);
+  public abstract void createInventory(Player player, boolean bypass);
 
   /**
    * Get the former menu that opened this menu

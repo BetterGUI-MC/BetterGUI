@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.object.Menu;
@@ -55,9 +56,11 @@ public class MenuManager {
    *
    * @param name   the menu name
    * @param player the player
+   * @param bypass whether the plugin ignores the permission check
    */
-  public void openMenu(String name, Player player) {
-    menuMap.get(name).createInventory(player);
+  public void openMenu(String name, Player player, boolean bypass) {
+    menuMap.get(name)
+        .createInventory(player, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
   }
 
   /**
@@ -66,11 +69,12 @@ public class MenuManager {
    * @param name       the menu name
    * @param player     the player
    * @param parentMenu the former menu that causes the player to open this menu
+   * @param bypass     whether the plugin ignores the permission check
    */
-  public void openMenu(String name, Player player, Menu parentMenu) {
+  public void openMenu(String name, Player player, Menu parentMenu, boolean bypass) {
     Menu menu = menuMap.get(name);
     menu.setParentMenu(parentMenu);
-    menu.createInventory(player);
+    menu.createInventory(player, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
   }
 
   /**

@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.object.command;
 
 import co.aikar.taskchain.TaskChain;
 import java.util.Optional;
+import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
@@ -19,7 +20,7 @@ public class BackCommand extends Command {
     if (icon.isPresent()) {
       Optional<Menu> parentMenu = icon.get().getMenu().getParentMenu();
       if (parentMenu.isPresent()) {
-        parentMenu.get().createInventory(player);
+        parentMenu.get().createInventory(player, player.hasPermission(Permissions.OPEN_MENU_BYPASS));
       } else {
         player.closeInventory();
       }

@@ -18,6 +18,9 @@ public class Permissions {
       PermissionDefault.OP);
   public static final Permission HELP = createPermission(PREFIX + ".help", null,
       PermissionDefault.OP);
+  public static final Permission OPEN_MENU_BYPASS = createPermission(PREFIX + ".openmenu.bypass",
+      null,
+      PermissionDefault.OP);
 
   private Permissions() {
 
