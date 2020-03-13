@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
-import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.IconRequirement;
+import me.hsgamer.bettergui.object.RequirementSet;
 import me.hsgamer.bettergui.object.icon.RawIcon;
 import me.hsgamer.bettergui.object.requirement.ConditionRequirement;
 import me.hsgamer.bettergui.object.requirement.ExpLevelRequirement;
@@ -87,12 +87,6 @@ public class RequirementBuilder {
                 section.getConfigurationSection(s).getValues(false));
             if (keys.containsKey(Settings.VALUE)) {
               requirement.setValue(keys.get(Settings.VALUE));
-              if (keys.containsKey(Settings.COMMAND)) {
-                List<Command> commands = new ArrayList<>();
-                CommonUtils.createStringListFromObject(keys.get(Settings.COMMAND), true)
-                    .forEach(s1 -> commands.add(CommandBuilder.getCommand(icon, s1)));
-                requirement.setFailCommand(commands);
-              }
               if (keys.containsKey(Settings.TAKE)) {
                 requirement.canTake((Boolean) keys.get(Settings.TAKE));
               }
@@ -111,10 +105,36 @@ public class RequirementBuilder {
     return requirements;
   }
 
+  public static List<RequirementSet> getRequirementSet(ConfigurationSection section, Icon icon) {
+    List<RequirementSet> list = new ArrayList<>();
+    section.getKeys(false).forEach(key -> {
+      ConfigurationSection subsection = section.getConfigurationSection(key);
+      List<IconRequirement<?, ?>> iconRequirements = loadRequirementsFromSection(subsection, icon);
+      if (iconRequirements.isEmpty()) {
+        getInstance().getLogger().fine(() ->
+            "The requirement set \"" + key + "\" in the icon \"" + icon.getName()
+                + "\" in the menu \"" + icon.getMenu().getName()
+                + "\" doesn't have any requirements");
+      } else {
+        RequirementSet requirementSet = new RequirementSet(key, iconRequirements);
+        Map<String, Object> keys = new CaseInsensitiveStringMap<>(subsection.getValues(false));
+        if (keys.containsKey(Settings.SUCCESS_COMMAND)) {
+          requirementSet.setCommand(CommandBuilder.getCommands(icon,
+              CommonUtils.createStringListFromObject(keys.get(Settings.SUCCESS_COMMAND), true)));
+        }
+        list.add(requirementSet);
+      }
+    });
+    return list;
+  }
+
   private static class Settings {
 
+    // Requirement settings
     static final String VALUE = "value";
-    static final String COMMAND = "command";
     static final String TAKE = "take";
+
+    // Set settings
+    static final String SUCCESS_COMMAND = "success-command";
   }
 }

@@ -23,7 +23,6 @@ public class PermissionRequirement extends IconRequirement<Object, List<String>>
   public boolean check(Player player) {
     for (String value : getParsedValue(player)) {
       if (!hasPermission(player, value)) {
-        sendFailCommand(player);
         return false;
       }
     }

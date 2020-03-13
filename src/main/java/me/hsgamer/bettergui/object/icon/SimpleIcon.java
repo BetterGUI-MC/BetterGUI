@@ -47,9 +47,13 @@ public class SimpleIcon extends Icon {
   public Optional<ClickableItem> createClickableItem(Player player) {
     ViewRequirement viewRequirement = iconPropertyBuilder.getViewRequirement();
     if (!viewRequirement.check(player)) {
+      viewRequirement.sendFailCommand(player);
       return Optional.empty();
     }
-    viewRequirement.take(player);
+    viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
+      iconRequirementSet.take(player);
+      iconRequirementSet.sendCommand(player);
+    });
     return Optional.of(getClickableItem(player));
   }
 

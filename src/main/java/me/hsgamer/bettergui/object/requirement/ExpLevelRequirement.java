@@ -46,7 +46,6 @@ public class ExpLevelRequirement extends IconRequirement<Object, Integer> implem
   public boolean check(Player player) {
     int levels = getParsedValue(player);
     if (levels > 0 && player.getLevel() < levels) {
-      sendFailCommand(player);
       return false;
     }
     checked.put(player.getUniqueId(), levels);

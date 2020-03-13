@@ -82,9 +82,13 @@ public class SimpleIconPropertyBuilder {
         return;
       }
       if (!clickRequirement.check(player, clickType)) {
+        clickRequirement.sendFailCommand(player, clickType);
         return;
       }
-      clickRequirement.take(player, clickType);
+      clickRequirement.getCheckedRequirement(player, clickType).ifPresent(iconRequirementSet -> {
+        iconRequirementSet.take(player);
+        iconRequirementSet.sendCommand(player);
+      });
       cooldown.startCooldown(player, clickType);
       if (closeOnClick) {
         player.closeInventory();

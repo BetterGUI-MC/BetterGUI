@@ -1,9 +1,5 @@
 package me.hsgamer.bettergui.object;
 
-import co.aikar.taskchain.TaskChain;
-import java.util.ArrayList;
-import java.util.List;
-import me.hsgamer.bettergui.BetterGUI;
 import org.bukkit.entity.Player;
 
 /**
@@ -16,7 +12,6 @@ import org.bukkit.entity.Player;
 public abstract class IconRequirement<V, L> {
 
   protected final Icon icon;
-  private final List<Command> failCommand = new ArrayList<>();
   protected V value;
   private boolean canTake;
 
@@ -65,17 +60,5 @@ public abstract class IconRequirement<V, L> {
 
   public boolean canTake() {
     return canTake;
-  }
-
-  public void setFailCommand(List<Command> command) {
-    failCommand.addAll(command);
-  }
-
-  public void sendFailCommand(Player player) {
-    if (!failCommand.isEmpty()) {
-      TaskChain<?> taskChain = BetterGUI.newChain();
-      failCommand.forEach(command -> command.addToTaskChain(player, taskChain));
-      taskChain.execute();
-    }
   }
 }

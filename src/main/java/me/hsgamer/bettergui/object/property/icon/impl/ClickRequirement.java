@@ -1,24 +1,36 @@
 package me.hsgamer.bettergui.object.property.icon.impl;
 
+import co.aikar.taskchain.TaskChain;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.object.CheckedRequirementSet;
+import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
-import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.object.IconVariable;
+import me.hsgamer.bettergui.object.RequirementSet;
 import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
+import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 public class ClickRequirement extends IconProperty<ConfigurationSection> {
 
-  private final Map<ClickType, List<IconRequirement<?, ?>>> requirementsPerClickType = new EnumMap<>(
+  private final Map<ClickType, List<RequirementSet>> requirementsPerClickType = new EnumMap<>(
       ClickType.class);
-  private final List<IconRequirement<?, ?>> defaultRequirements = new ArrayList<>();
+  private final Map<ClickType, CheckedRequirementSet> checkedMap = new EnumMap<>(ClickType.class);
+  private final Map<ClickType, List<Command>> commands = new EnumMap<>(ClickType.class);
+
+  private final List<RequirementSet> defaultRequirements = new ArrayList<>();
+  private final List<Command> defaultCommands = new ArrayList<>();
+  private final CheckedRequirementSet defaultChecked = new CheckedRequirementSet();
 
   public ClickRequirement(Icon icon) {
     super(icon);
@@ -32,17 +44,19 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     for (ClickType clickType : ClickType.values()) {
       String subsection = clickType.name();
       if (keys.containsKey(subsection)) {
-        List<IconRequirement<?, ?>> requirements = RequirementBuilder
-            .loadRequirementsFromSection((ConfigurationSection) keys.get(subsection),
+        List<RequirementSet> requirements = RequirementBuilder
+            .getRequirementSet((ConfigurationSection) keys.get(subsection),
                 getIcon());
         requirementsPerClickType.put(clickType, requirements);
-        requirements.forEach(iconRequirement -> {
-          if (iconRequirement instanceof IconVariable) {
-            getIcon().registerVariable(
-                subsection.toLowerCase() + "_" + ((IconVariable) iconRequirement).getIdentifier(),
-                (IconVariable) iconRequirement);
-          }
-        });
+        checkedMap.put(clickType, new CheckedRequirementSet());
+        registerVariable(clickType.name().toLowerCase(), requirements);
+
+        Map<String, Object> keys1 = new CaseInsensitiveStringMap<>(
+            ((ConfigurationSection) keys.get(subsection)).getValues(false));
+        if (keys1.containsKey("fail-command")) {
+          commands.put(clickType, CommandBuilder.getCommands(getIcon(), CommonUtils
+              .createStringListFromObject(keys1.get("fail-command"), true)));
+        }
       }
     }
     // Default
@@ -54,34 +68,50 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
   }
 
   private void setDefaultRequirements(ConfigurationSection section) {
-    List<IconRequirement<?, ?>> requirements = RequirementBuilder
-        .loadRequirementsFromSection(section,
+    List<RequirementSet> requirements = RequirementBuilder
+        .getRequirementSet(section,
             getIcon());
     defaultRequirements.addAll(requirements);
-    requirements.forEach(iconRequirement -> {
-      if (iconRequirement instanceof IconVariable) {
-        getIcon().registerVariable("default_" + ((IconVariable) iconRequirement).getIdentifier(),
-            (IconVariable) iconRequirement);
-      }
-    });
+    registerVariable("default", requirements);
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
+    if (keys.containsKey("fail-command")) {
+      defaultCommands.addAll(CommandBuilder.getCommands(getIcon(), CommonUtils
+          .createStringListFromObject(keys.get("fail-command"), true)));
+    }
+  }
+
+  public void sendFailCommand(Player player, ClickType clickType) {
+    TaskChain<?> taskChain = BetterGUI.newChain();
+    commands.getOrDefault(clickType, defaultCommands)
+        .forEach(command -> command.addToTaskChain(player, taskChain));
+    taskChain.execute();
+  }
+
+  private void registerVariable(String prefix, List<RequirementSet> requirementSets) {
+    requirementSets
+        .forEach(requirementSet -> requirementSet.getRequirements().forEach(iconRequirement -> {
+          if (iconRequirement instanceof IconVariable) {
+            getIcon().registerVariable(String.join("_", prefix, requirementSet.getName(),
+                ((IconVariable) iconRequirement).getIdentifier()),
+                (IconVariable) iconRequirement);
+          }
+        }));
   }
 
   public boolean check(Player player, ClickType clickType) {
-    for (IconRequirement<?, ?> requirement : requirementsPerClickType
-        .getOrDefault(clickType, defaultRequirements)) {
-      if (!requirement.check(player)) {
-        return false;
+    List<RequirementSet> requirements = requirementsPerClickType
+        .getOrDefault(clickType, defaultRequirements);
+    CheckedRequirementSet checkedSet = checkedMap.getOrDefault(clickType, defaultChecked);
+    for (RequirementSet requirement : requirements) {
+      if (requirement.check(player)) {
+        checkedSet.put(player, requirement);
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
-  public void take(Player player, ClickType clickType) {
-    for (IconRequirement<?, ?> requirement : requirementsPerClickType
-        .getOrDefault(clickType, defaultRequirements)) {
-      if (requirement.canTake()) {
-        requirement.take(player);
-      }
-    }
+  public Optional<RequirementSet> getCheckedRequirement(Player player, ClickType clickType) {
+    return checkedMap.getOrDefault(clickType, defaultChecked).get(player);
   }
 }

@@ -20,7 +20,8 @@ public class BackCommand extends Command {
     if (icon.isPresent()) {
       Optional<Menu> parentMenu = icon.get().getMenu().getParentMenu();
       if (parentMenu.isPresent()) {
-        parentMenu.get().createInventory(player, player.hasPermission(Permissions.OPEN_MENU_BYPASS));
+        parentMenu.get()
+            .createInventory(player, player.hasPermission(Permissions.OPEN_MENU_BYPASS));
       } else {
         player.closeInventory();
       }
