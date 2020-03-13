@@ -108,21 +108,19 @@ public class RequirementBuilder {
   public static List<RequirementSet> getRequirementSet(ConfigurationSection section, Icon icon) {
     List<RequirementSet> list = new ArrayList<>();
     section.getKeys(false).forEach(key -> {
-      ConfigurationSection subsection = section.getConfigurationSection(key);
-      List<IconRequirement<?, ?>> iconRequirements = loadRequirementsFromSection(subsection, icon);
-      if (iconRequirements.isEmpty()) {
-        getInstance().getLogger().fine(() ->
-            "The requirement set \"" + key + "\" in the icon \"" + icon.getName()
-                + "\" in the menu \"" + icon.getMenu().getName()
-                + "\" doesn't have any requirements");
-      } else {
-        RequirementSet requirementSet = new RequirementSet(key, iconRequirements);
-        Map<String, Object> keys = new CaseInsensitiveStringMap<>(subsection.getValues(false));
-        if (keys.containsKey(Settings.SUCCESS_COMMAND)) {
-          requirementSet.setCommand(CommandBuilder.getCommands(icon,
-              CommonUtils.createStringListFromObject(keys.get(Settings.SUCCESS_COMMAND), true)));
+      if (section.isConfigurationSection(key)) {
+        ConfigurationSection subsection = section.getConfigurationSection(key);
+        List<IconRequirement<?, ?>> iconRequirements = loadRequirementsFromSection(subsection,
+            icon);
+        if (!iconRequirements.isEmpty()) {
+          RequirementSet requirementSet = new RequirementSet(key, iconRequirements);
+          Map<String, Object> keys = new CaseInsensitiveStringMap<>(subsection.getValues(false));
+          if (keys.containsKey(Settings.SUCCESS_COMMAND)) {
+            requirementSet.setCommand(CommandBuilder.getCommands(icon,
+                CommonUtils.createStringListFromObject(keys.get(Settings.SUCCESS_COMMAND), true)));
+          }
+          list.add(requirementSet);
         }
-        list.add(requirementSet);
       }
     });
     return list;

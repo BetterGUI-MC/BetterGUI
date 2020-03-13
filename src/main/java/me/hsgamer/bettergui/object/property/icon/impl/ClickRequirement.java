@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 public class ClickRequirement extends IconProperty<ConfigurationSection> {
+
   private static final String FAIL_COMMAND = "fail-command";
 
   private final Map<ClickType, List<RequirementSet>> requirementsPerClickType = new EnumMap<>(
