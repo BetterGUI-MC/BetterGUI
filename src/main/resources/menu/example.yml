@@ -152,9 +152,9 @@ permission:
   POSITION-X: 2
   POSITION-Y: 2
   CLICK-REQUIREMENT:
-    PERMISSION:
-      VALUE: bettergui.test
-      COMMAND: 'tell: &cYou don''t have the correct permission!'
+    permission:
+      PERMISSION: bettergui.test
+      fail-command: 'tell: &cYou don''t have the correct permission!'
       
 condition:
   NAME: '&aCondition'
@@ -255,13 +255,15 @@ list-icon:
       id: grass
       name: "&aYou are in {world}"
       view-requirement:
+        condition:
         # STREQ: Compare 2 strings if they are the same
-        condition: STREQ("{world}", "world")
+          condition: STREQ("{world}", "world")
     nether:
       id: netherrack
       name: "&cYou are in {world}"
       view-requirement:
-        condition: STREQ("{world}", "world_nether")
+        condition:
+          condition: STREQ("{world}", "world_nether")
     unknown:
       id: bedrock
       name: "&cYou are in {world}"
@@ -276,7 +278,8 @@ test-view-requirement:
   lore:
   - "You will see this icon when the level is higher than 5"
   view-requirement:
-    level: 5
+    level:
+      level: 5
     
 animated-icon:
   position-x: 2
