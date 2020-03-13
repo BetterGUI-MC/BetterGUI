@@ -61,7 +61,8 @@ public class SimpleIcon extends Icon {
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
-    if (!iconPropertyBuilder.getViewRequirement().check(player)) {
+    ViewRequirement viewRequirement = iconPropertyBuilder.getViewRequirement();
+    if (viewRequirement != null && !viewRequirement.check(player)) {
       return Optional.empty();
     }
     return Optional.of(getClickableItem(player));
