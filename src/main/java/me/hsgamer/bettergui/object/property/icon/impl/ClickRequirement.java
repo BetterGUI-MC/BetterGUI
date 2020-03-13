@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 public class ClickRequirement extends IconProperty<ConfigurationSection> {
+  private static final String FAIL_COMMAND = "fail-command";
 
   private final Map<ClickType, List<RequirementSet>> requirementsPerClickType = new EnumMap<>(
       ClickType.class);
@@ -53,9 +54,9 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
 
         Map<String, Object> keys1 = new CaseInsensitiveStringMap<>(
             ((ConfigurationSection) keys.get(subsection)).getValues(false));
-        if (keys1.containsKey("fail-command")) {
+        if (keys1.containsKey(FAIL_COMMAND)) {
           commands.put(clickType, CommandBuilder.getCommands(getIcon(), CommonUtils
-              .createStringListFromObject(keys1.get("fail-command"), true)));
+              .createStringListFromObject(keys1.get(FAIL_COMMAND), true)));
         }
       }
     }
@@ -74,9 +75,9 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     defaultRequirements.addAll(requirements);
     registerVariable("default", requirements);
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
-    if (keys.containsKey("fail-command")) {
+    if (keys.containsKey(FAIL_COMMAND)) {
       defaultCommands.addAll(CommandBuilder.getCommands(getIcon(), CommonUtils
-          .createStringListFromObject(keys.get("fail-command"), true)));
+          .createStringListFromObject(keys.get(FAIL_COMMAND), true)));
     }
   }
 
