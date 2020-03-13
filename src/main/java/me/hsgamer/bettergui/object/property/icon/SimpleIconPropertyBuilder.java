@@ -25,9 +25,7 @@ public class SimpleIconPropertyBuilder {
   public SimpleIconPropertyBuilder(Icon icon) {
     this.icon = icon;
     this.command = new ClickCommand(icon);
-    this.clickRequirement = new ClickRequirement(icon);
     this.cooldown = new Cooldown(icon);
-    this.viewRequirement = new ViewRequirement(icon);
   }
 
   public Icon getIcon() {
@@ -81,14 +79,16 @@ public class SimpleIconPropertyBuilder {
         cooldown.sendFailCommand(player, clickType);
         return;
       }
-      if (!clickRequirement.check(player, clickType)) {
-        clickRequirement.sendFailCommand(player, clickType);
-        return;
+      if (clickRequirement != null) {
+        if (!clickRequirement.check(player, clickType)) {
+          clickRequirement.sendFailCommand(player, clickType);
+          return;
+        }
+        clickRequirement.getCheckedRequirement(player, clickType).ifPresent(iconRequirementSet -> {
+          iconRequirementSet.take(player);
+          iconRequirementSet.sendCommand(player);
+        });
       }
-      clickRequirement.getCheckedRequirement(player, clickType).ifPresent(iconRequirementSet -> {
-        iconRequirementSet.take(player);
-        iconRequirementSet.sendCommand(player);
-      });
       cooldown.startCooldown(player, clickType);
       if (closeOnClick) {
         player.closeInventory();
