@@ -9,11 +9,6 @@ public class CaseInsensitiveStringLinkedMap<V> extends LinkedHashMap<String, V> 
     super();
   }
 
-  public CaseInsensitiveStringLinkedMap(Map<? extends String, ? extends V> map) {
-    super();
-    putAll(map);
-  }
-
   @Override
   public V put(String key, V value) {
     return super.put(key.toLowerCase(), value);
