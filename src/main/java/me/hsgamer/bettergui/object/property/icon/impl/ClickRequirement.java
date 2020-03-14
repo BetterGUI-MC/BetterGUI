@@ -46,27 +46,28 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     for (ClickType clickType : ClickType.values()) {
       String subsection = clickType.name();
       if (keys.containsKey(subsection)) {
-        List<RequirementSet> requirements = RequirementBuilder
-            .getRequirementSet((ConfigurationSection) keys.get(subsection),
-                getIcon());
-        requirementsPerClickType.put(clickType, requirements);
-        checkedMap.put(clickType, new CheckedRequirementSet());
-        registerVariable(clickType.name().toLowerCase(), requirements);
-
-        Map<String, Object> keys1 = new CaseInsensitiveStringMap<>(
-            ((ConfigurationSection) keys.get(subsection)).getValues(false));
-        if (keys1.containsKey(FAIL_COMMAND)) {
-          commands.put(clickType, CommandBuilder.getCommands(getIcon(), CommonUtils
-              .createStringListFromObject(keys1.get(FAIL_COMMAND), true)));
-        }
+        setRequirements(clickType, (ConfigurationSection) keys.get(subsection));
       }
     }
     // Default
     if (keys.containsKey("DEFAULT")) {
       setDefaultRequirements((ConfigurationSection) keys.get("DEFAULT"));
     }
-    // Alternative Default
-    setDefaultRequirements(getValue());
+  }
+
+  private void setRequirements(ClickType clickType, ConfigurationSection section) {
+    List<RequirementSet> requirements = RequirementBuilder
+        .getRequirementSet(section,
+            getIcon());
+    requirementsPerClickType.put(clickType, requirements);
+    checkedMap.put(clickType, new CheckedRequirementSet());
+    registerVariable(clickType.name().toLowerCase(), requirements);
+
+    Map<String, Object> keys1 = new CaseInsensitiveStringMap<>((section).getValues(false));
+    if (keys1.containsKey(FAIL_COMMAND)) {
+      commands.put(clickType, CommandBuilder.getCommands(getIcon(), CommonUtils
+          .createStringListFromObject(keys1.get(FAIL_COMMAND), true)));
+    }
   }
 
   private void setDefaultRequirements(ConfigurationSection section) {
