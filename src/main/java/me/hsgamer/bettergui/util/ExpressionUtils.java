@@ -1,10 +1,12 @@
 package me.hsgamer.bettergui.util;
 
 import com.udojava.evalex.Expression;
-import com.udojava.evalex.Expression.LazyNumber;
-import com.udojava.evalex.LazyFunction;
 import java.math.BigDecimal;
-import java.util.List;
+import me.hsgamer.bettergui.util.expression.string.Contains;
+import me.hsgamer.bettergui.util.expression.string.EndsWith;
+import me.hsgamer.bettergui.util.expression.string.Equals;
+import me.hsgamer.bettergui.util.expression.string.EqualsIgnoreCase;
+import me.hsgamer.bettergui.util.expression.string.StartsWith;
 
 public class ExpressionUtils {
 
@@ -37,53 +39,10 @@ public class ExpressionUtils {
   }
 
   private static void addStringFunction(Expression expression) {
-    expression.addLazyFunction(new LazyFunction() {
-      private final LazyNumber zero = new LazyNumber() {
-        public BigDecimal eval() {
-          return BigDecimal.ZERO;
-        }
-
-        public String getString() {
-          return "0";
-        }
-      };
-      private final LazyNumber one = new LazyNumber() {
-        public BigDecimal eval() {
-          return BigDecimal.ONE;
-        }
-
-        public String getString() {
-          return null;
-        }
-      };
-
-      @Override
-      public String getName() {
-        return "STREQ";
-      }
-
-      @Override
-      public int getNumParams() {
-        return 2;
-      }
-
-      @Override
-      public boolean numParamsVaries() {
-        return false;
-      }
-
-      @Override
-      public boolean isBooleanFunction() {
-        return true;
-      }
-
-      @Override
-      public LazyNumber lazyEval(List<LazyNumber> lazyParams) {
-        if (lazyParams.get(0).getString().equals(lazyParams.get(1).getString())) {
-          return one;
-        }
-        return zero;
-      }
-    });
+    expression.addLazyFunction(new Equals());
+    expression.addLazyFunction(new EqualsIgnoreCase());
+    expression.addLazyFunction(new Contains());
+    expression.addLazyFunction(new StartsWith());
+    expression.addLazyFunction(new EndsWith());
   }
 }
