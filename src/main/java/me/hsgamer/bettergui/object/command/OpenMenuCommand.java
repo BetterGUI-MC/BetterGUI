@@ -22,9 +22,10 @@ public class OpenMenuCommand extends Command {
       Optional<Icon> icon = getIcon();
       if (icon.isPresent()) {
         taskChain.sync(() -> BetterGUI.getInstance().getMenuManager()
-            .openMenu(parsed, player, icon.get().getMenu()));
+            .openMenu(parsed, player, icon.get().getMenu(), false));
       } else {
-        taskChain.sync(() -> BetterGUI.getInstance().getMenuManager().openMenu(parsed, player));
+        taskChain
+            .sync(() -> BetterGUI.getInstance().getMenuManager().openMenu(parsed, player, false));
       }
     } else {
       CommonUtils.sendMessage(player,

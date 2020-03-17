@@ -9,9 +9,9 @@ menu-settings:
   command: menu
   auto-refresh: 5
   open-action:
-  - 'tell: &eYou opened the example menu'
+    - 'tell: &eYou opened the example menu'
   close-action:
-  - 'tell: &cYou closed the example menu'
+    - 'tell: &cYou closed the example menu'
 
 ######################
 #+                  +#
@@ -44,7 +44,7 @@ spawncmd:
   ID: ender_pearl
   POSITION-X: 1
   POSITION-Y: 1
-  
+
 durability-armor:
   NAME: '&aDamaged armor'
   LORE:
@@ -59,11 +59,11 @@ enchanted-sword:
   LORE:
     - 'This sword is glowing.'
   ID: diamond_sword
-  ENCHANTMENT: 
-  - "durability, 1"
+  ENCHANTMENT:
+    - "durability, 1"
   POSITION-X: 3
   POSITION-Y: 1
-  
+
 some-arrows:
   NAME: '&aSome arrows'
   LORE:
@@ -72,7 +72,7 @@ some-arrows:
   AMOUNT: 5
   POSITION-X: 4
   POSITION-Y: 1
-  
+
 test-from-console:
   COMMAND: 'console: say Hello {player}!'
   NAME: '&cRuns command from the console.'
@@ -81,7 +81,7 @@ test-from-console:
   ID: command_block
   POSITION-X: 5
   POSITION-Y: 1
-  
+
 test-as-op:
   COMMAND: 'op: say Hello world!'
   NAME: '&cRuns command as OP.'
@@ -91,13 +91,13 @@ test-as-op:
   ID: command_block
   POSITION-X: 6
   POSITION-Y: 1
-  
+
 test-with-placeholder:
-  COMMAND: 
-  - "tell: &9Online players: &f{online}/{max_players}"
-  - "tell: &9Your name: &f{player}"
-  - "tell: &9The world you are in: &f{world}"
-  - "tell: &9Ping: &f{ping}"
+  COMMAND:
+    - "tell: &9Online players: &f{online}/{max_players}"
+    - "tell: &9Your name: &f{player}"
+    - "tell: &9The world you are in: &f{world}"
+    - "tell: &9Ping: &f{ping}"
   NAME: '&6This message contains some placeholders'
   LORE:
     - 'Placeholders will be replaced when the item'
@@ -105,7 +105,7 @@ test-with-placeholder:
   ID: water_bucket
   POSITION-X: 7
   POSITION-Y: 1
-  
+
 formatting-codes:
   NAME: '&dFormatting codes'
   LORE:
@@ -119,7 +119,7 @@ formatting-codes:
   ID: paper
   POSITION-X: 8
   POSITION-Y: 1
-  
+
 talking-fish:
   COMMAND: 'tell: This is a simple message, without using commands!'
   NAME: '&3Tells you something.'
@@ -128,18 +128,18 @@ talking-fish:
   ID: torch
   POSITION-X: 9
   POSITION-Y: 1
-  
+
 test-multiple-command:
-  COMMAND: 
-  - 'console: Say Did you know that...'
-  - 'console: say you can run multiple commands?;'
+  COMMAND:
+    - 'console: Say Did you know that...'
+    - 'console: say you can run multiple commands?;'
   NAME: '&aMultiple commands'
   LORE:
     - 'Example of multiple commands.'
   ID: golden_apple
   POSITION-X: 1
   POSITION-Y: 2
-  
+
 permission:
   COMMAND: 'tell: &a[v] You have the correct permission!'
   NAME: '&8Permission test'
@@ -152,21 +152,22 @@ permission:
   POSITION-X: 2
   POSITION-Y: 2
   CLICK-REQUIREMENT:
-    PERMISSION:
-      VALUE: bettergui.test
-      COMMAND: 'tell: &cYou don''t have the correct permission!'
-      
+    default:
+      permission:
+        PERMISSION: bettergui.test
+        fail-command: 'tell: &cYou don''t have the correct permission!'
+
 condition:
   NAME: '&aCondition'
   LORE:
     - 'The command will run when the level is higher than 5.'
   ID: grass
-  COMMAND: 
-  - "condition: {level} > 5"
-  - "tell: &aYou did it"
+  COMMAND:
+    - "condition: {level} > 5"
+    - "tell: &aYou did it"
   POSITION-X: 3
   POSITION-Y: 2
-  
+
 test-per-click-command:
   COMMAND:
     LEFT: 'tell: &cYou left-clicked'
@@ -174,8 +175,8 @@ test-per-click-command:
     MIDDLE: 'tell: &cYou middle-clicked'
     # Default for every click types
     DEFAULT:
-    - "tell: &cUnknown click type"
-    - "tell: Left, Right, Middle only"
+      - "tell: &cUnknown click type"
+      - "tell: Left, Right, Middle only"
   NAME: '&aCommands per clicktype'
   LORE:
     - 'You left-click.'
@@ -185,12 +186,12 @@ test-per-click-command:
   ID: redstone_block
   POSITION-X: 4
   POSITION-Y: 2
-  
+
 test-delay-command:
-  COMMAND: 
-  - 'tell: &aThis is current'
-  - 'delay: 60'
-  - 'tell: &aThis is 3 seconds later'
+  COMMAND:
+    - 'tell: &aThis is current'
+    - 'delay: 60'
+    - 'tell: &aThis is 3 seconds later'
   NAME: '&eDelay Command'
   LORE:
     - 'This is a test of delay command.'
@@ -204,21 +205,21 @@ cooldown:
   NAME: '&aCooldown'
   LORE:
     - 'This is a example of icon with cooldown'
-  COOLDOWN: 
+  COOLDOWN:
     DEFAULT: 10
   ID: paper
   POSITION-X: 6
   POSITION-Y: 2
-  
+
 enchanted-sword-flag:
   NAME: '&aEnchanted sword'
   LORE:
     - 'This sword is glowing. (literally)'
   ID: diamond_sword
-  ENCHANTMENT: 
-  - "durability, 1"
+  ENCHANTMENT:
+    - "durability, 1"
   FLAG:
-  - HIDE_ENCHANTS
+    - HIDE_ENCHANTS
   POSITION-X: 7
   POSITION-Y: 2
 
@@ -229,10 +230,10 @@ advanced_cooldown:
   POSITION-Y: 2
   name: '&cCooldown'
   lore:
-  - '&eLEFT: &f{left_cooldown_h}h{left_cooldown_m}m{left_cooldown_s}s (&cTotal millis: {left_cooldown})'
-  - '&eRIGHT: &f{right_cooldown_h}h{right_cooldown_m}m{right_cooldown_s}s (&cTotal millis: {right_cooldown})'
-  - '&eMIDDLE: &f{middle_cooldown_h}h{middle_cooldown_m}m{middle_cooldown_s}s (&cTotal millis: {middle_cooldown})'
-  - '&eDEFAULT: &f{default_cooldown_h}h{default_cooldown_m}m{default_cooldown_s}s (&cTotal millis: {default_cooldown})'
+    - '&eLEFT: &f{left_cooldown_h}h{left_cooldown_m}m{left_cooldown_s}s (&cTotal millis: {left_cooldown})'
+    - '&eRIGHT: &f{right_cooldown_h}h{right_cooldown_m}m{right_cooldown_s}s (&cTotal millis: {right_cooldown})'
+    - '&eMIDDLE: &f{middle_cooldown_h}h{middle_cooldown_m}m{middle_cooldown_s}s (&cTotal millis: {middle_cooldown})'
+    - '&eDEFAULT: &f{default_cooldown_h}h{default_cooldown_m}m{default_cooldown_s}s (&cTotal millis: {default_cooldown})'
   command:
     LEFT: 'tell: &cYou left-clicked'
     RIGHT: 'tell: &cYou right-clicked'
@@ -245,7 +246,7 @@ advanced_cooldown:
     default:
       value: 40
       command: "tell: &cCalm down"
-      
+
 list-icon:
   type: list
   position-x: 9
@@ -255,29 +256,32 @@ list-icon:
       id: grass
       name: "&aYou are in {world}"
       view-requirement:
-        # STREQ: Compare 2 strings if they are the same
-        condition: STREQ("{world}", "world")
+        condition:
+          # STREQ: Compare 2 strings if they are the same
+          condition: STREQ("{world}", "world")
     nether:
       id: netherrack
       name: "&cYou are in {world}"
       view-requirement:
-        condition: STREQ("{world}", "world_nether")
+        condition:
+          condition: STREQ("{world}", "world_nether")
     unknown:
       id: bedrock
       name: "&cYou are in {world}"
       lore:
-      - "&cUnknown world"
-      
+        - "&cUnknown world"
+
 test-view-requirement:
   position-x: 1
   position-y: 3
   id: exp_bottle
   name: "&cA exp bottle"
   lore:
-  - "You will see this icon when the level is higher than 5"
+    - "You will see this icon when the level is higher than 5"
   view-requirement:
-    level: 5
-    
+    level:
+      level: 5
+
 animated-icon:
   position-x: 2
   position-y: 3
@@ -288,22 +292,51 @@ animated-icon:
       name: "&cFrame 1"
       id: red_wool
       lore:
-      - "This is part of an animated icon"
+        - "This is part of an animated icon"
     frame_icon2:
       name: "&aFrame 2"
       id: green_wool
       lore:
-      - "This is part of an animated icon"
+        - "This is part of an animated icon"
     frame_icon3:
       name: "&bFrame 3"
       id: light_blue_wool
       lore:
-      - "This is part of an animated icon"
+        - "This is part of an animated icon"
+
+requirement-set:
+  position-x: 3
+  position-y: 3
+  id: paper
+  name: "&eRequirement Set"
+  lore:
+    - "&aYou can use this icon if you meets one of the requirements: "
+    - "&f- In the overworld"
+    - "&f- In the nether and the level is higher than 10"
+    - "&f- Have the permission 'bettergui.testset'"
+  command: "tell: &aYou did it"
+  click-requirement:
+    default:
+      world:
+        condition: STREQ("{world}", "world")
+        success-command:
+          - "tell: &aYou are in the overworld"
+      nether_world:
+        condition: STREQ("{world}", "world_nether")
+        level: 10
+        success-command:
+          - "tell: &aYou are in nether"
+      permission:
+        permission: bettergui.testset
+        success-command:
+          - "tell: &aYou have the permission"
+      fail-command:
+        - "tell: &cTry again later"
 
 slot:
   id: WHITE_STAINED_GLASS_PANE
   slot: 45
-      
+
 multi-slot:
   id: BLACK_STAINED_GLASS_PANE
   slot: 46,47-52

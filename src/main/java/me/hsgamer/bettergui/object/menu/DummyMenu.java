@@ -85,9 +85,9 @@ public class DummyMenu extends Menu {
   }
 
   @Override
-  public void createInventory(Player player) {
+  public void createInventory(Player player, boolean bypass) {
     TestCase.create(player)
-        .setPredicate(player1 -> player1.hasPermission(permission))
+        .setPredicate(player1 -> bypass || player1.hasPermission(permission))
         .setSuccessConsumer(player1 -> {
           final DummyInventory[] inventory = new DummyInventory[1];
           String parsedTitle = CommonUtils

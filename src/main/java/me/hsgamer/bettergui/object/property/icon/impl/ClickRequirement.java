@@ -1,24 +1,37 @@
 package me.hsgamer.bettergui.object.property.icon.impl;
 
+import co.aikar.taskchain.TaskChain;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.object.CheckedRequirementSet;
+import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
-import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.object.IconVariable;
+import me.hsgamer.bettergui.object.RequirementSet;
 import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
+import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 public class ClickRequirement extends IconProperty<ConfigurationSection> {
 
-  private final Map<ClickType, List<IconRequirement<?, ?>>> requirementsPerClickType = new EnumMap<>(
+  private static final String FAIL_COMMAND = "fail-command";
+
+  private final Map<ClickType, List<RequirementSet>> requirementsPerClickType = new EnumMap<>(
       ClickType.class);
-  private final List<IconRequirement<?, ?>> defaultRequirements = new ArrayList<>();
+  private final Map<ClickType, CheckedRequirementSet> checkedSetPerClickType = new EnumMap<>(
+      ClickType.class);
+  private final Map<ClickType, List<Command>> failCommandsPerClickType = new EnumMap<>(
+      ClickType.class);
 
   public ClickRequirement(Icon icon) {
     super(icon);
@@ -32,56 +45,88 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     for (ClickType clickType : ClickType.values()) {
       String subsection = clickType.name();
       if (keys.containsKey(subsection)) {
-        List<IconRequirement<?, ?>> requirements = RequirementBuilder
-            .loadRequirementsFromSection((ConfigurationSection) keys.get(subsection),
-                getIcon());
-        requirementsPerClickType.put(clickType, requirements);
-        requirements.forEach(iconRequirement -> {
-          if (iconRequirement instanceof IconVariable) {
-            getIcon().registerVariable(
-                subsection.toLowerCase() + "_" + ((IconVariable) iconRequirement).getIdentifier(),
-                (IconVariable) iconRequirement);
-          }
-        });
+        setRequirements(clickType, (ConfigurationSection) keys.get(subsection));
       }
     }
     // Default
     if (keys.containsKey("DEFAULT")) {
       setDefaultRequirements((ConfigurationSection) keys.get("DEFAULT"));
     }
-    // Alternative Default
-    setDefaultRequirements(getValue());
+  }
+
+  private void setRequirements(ClickType clickType, ConfigurationSection section) {
+    List<RequirementSet> requirements = RequirementBuilder
+        .getRequirementSet(section,
+            getIcon());
+    requirementsPerClickType.put(clickType, requirements);
+    checkedSetPerClickType.put(clickType, new CheckedRequirementSet());
+    registerVariable(clickType.name().toLowerCase(), requirements);
+
+    Map<String, Object> keys1 = new CaseInsensitiveStringMap<>((section).getValues(false));
+    if (keys1.containsKey(FAIL_COMMAND)) {
+      failCommandsPerClickType.put(clickType, CommandBuilder.getCommands(getIcon(), CommonUtils
+          .createStringListFromObject(keys1.get(FAIL_COMMAND), true)));
+    }
   }
 
   private void setDefaultRequirements(ConfigurationSection section) {
-    List<IconRequirement<?, ?>> requirements = RequirementBuilder
-        .loadRequirementsFromSection(section,
+    List<RequirementSet> requirements = RequirementBuilder
+        .getRequirementSet(section,
             getIcon());
-    defaultRequirements.addAll(requirements);
-    requirements.forEach(iconRequirement -> {
-      if (iconRequirement instanceof IconVariable) {
-        getIcon().registerVariable("default_" + ((IconVariable) iconRequirement).getIdentifier(),
-            (IconVariable) iconRequirement);
-      }
-    });
+    List<Command> commands = new ArrayList<>();
+    CheckedRequirementSet checkedRequirementSet = new CheckedRequirementSet();
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
+    if (keys.containsKey(FAIL_COMMAND)) {
+      commands.addAll(CommandBuilder.getCommands(getIcon(), CommonUtils
+          .createStringListFromObject(keys.get(FAIL_COMMAND), true)));
+    }
+    registerVariable("default", requirements);
+    for (ClickType clickType : ClickType.values()) {
+      requirementsPerClickType.putIfAbsent(clickType, requirements);
+      checkedSetPerClickType.putIfAbsent(clickType, checkedRequirementSet);
+      failCommandsPerClickType.putIfAbsent(clickType, commands);
+    }
+  }
+
+  public void sendFailCommand(Player player, ClickType clickType) {
+    TaskChain<?> taskChain = BetterGUI.newChain();
+    failCommandsPerClickType.get(clickType)
+        .forEach(command -> command.addToTaskChain(player, taskChain));
+    taskChain.execute();
+  }
+
+  private void registerVariable(String prefix, List<RequirementSet> requirementSets) {
+    requirementSets
+        .forEach(requirementSet -> requirementSet.getRequirements().forEach(iconRequirement -> {
+          if (iconRequirement instanceof IconVariable) {
+            getIcon().registerVariable(String.join("_", prefix, requirementSet.getName(),
+                ((IconVariable) iconRequirement).getIdentifier()),
+                (IconVariable) iconRequirement);
+          }
+        }));
   }
 
   public boolean check(Player player, ClickType clickType) {
-    for (IconRequirement<?, ?> requirement : requirementsPerClickType
-        .getOrDefault(clickType, defaultRequirements)) {
-      if (!requirement.check(player)) {
-        return false;
+    List<RequirementSet> requirements = requirementsPerClickType
+        .get(clickType);
+    if (Validate.isNullOrEmpty(requirements)) {
+      return true;
+    }
+    CheckedRequirementSet checkedSet = checkedSetPerClickType.get(clickType);
+    for (RequirementSet requirement : requirements) {
+      if (requirement.check(player)) {
+        checkedSet.put(player, requirement);
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
-  public void take(Player player, ClickType clickType) {
-    for (IconRequirement<?, ?> requirement : requirementsPerClickType
-        .getOrDefault(clickType, defaultRequirements)) {
-      if (requirement.canTake()) {
-        requirement.take(player);
-      }
+  public Optional<RequirementSet> getCheckedRequirement(Player player, ClickType clickType) {
+    CheckedRequirementSet checkedRequirementSet = checkedSetPerClickType.get(clickType);
+    if (checkedRequirementSet == null) {
+      return Optional.empty();
     }
+    return checkedRequirementSet.get(player);
   }
 }

@@ -46,16 +46,23 @@ public class SimpleIcon extends Icon {
   @Override
   public Optional<ClickableItem> createClickableItem(Player player) {
     ViewRequirement viewRequirement = iconPropertyBuilder.getViewRequirement();
-    if (!viewRequirement.check(player)) {
-      return Optional.empty();
+    if (viewRequirement != null) {
+      if (!viewRequirement.check(player)) {
+        viewRequirement.sendFailCommand(player);
+        return Optional.empty();
+      }
+      viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
+        iconRequirementSet.take(player);
+        iconRequirementSet.sendCommand(player);
+      });
     }
-    viewRequirement.take(player);
     return Optional.of(getClickableItem(player));
   }
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
-    if (!iconPropertyBuilder.getViewRequirement().check(player)) {
+    ViewRequirement viewRequirement = iconPropertyBuilder.getViewRequirement();
+    if (viewRequirement != null && !viewRequirement.check(player)) {
       return Optional.empty();
     }
     return Optional.of(getClickableItem(player));

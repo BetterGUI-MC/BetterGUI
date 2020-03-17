@@ -1,11 +1,11 @@
 package me.hsgamer.bettergui.manager;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -28,8 +28,9 @@ public class CommandManager {
   public CommandManager(JavaPlugin plugin) {
     this.plugin = plugin;
     try {
-      Method getCommandMapMethod = Bukkit.getServer().getClass().getDeclaredMethod("getCommandMap");
-      bukkitCommandMap = (CommandMap) getCommandMapMethod.invoke(Bukkit.getServer());
+      Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+      commandMapField.setAccessible(true);
+      bukkitCommandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
 
       knownCommandsField = SimpleCommandMap.class.getDeclaredField("knownCommands");
       knownCommandsField.setAccessible(true);
@@ -108,7 +109,8 @@ public class CommandManager {
       @Override
       public boolean execute(CommandSender commandSender, String s, String[] strings) {
         if (commandSender instanceof Player) {
-          menu.createInventory((Player) commandSender);
+          menu.createInventory((Player) commandSender, commandSender.hasPermission(
+              Permissions.OPEN_MENU_BYPASS));
         } else {
           CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
               DefaultMessage.PLAYER_ONLY));
