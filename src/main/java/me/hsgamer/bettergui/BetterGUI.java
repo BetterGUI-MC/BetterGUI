@@ -47,8 +47,9 @@ public final class BetterGUI extends JavaPlugin {
     return taskChainFactory.newChain();
   }
 
-  public static <T> TaskChain<T> newSharedChain(String name) {
-    return taskChainFactory.newSharedChain(name);
+  @SuppressWarnings("unused")
+  public static TaskChainFactory getTaskChainFactory() {
+    return taskChainFactory;
   }
 
   public static BetterGUI getInstance() {
@@ -78,19 +79,20 @@ public final class BetterGUI extends JavaPlugin {
     getLogger().info("");
 
     getLogger().log(Level.INFO, "\t\tVersion: {0}", getDescription().getVersion());
-    new VersionChecker(this, 75620).getVersion(version -> {
-      String current = this.getDescription().getVersion();
-      if (current.contains("SNAPSHOT")) {
-        getLogger().warning("You are using the development version");
-        getLogger().warning("This is not ready for production");
-        getLogger().warning("Use in your own risk");
-      } else if (current.equalsIgnoreCase(version)) {
-        getLogger().info("You are using the latest version");
-      } else {
-        getLogger().warning("There is an available update");
-        getLogger().warning("New Version: " + version);
-      }
-    });
+    if (getDescription().getVersion().contains("SNAPSHOT")) {
+      getLogger().warning("You are using the development version");
+      getLogger().warning("This is not ready for production");
+      getLogger().warning("Use in your own risk");
+    } else {
+      new VersionChecker(this, 75620).getVersion(version -> {
+        if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+          getLogger().info("You are using the latest version");
+        } else {
+          getLogger().warning("There is an available update");
+          getLogger().warning("New Version: " + version);
+        }
+      });
+    }
 
     if (PlaceholderAPIHook.setupPlugin()) {
       getLogger().info("Hooked PlaceholderAPI");

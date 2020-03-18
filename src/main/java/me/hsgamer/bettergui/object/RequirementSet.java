@@ -9,15 +9,15 @@ import org.bukkit.entity.Player;
 public class RequirementSet {
 
   private final String name;
-  private final List<IconRequirement<?, ?>> requirements;
+  private final List<Requirement<?, ?>> requirements;
   private final List<Command> commands = new ArrayList<>();
 
-  public RequirementSet(String name, List<IconRequirement<?, ?>> requirements) {
+  public RequirementSet(String name, List<Requirement<?, ?>> requirements) {
     this.name = name;
     this.requirements = requirements;
   }
 
-  public List<IconRequirement<?, ?>> getRequirements() {
+  public List<Requirement<?, ?>> getRequirements() {
     return requirements;
   }
 
@@ -26,7 +26,7 @@ public class RequirementSet {
   }
 
   public boolean check(Player player) {
-    for (IconRequirement<?, ?> requirement : requirements) {
+    for (Requirement<?, ?> requirement : requirements) {
       if (!requirement.check(player)) {
         return false;
       }
@@ -35,7 +35,7 @@ public class RequirementSet {
   }
 
   public void take(Player player) {
-    for (IconRequirement<?, ?> requirement : requirements) {
+    for (Requirement<?, ?> requirement : requirements) {
       if (requirement.canTake()) {
         requirement.take(player);
       }

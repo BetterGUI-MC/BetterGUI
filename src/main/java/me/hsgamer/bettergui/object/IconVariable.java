@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.object;
 
+import java.util.Optional;
 import org.bukkit.entity.Player;
 
 /**
@@ -15,7 +16,7 @@ public interface IconVariable {
   /**
    * @return the icon involved in
    */
-  Icon getIcon();
+  Optional<Icon> getIconInvolved();
 
   /**
    * Get the string from the variable

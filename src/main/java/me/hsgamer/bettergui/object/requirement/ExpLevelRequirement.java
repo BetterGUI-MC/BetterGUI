@@ -8,25 +8,24 @@ import java.util.UUID;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
-import me.hsgamer.bettergui.object.IconRequirement;
 import me.hsgamer.bettergui.object.IconVariable;
+import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.entity.Player;
 
-public class ExpLevelRequirement extends IconRequirement<Object, Integer> implements IconVariable {
+public class ExpLevelRequirement extends Requirement<Object, Integer> implements IconVariable {
 
   private final Map<UUID, Integer> checked = new HashMap<>();
 
-  public ExpLevelRequirement(Icon icon) {
-    super(icon, false);
+  public ExpLevelRequirement() {
+    super(false);
   }
 
   @Override
   public Integer getParsedValue(Player player) {
-    String parsed = String.valueOf(value).trim();
-    parsed = icon.hasVariables(parsed) ? icon.setVariables(parsed, player) : parsed;
+    String parsed = parseFromString(String.valueOf(value).trim(), player);
     if (ExpressionUtils.isValidExpression(parsed)) {
       return ExpressionUtils.getResult(parsed).intValue();
     } else {
@@ -63,8 +62,8 @@ public class ExpLevelRequirement extends IconRequirement<Object, Integer> implem
   }
 
   @Override
-  public Icon getIcon() {
-    return this.icon;
+  public Optional<Icon> getIconInvolved() {
+    return getIcon();
   }
 
   @Override

@@ -17,6 +17,7 @@ import org.bukkit.event.Listener;
 /**
  * The main class of the addon
  */
+@SuppressWarnings("unused")
 public abstract class Addon {
 
   private File dataFolder;
@@ -62,6 +63,12 @@ public abstract class Addon {
    * Called when disabling the addon
    */
   public void onDisable() {
+  }
+
+  /**
+   * Called when reloading
+   */
+  public void onReload() {
   }
 
   /**

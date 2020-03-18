@@ -184,6 +184,10 @@ public class AddonManager {
     addons.values().forEach(Addon::onPostEnable);
   }
 
+  public void callReload() {
+    addons.values().forEach(Addon::onReload);
+  }
+
   public void disableAddons() {
     addons.keySet().forEach(this::disableAddon);
     addons.values().forEach(this::closeClassLoader);
@@ -225,10 +229,12 @@ public class AddonManager {
     callPostEnable();
   }
 
+  @SuppressWarnings("unused")
   public Addon getAddon(String name) {
     return addons.get(name);
   }
 
+  @SuppressWarnings("unused")
   public boolean isAddonLoaded(String name) {
     return addons.containsKey(name);
   }
