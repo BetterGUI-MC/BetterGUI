@@ -47,8 +47,9 @@ public final class BetterGUI extends JavaPlugin {
     return taskChainFactory.newChain();
   }
 
-  public static <T> TaskChain<T> newSharedChain(String name) {
-    return taskChainFactory.newSharedChain(name);
+  @SuppressWarnings("unused")
+  public static TaskChainFactory getTaskChainFactory() {
+    return taskChainFactory;
   }
 
   public static BetterGUI getInstance() {
