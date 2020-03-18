@@ -7,16 +7,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
+import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.manager.VariableManager;
+import me.hsgamer.bettergui.object.CheckedRequirementSet;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.ParentIcon;
+import me.hsgamer.bettergui.object.RequirementSet;
 import me.hsgamer.bettergui.object.inventory.SimpleInventory;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -40,6 +44,7 @@ public class SimpleMenu extends Menu {
   private Permission permission = new Permission(
       getInstance().getName().toLowerCase() + "." + getName());
   private Icon defaultIcon;
+  private MenuRequirement menuRequirement;
 
   public SimpleMenu(String name) {
     super(name);
@@ -108,6 +113,11 @@ public class SimpleMenu extends Menu {
         if (keys.containsKey(Settings.AUTO_REFRESH)) {
           ticks = Integer.parseInt(String.valueOf(keys.get(Settings.AUTO_REFRESH)));
         }
+
+        if (keys.containsKey(Settings.VIEW_REQUIREMENT)) {
+          menuRequirement = new MenuRequirement(
+              (ConfigurationSection) keys.get(Settings.VIEW_REQUIREMENT));
+        }
       } else if (key.equalsIgnoreCase("default-icon")) {
         defaultIcon = IconBuilder.getIcon(this, file.getConfigurationSection(key));
       } else {
@@ -142,6 +152,19 @@ public class SimpleMenu extends Menu {
     TestCase.create(player)
         .setPredicate(player1 -> bypass || player1.hasPermission(permission))
         .setSuccessConsumer(player1 -> {
+          // Check Requirement
+          if (!bypass && menuRequirement != null) {
+            if (!menuRequirement.check(player)) {
+              menuRequirement.sendFailCommand(player);
+              return;
+            }
+            menuRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
+              iconRequirementSet.take(player);
+              iconRequirementSet.sendCommand(player);
+            });
+          }
+
+          // Create Inventory
           final SimpleInventory[] inventory = new SimpleInventory[1];
           String parsedTitle = CommonUtils
               .colorize(titleHasVariable ? VariableManager.setVariables(title, player1)
@@ -170,6 +193,7 @@ public class SimpleMenu extends Menu {
               })
               .test();
 
+          // Add Actions
           if (!openActions.isEmpty()) {
             inventory[0].addOpenHandler(event -> {
               TaskChain<?> taskChain = BetterGUI.newChain();
@@ -192,10 +216,6 @@ public class SimpleMenu extends Menu {
         .test();
   }
 
-  public Icon getDefaultIcon() {
-    return defaultIcon;
-  }
-
   private static class Settings {
 
     static final String NAME = "name";
@@ -206,5 +226,42 @@ public class SimpleMenu extends Menu {
     static final String CLOSE_ACTION = "close-action";
     static final String PERMISSION = "permission";
     static final String AUTO_REFRESH = "auto-refresh";
+    static final String VIEW_REQUIREMENT = "view-requirement";
+  }
+
+  private static class MenuRequirement {
+
+    private final List<RequirementSet> requirements = new ArrayList<>();
+    private final List<Command> commands = new ArrayList<>();
+    private final CheckedRequirementSet checked = new CheckedRequirementSet();
+
+    MenuRequirement(ConfigurationSection section) {
+      Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
+      requirements.addAll(RequirementBuilder.getRequirementSet(section, null));
+      if (keys.containsKey("fail-command")) {
+        commands.addAll(CommandBuilder.getCommands(null,
+            CommonUtils.createStringListFromObject(keys.get("fail-command"), true)));
+      }
+    }
+
+    private boolean check(Player player) {
+      for (RequirementSet requirement : requirements) {
+        if (requirement.check(player)) {
+          checked.put(player, requirement);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    private Optional<RequirementSet> getCheckedRequirement(Player player) {
+      return checked.get(player);
+    }
+
+    private void sendFailCommand(Player player) {
+      TaskChain<?> taskChain = BetterGUI.newChain();
+      commands.forEach(command -> command.addToTaskChain(player, taskChain));
+      taskChain.execute();
+    }
   }
 }
