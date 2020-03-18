@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.object;
 
+import java.util.Optional;
+
 /**
  * A simple extension of IconVariable
  */
@@ -12,7 +14,7 @@ public abstract class SimpleIconVariable implements IconVariable {
   }
 
   @Override
-  public Icon getIcon() {
-    return icon;
+  public Optional<Icon> getIconInvolved() {
+    return Optional.ofNullable(icon);
   }
 }

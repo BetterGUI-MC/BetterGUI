@@ -8,9 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.object.Icon;
-import me.hsgamer.bettergui.object.IconRequirement;
+import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.object.RequirementSet;
-import me.hsgamer.bettergui.object.icon.RawIcon;
 import me.hsgamer.bettergui.object.requirement.ConditionRequirement;
 import me.hsgamer.bettergui.object.requirement.ExpLevelRequirement;
 import me.hsgamer.bettergui.object.requirement.PermissionRequirement;
@@ -21,7 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public class RequirementBuilder {
 
-  private static final Map<String, Class<? extends IconRequirement<?, ?>>> requirements = new CaseInsensitiveStringMap<>();
+  private static final Map<String, Class<? extends Requirement<?, ?>>> requirementsClass = new CaseInsensitiveStringMap<>();
 
   static {
     register("condition", ConditionRequirement.class);
@@ -39,17 +38,17 @@ public class RequirementBuilder {
    * @param type  the name of the type
    * @param clazz the class
    */
-  public static void register(String type, Class<? extends IconRequirement<?, ?>> clazz) {
-    requirements.put(type, clazz);
+  public static void register(String type, Class<? extends Requirement<?, ?>> clazz) {
+    requirementsClass.put(type, clazz);
   }
 
   /**
    * Check the integrity of the classes
    */
   public static void checkClass() {
-    for (Class<? extends IconRequirement<?, ?>> clazz : requirements.values()) {
+    for (Class<? extends Requirement<?, ?>> clazz : requirementsClass.values()) {
       try {
-        clazz.getDeclaredConstructor(Icon.class).newInstance(new RawIcon("", null));
+        clazz.getDeclaredConstructor().newInstance();
       } catch (Exception ex) {
         getInstance().getLogger()
             .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
@@ -58,11 +57,15 @@ public class RequirementBuilder {
     }
   }
 
-  public static Optional<IconRequirement<?, ?>> getRequirement(String type, Icon icon) {
-    if (requirements.containsKey(type)) {
-      Class<? extends IconRequirement<?, ?>> clazz = requirements.get(type);
+  public static Optional<Requirement<?, ?>> getRequirement(String type, Icon icon) {
+    if (requirementsClass.containsKey(type)) {
+      Class<? extends Requirement<?, ?>> clazz = requirementsClass.get(type);
       try {
-        return Optional.of(clazz.getDeclaredConstructor(Icon.class).newInstance(icon));
+        Requirement<?, ?> requirement = clazz.getDeclaredConstructor().newInstance();
+        if (icon != null) {
+          requirement.setIcon(icon);
+        }
+        return Optional.of(requirement);
       } catch (Exception e) {
         // IGNORED
       }
@@ -70,16 +73,16 @@ public class RequirementBuilder {
     return Optional.empty();
   }
 
-  public static List<IconRequirement<?, ?>> loadRequirementsFromSection(
+  public static List<Requirement<?, ?>> loadRequirementsFromSection(
       ConfigurationSection section,
       Icon icon) {
-    List<IconRequirement<?, ?>> requirements = new ArrayList<>();
+    List<Requirement<?, ?>> requirements = new ArrayList<>();
     section.getKeys(false).forEach(type -> {
-      Optional<IconRequirement<?, ?>> rawRequirement = getRequirement(type, icon);
+      Optional<Requirement<?, ?>> rawRequirement = getRequirement(type, icon);
       if (!rawRequirement.isPresent()) {
         return;
       }
-      IconRequirement<?, ?> requirement = rawRequirement.get();
+      Requirement<?, ?> requirement = rawRequirement.get();
       TestCase.create(type)
           .setPredicate(section::isConfigurationSection)
           .setSuccessConsumer(s -> {
@@ -92,9 +95,7 @@ public class RequirementBuilder {
               }
             } else {
               getInstance().getLogger().warning(
-                  "The requirement \"" + s + "\" in the icon \"" + icon.getName()
-                      + "\" in the menu \"" + icon.getMenu().getName()
-                      + "\" doesn't have VALUE");
+                  "The requirement \"" + s + "\" doesn't have VALUE");
             }
           })
           .setFailConsumer(s -> requirement.setValue(section.get(s)))
@@ -110,10 +111,10 @@ public class RequirementBuilder {
     section.getKeys(false).forEach(key -> {
       if (section.isConfigurationSection(key)) {
         ConfigurationSection subsection = section.getConfigurationSection(key);
-        List<IconRequirement<?, ?>> iconRequirements = loadRequirementsFromSection(subsection,
+        List<Requirement<?, ?>> requirements = loadRequirementsFromSection(subsection,
             icon);
-        if (!iconRequirements.isEmpty()) {
-          RequirementSet requirementSet = new RequirementSet(key, iconRequirements);
+        if (!requirements.isEmpty()) {
+          RequirementSet requirementSet = new RequirementSet(key, requirements);
           Map<String, Object> keys = new CaseInsensitiveStringMap<>(subsection.getValues(false));
           if (keys.containsKey(Settings.SUCCESS_COMMAND)) {
             requirementSet.setCommand(CommandBuilder.getCommands(icon,

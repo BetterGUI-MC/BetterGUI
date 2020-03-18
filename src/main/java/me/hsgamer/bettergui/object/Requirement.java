@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.object;
 
+import java.util.Optional;
+import me.hsgamer.bettergui.manager.VariableManager;
 import org.bukkit.entity.Player;
 
 /**
@@ -9,20 +11,18 @@ import org.bukkit.entity.Player;
  * @param <V> The value type stored from setValue()
  * @param <L> The type of the final value
  */
-public abstract class IconRequirement<V, L> {
+public abstract class Requirement<V, L> {
 
-  protected final Icon icon;
   protected V value;
+  private Icon icon;
   private boolean canTake;
 
   /**
    * The requirement
    *
-   * @param icon    the icon involved in
    * @param canTake whether the plugin takes the requirements from the player
    */
-  public IconRequirement(Icon icon, boolean canTake) {
-    this.icon = icon;
+  public Requirement(boolean canTake) {
     this.canTake = canTake;
   }
 
@@ -54,11 +54,53 @@ public abstract class IconRequirement<V, L> {
     this.value = (V) value;
   }
 
+  /**
+   * Enable/Disable the possibility to take the requirement
+   *
+   * @param canTake Whether the plugin can take the requirement
+   */
   public void canTake(boolean canTake) {
     this.canTake = canTake;
   }
 
+  /**
+   * @return Whether the plugin can take the requirement
+   */
   public boolean canTake() {
     return canTake;
+  }
+
+  /**
+   * Get the icon involved in this command
+   *
+   * @return the icon
+   */
+  protected Optional<Icon> getIcon() {
+    return Optional.ofNullable(icon);
+  }
+
+  /**
+   * Set the icon to this command
+   *
+   * @param icon the icon
+   */
+  public void setIcon(Icon icon) {
+    this.icon = icon;
+  }
+
+  /**
+   * Get the parsed string (after replacing the variables)
+   *
+   * @param input  the string
+   * @param player the player involved in
+   * @return the parsed string
+   */
+  protected String parseFromString(String input, Player player) {
+    if (icon != null) {
+      return icon.hasVariables(input) ? icon.setVariables(input, player) : input;
+    } else {
+      return VariableManager.hasVariables(input) ? VariableManager.setVariables(input, player)
+          : input;
+    }
   }
 }

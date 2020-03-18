@@ -22,7 +22,7 @@ public abstract class Command {
    * @param executor the player involved in
    * @return the parsed command
    */
-  public String getParsedCommand(Player executor) {
+  protected String getParsedCommand(Player executor) {
     if (icon != null) {
       return hasVariables ? icon.setVariables(string, executor) : string;
     } else {

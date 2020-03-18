@@ -2,17 +2,16 @@ package me.hsgamer.bettergui.object.requirement;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
-import me.hsgamer.bettergui.object.Icon;
-import me.hsgamer.bettergui.object.IconRequirement;
+import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
 import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.entity.Player;
 
-public class ConditionRequirement extends IconRequirement<Object, Boolean> {
+public class ConditionRequirement extends Requirement<Object, Boolean> {
 
-  public ConditionRequirement(Icon icon) {
-    super(icon, false);
+  public ConditionRequirement() {
+    super(false);
   }
 
   @Override
@@ -25,7 +24,7 @@ public class ConditionRequirement extends IconRequirement<Object, Boolean> {
             BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_CONDITION)
                 .replace("{input}", s)));
     for (String s : CommonUtils.createStringListFromObject(value, true)) {
-      if (!testCase.setTestObject(icon.hasVariables(s) ? icon.setVariables(s, player) : s).test()) {
+      if (!testCase.setTestObject(parseFromString(s, player)).test()) {
         return false;
       }
     }
