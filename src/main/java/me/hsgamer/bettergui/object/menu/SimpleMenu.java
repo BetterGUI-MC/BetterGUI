@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.object.menu;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
+import static me.hsgamer.bettergui.BetterGUI.newChain;
 
 import co.aikar.taskchain.TaskChain;
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
@@ -196,14 +196,14 @@ public class SimpleMenu extends Menu {
           // Add Actions
           if (!openActions.isEmpty()) {
             inventory[0].addOpenHandler(event -> {
-              TaskChain<?> taskChain = BetterGUI.newChain();
+              TaskChain<?> taskChain = newChain();
               openActions.forEach(action -> action.addToTaskChain(player, taskChain));
               taskChain.execute();
             });
           }
           if (!closeActions.isEmpty()) {
             inventory[0].addCloseHandler(event -> {
-              TaskChain<?> taskChain = BetterGUI.newChain();
+              TaskChain<?> taskChain = newChain();
               closeActions.forEach(action -> action.addToTaskChain(player, taskChain));
               taskChain.execute();
             });
@@ -259,7 +259,7 @@ public class SimpleMenu extends Menu {
     }
 
     private void sendFailCommand(Player player) {
-      TaskChain<?> taskChain = BetterGUI.newChain();
+      TaskChain<?> taskChain = newChain();
       commands.forEach(command -> command.addToTaskChain(player, taskChain));
       taskChain.execute();
     }
