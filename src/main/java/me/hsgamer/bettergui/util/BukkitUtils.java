@@ -53,4 +53,7 @@ public final class BukkitUtils {
     }
   }
 
+  public static boolean isSpigot() {
+    return Validate.isClassLoaded("org.bukkit.entity.Player$Spigot");
+  }
 }

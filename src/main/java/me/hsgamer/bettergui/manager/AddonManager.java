@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -239,8 +238,8 @@ public class AddonManager {
     return addons.containsKey(name);
   }
 
-  public Collection<String> getLoadedAddons() {
-    return addons.keySet();
+  public Map<String, Addon> getLoadedAddons() {
+    return addons;
   }
 
   private Map<String, Addon> sortAddons(Map<String, Addon> original) {
