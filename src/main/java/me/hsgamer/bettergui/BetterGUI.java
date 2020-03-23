@@ -161,6 +161,11 @@ public final class BetterGUI extends JavaPlugin {
       map.put(String.valueOf(addons.size()), addons);
       return map;
     }));
+    metrics.addCustomChart(new Metrics.AdvancedPie("addon_count", () -> {
+      Map<String, Integer> map = new HashMap<>();
+      addonManager.getLoadedAddons().keySet().forEach(s -> map.put(s, 1));
+      return map;
+    }));
   }
 
   @Override
