@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
@@ -313,5 +314,16 @@ public class AddonManager {
       }
     }
     return null;
+  }
+
+  public Map<String, Integer> getAddonCount() {
+    Map<String, Integer> map = new HashMap<>();
+    Set<String> list = addons.keySet();
+    if (list.isEmpty()) {
+      map.put("Empty", 1);
+    } else {
+      list.forEach(s -> map.put(s, 1));
+    }
+    return map;
   }
 }
