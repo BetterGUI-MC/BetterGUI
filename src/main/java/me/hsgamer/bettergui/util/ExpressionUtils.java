@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.util;
 
 import com.udojava.evalex.Expression;
 import java.math.BigDecimal;
+import java.util.Optional;
 import me.hsgamer.bettergui.util.expression.string.Contains;
 import me.hsgamer.bettergui.util.expression.string.EndsWith;
 import me.hsgamer.bettergui.util.expression.string.Equals;
@@ -25,6 +26,11 @@ public class ExpressionUtils {
   }
 
   public static BigDecimal getResult(String input) {
+    Optional<BigDecimal> number = Validate.getNumber(input);
+    if (number.isPresent()) {
+      return number.get();
+    }
+
     Expression expression = new Expression(input);
     addStringFunction(expression);
     try {

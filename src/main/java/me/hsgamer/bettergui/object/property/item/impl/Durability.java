@@ -1,14 +1,11 @@
 package me.hsgamer.bettergui.object.property.item.impl;
 
-import java.math.BigDecimal;
-import java.util.Optional;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
-import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,14 +22,9 @@ public class Durability extends ItemProperty<Object, Short> {
     if (ExpressionUtils.isValidExpression(value)) {
       return ExpressionUtils.getResult(value).shortValue();
     } else {
-      Optional<BigDecimal> number = Validate.getNumber(value);
-      if (number.isPresent()) {
-        return number.get().shortValue();
-      } else {
-        CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
-            DefaultMessage.INVALID_NUMBER).replace("{input}", value));
-        return 1;
-      }
+      CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
+          DefaultMessage.INVALID_NUMBER).replace("{input}", value));
+      return 1;
     }
   }
 
