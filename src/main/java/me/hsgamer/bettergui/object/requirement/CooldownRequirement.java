@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.object.requirement;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -15,7 +14,6 @@ import me.hsgamer.bettergui.object.IconVariable;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
-import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.entity.Player;
 
 public class CooldownRequirement extends Requirement<Object, Duration> implements IconVariable {
@@ -69,15 +67,10 @@ public class CooldownRequirement extends Requirement<Object, Duration> implement
     if (ExpressionUtils.isValidExpression(parsed)) {
       return Duration.ofMillis((long) ExpressionUtils.getResult(parsed).doubleValue() * 1000);
     } else {
-      Optional<BigDecimal> number = Validate.getNumber(parsed);
-      if (number.isPresent()) {
-        return Duration.ofMillis((long) number.get().doubleValue() * 1000);
-      } else {
-        CommonUtils.sendMessage(player,
-            BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
-                .replace("{input}", parsed));
-        return Duration.ZERO;
-      }
+      CommonUtils.sendMessage(player,
+          BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
+              .replace("{input}", parsed));
+      return Duration.ZERO;
     }
   }
 
