@@ -63,10 +63,12 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     registerVariable(clickType.name().toLowerCase(), requirements);
 
     Map<String, Object> keys1 = new CaseInsensitiveStringMap<>((section).getValues(false));
+    List<Command> commands = new ArrayList<>();
     if (keys1.containsKey(FAIL_COMMAND)) {
-      failCommandsPerClickType.put(clickType, CommandBuilder.getCommands(getIcon(), CommonUtils
-          .createStringListFromObject(keys1.get(FAIL_COMMAND), true)));
+      commands.addAll(CommandBuilder.getCommands(getIcon(),
+          CommonUtils.createStringListFromObject(keys1.get(FAIL_COMMAND), true)));
     }
+    failCommandsPerClickType.put(clickType, commands);
   }
 
   private void setDefaultRequirements(ConfigurationSection section) {

@@ -8,19 +8,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
-import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.manager.VariableManager;
-import me.hsgamer.bettergui.object.CheckedRequirementSet;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
+import me.hsgamer.bettergui.object.MenuRequirement;
 import me.hsgamer.bettergui.object.ParentIcon;
-import me.hsgamer.bettergui.object.RequirementSet;
 import me.hsgamer.bettergui.object.inventory.SimpleInventory;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -227,41 +224,5 @@ public class SimpleMenu extends Menu {
     static final String PERMISSION = "permission";
     static final String AUTO_REFRESH = "auto-refresh";
     static final String VIEW_REQUIREMENT = "view-requirement";
-  }
-
-  private static class MenuRequirement {
-
-    private final List<RequirementSet> requirements = new ArrayList<>();
-    private final List<Command> commands = new ArrayList<>();
-    private final CheckedRequirementSet checked = new CheckedRequirementSet();
-
-    MenuRequirement(ConfigurationSection section) {
-      Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
-      requirements.addAll(RequirementBuilder.getRequirementSet(section, null));
-      if (keys.containsKey("fail-command")) {
-        commands.addAll(CommandBuilder.getCommands(null,
-            CommonUtils.createStringListFromObject(keys.get("fail-command"), true)));
-      }
-    }
-
-    private boolean check(Player player) {
-      for (RequirementSet requirement : requirements) {
-        if (requirement.check(player)) {
-          checked.put(player, requirement);
-          return true;
-        }
-      }
-      return false;
-    }
-
-    private Optional<RequirementSet> getCheckedRequirement(Player player) {
-      return checked.get(player);
-    }
-
-    private void sendFailCommand(Player player) {
-      TaskChain<?> taskChain = newChain();
-      commands.forEach(command -> command.addToTaskChain(player, taskChain));
-      taskChain.execute();
-    }
   }
 }

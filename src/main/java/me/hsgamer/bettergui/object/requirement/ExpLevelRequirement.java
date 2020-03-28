@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.object.requirement;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +11,6 @@ import me.hsgamer.bettergui.object.IconVariable;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
-import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.entity.Player;
 
 public class ExpLevelRequirement extends Requirement<Object, Integer> implements IconVariable {
@@ -29,15 +27,10 @@ public class ExpLevelRequirement extends Requirement<Object, Integer> implements
     if (ExpressionUtils.isValidExpression(parsed)) {
       return ExpressionUtils.getResult(parsed).intValue();
     } else {
-      Optional<BigDecimal> number = Validate.getNumber(parsed);
-      if (number.isPresent()) {
-        return number.get().intValue();
-      } else {
-        CommonUtils.sendMessage(player,
-            BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
-                .replace("{input}", parsed));
-        return 0;
-      }
+      CommonUtils.sendMessage(player,
+          BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
+              .replace("{input}", parsed));
+      return 0;
     }
   }
 

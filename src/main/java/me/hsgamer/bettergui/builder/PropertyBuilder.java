@@ -12,7 +12,6 @@ import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.object.property.icon.impl.ClickCommand;
 import me.hsgamer.bettergui.object.property.icon.impl.ClickRequirement;
 import me.hsgamer.bettergui.object.property.icon.impl.CloseOnClick;
-import me.hsgamer.bettergui.object.property.icon.impl.Cooldown;
 import me.hsgamer.bettergui.object.property.icon.impl.Variable;
 import me.hsgamer.bettergui.object.property.icon.impl.ViewRequirement;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
@@ -47,7 +46,6 @@ public class PropertyBuilder {
     registerItemProperty("durability", Durability.class);
     registerItemProperty("damage", Durability.class);
 
-    registerIconProperty("cooldown", Cooldown.class);
     registerIconProperty("variable", Variable.class);
     registerIconProperty("placeholder", Variable.class);
     registerIconProperty("view-requirement", ViewRequirement.class);

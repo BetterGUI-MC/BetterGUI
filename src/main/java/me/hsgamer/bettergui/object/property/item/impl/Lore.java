@@ -18,7 +18,7 @@ public class Lore extends ItemProperty<List<String>, List<String>> {
   @Override
   public void setValue(Object value) {
     super.setValue(value);
-    super.value = CommonUtils.colorizeList(getValue());
+    super.value.replaceAll(CommonUtils::colorize);
   }
 
   @Override

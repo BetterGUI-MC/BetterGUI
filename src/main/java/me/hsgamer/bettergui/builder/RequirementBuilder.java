@@ -11,6 +11,7 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.object.RequirementSet;
 import me.hsgamer.bettergui.object.requirement.ConditionRequirement;
+import me.hsgamer.bettergui.object.requirement.CooldownRequirement;
 import me.hsgamer.bettergui.object.requirement.ExpLevelRequirement;
 import me.hsgamer.bettergui.object.requirement.PermissionRequirement;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
@@ -26,6 +27,7 @@ public class RequirementBuilder {
     register("condition", ConditionRequirement.class);
     register("level", ExpLevelRequirement.class);
     register("permission", PermissionRequirement.class);
+    register("cooldown", CooldownRequirement.class);
   }
 
   private RequirementBuilder() {
