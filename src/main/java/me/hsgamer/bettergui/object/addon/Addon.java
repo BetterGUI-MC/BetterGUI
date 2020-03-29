@@ -99,7 +99,7 @@ public abstract class Addon {
    * @param command the Command object
    */
   public void registerCommand(BukkitCommand command) {
-    getPlugin().getCommandManager().register(command);
+    getPlugin().getAddonManager().registerCommand(this, command);
   }
 
   /**
@@ -108,16 +108,18 @@ public abstract class Addon {
    * @param command the Command object
    */
   public void unregisterCommand(BukkitCommand command) {
-    getPlugin().getCommandManager().unregister(command);
+    getPlugin().getAddonManager().unregisterCommand(this, command);
   }
 
   /**
+   * @deprecated
    * Unregister the command
    *
    * @param command the Command label
    */
+  @Deprecated
   public void unregisterCommand(String command) {
-    getPlugin().getCommandManager().unregister(command);
+    unregisterCommand(getPlugin().getCommandManager().getRegistered().get(command));
   }
 
   /**

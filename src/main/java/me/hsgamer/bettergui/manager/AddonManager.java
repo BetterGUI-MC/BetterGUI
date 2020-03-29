@@ -18,26 +18,28 @@ import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.object.addon.Addon;
 import me.hsgamer.bettergui.object.addon.AddonClassLoader;
 import me.hsgamer.bettergui.object.addon.AddonDescription;
 import me.hsgamer.bettergui.util.TestCase;
 import me.hsgamer.bettergui.util.Validate;
+import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class AddonManager {
 
   private final Map<String, Addon> addons = new HashMap<>();
   private final Map<Addon, AddonClassLoader> loaderMap = new HashMap<>();
+  private final Map<Addon, List<BukkitCommand>> commands = new HashMap<>();
   private final Map<Addon, List<Listener>> listeners = new HashMap<>();
   private final File addonsDir;
-  private final JavaPlugin plugin;
+  private final BetterGUI plugin;
 
-  public AddonManager(JavaPlugin plugin) {
+  public AddonManager(BetterGUI plugin) {
     this.plugin = plugin;
     addonsDir = new File(plugin.getDataFolder(), "addon");
     if (!addonsDir.exists()) {
@@ -135,6 +137,8 @@ public class AddonManager {
               .info("Loaded " + entry.getKey() + " " + addon.getDescription().getVersion());
           finalAddons.put(entry.getKey(), addon);
         } else {
+          plugin.getLogger().warning(
+              "Failed to load " + entry.getKey() + " " + addon.getDescription().getVersion());
           closeClassLoader(addon);
         }
       } catch (Exception e) {
@@ -164,9 +168,15 @@ public class AddonManager {
     try {
       addon.onDisable();
       // Unregister all listeners
-      if (listeners.containsKey(addon)) {
-        listeners.remove(addon).forEach(HandlerList::unregisterAll);
-      }
+      listeners.computeIfPresent(addon, (a, list) -> {
+        list.forEach(HandlerList::unregisterAll);
+        return null;
+      });
+      // Unregister all commands
+      commands.computeIfPresent(addon, (a, list) -> {
+        list.forEach(command -> plugin.getCommandManager().unregister(command));
+        return null;
+      });
       plugin.getLogger().log(Level.INFO, "Disabled {0}",
           String.join(" ", name, addon.getDescription().getVersion()));
     } catch (Exception e) {
@@ -194,31 +204,46 @@ public class AddonManager {
   }
 
   private void closeClassLoader(Addon addon) {
-    if (loaderMap.containsKey(addon)) {
+    loaderMap.computeIfPresent(addon, (a, loader) -> {
       try {
-        loaderMap.remove(addon).close();
+        loader.close();
       } catch (IOException e) {
         plugin.getLogger().log(Level.WARNING, "Error when closing ClassLoader", e);
       }
-    }
+      return null;
+    });
   }
 
   public void registerListener(Addon addon, Listener listener) {
-    if (!listeners.containsKey(addon)) {
-      listeners.put(addon, new ArrayList<>());
-    }
+    listeners.putIfAbsent(addon, new ArrayList<>());
     plugin.getServer().getPluginManager().registerEvents(listener, plugin);
     listeners.get(addon).add(listener);
   }
 
   public void unregisterListener(Addon addon, Listener listener) {
-    if (listeners.containsKey(addon)) {
-      List<Listener> listenerList = listeners.get(addon);
-      if (listenerList.contains(listener)) {
-        listenerList.remove(listener);
+    listeners.computeIfPresent(addon, (a, list) -> {
+      if (list.contains(listener)) {
+        list.remove(listener);
         HandlerList.unregisterAll(listener);
       }
-    }
+      return list;
+    });
+  }
+
+  public void registerCommand(Addon addon, BukkitCommand command) {
+    commands.putIfAbsent(addon, new ArrayList<>());
+    plugin.getCommandManager().register(command);
+    commands.get(addon).add(command);
+  }
+
+  public void unregisterCommand(Addon addon, BukkitCommand command) {
+    commands.computeIfPresent(addon, (a, list) -> {
+      if (list.contains(command)) {
+        list.remove(command);
+        plugin.getCommandManager().unregister(command);
+      }
+      return list;
+    });
   }
 
   public void reloadAddons() {
