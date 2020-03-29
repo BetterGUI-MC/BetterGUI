@@ -20,15 +20,6 @@ public class CommonUtils {
     return ChatColor.translateAlternateColorCodes('&', input);
   }
 
-  public static List<String> colorizeList(List<String> input) {
-    if (input == null || input.isEmpty()) {
-      return input;
-    }
-    List<String> colorized = new ArrayList<>();
-    input.forEach(string -> colorized.add(colorize(string)));
-    return colorized;
-  }
-
   public static void sendMessage(CommandSender sender, String message) {
     sendMessage(sender, message, true);
   }

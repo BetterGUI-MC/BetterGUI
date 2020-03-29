@@ -205,8 +205,12 @@ cooldown:
   NAME: '&aCooldown'
   LORE:
     - 'This is a example of icon with cooldown'
-  COOLDOWN:
-    DEFAULT: 10
+  click-requirement:
+    default:
+      test-cooldown:
+        cooldown: 10
+      fail-command:
+        - "tell: &cWait until the cooldown is finished"
   ID: paper
   POSITION-X: 6
   POSITION-Y: 2
@@ -230,22 +234,30 @@ advanced_cooldown:
   POSITION-Y: 2
   name: '&cCooldown'
   lore:
-    - '&eLEFT: &f{left_cooldown_h}h{left_cooldown_m}m{left_cooldown_s}s (&cTotal millis: {left_cooldown})'
-    - '&eRIGHT: &f{right_cooldown_h}h{right_cooldown_m}m{right_cooldown_s}s (&cTotal millis: {right_cooldown})'
-    - '&eMIDDLE: &f{middle_cooldown_h}h{middle_cooldown_m}m{middle_cooldown_s}s (&cTotal millis: {middle_cooldown})'
-    - '&eDEFAULT: &f{default_cooldown_h}h{default_cooldown_m}m{default_cooldown_s}s (&cTotal millis: {default_cooldown})'
+    - '&eLEFT: &f{left_test_cooldown_h}h{left_test_cooldown_m}m{left_test_cooldown_s}s (&cTotal millis: {left_test_cooldown})'
+    - '&eRIGHT: &f{right_test_cooldown_h}h{right_test_cooldown_m}m{right_test_cooldown_s}s (&cTotal millis: {right_test_cooldown})'
+    - '&eMIDDLE: &f{middle_test_cooldown_h}h{middle_test_cooldown_m}m{middle_test_cooldown_s}s (&cTotal millis: {middle_test_cooldown})'
+    - '&eDEFAULT: &f{default_test_cooldown_h}h{default_test_cooldown_m}m{default_test_cooldown_s}s (&cTotal millis: {default_test_cooldown})'
   command:
     LEFT: 'tell: &cYou left-clicked'
     RIGHT: 'tell: &cYou right-clicked'
     MIDDLE: 'tell: &cYou middle-clicked'
     DEFAULT: 'tell: &cYou clicked'
-  cooldown:
-    left: 10
-    right: 20
-    middle: 30
+  click-requirement:
+    left:
+      test:
+        cooldown: 10
+    right:
+      test:
+        cooldown: 20
+    middle:
+      test:
+        cooldown: 30
     default:
-      value: 40
-      command: "tell: &cCalm down"
+      test:
+        cooldown: 40
+      fail-command:
+        - "tell: &cCalm down"
 
 list-icon:
   type: list

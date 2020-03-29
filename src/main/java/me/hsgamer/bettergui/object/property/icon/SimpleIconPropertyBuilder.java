@@ -6,7 +6,6 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.icon.impl.ClickCommand;
 import me.hsgamer.bettergui.object.property.icon.impl.ClickRequirement;
 import me.hsgamer.bettergui.object.property.icon.impl.CloseOnClick;
-import me.hsgamer.bettergui.object.property.icon.impl.Cooldown;
 import me.hsgamer.bettergui.object.property.icon.impl.ViewRequirement;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -18,14 +17,12 @@ public class SimpleIconPropertyBuilder {
   private final Icon icon;
   private ClickCommand command;
   private ClickRequirement clickRequirement;
-  private Cooldown cooldown;
   private boolean closeOnClick = false;
   private ViewRequirement viewRequirement;
 
   public SimpleIconPropertyBuilder(Icon icon) {
     this.icon = icon;
     this.command = new ClickCommand(icon);
-    this.cooldown = new Cooldown(icon);
   }
 
   public Icon getIcon() {
@@ -38,10 +35,6 @@ public class SimpleIconPropertyBuilder {
 
   public ClickRequirement getClickRequirement() {
     return clickRequirement;
-  }
-
-  public Cooldown getCooldown() {
-    return cooldown;
   }
 
   public boolean isCloseOnClick() {
@@ -60,9 +53,6 @@ public class SimpleIconPropertyBuilder {
       if (iconProperty instanceof ClickRequirement) {
         this.clickRequirement = (ClickRequirement) iconProperty;
       }
-      if (iconProperty instanceof Cooldown) {
-        this.cooldown = (Cooldown) iconProperty;
-      }
       if (iconProperty instanceof ViewRequirement) {
         this.viewRequirement = (ViewRequirement) iconProperty;
       }
@@ -75,10 +65,6 @@ public class SimpleIconPropertyBuilder {
   public Consumer<InventoryClickEvent> createClickEvent(Player player) {
     return event -> {
       ClickType clickType = event.getClick();
-      if (cooldown.isCooldown(player, clickType)) {
-        cooldown.sendFailCommand(player, clickType);
-        return;
-      }
       if (clickRequirement != null) {
         if (!clickRequirement.check(player, clickType)) {
           clickRequirement.sendFailCommand(player, clickType);
@@ -89,7 +75,6 @@ public class SimpleIconPropertyBuilder {
           iconRequirementSet.sendCommand(player);
         });
       }
-      cooldown.startCooldown(player, clickType);
       if (closeOnClick) {
         player.closeInventory();
       }
