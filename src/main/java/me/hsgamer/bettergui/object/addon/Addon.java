@@ -112,17 +112,6 @@ public abstract class Addon {
   }
 
   /**
-   * @deprecated
-   * Unregister the command
-   *
-   * @param command the Command label
-   */
-  @Deprecated
-  public void unregisterCommand(String command) {
-    unregisterCommand(getPlugin().getCommandManager().getRegistered().get(command));
-  }
-
-  /**
    * Create the config
    */
   public void setupConfig() {
