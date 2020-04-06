@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("unused")
 public class RawIcon extends Icon {
 
-  public RawIcon(String name, Menu menu) {
+  public RawIcon(String name, Menu<?> menu) {
     super(name, menu);
   }
 

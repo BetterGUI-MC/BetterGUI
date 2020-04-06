@@ -95,8 +95,7 @@ public class DummyMenu extends Menu<DummyInventory> {
     if (bypass || player.hasPermission(permission)) {
       DummyInventory inventory;
       String parsedTitle = CommonUtils
-          .colorize(titleHasVariable ? VariableManager.setVariables(title, player)
-              : title);
+          .colorize(titleHasVariable ? VariableManager.setVariables(title, player) : title);
       if (inventoryType.equals(InventoryType.CHEST)) {
         if (parsedTitle != null) {
           inventory = new DummyInventory(player, maxSlots, parsedTitle);

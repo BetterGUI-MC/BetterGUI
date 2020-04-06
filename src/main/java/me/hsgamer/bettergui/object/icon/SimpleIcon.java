@@ -23,7 +23,7 @@ public class SimpleIcon extends Icon {
 
   private SimpleIconPropertyBuilder iconPropertyBuilder = new SimpleIconPropertyBuilder(this);
 
-  public SimpleIcon(String name, Menu menu) {
+  public SimpleIcon(String name, Menu<?> menu) {
     super(name, menu);
   }
 

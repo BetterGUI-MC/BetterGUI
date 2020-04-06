@@ -19,7 +19,7 @@ public class AnimatedIcon extends Icon implements ParentIcon {
   private int currentTime;
   private Icon currentIcon;
 
-  public AnimatedIcon(String name, Menu menu) {
+  public AnimatedIcon(String name, Menu<?> menu) {
     super(name, menu);
   }
 

@@ -61,7 +61,7 @@ public class IconBuilder {
     }
   }
 
-  public static Icon getIcon(Menu menu, ConfigurationSection section) {
+  public static Icon getIcon(Menu<?> menu, ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
     if (keys.containsKey("type")) {
       String type = String.valueOf(keys.get("type"));
@@ -74,7 +74,7 @@ public class IconBuilder {
             SimpleIcon.class));
   }
 
-  public static <T extends Icon> T getIcon(Menu menu, ConfigurationSection section,
+  public static <T extends Icon> T getIcon(Menu<?> menu, ConfigurationSection section,
       Class<T> tClass) {
     try {
       T icon = tClass.getDeclaredConstructor(String.class, Menu.class)

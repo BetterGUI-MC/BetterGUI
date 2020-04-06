@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class MenuManager {
 
-  private final Map<String, Menu> menuMap = new HashMap<>();
+  private final Map<String, Menu<?>> menuMap = new HashMap<>();
 
   public void registerMenu(PluginConfig file) {
     String name = file.getFileName();
@@ -62,8 +62,8 @@ public class MenuManager {
    * @param parentMenu the former menu that causes the player to open this menu
    * @param bypass     whether the plugin ignores the permission check
    */
-  public void openMenu(String name, Player player, Menu parentMenu, boolean bypass) {
-    Menu menu = menuMap.get(name);
+  public void openMenu(String name, Player player, Menu<?> parentMenu, boolean bypass) {
+    Menu<?> menu = menuMap.get(name);
     menu.setParentMenu(parentMenu);
     menu.createInventory(player, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
   }

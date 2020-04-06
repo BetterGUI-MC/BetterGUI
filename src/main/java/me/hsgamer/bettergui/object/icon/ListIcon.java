@@ -16,7 +16,7 @@ public class ListIcon extends Icon implements ParentIcon {
   private final List<Icon> icons = new ArrayList<>();
   private int currentIndex;
 
-  public ListIcon(String name, Menu menu) {
+  public ListIcon(String name, Menu<?> menu) {
     super(name, menu);
   }
 

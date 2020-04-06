@@ -100,7 +100,7 @@ public class CommandManager {
    * @param command the name of the command
    * @param menu    the menu
    */
-  public void registerMenuCommand(String command, Menu menu) {
+  public void registerMenuCommand(String command, Menu<?> menu) {
     if (registeredMenuCommand.containsKey(command)) {
       plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", command);
       return;

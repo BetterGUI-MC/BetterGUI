@@ -16,10 +16,10 @@ public abstract class Icon implements Cloneable {
 
   private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private final String name;
-  private final Menu menu;
+  private final Menu<?> menu;
   private Map<String, IconVariable> variables = new HashMap<>();
 
-  public Icon(String name, Menu menu) {
+  public Icon(String name, Menu<?> menu) {
     this.name = name;
     this.menu = menu;
   }
@@ -132,7 +132,7 @@ public abstract class Icon implements Cloneable {
    *
    * @return the menu
    */
-  public Menu getMenu() {
+  public Menu<?> getMenu() {
     return menu;
   }
 

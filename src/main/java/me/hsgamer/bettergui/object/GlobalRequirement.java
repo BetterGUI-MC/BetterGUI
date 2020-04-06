@@ -13,13 +13,13 @@ import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public class MenuRequirement {
+public class GlobalRequirement {
 
   private final List<RequirementSet> requirements = new ArrayList<>();
   private final List<Command> commands = new ArrayList<>();
   private final CheckedRequirementSet checked = new CheckedRequirementSet();
 
-  public MenuRequirement(ConfigurationSection section) {
+  public GlobalRequirement(ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
     requirements.addAll(RequirementBuilder.getRequirementSet(section, null));
     if (keys.containsKey("fail-command")) {

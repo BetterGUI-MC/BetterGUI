@@ -133,7 +133,7 @@
     <dependency>
       <groupId>com.github.MrMicky-FR</groupId>
       <artifactId>FastInv</artifactId>
-      <version>9c59f4de0d</version>
+      <version>7a89552ace</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
