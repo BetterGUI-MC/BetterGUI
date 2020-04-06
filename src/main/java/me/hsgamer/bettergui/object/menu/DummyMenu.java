@@ -24,7 +24,7 @@ import org.bukkit.permissions.Permission;
 
 public class DummyMenu extends Menu<FastInv> {
 
-  protected final Map<UUID, FastInv> inventoryMap = new ConcurrentHashMap<>();
+  private final Map<UUID, FastInv> inventoryMap = new ConcurrentHashMap<>();
 
   private final Map<String, DummyIcon> icons = new LinkedHashMap<>();
   private String title;
@@ -92,22 +92,7 @@ public class DummyMenu extends Menu<FastInv> {
   @Override
   public void createInventory(Player player, boolean bypass) {
     if (bypass || player.hasPermission(permission)) {
-      FastInv inventory;
-      String parsedTitle = CommonUtils
-          .colorize(titleHasVariable ? VariableManager.setVariables(title, player) : title);
-      if (inventoryType.equals(InventoryType.CHEST)) {
-        if (parsedTitle != null) {
-          inventory = new FastInv(maxSlots, parsedTitle);
-        } else {
-          inventory = new FastInv(maxSlots);
-        }
-      } else {
-        if (parsedTitle != null) {
-          inventory = new FastInv(inventoryType, parsedTitle);
-        } else {
-          inventory = new FastInv(inventoryType);
-        }
-      }
+      FastInv inventory = initInventory(player);
       icons.values()
           .forEach(icon -> inventory.addItem(icon.createClickableItem(player).get().getItem()));
       inventory.addCloseHandler(event -> inventoryMap.remove(event.getPlayer().getUniqueId()));
@@ -117,6 +102,26 @@ public class DummyMenu extends Menu<FastInv> {
       CommonUtils
           .sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
     }
+  }
+
+  private FastInv initInventory(Player player) {
+    FastInv inventory;
+    String parsedTitle = CommonUtils
+        .colorize(titleHasVariable ? VariableManager.setVariables(title, player) : title);
+    if (inventoryType.equals(InventoryType.CHEST)) {
+      if (parsedTitle != null) {
+        inventory = new FastInv(maxSlots, parsedTitle);
+      } else {
+        inventory = new FastInv(maxSlots);
+      }
+    } else {
+      if (parsedTitle != null) {
+        inventory = new FastInv(inventoryType, parsedTitle);
+      } else {
+        inventory = new FastInv(inventoryType);
+      }
+    }
+    return inventory;
   }
 
   @Override
