@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.CommandBuilder;
@@ -38,7 +39,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class SimpleMenu extends Menu<SimpleInventory> {
 
-  private final Map<UUID, SimpleInventory> inventoryMap = new HashMap<>();
+  private final Map<UUID, SimpleInventory> inventoryMap = new ConcurrentHashMap<>();
 
   private final Map<Integer, Icon> icons = new HashMap<>();
   private final List<Command> openActions = new ArrayList<>();

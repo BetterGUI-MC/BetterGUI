@@ -3,11 +3,11 @@ package me.hsgamer.bettergui.object.menu;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import fr.mrmicky.fastinv.FastInv;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
@@ -25,7 +25,7 @@ import org.bukkit.permissions.Permission;
 
 public class DummyMenu extends Menu<DummyInventory> {
 
-  protected final Map<UUID, DummyInventory> inventoryMap = new HashMap<>();
+  protected final Map<UUID, DummyInventory> inventoryMap = new ConcurrentHashMap<>();
 
   private final Map<String, DummyIcon> icons = new LinkedHashMap<>();
   private String title;

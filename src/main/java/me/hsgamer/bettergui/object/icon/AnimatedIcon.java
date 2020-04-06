@@ -52,7 +52,7 @@ public class AnimatedIcon extends Icon implements ParentIcon {
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
     if (currentTime > 0) {
-      currentTime--;
+      --currentTime;
     } else {
       currentIcon = icons.get(getFrame());
       currentTime = update;
@@ -62,7 +62,7 @@ public class AnimatedIcon extends Icon implements ParentIcon {
 
   private int getFrame() {
     if (currentIndex < icons.size() - 1) {
-      currentIndex++;
+      ++currentIndex;
     } else {
       currentIndex = 0;
     }
