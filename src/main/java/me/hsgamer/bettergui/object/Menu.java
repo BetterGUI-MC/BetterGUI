@@ -32,6 +32,12 @@ public abstract class Menu {
    */
   public abstract void createInventory(Player player, boolean bypass);
 
+  public abstract void updateInventory(Player player);
+
+  public abstract void closeInventory(Player player);
+
+  public abstract void closeAll();
+
   /**
    * Get the former menu that opened this menu
    *
