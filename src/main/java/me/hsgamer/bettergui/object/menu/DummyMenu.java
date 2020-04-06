@@ -2,24 +2,30 @@ package me.hsgamer.bettergui.object.menu;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
+import fr.mrmicky.fastinv.FastInv;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.icon.DummyIcon;
-import me.hsgamer.bettergui.object.inventory.DummyInventory;
+import me.hsgamer.bettergui.object.menu.DummyMenu.DummyInventory;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.permissions.Permission;
 
-public class DummyMenu extends Menu {
+public class DummyMenu extends Menu<DummyInventory> {
+
+  protected final Map<UUID, DummyInventory> inventoryMap = new HashMap<>();
 
   private final Map<String, DummyIcon> icons = new LinkedHashMap<>();
   private String title;
@@ -86,37 +92,51 @@ public class DummyMenu extends Menu {
 
   @Override
   public void createInventory(Player player, boolean bypass) {
-    TestCase.create(player)
-        .setPredicate(player1 -> bypass || player1.hasPermission(permission))
-        .setSuccessConsumer(player1 -> {
-          final DummyInventory[] inventory = new DummyInventory[1];
-          String parsedTitle = CommonUtils
-              .colorize(titleHasVariable ? VariableManager.setVariables(title, player1)
-                  : title);
-          TestCase.create(inventoryType)
-              .setPredicate(inventoryType1 -> inventoryType1.equals(InventoryType.CHEST))
-              .setSuccessConsumer(inventoryType1 -> {
-                if (parsedTitle != null) {
-                  inventory[0] = new DummyInventory(player1, maxSlots, parsedTitle, icons.values());
-                } else {
-                  inventory[0] = new DummyInventory(player1, maxSlots, icons.values());
-                }
-              })
-              .setFailConsumer(inventoryType1 -> {
-                if (parsedTitle != null) {
-                  inventory[0] = new DummyInventory(player1, inventoryType, parsedTitle,
-                      icons.values());
-                } else {
-                  inventory[0] = new DummyInventory(player1, inventoryType, icons.values());
-                }
-              })
-              .test();
-          inventory[0].open();
-        })
-        .setFailConsumer(player1 -> CommonUtils
-            .sendMessage(player1,
-                getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION)))
-        .test();
+    if (bypass || player.hasPermission(permission)) {
+      DummyInventory inventory;
+      String parsedTitle = CommonUtils
+          .colorize(titleHasVariable ? VariableManager.setVariables(title, player)
+              : title);
+      if (inventoryType.equals(InventoryType.CHEST)) {
+        if (parsedTitle != null) {
+          inventory = new DummyInventory(player, maxSlots, parsedTitle);
+        } else {
+          inventory = new DummyInventory(player, maxSlots);
+        }
+      } else {
+        if (parsedTitle != null) {
+          inventory = new DummyInventory(player, inventoryType, parsedTitle);
+        } else {
+          inventory = new DummyInventory(player, inventoryType);
+        }
+      }
+      inventory.open();
+      inventoryMap.put(player.getUniqueId(), inventory);
+    } else {
+      CommonUtils.sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+    }
+  }
+
+  @Override
+  public void updateInventory(Player player) {
+    // Ignored
+  }
+
+  @Override
+  public void closeInventory(Player player) {
+    player.closeInventory();
+    inventoryMap.remove(player.getUniqueId());
+  }
+
+  @Override
+  public void closeAll() {
+    inventoryMap.values().forEach(dummyInventory -> dummyInventory.player.closeInventory());
+    inventoryMap.clear();
+  }
+
+  @Override
+  public Optional<DummyInventory> getInventory(Player player) {
+    return Optional.ofNullable(inventoryMap.get(player.getUniqueId()));
   }
 
   public Map<String, DummyIcon> getIcons() {
@@ -133,5 +153,47 @@ public class DummyMenu extends Menu {
     static final String ROWS = "rows";
     static final String INVENTORY_TYPE = "inventory-type";
     static final String PERMISSION = "permission";
+  }
+
+  protected class DummyInventory extends FastInv {
+
+    private final Player player;
+
+    DummyInventory(Player player, int size) {
+      super(size);
+      this.player = player;
+      icons.values().forEach(dummyIcon -> dummyIcon.createClickableItem(player)
+          .ifPresent(item -> addItem(item.getItem())));
+    }
+
+    DummyInventory(Player player, int size, String title) {
+      super(size, title);
+      this.player = player;
+      icons.values().forEach(dummyIcon -> dummyIcon.createClickableItem(player)
+          .ifPresent(item -> addItem(item.getItem())));
+    }
+
+    DummyInventory(Player player, InventoryType type) {
+      super(type);
+      this.player = player;
+      icons.values().forEach(dummyIcon -> dummyIcon.createClickableItem(player)
+          .ifPresent(item -> addItem(item.getItem())));
+    }
+
+    DummyInventory(Player player, InventoryType type, String title) {
+      super(type, title);
+      this.player = player;
+      icons.values().forEach(dummyIcon -> dummyIcon.createClickableItem(player)
+          .ifPresent(item -> addItem(item.getItem())));
+    }
+
+    public void open() {
+      open(player);
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+      inventoryMap.remove(event.getPlayer().getUniqueId());
+    }
   }
 }

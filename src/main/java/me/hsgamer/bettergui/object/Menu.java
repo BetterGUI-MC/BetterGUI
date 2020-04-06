@@ -4,10 +4,10 @@ import java.util.Optional;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-public abstract class Menu {
+public abstract class Menu<T> {
 
   private final String name;
-  private Menu parentMenu;
+  private Menu<?> parentMenu;
 
   public Menu(String name) {
     this.name = name;
@@ -38,12 +38,15 @@ public abstract class Menu {
 
   public abstract void closeAll();
 
+  @SuppressWarnings("unused")
+  public abstract Optional<T> getInventory(Player player);
+
   /**
    * Get the former menu that opened this menu
    *
    * @return the former menu
    */
-  public Optional<Menu> getParentMenu() {
+  public Optional<Menu<?>> getParentMenu() {
     return Optional.ofNullable(parentMenu);
   }
 
@@ -52,7 +55,7 @@ public abstract class Menu {
    *
    * @param parentMenu the former menu
    */
-  public void setParentMenu(Menu parentMenu) {
+  public void setParentMenu(Menu<?> parentMenu) {
     this.parentMenu = parentMenu;
   }
 }
