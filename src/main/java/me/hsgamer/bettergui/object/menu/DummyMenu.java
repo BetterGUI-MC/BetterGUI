@@ -112,7 +112,8 @@ public class DummyMenu extends Menu<DummyInventory> {
       inventory.open();
       inventoryMap.put(player.getUniqueId(), inventory);
     } else {
-      CommonUtils.sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+      CommonUtils
+          .sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
     }
   }
 
@@ -123,8 +124,10 @@ public class DummyMenu extends Menu<DummyInventory> {
 
   @Override
   public void closeInventory(Player player) {
-    player.closeInventory();
-    inventoryMap.remove(player.getUniqueId());
+    inventoryMap.computeIfPresent(player.getUniqueId(), ((uuid, dummyInventory) -> {
+      dummyInventory.player.closeInventory();
+      return null;
+    }));
   }
 
   @Override

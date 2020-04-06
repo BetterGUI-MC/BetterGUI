@@ -222,8 +222,10 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
   @Override
   public void closeInventory(Player player) {
-    player.closeInventory();
-    inventoryMap.remove(player.getUniqueId());
+    inventoryMap.computeIfPresent(player.getUniqueId(), ((uuid, simpleInventory) -> {
+      simpleInventory.player.closeInventory();
+      return null;
+    }));
   }
 
   @Override
