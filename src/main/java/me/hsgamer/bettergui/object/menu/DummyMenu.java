@@ -14,18 +14,17 @@ import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.icon.DummyIcon;
-import me.hsgamer.bettergui.object.menu.DummyMenu.DummyInventory;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.permissions.Permission;
 
-public class DummyMenu extends Menu<DummyInventory> {
+public class DummyMenu extends Menu<FastInv> {
 
-  protected final Map<UUID, DummyInventory> inventoryMap = new ConcurrentHashMap<>();
+  protected final Map<UUID, FastInv> inventoryMap = new ConcurrentHashMap<>();
 
   private final Map<String, DummyIcon> icons = new LinkedHashMap<>();
   private String title;
@@ -93,23 +92,26 @@ public class DummyMenu extends Menu<DummyInventory> {
   @Override
   public void createInventory(Player player, boolean bypass) {
     if (bypass || player.hasPermission(permission)) {
-      DummyInventory inventory;
+      FastInv inventory;
       String parsedTitle = CommonUtils
           .colorize(titleHasVariable ? VariableManager.setVariables(title, player) : title);
       if (inventoryType.equals(InventoryType.CHEST)) {
         if (parsedTitle != null) {
-          inventory = new DummyInventory(player, maxSlots, parsedTitle);
+          inventory = new FastInv(maxSlots, parsedTitle);
         } else {
-          inventory = new DummyInventory(player, maxSlots);
+          inventory = new FastInv(maxSlots);
         }
       } else {
         if (parsedTitle != null) {
-          inventory = new DummyInventory(player, inventoryType, parsedTitle);
+          inventory = new FastInv(inventoryType, parsedTitle);
         } else {
-          inventory = new DummyInventory(player, inventoryType);
+          inventory = new FastInv(inventoryType);
         }
       }
-      inventory.open();
+      icons.values()
+          .forEach(icon -> inventory.addItem(icon.createClickableItem(player).get().getItem()));
+      inventory.addCloseHandler(event -> inventoryMap.remove(event.getPlayer().getUniqueId()));
+      inventory.open(player);
       inventoryMap.put(player.getUniqueId(), inventory);
     } else {
       CommonUtils
@@ -124,20 +126,17 @@ public class DummyMenu extends Menu<DummyInventory> {
 
   @Override
   public void closeInventory(Player player) {
-    inventoryMap.computeIfPresent(player.getUniqueId(), ((uuid, dummyInventory) -> {
-      dummyInventory.player.closeInventory();
-      return null;
-    }));
+    player.closeInventory();
   }
 
   @Override
   public void closeAll() {
-    inventoryMap.values().forEach(dummyInventory -> dummyInventory.player.closeInventory());
+    inventoryMap.keySet().forEach(uuid -> Bukkit.getPlayer(uuid).closeInventory());
     inventoryMap.clear();
   }
 
   @Override
-  public Optional<DummyInventory> getInventory(Player player) {
+  public Optional<FastInv> getInventory(Player player) {
     return Optional.ofNullable(inventoryMap.get(player.getUniqueId()));
   }
 
@@ -155,47 +154,5 @@ public class DummyMenu extends Menu<DummyInventory> {
     static final String ROWS = "rows";
     static final String INVENTORY_TYPE = "inventory-type";
     static final String PERMISSION = "permission";
-  }
-
-  protected class DummyInventory extends FastInv {
-
-    private final Player player;
-
-    DummyInventory(Player player, int size) {
-      super(size);
-      this.player = player;
-      icons.values().forEach(dummyIcon -> dummyIcon.createClickableItem(player)
-          .ifPresent(item -> addItem(item.getItem())));
-    }
-
-    DummyInventory(Player player, int size, String title) {
-      super(size, title);
-      this.player = player;
-      icons.values().forEach(dummyIcon -> dummyIcon.createClickableItem(player)
-          .ifPresent(item -> addItem(item.getItem())));
-    }
-
-    DummyInventory(Player player, InventoryType type) {
-      super(type);
-      this.player = player;
-      icons.values().forEach(dummyIcon -> dummyIcon.createClickableItem(player)
-          .ifPresent(item -> addItem(item.getItem())));
-    }
-
-    DummyInventory(Player player, InventoryType type, String title) {
-      super(type, title);
-      this.player = player;
-      icons.values().forEach(dummyIcon -> dummyIcon.createClickableItem(player)
-          .ifPresent(item -> addItem(item.getItem())));
-    }
-
-    public void open() {
-      open(player);
-    }
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-      inventoryMap.remove(event.getPlayer().getUniqueId());
-    }
   }
 }
