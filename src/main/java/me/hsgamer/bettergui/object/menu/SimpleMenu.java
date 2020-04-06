@@ -171,9 +171,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
       }
 
       // Create Inventory
-      String parsedTitle = CommonUtils
-          .colorize(titleHasVariable ? VariableManager.setVariables(title, player) : title);
-      SimpleInventory inventory = initInventory(player, parsedTitle);
+      SimpleInventory inventory = initInventory(player);
 
       // Add Actions
       if (!openActions.isEmpty()) {
@@ -198,17 +196,19 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     }
   }
 
-  private SimpleInventory initInventory(Player player, String title) {
+  private SimpleInventory initInventory(Player player) {
     SimpleInventory inventory;
+    String parsedTitle = CommonUtils
+        .colorize(titleHasVariable ? VariableManager.setVariables(title, player) : title);
     if (inventoryType.equals(InventoryType.CHEST)) {
-      if (title != null) {
-        inventory = new SimpleInventory(player, maxSlots, title);
+      if (parsedTitle != null) {
+        inventory = new SimpleInventory(player, maxSlots, parsedTitle);
       } else {
         inventory = new SimpleInventory(player, maxSlots);
       }
     } else {
-      if (title != null) {
-        inventory = new SimpleInventory(player, inventoryType, title);
+      if (parsedTitle != null) {
+        inventory = new SimpleInventory(player, inventoryType, parsedTitle);
       } else {
         inventory = new SimpleInventory(player, inventoryType);
       }
