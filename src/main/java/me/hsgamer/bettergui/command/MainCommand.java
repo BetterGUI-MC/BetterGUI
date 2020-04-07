@@ -23,7 +23,7 @@ public class MainCommand extends BukkitCommand {
             .toString(BetterGUI.getInstance().getDescription().getAuthors().toArray()));
         sendMessage(sender,
             "&e&lVersion: &f" + BetterGUI.getInstance().getDescription().getVersion());
-        sendMessage(sender, "&9&lDiscord: &fhttps://discord.gg/hdWvVRA");
+        sendMessage(sender, "&9&lDiscord: &fhttps://discord.gg/9m4GdFD");
         sendMessage(sender, "");
         sendMessage(sender, "&b&lCommand: ");
         for (BukkitCommand command : manager.getRegistered().values()) {
