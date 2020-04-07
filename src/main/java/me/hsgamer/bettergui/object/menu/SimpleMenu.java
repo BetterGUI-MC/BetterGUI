@@ -326,14 +326,14 @@ public class SimpleMenu extends Menu<SimpleInventory> {
           if (!forced) {
             if (!closeRequirement.check(player1)) {
               closeRequirement.sendFailCommand(player1);
-              return false;
+              return true;
             }
             closeRequirement.getCheckedRequirement(player1).ifPresent(iconRequirementSet -> {
               iconRequirementSet.take(player1);
               iconRequirementSet.sendCommand(player1);
             });
           }
-          return true;
+          return false;
         });
       }
     }
