@@ -209,7 +209,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
           return true;
         });
       }
-      
+
       inventory.open();
     } else {
       CommonUtils
