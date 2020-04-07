@@ -255,48 +255,30 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
   protected class SimpleInventory extends FastInv {
 
-    private final Map<Integer, Icon> cloneIcons = new HashMap<>();
     private final Player player;
-    private Icon cloneDefaultIcon;
     private BukkitTask task;
 
     public SimpleInventory(Player player, int size, String title) {
       super(size, title != null ? title : InventoryType.CHEST.getDefaultTitle());
       this.player = player;
-      icons.forEach((key, value) -> this.cloneIcons.put(key, value.cloneIcon()));
-      if (defaultIcon != null) {
-        this.cloneDefaultIcon = defaultIcon.cloneIcon();
-      }
       createItems();
     }
 
     public SimpleInventory(Player player, InventoryType type, String title) {
       super(type, title != null ? title : type.getDefaultTitle());
       this.player = player;
-      cloneIcons.forEach((key, value) -> this.cloneIcons.put(key, value.cloneIcon()));
-      if (cloneDefaultIcon != null) {
-        this.cloneDefaultIcon = cloneDefaultIcon.cloneIcon();
-      }
       createItems();
     }
 
     public SimpleInventory(Player player, int size) {
       super(size);
       this.player = player;
-      cloneIcons.forEach((key, value) -> this.cloneIcons.put(key, value.cloneIcon()));
-      if (cloneDefaultIcon != null) {
-        this.cloneDefaultIcon = cloneDefaultIcon.cloneIcon();
-      }
       createItems();
     }
 
     public SimpleInventory(Player player, InventoryType type) {
       super(type);
       this.player = player;
-      cloneIcons.forEach((key, value) -> this.cloneIcons.put(key, value.cloneIcon()));
-      if (cloneDefaultIcon != null) {
-        this.cloneDefaultIcon = cloneDefaultIcon.cloneIcon();
-      }
       createItems();
     }
 
@@ -326,8 +308,8 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     }
 
     private void createDefaultItem(int slot) {
-      if (cloneDefaultIcon != null) {
-        Optional<ClickableItem> rawDefaultClickableItem = cloneDefaultIcon
+      if (defaultIcon != null) {
+        Optional<ClickableItem> rawDefaultClickableItem = defaultIcon
             .createClickableItem(player);
         if (rawDefaultClickableItem.isPresent()) {
           ClickableItem clickableItem = rawDefaultClickableItem.get();
@@ -337,8 +319,8 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     }
 
     private void updateDefaultItem(int slot) {
-      if (cloneDefaultIcon != null) {
-        Optional<ClickableItem> rawDefaultClickableItem = cloneDefaultIcon
+      if (defaultIcon != null) {
+        Optional<ClickableItem> rawDefaultClickableItem = defaultIcon
             .updateClickableItem(player);
         if (rawDefaultClickableItem.isPresent()) {
           ClickableItem clickableItem = rawDefaultClickableItem.get();
@@ -349,8 +331,8 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
     private void createItems() {
       for (int i = 0; i < maxSlots; i++) {
-        if (cloneIcons.containsKey(i)) {
-          Optional<ClickableItem> rawClickableItem = cloneIcons.get(i).createClickableItem(player);
+        if (icons.containsKey(i)) {
+          Optional<ClickableItem> rawClickableItem = icons.get(i).createClickableItem(player);
           if (rawClickableItem.isPresent()) {
             ClickableItem clickableItem = rawClickableItem.get();
             setItem(i, clickableItem.getItem(), clickableItem.getClickEvent());
@@ -365,8 +347,8 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
     private void updateItems() {
       for (int i = 0; i < maxSlots; i++) {
-        if (cloneIcons.containsKey(i)) {
-          Optional<ClickableItem> rawClickableItem = cloneIcons.get(i).updateClickableItem(player);
+        if (icons.containsKey(i)) {
+          Optional<ClickableItem> rawClickableItem = icons.get(i).updateClickableItem(player);
           if (rawClickableItem.isPresent()) {
             ClickableItem clickableItem = rawClickableItem.get();
             setItem(i, clickableItem.getItem(), clickableItem.getClickEvent());

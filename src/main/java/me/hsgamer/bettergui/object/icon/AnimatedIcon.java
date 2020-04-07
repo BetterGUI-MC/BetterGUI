@@ -1,8 +1,11 @@
 package me.hsgamer.bettergui.object.icon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
@@ -13,11 +16,11 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("unused")
 public class AnimatedIcon extends Icon implements ParentIcon {
 
-  private List<Icon> icons = new ArrayList<>();
-  private int currentIndex;
+  private final List<Icon> icons = new ArrayList<>();
+  private final Map<UUID, Integer> currentIndexMap = new HashMap<>();
+  private final Map<UUID, Integer> currentTimeMap = new HashMap<>();
+  private final Map<UUID, Icon> currentIconMap = new HashMap<>();
   private int update = 0;
-  private int currentTime;
-  private Icon currentIcon;
 
   public AnimatedIcon(String name, Menu<?> menu) {
     super(name, menu);
@@ -26,7 +29,7 @@ public class AnimatedIcon extends Icon implements ParentIcon {
   public AnimatedIcon(Icon original) {
     super(original);
     if (original instanceof AnimatedIcon) {
-      this.icons = ((AnimatedIcon) original).icons;
+      this.icons.addAll(((AnimatedIcon) original).icons);
       this.update = ((AnimatedIcon) original).update;
     }
   }
@@ -43,30 +46,38 @@ public class AnimatedIcon extends Icon implements ParentIcon {
 
   @Override
   public Optional<ClickableItem> createClickableItem(Player player) {
-    currentIndex = 0;
-    currentIcon = icons.get(currentIndex);
-    currentTime = update;
+    Icon currentIcon = icons.get(0);
+    currentIndexMap.put(player.getUniqueId(), 0);
+    currentIconMap.put(player.getUniqueId(), currentIcon);
+    currentTimeMap.put(player.getUniqueId(), update);
     return currentIcon.createClickableItem(player);
   }
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
-    if (currentTime > 0) {
-      --currentTime;
+    Icon currentIcon = currentIconMap.get(player.getUniqueId());
+
+    if (currentTimeMap.get(player.getUniqueId()) > 0) {
+      currentTimeMap.merge(player.getUniqueId(), -1, Integer::sum);
     } else {
-      currentIcon = icons.get(getFrame());
-      currentTime = update;
+      currentIcon = icons.get(getFrame(player));
+      currentIconMap.put(player.getUniqueId(), currentIcon);
+      currentTimeMap.put(player.getUniqueId(), update);
     }
+
     return currentIcon.updateClickableItem(player);
   }
 
-  private int getFrame() {
-    if (currentIndex < icons.size() - 1) {
-      ++currentIndex;
-    } else {
-      currentIndex = 0;
-    }
-    return currentIndex;
+  private int getFrame(Player player) {
+    currentIndexMap.computeIfPresent(player.getUniqueId(), (uuid, index) -> {
+      if (index < icons.size() - 1) {
+        ++index;
+      } else {
+        index = 0;
+      }
+      return index;
+    });
+    return currentIndexMap.get(player.getUniqueId());
   }
 
   @Override
