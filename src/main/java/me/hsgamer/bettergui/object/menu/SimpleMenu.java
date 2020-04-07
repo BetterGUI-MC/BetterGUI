@@ -52,7 +52,8 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   private Permission permission = new Permission(
       getInstance().getName().toLowerCase() + "." + getName());
   private Icon defaultIcon;
-  private GlobalRequirement globalRequirement;
+  private GlobalRequirement viewRequirement;
+  private GlobalRequirement closeRequirement;
 
   public SimpleMenu(String name) {
     super(name);
@@ -123,8 +124,13 @@ public class SimpleMenu extends Menu<SimpleInventory> {
         }
 
         if (keys.containsKey(Settings.VIEW_REQUIREMENT)) {
-          globalRequirement = new GlobalRequirement(
+          viewRequirement = new GlobalRequirement(
               (ConfigurationSection) keys.get(Settings.VIEW_REQUIREMENT));
+        }
+
+        if (keys.containsKey(Settings.CLOSE_REQUIREMENT)) {
+          closeRequirement = new GlobalRequirement(
+              (ConfigurationSection) keys.get(Settings.CLOSE_REQUIREMENT));
         }
       } else if (key.equalsIgnoreCase("default-icon")) {
         defaultIcon = IconBuilder.getIcon(this, file.getConfigurationSection(key));
@@ -159,12 +165,12 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   public void createInventory(Player player, boolean bypass) {
     if (bypass || player.hasPermission(permission)) {
       // Check Requirement
-      if (!bypass && globalRequirement != null) {
-        if (!globalRequirement.check(player)) {
-          globalRequirement.sendFailCommand(player);
+      if (!bypass && viewRequirement != null) {
+        if (!viewRequirement.check(player)) {
+          viewRequirement.sendFailCommand(player);
           return;
         }
-        globalRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
+        viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
           iconRequirementSet.take(player);
           iconRequirementSet.sendCommand(player);
         });
@@ -188,8 +194,23 @@ public class SimpleMenu extends Menu<SimpleInventory> {
           taskChain.execute();
         });
       }
+
+      // Add close requirement
+      if (closeRequirement != null) {
+        inventory.setCloseFilter(player1 -> {
+          if (!closeRequirement.check(player)) {
+            closeRequirement.sendFailCommand(player);
+            return false;
+          }
+          closeRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
+            iconRequirementSet.take(player);
+            iconRequirementSet.sendCommand(player);
+          });
+          return true;
+        });
+      }
+      
       inventory.open();
-      inventoryMap.put(player.getUniqueId(), inventory);
     } else {
       CommonUtils
           .sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
@@ -251,6 +272,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     static final String PERMISSION = "permission";
     static final String AUTO_REFRESH = "auto-refresh";
     static final String VIEW_REQUIREMENT = "view-requirement";
+    static final String CLOSE_REQUIREMENT = "close-requirement";
   }
 
   protected class SimpleInventory extends FastInv {
@@ -292,6 +314,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
           }
         }.runTaskTimerAsynchronously(BetterGUI.getInstance(), ticks, ticks);
       }
+      inventoryMap.put(player.getUniqueId(), this);
     }
 
     public void updateInventory() {
