@@ -195,21 +195,6 @@ public class SimpleMenu extends Menu<SimpleInventory> {
         });
       }
 
-      // Add close requirement
-      if (closeRequirement != null) {
-        inventory.setCloseFilter(player1 -> {
-          if (!closeRequirement.check(player)) {
-            closeRequirement.sendFailCommand(player);
-            return false;
-          }
-          closeRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
-            iconRequirementSet.take(player);
-            iconRequirementSet.sendCommand(player);
-          });
-          return true;
-        });
-      }
-
       inventory.open();
     } else {
       CommonUtils
@@ -245,14 +230,14 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   @Override
   public void closeInventory(Player player) {
     inventoryMap.computeIfPresent(player.getUniqueId(), ((uuid, simpleInventory) -> {
-      simpleInventory.player.closeInventory();
+      simpleInventory.forceClose();
       return null;
     }));
   }
 
   @Override
   public void closeAll() {
-    inventoryMap.values().forEach(simpleInventory -> simpleInventory.player.closeInventory());
+    inventoryMap.values().forEach(SimpleInventory::forceClose);
     inventoryMap.clear();
   }
 
@@ -279,28 +264,33 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
     private final Player player;
     private BukkitTask task;
+    private boolean forced = false;
 
     public SimpleInventory(Player player, int size, String title) {
       super(size, title != null ? title : InventoryType.CHEST.getDefaultTitle());
       this.player = player;
+      setCloseRequirement();
       createItems();
     }
 
     public SimpleInventory(Player player, InventoryType type, String title) {
       super(type, title != null ? title : type.getDefaultTitle());
       this.player = player;
+      setCloseRequirement();
       createItems();
     }
 
     public SimpleInventory(Player player, int size) {
       super(size);
       this.player = player;
+      setCloseRequirement();
       createItems();
     }
 
     public SimpleInventory(Player player, InventoryType type) {
       super(type);
       this.player = player;
+      setCloseRequirement();
       createItems();
     }
 
@@ -328,6 +318,22 @@ public class SimpleMenu extends Menu<SimpleInventory> {
         task.cancel();
       }
       inventoryMap.remove(player.getUniqueId());
+    }
+
+    private void setCloseRequirement() {
+      if (closeRequirement != null) {
+        this.setCloseFilter(player1 -> {
+          if (!forced && !closeRequirement.check(player1)) {
+            closeRequirement.sendFailCommand(player1);
+            return false;
+          }
+          closeRequirement.getCheckedRequirement(player1).ifPresent(iconRequirementSet -> {
+            iconRequirementSet.take(player1);
+            iconRequirementSet.sendCommand(player1);
+          });
+          return true;
+        });
+      }
     }
 
     private void createDefaultItem(int slot) {
@@ -382,6 +388,11 @@ public class SimpleMenu extends Menu<SimpleInventory> {
           updateDefaultItem(i);
         }
       }
+    }
+
+    public void forceClose() {
+      forced = true;
+      player.closeInventory();
     }
 
     public void open() {
