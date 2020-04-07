@@ -323,14 +323,16 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     private void setCloseRequirement() {
       if (closeRequirement != null) {
         this.setCloseFilter(player1 -> {
-          if (!forced && !closeRequirement.check(player1)) {
-            closeRequirement.sendFailCommand(player1);
-            return false;
+          if (!forced) {
+            if (!closeRequirement.check(player1)) {
+              closeRequirement.sendFailCommand(player1);
+              return false;
+            }
+            closeRequirement.getCheckedRequirement(player1).ifPresent(iconRequirementSet -> {
+              iconRequirementSet.take(player1);
+              iconRequirementSet.sendCommand(player1);
+            });
           }
-          closeRequirement.getCheckedRequirement(player1).ifPresent(iconRequirementSet -> {
-            iconRequirementSet.take(player1);
-            iconRequirementSet.sendCommand(player1);
-          });
           return true;
         });
       }
