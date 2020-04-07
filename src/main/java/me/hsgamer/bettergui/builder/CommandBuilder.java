@@ -21,6 +21,7 @@ import me.hsgamer.bettergui.object.command.OpCommand;
 import me.hsgamer.bettergui.object.command.OpenMenuCommand;
 import me.hsgamer.bettergui.object.command.PlayerCommand;
 import me.hsgamer.bettergui.object.command.TellCommand;
+import me.hsgamer.bettergui.object.command.UpdateMenuCommand;
 
 public class CommandBuilder {
 
@@ -32,12 +33,13 @@ public class CommandBuilder {
     register("player:", PlayerCommand.class);
     register("delay:", DelayCommand.class);
     register("condition:", ConditionCommand.class);
-    register("open:", OpenMenuCommand.class);
-    register("open-menu:", OpenMenuCommand.class);
-    register("back-menu", BackCommand.class);
+    register("(open|menu):", OpenMenuCommand.class);
+    register("open-?menu:", OpenMenuCommand.class);
+    register("back-?menu", BackCommand.class);
     register("tell:", TellCommand.class);
     register("broadcast:", BroadcastCommand.class);
-    register("close-menu", CloseMenuCommand.class);
+    register("close-?menu", CloseMenuCommand.class);
+    register("update-?menu", UpdateMenuCommand.class);
   }
 
   private CommandBuilder() {
@@ -51,7 +53,7 @@ public class CommandBuilder {
    * @param clazz the class
    */
   public static void register(String regex, Class<? extends Command> clazz) {
-    Pattern pattern = Pattern.compile("^(?i)" + regex);
+    Pattern pattern = Pattern.compile("^(?i)" + regex, Pattern.CASE_INSENSITIVE);
     commands.put(pattern, clazz);
   }
 

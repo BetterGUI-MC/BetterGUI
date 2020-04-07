@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class MenuBuilder {
 
-  private static final Map<String, Class<? extends Menu>> menuTypes = new CaseInsensitiveStringMap<>();
+  private static final Map<String, Class<? extends Menu<?>>> menuTypes = new CaseInsensitiveStringMap<>();
 
   static {
     register("dummy", DummyMenu.class);
@@ -29,7 +29,7 @@ public class MenuBuilder {
    * @param type  the name of the type
    * @param clazz the class
    */
-  public static void register(String type, Class<? extends Menu> clazz) {
+  public static void register(String type, Class<? extends Menu<?>> clazz) {
     menuTypes.put(type, clazz);
   }
 
@@ -37,7 +37,7 @@ public class MenuBuilder {
    * Check the integrity of the classes
    */
   public static void checkClass() {
-    for (Class<? extends Menu> clazz : menuTypes.values()) {
+    menuTypes.values().forEach(clazz -> {
       try {
         clazz.getDeclaredConstructor(String.class).newInstance("");
       } catch (Exception ex) {
@@ -45,10 +45,10 @@ public class MenuBuilder {
             .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
                 + ". The menu type will be ignored", ex);
       }
-    }
+    });
   }
 
-  public static Menu getMenu(String name, FileConfiguration file) {
+  public static Menu<?> getMenu(String name, FileConfiguration file) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(file.getValues(true));
     if (keys.containsKey("menu-settings.menu-type")) {
       String type = String.valueOf(keys.get("menu-settings.menu-type"));
@@ -60,10 +60,10 @@ public class MenuBuilder {
         .get(BetterGUI.getInstance().getMainConfig().get(DefaultConfig.DEFAULT_MENU_TYPE)));
   }
 
-  public static Menu getMenu(String name, FileConfiguration file,
-      Class<? extends Menu> tClass) {
+  public static Menu<?> getMenu(String name, FileConfiguration file,
+      Class<? extends Menu<?>> tClass) {
     try {
-      Menu menu = tClass.getDeclaredConstructor(String.class)
+      Menu<?> menu = tClass.getDeclaredConstructor(String.class)
           .newInstance(name);
       menu.setFromFile(file);
       return menu;

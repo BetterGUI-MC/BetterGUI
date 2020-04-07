@@ -14,6 +14,7 @@ import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, Integer>> {
@@ -59,8 +60,14 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
   @Override
   public ItemStack parse(Player player, ItemStack parent) {
     ItemMeta itemMeta = parent.getItemMeta();
-    getParsed(player).forEach(
-        (enchantment, level) -> itemMeta.addEnchant(enchantment.parseEnchantment(), level, true));
+    Map<XEnchantment, Integer> map = getParsed(player);
+    if (itemMeta instanceof EnchantmentStorageMeta) {
+      map.forEach((enchant, level) -> ((EnchantmentStorageMeta) itemMeta)
+          .addStoredEnchant(enchant.parseEnchantment(), level, true));
+    } else {
+      map.forEach(
+          (enchantment, level) -> itemMeta.addEnchant(enchantment.parseEnchantment(), level, true));
+    }
     parent.setItemMeta(itemMeta);
     return parent;
   }

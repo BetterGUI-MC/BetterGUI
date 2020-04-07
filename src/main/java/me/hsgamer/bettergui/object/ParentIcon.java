@@ -15,7 +15,7 @@ public interface ParentIcon {
    * @param menu    the menu containing the icon
    * @param section the "child" section
    */
-  default void setChildFromSection(Menu menu, ConfigurationSection section) {
+  default void setChildFromSection(Menu<?> menu, ConfigurationSection section) {
     for (String key : section.getKeys(false)) {
       if (key.equalsIgnoreCase("child")) {
         ConfigurationSection subsection = section.getConfigurationSection(key);

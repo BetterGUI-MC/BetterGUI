@@ -28,11 +28,6 @@ public class Validate {
     return number.filter(bigDecimal -> bigDecimal.compareTo(BigDecimal.ZERO) > 0).isPresent();
   }
 
-  @Deprecated
-  public static boolean isValidPositiveInteger(String input) {
-    return isValidPositiveNumber(input);
-  }
-
   public static boolean isValidInteger(String input) {
     return getNumber(input).isPresent();
   }

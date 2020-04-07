@@ -76,7 +76,7 @@ public class SimpleIconPropertyBuilder {
         });
       }
       if (closeOnClick) {
-        player.closeInventory();
+        icon.getMenu().closeInventory(player);
       }
       command.getTaskChain(player, clickType).execute();
     };

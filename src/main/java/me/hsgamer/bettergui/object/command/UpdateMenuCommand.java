@@ -4,14 +4,14 @@ import co.aikar.taskchain.TaskChain;
 import me.hsgamer.bettergui.object.Command;
 import org.bukkit.entity.Player;
 
-public class CloseMenuCommand extends Command {
+public class UpdateMenuCommand extends Command {
 
-  public CloseMenuCommand(String string) {
+  public UpdateMenuCommand(String string) {
     super(string);
   }
 
   @Override
   public void addToTaskChain(Player player, TaskChain<?> taskChain) {
-    getIcon().ifPresent(icon -> taskChain.sync(() -> icon.getMenu().closeInventory(player)));
+    getIcon().ifPresent(icon -> taskChain.sync(() -> icon.getMenu().updateInventory(player)));
   }
 }

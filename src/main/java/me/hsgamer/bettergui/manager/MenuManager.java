@@ -9,15 +9,12 @@ import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.object.Menu;
-import me.hsgamer.bettergui.object.MenuHolder;
-import me.hsgamer.bettergui.util.BukkitUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryView;
 
 public class MenuManager {
 
-  private final Map<String, Menu> menuMap = new HashMap<>();
+  private final Map<String, Menu<?>> menuMap = new HashMap<>();
 
   public void registerMenu(PluginConfig file) {
     String name = file.getFileName();
@@ -31,13 +28,7 @@ public class MenuManager {
   }
 
   public void clear() {
-    BukkitUtils.getOnlinePlayers().forEach(player -> {
-      InventoryView inventory = player.getOpenInventory();
-      if (inventory != null && (inventory.getTopInventory().getHolder() instanceof MenuHolder
-          || inventory.getBottomInventory().getHolder() instanceof MenuHolder)) {
-        player.closeInventory();
-      }
-    });
+    menuMap.values().forEach(Menu::closeAll);
     menuMap.clear();
   }
 
@@ -71,8 +62,8 @@ public class MenuManager {
    * @param parentMenu the former menu that causes the player to open this menu
    * @param bypass     whether the plugin ignores the permission check
    */
-  public void openMenu(String name, Player player, Menu parentMenu, boolean bypass) {
-    Menu menu = menuMap.get(name);
+  public void openMenu(String name, Player player, Menu<?> parentMenu, boolean bypass) {
+    Menu<?> menu = menuMap.get(name);
     menu.setParentMenu(parentMenu);
     menu.createInventory(player, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
   }

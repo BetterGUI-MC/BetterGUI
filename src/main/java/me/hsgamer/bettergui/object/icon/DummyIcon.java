@@ -18,7 +18,7 @@ public class DummyIcon extends Icon {
 
   private Map<String, ItemProperty<?, ?>> itemProperties;
 
-  public DummyIcon(String name, Menu menu) {
+  public DummyIcon(String name, Menu<?> menu) {
     super(name, menu);
   }
 
