@@ -72,7 +72,7 @@ public class SimpleIconPropertyBuilder {
         }
         clickRequirement.getCheckedRequirement(player, clickType).ifPresent(iconRequirementSet -> {
           iconRequirementSet.take(player);
-          iconRequirementSet.sendCommand(player);
+          iconRequirementSet.sendSuccessCommands(player);
         });
       }
       if (closeOnClick) {
