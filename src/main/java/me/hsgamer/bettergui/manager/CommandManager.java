@@ -27,7 +27,7 @@ public class CommandManager {
   private final JavaPlugin plugin;
   private final Field knownCommandsField;
   private final CommandMap bukkitCommandMap;
-  private final Method syncCommandsMethod;
+  private Method syncCommandsMethod;
 
   public CommandManager(JavaPlugin plugin) {
     this.plugin = plugin;
@@ -38,15 +38,19 @@ public class CommandManager {
 
       knownCommandsField = SimpleCommandMap.class.getDeclaredField("knownCommands");
       knownCommandsField.setAccessible(true);
+    } catch (ReflectiveOperationException e) {
+      throw new ExceptionInInitializerError(e);
+    }
 
+    try {
       Class<?> craftServer = Class.forName("org.bukkit.craftbukkit."
           + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + ".CraftServer");
       syncCommandsMethod = craftServer.getDeclaredMethod("syncCommands");
-      if (syncCommandsMethod != null) {
-        syncCommandsMethod.setAccessible(true);
-      }
-    } catch (ReflectiveOperationException e) {
-      throw new ExceptionInInitializerError(e);
+    } catch (NoSuchMethodException | ClassNotFoundException e) {
+      // Ignored
+    }
+    if (syncCommandsMethod != null) {
+      syncCommandsMethod.setAccessible(true);
     }
   }
 
