@@ -9,6 +9,7 @@ import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.manager.CommandManager;
 import me.hsgamer.bettergui.util.TestCase;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
@@ -26,7 +27,7 @@ public class MainCommand extends BukkitCommand {
         sendMessage(sender, "&9&lDiscord: &fhttps://discord.gg/9m4GdFD");
         sendMessage(sender, "");
         sendMessage(sender, "&b&lCommand: ");
-        for (BukkitCommand command : manager.getRegistered().values()) {
+        for (Command command : manager.getRegistered().values()) {
           sendMessage(sender,
               "  &6" + command.getUsage() + ": &f" + command.getDescription());
           sendMessage(sender,
@@ -34,7 +35,7 @@ public class MainCommand extends BukkitCommand {
         }
         sendMessage(sender, "");
         sendMessage(sender, "&b&lMenu Command: ");
-        for (BukkitCommand command : manager.getRegisteredMenuCommand().values()) {
+        for (Command command : manager.getRegisteredMenuCommand().values()) {
           sendMessage(sender, "  &6" + command.getUsage());
         }
         sendMessage(sender, "");

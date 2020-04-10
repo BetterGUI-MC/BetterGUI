@@ -53,7 +53,7 @@ public class SimpleIcon extends Icon {
       }
       viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
         iconRequirementSet.take(player);
-        iconRequirementSet.sendCommand(player);
+        iconRequirementSet.sendSuccessCommands(player);
       });
     }
     return Optional.of(getClickableItem(player));

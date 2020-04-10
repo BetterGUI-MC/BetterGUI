@@ -10,7 +10,8 @@ public class RequirementSet {
 
   private final String name;
   private final List<Requirement<?, ?>> requirements;
-  private final List<Command> commands = new ArrayList<>();
+  private final List<Command> successCommands = new ArrayList<>();
+  private final List<Command> failCommands = new ArrayList<>();
 
   public RequirementSet(String name, List<Requirement<?, ?>> requirements) {
     this.name = name;
@@ -21,13 +22,20 @@ public class RequirementSet {
     return requirements;
   }
 
-  public void setCommand(List<Command> commands) {
-    this.commands.addAll(commands);
+  public void setSuccessCommands(List<Command> commands) {
+    this.successCommands.addAll(commands);
+  }
+
+  public void setFailCommands(List<Command> commands) {
+    this.failCommands.addAll(commands);
   }
 
   public boolean check(Player player) {
     for (Requirement<?, ?> requirement : requirements) {
       if (!requirement.check(player)) {
+        TaskChain<?> taskChain = BetterGUI.newChain();
+        failCommands.forEach(command -> command.addToTaskChain(player, taskChain));
+        taskChain.execute();
         return false;
       }
     }
@@ -42,9 +50,9 @@ public class RequirementSet {
     }
   }
 
-  public void sendCommand(Player player) {
+  public void sendSuccessCommands(Player player) {
     TaskChain<?> taskChain = BetterGUI.newChain();
-    commands.forEach(command -> command.addToTaskChain(player, taskChain));
+    successCommands.forEach(command -> command.addToTaskChain(player, taskChain));
     taskChain.execute();
   }
 

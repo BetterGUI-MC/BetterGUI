@@ -1,6 +1,8 @@
 package me.hsgamer.bettergui.manager;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -10,6 +12,7 @@ import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
@@ -19,11 +22,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommandManager {
 
-  private final HashMap<String, BukkitCommand> registered = new HashMap<>();
-  private final HashMap<String, BukkitCommand> registeredMenuCommand = new HashMap<>();
+  private final HashMap<String, Command> registered = new HashMap<>();
+  private final HashMap<String, Command> registeredMenuCommand = new HashMap<>();
   private final JavaPlugin plugin;
-  private Field knownCommandsField;
-  private CommandMap bukkitCommandMap;
+  private final Field knownCommandsField;
+  private final CommandMap bukkitCommandMap;
+  private final Method syncCommandsMethod;
 
   public CommandManager(JavaPlugin plugin) {
     this.plugin = plugin;
@@ -34,6 +38,13 @@ public class CommandManager {
 
       knownCommandsField = SimpleCommandMap.class.getDeclaredField("knownCommands");
       knownCommandsField.setAccessible(true);
+
+      Class<?> craftServer = Class.forName("org.bukkit.craftbukkit."
+          + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + ".CraftServer");
+      syncCommandsMethod = craftServer.getDeclaredMethod("syncCommands");
+      if (syncCommandsMethod != null) {
+        syncCommandsMethod.setAccessible(true);
+      }
     } catch (ReflectiveOperationException e) {
       throw new ExceptionInInitializerError(e);
     }
@@ -44,7 +55,7 @@ public class CommandManager {
    *
    * @param command the command object
    */
-  public void register(BukkitCommand command) {
+  public void register(Command command) {
     String name = command.getLabel();
     if (registered.containsKey(name)) {
       plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", name);
@@ -60,7 +71,7 @@ public class CommandManager {
    *
    * @param command the command object
    */
-  public void unregister(BukkitCommand command) {
+  public void unregister(Command command) {
     try {
       Map<?, ?> knownCommands = (Map<?, ?>) knownCommandsField.get(bukkitCommandMap);
 
@@ -122,16 +133,32 @@ public class CommandManager {
     registeredMenuCommand.put(command, bukkitCommand);
   }
 
+
+  /**
+   * Sync the commands to the server Mainly used to make tab completer work in 1.13+
+   */
+  public void syncCommand() {
+    if (syncCommandsMethod == null) {
+      return;
+    }
+
+    try {
+      syncCommandsMethod.invoke(BetterGUI.getInstance().getServer());
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      BetterGUI.getInstance().getLogger().log(Level.WARNING, "Error when syncing commands", e);
+    }
+  }
+
   public void clearMenuCommand() {
     registeredMenuCommand.values().forEach(this::unregister);
     registeredMenuCommand.clear();
   }
 
-  public Map<String, BukkitCommand> getRegistered() {
+  public Map<String, Command> getRegistered() {
     return registered;
   }
 
-  public Map<String, BukkitCommand> getRegisteredMenuCommand() {
+  public Map<String, Command> getRegisteredMenuCommand() {
     return registeredMenuCommand;
   }
 }

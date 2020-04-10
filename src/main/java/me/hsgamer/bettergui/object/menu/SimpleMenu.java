@@ -172,7 +172,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
         }
         viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
           iconRequirementSet.take(player);
-          iconRequirementSet.sendCommand(player);
+          iconRequirementSet.sendSuccessCommands(player);
         });
       }
 
@@ -330,7 +330,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
             }
             closeRequirement.getCheckedRequirement(player1).ifPresent(iconRequirementSet -> {
               iconRequirementSet.take(player1);
-              iconRequirementSet.sendCommand(player1);
+              iconRequirementSet.sendSuccessCommands(player1);
             });
           }
           return false;

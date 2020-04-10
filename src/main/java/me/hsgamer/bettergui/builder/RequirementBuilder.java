@@ -119,8 +119,12 @@ public class RequirementBuilder {
           RequirementSet requirementSet = new RequirementSet(key, requirements);
           Map<String, Object> keys = new CaseInsensitiveStringMap<>(subsection.getValues(false));
           if (keys.containsKey(Settings.SUCCESS_COMMAND)) {
-            requirementSet.setCommand(CommandBuilder.getCommands(icon,
+            requirementSet.setSuccessCommands(CommandBuilder.getCommands(icon,
                 CommonUtils.createStringListFromObject(keys.get(Settings.SUCCESS_COMMAND), true)));
+          }
+          if (keys.containsKey(Settings.FAIL_COMMAND)) {
+            requirementSet.setFailCommands(CommandBuilder.getCommands(icon,
+                CommonUtils.createStringListFromObject(keys.get(Settings.FAIL_COMMAND), true)));
           }
           list.add(requirementSet);
         }
@@ -137,5 +141,6 @@ public class RequirementBuilder {
 
     // Set settings
     static final String SUCCESS_COMMAND = "success-command";
+    static final String FAIL_COMMAND = "fail-command";
   }
 }
