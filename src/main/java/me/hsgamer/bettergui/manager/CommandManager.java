@@ -42,7 +42,6 @@ public class CommandManager {
       throw new ExceptionInInitializerError(e);
     }
 
-
     try {
       Class<?> craftServer = Class.forName("org.bukkit.craftbukkit."
           + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + ".CraftServer");
