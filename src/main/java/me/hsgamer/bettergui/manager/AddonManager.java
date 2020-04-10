@@ -176,7 +176,6 @@ public class AddonManager {
       // Unregister all commands
       commands.computeIfPresent(addon, (a, list) -> {
         list.forEach(command -> plugin.getCommandManager().unregister(command));
-        plugin.getCommandManager().syncCommand();
         return null;
       });
       plugin.getLogger().log(Level.INFO, "Disabled {0}",
