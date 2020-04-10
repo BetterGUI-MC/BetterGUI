@@ -11,7 +11,6 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.command.Command;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 
@@ -21,11 +20,11 @@ import org.bukkit.event.Listener;
 @SuppressWarnings("unused")
 public abstract class Addon {
 
+  private final File jarFile;
+  private final AddonClassLoader addonClassLoader;
   private File dataFolder;
-  private File jarFile;
   private PluginConfig config;
   private AddonDescription description;
-  private AddonClassLoader addonClassLoader;
 
   public Addon() {
     this.addonClassLoader = (AddonClassLoader) this.getClass().getClassLoader();
@@ -103,11 +102,6 @@ public abstract class Addon {
     getPlugin().getAddonManager().registerCommand(this, command);
   }
 
-  @Deprecated
-  public void registerCommand(BukkitCommand command) {
-    registerCommand((Command) command);
-  }
-
   /**
    * Unregister the command
    *
@@ -115,11 +109,6 @@ public abstract class Addon {
    */
   public void unregisterCommand(Command command) {
     getPlugin().getAddonManager().unregisterCommand(this, command);
-  }
-
-  @Deprecated
-  public void unregisterCommand(BukkitCommand command) {
-    unregisterCommand((Command) command);
   }
 
   /**

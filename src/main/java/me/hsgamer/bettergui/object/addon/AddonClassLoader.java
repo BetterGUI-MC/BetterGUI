@@ -9,9 +9,9 @@ import me.hsgamer.bettergui.manager.AddonManager;
 
 public class AddonClassLoader extends URLClassLoader {
 
-  private Addon addon;
-  private File file;
-  private AddonManager manager;
+  private final Addon addon;
+  private final File file;
+  private final AddonManager manager;
 
   public AddonClassLoader(AddonManager manager, File file, AddonDescription addonDescription,
       ClassLoader parent)

@@ -24,14 +24,14 @@ public class CommandManager {
   private final HashMap<String, Command> registered = new HashMap<>();
   private final HashMap<String, Command> registeredMenuCommand = new HashMap<>();
   private final JavaPlugin plugin;
-  private Field knownCommandsField;
-  private CommandMap bukkitCommandMap;
+  private final Field knownCommandsField;
+  private final CommandMap bukkitCommandMap;
 
   public CommandManager(JavaPlugin plugin) {
     this.plugin = plugin;
     try {
       if (Bukkit.getPluginManager() instanceof SimplePluginManager) {
-        final Field commandMapField = SimplePluginManager.class.getDeclaredField("commandMap");
+        Field commandMapField = SimplePluginManager.class.getDeclaredField("commandMap");
         commandMapField.setAccessible(true);
         bukkitCommandMap = (SimpleCommandMap) commandMapField.get(Bukkit.getPluginManager());
       } else {
