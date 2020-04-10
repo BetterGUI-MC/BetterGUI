@@ -25,7 +25,7 @@ import me.hsgamer.bettergui.object.addon.AddonClassLoader;
 import me.hsgamer.bettergui.object.addon.AddonDescription;
 import me.hsgamer.bettergui.util.TestCase;
 import me.hsgamer.bettergui.util.Validate;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.Command;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
@@ -35,7 +35,7 @@ public class AddonManager {
 
   private final Map<String, Addon> addons = new HashMap<>();
   private final Map<Addon, AddonClassLoader> loaderMap = new HashMap<>();
-  private final Map<Addon, List<BukkitCommand>> commands = new HashMap<>();
+  private final Map<Addon, List<Command>> commands = new HashMap<>();
   private final Map<Addon, List<Listener>> listeners = new HashMap<>();
   private final File addonsDir;
   private final BetterGUI plugin;
@@ -231,13 +231,13 @@ public class AddonManager {
     });
   }
 
-  public void registerCommand(Addon addon, BukkitCommand command) {
+  public void registerCommand(Addon addon, Command command) {
     commands.putIfAbsent(addon, new ArrayList<>());
     plugin.getCommandManager().register(command);
     commands.get(addon).add(command);
   }
 
-  public void unregisterCommand(Addon addon, BukkitCommand command) {
+  public void unregisterCommand(Addon addon, Command command) {
     commands.computeIfPresent(addon, (a, list) -> {
       if (list.contains(command)) {
         list.remove(command);

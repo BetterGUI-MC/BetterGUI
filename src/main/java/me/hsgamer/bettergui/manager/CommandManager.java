@@ -10,17 +10,19 @@ import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommandManager {
 
-  private final HashMap<String, BukkitCommand> registered = new HashMap<>();
-  private final HashMap<String, BukkitCommand> registeredMenuCommand = new HashMap<>();
+  private final HashMap<String, Command> registered = new HashMap<>();
+  private final HashMap<String, Command> registeredMenuCommand = new HashMap<>();
   private final JavaPlugin plugin;
   private Field knownCommandsField;
   private CommandMap bukkitCommandMap;
@@ -28,9 +30,15 @@ public class CommandManager {
   public CommandManager(JavaPlugin plugin) {
     this.plugin = plugin;
     try {
-      Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-      commandMapField.setAccessible(true);
-      bukkitCommandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
+      if (Bukkit.getPluginManager() instanceof SimplePluginManager) {
+        final Field commandMapField = SimplePluginManager.class.getDeclaredField("commandMap");
+        commandMapField.setAccessible(true);
+        bukkitCommandMap = (SimpleCommandMap) commandMapField.get(Bukkit.getPluginManager());
+      } else {
+        Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+        commandMapField.setAccessible(true);
+        bukkitCommandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
+      }
 
       knownCommandsField = SimpleCommandMap.class.getDeclaredField("knownCommands");
       knownCommandsField.setAccessible(true);
@@ -44,7 +52,7 @@ public class CommandManager {
    *
    * @param command the command object
    */
-  public void register(BukkitCommand command) {
+  public void register(Command command) {
     String name = command.getLabel();
     if (registered.containsKey(name)) {
       plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", name);
@@ -60,7 +68,7 @@ public class CommandManager {
    *
    * @param command the command object
    */
-  public void unregister(BukkitCommand command) {
+  public void unregister(Command command) {
     try {
       Map<?, ?> knownCommands = (Map<?, ?>) knownCommandsField.get(bukkitCommandMap);
 
@@ -127,11 +135,11 @@ public class CommandManager {
     registeredMenuCommand.clear();
   }
 
-  public Map<String, BukkitCommand> getRegistered() {
+  public Map<String, Command> getRegistered() {
     return registered;
   }
 
-  public Map<String, BukkitCommand> getRegisteredMenuCommand() {
+  public Map<String, Command> getRegisteredMenuCommand() {
     return registeredMenuCommand;
   }
 }
