@@ -33,6 +33,7 @@ public class ReloadCommand extends BukkitCommand {
           }
           getInstance().checkClass();
           getInstance().loadMenuConfig();
+          getInstance().getCommandManager().syncCommand();
           CommonUtils
               .sendMessage(commandSender1,
                   getInstance().getMessageConfig().get(DefaultMessage.SUCCESS));

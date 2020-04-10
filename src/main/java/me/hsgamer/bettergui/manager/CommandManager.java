@@ -1,6 +1,8 @@
 package me.hsgamer.bettergui.manager;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -16,7 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommandManager {
@@ -26,22 +27,24 @@ public class CommandManager {
   private final JavaPlugin plugin;
   private final Field knownCommandsField;
   private final CommandMap bukkitCommandMap;
+  private final Method syncCommandsMethod;
 
   public CommandManager(JavaPlugin plugin) {
     this.plugin = plugin;
     try {
-      if (Bukkit.getPluginManager() instanceof SimplePluginManager) {
-        Field commandMapField = SimplePluginManager.class.getDeclaredField("commandMap");
-        commandMapField.setAccessible(true);
-        bukkitCommandMap = (SimpleCommandMap) commandMapField.get(Bukkit.getPluginManager());
-      } else {
-        Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-        commandMapField.setAccessible(true);
-        bukkitCommandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
-      }
+      Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+      commandMapField.setAccessible(true);
+      bukkitCommandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
 
       knownCommandsField = SimpleCommandMap.class.getDeclaredField("knownCommands");
       knownCommandsField.setAccessible(true);
+
+      Class<?> craftServer = Class.forName("org.bukkit.craftbukkit."
+          + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + ".CraftServer");
+      syncCommandsMethod = craftServer.getDeclaredMethod("syncCommands");
+      if (syncCommandsMethod != null) {
+        syncCommandsMethod.setAccessible(true);
+      }
     } catch (ReflectiveOperationException e) {
       throw new ExceptionInInitializerError(e);
     }
@@ -128,6 +131,22 @@ public class CommandManager {
     };
     bukkitCommandMap.register(plugin.getName() + "_menu", bukkitCommand);
     registeredMenuCommand.put(command, bukkitCommand);
+  }
+
+
+  /**
+   * Sync the commands to the server Mainly used to make tab completer work in 1.13+
+   */
+  public void syncCommand() {
+    if (syncCommandsMethod == null) {
+      return;
+    }
+
+    try {
+      syncCommandsMethod.invoke(BetterGUI.getInstance().getServer());
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      BetterGUI.getInstance().getLogger().log(Level.WARNING, "Error when syncing commands", e);
+    }
   }
 
   public void clearMenuCommand() {

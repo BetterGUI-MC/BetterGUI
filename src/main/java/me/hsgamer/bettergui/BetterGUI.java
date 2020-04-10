@@ -108,6 +108,7 @@ public final class BetterGUI extends JavaPlugin {
       addonManager.enableAddons();
       addonManager.callPostEnable();
       loadMenuConfig();
+      commandManager.syncCommand();
       if (mainConfig.get(DefaultConfig.METRICS)) {
         enableMetrics();
       }
