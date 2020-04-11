@@ -13,7 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
-public class MainCommand extends BukkitCommand {
+public final class MainCommand extends BukkitCommand {
 
   private final TestCase<CommandSender> testCase = new TestCase<CommandSender>()
       .setPredicate(sender -> sender.hasPermission(Permissions.HELP))

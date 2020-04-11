@@ -12,7 +12,7 @@ import me.hsgamer.bettergui.util.expression.string.Equals;
 import me.hsgamer.bettergui.util.expression.string.EqualsIgnoreCase;
 import me.hsgamer.bettergui.util.expression.string.StartsWith;
 
-public class ExpressionUtils {
+public final class ExpressionUtils {
 
   private static final List<LazyFunction> lazyFunctionList = new ArrayList<>();
 

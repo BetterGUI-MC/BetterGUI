@@ -7,7 +7,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import me.hsgamer.bettergui.manager.AddonManager;
 
-public class AddonClassLoader extends URLClassLoader {
+public final class AddonClassLoader extends URLClassLoader {
 
   private final Addon addon;
   private final File file;

@@ -20,7 +20,7 @@ import me.hsgamer.bettergui.util.TestCase;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class IconBuilder {
+public final class IconBuilder {
 
   private static final Map<String, Class<? extends Icon>> iconTypes = new CaseInsensitiveStringMap<>();
 

@@ -23,7 +23,7 @@ import me.hsgamer.bettergui.object.command.PlayerCommand;
 import me.hsgamer.bettergui.object.command.TellCommand;
 import me.hsgamer.bettergui.object.command.UpdateMenuCommand;
 
-public class CommandBuilder {
+public final class CommandBuilder {
 
   private static final Map<Pattern, Class<? extends Command>> commands = new HashMap<>();
 

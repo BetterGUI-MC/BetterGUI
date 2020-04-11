@@ -19,7 +19,7 @@ import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class RequirementBuilder {
+public final class RequirementBuilder {
 
   private static final Map<String, Class<? extends Requirement<?, ?>>> requirementsClass = new CaseInsensitiveStringMap<>();
 

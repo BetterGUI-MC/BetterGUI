@@ -12,7 +12,7 @@ import me.hsgamer.bettergui.object.Menu;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-public class MenuManager {
+public final class MenuManager {
 
   private final Map<String, Menu<?>> menuMap = new HashMap<>();
 

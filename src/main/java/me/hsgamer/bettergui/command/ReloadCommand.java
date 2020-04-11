@@ -10,7 +10,7 @@ import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
-public class ReloadCommand extends BukkitCommand {
+public final class ReloadCommand extends BukkitCommand {
 
   public ReloadCommand() {
     super("reloadmenu", "Reload the plugin", "/reloadmenu",

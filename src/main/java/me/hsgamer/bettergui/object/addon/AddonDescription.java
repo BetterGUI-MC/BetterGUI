@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.object.addon;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddonDescription {
+public final class AddonDescription {
 
   private final String name;
   private final String version;

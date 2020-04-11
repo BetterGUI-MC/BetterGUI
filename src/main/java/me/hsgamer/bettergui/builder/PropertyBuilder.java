@@ -26,7 +26,7 @@ import me.hsgamer.bettergui.util.CaseInsensitiveStringLinkedMap;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class PropertyBuilder {
+public final class PropertyBuilder {
 
   private static final Map<String, Class<? extends ItemProperty<?, ?>>> itemProperties = new CaseInsensitiveStringMap<>();
   private static final Map<String, Class<? extends IconProperty<?>>> iconProperties = new CaseInsensitiveStringMap<>();
