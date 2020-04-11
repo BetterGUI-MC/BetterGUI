@@ -73,6 +73,7 @@ public class DummyMenu extends Menu<FastInv> {
     }
   }
 
+  @SuppressWarnings("OptionalGetWithoutIsPresent")
   @Override
   public void createInventory(Player player, boolean bypass) {
     if (bypass || player.hasPermission(permission)) {

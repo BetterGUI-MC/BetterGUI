@@ -48,6 +48,7 @@ public final class MenuBuilder {
     });
   }
 
+  @SuppressWarnings("SuspiciousMethodCalls")
   public static Menu<?> getMenu(String name, FileConfiguration file) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(file.getValues(true));
     if (keys.containsKey("menu-settings.menu-type")) {

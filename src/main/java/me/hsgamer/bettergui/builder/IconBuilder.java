@@ -61,6 +61,7 @@ public final class IconBuilder {
     }
   }
 
+  @SuppressWarnings("SuspiciousMethodCalls")
   public static Icon getIcon(Menu<?> menu, ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
     if (keys.containsKey("type")) {

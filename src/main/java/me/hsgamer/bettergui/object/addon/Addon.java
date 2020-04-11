@@ -51,24 +51,28 @@ public abstract class Addon {
    * Called when enabling the addon
    */
   public void onEnable() {
+    // EMPTY
   }
 
   /**
    * Called after all addons enabled
    */
   public void onPostEnable() {
+    // EMPTY
   }
 
   /**
    * Called when disabling the addon
    */
   public void onDisable() {
+    // EMPTY
   }
 
   /**
    * Called when reloading
    */
   public void onReload() {
+    // EMPTY
   }
 
   /**
