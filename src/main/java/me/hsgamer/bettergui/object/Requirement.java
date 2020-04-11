@@ -95,7 +95,7 @@ public abstract class Requirement<V, L> {
    * @param player the player involved in
    * @return the parsed string
    */
-  protected String parseFromString(String input, Player player) {
+  protected final String parseFromString(String input, Player player) {
     if (icon != null) {
       return icon.hasVariables(input) ? icon.setVariables(input, player) : input;
     } else {

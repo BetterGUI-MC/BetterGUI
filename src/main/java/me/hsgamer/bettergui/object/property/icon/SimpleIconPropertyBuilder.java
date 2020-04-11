@@ -49,14 +49,11 @@ public class SimpleIconPropertyBuilder {
     PropertyBuilder.loadIconPropertiesFromSection(icon, section).values().forEach((iconProperty -> {
       if (iconProperty instanceof ClickCommand) {
         this.command = (ClickCommand) iconProperty;
-      }
-      if (iconProperty instanceof ClickRequirement) {
+      } else if (iconProperty instanceof ClickRequirement) {
         this.clickRequirement = (ClickRequirement) iconProperty;
-      }
-      if (iconProperty instanceof ViewRequirement) {
+      } else if (iconProperty instanceof ViewRequirement) {
         this.viewRequirement = (ViewRequirement) iconProperty;
-      }
-      if (iconProperty instanceof CloseOnClick) {
+      } else if (iconProperty instanceof CloseOnClick) {
         this.closeOnClick = ((CloseOnClick) iconProperty).getValue();
       }
     }));
