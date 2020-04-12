@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.ParentIcon;
+import me.hsgamer.bettergui.util.ExpressionUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -20,7 +21,9 @@ public class AnimatedIcon extends Icon implements ParentIcon {
   private final Map<UUID, Integer> currentIndexMap = new HashMap<>();
   private final Map<UUID, Integer> currentTimeMap = new HashMap<>();
   private final Map<UUID, Icon> currentIconMap = new HashMap<>();
-  private int update = 0;
+  private final Map<UUID, Integer> updateMap = new HashMap<>();
+  private String updatePattern = "0";
+  private boolean hasVariables = false;
 
   public AnimatedIcon(String name, Menu<?> menu) {
     super(name, menu);
@@ -30,7 +33,8 @@ public class AnimatedIcon extends Icon implements ParentIcon {
     super(original);
     if (original instanceof AnimatedIcon) {
       this.icons.addAll(((AnimatedIcon) original).icons);
-      this.update = ((AnimatedIcon) original).update;
+      this.updatePattern = ((AnimatedIcon) original).updatePattern;
+      this.hasVariables = ((AnimatedIcon) original).hasVariables;
     }
   }
 
@@ -39,7 +43,8 @@ public class AnimatedIcon extends Icon implements ParentIcon {
     setChildFromSection(getMenu(), section);
     section.getKeys(false).forEach(key -> {
       if (key.equalsIgnoreCase("update")) {
-        update = section.getInt(key);
+        updatePattern = section.getString(key);
+        hasVariables = hasVariables(updatePattern);
       }
     });
   }
@@ -47,9 +52,17 @@ public class AnimatedIcon extends Icon implements ParentIcon {
   @Override
   public Optional<ClickableItem> createClickableItem(Player player) {
     Icon currentIcon = icons.get(0);
+    int update = 0;
+
+    String parsed = hasVariables ? setVariables(updatePattern, player) : updatePattern;
+    if (ExpressionUtils.isValidExpression(parsed)) {
+      update = ExpressionUtils.getResult(parsed).intValue();
+    }
+
     currentIndexMap.put(player.getUniqueId(), 0);
     currentIconMap.put(player.getUniqueId(), currentIcon);
     currentTimeMap.put(player.getUniqueId(), update);
+    updateMap.put(player.getUniqueId(), update);
     return currentIcon.createClickableItem(player);
   }
 
@@ -62,7 +75,7 @@ public class AnimatedIcon extends Icon implements ParentIcon {
     } else {
       currentIcon = icons.get(getFrame(player));
       currentIconMap.put(player.getUniqueId(), currentIcon);
-      currentTimeMap.put(player.getUniqueId(), update);
+      currentTimeMap.put(player.getUniqueId(), updateMap.get(player.getUniqueId()));
     }
 
     return currentIcon.updateClickableItem(player);
