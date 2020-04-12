@@ -21,9 +21,11 @@ import me.hsgamer.bettergui.object.ParentIcon;
 import me.hsgamer.bettergui.object.menu.SimpleMenu.SimpleInventory;
 import me.hsgamer.bettergui.object.property.menu.MenuAction;
 import me.hsgamer.bettergui.object.property.menu.MenuInventoryType;
+import me.hsgamer.bettergui.object.property.menu.MenuRequirement;
 import me.hsgamer.bettergui.object.property.menu.MenuRows;
 import me.hsgamer.bettergui.object.property.menu.MenuTicks;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
+import me.hsgamer.bettergui.object.property.menu.MenuVariable;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -43,6 +45,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   private Permission permission = new Permission(
       getInstance().getName().toLowerCase() + "." + getName());
   private Icon defaultIcon;
+
   private GlobalRequirement viewRequirement;
   private GlobalRequirement closeRequirement;
 
@@ -79,6 +82,14 @@ public class SimpleMenu extends Menu<SimpleInventory> {
                 this.menuTicks = (MenuTicks) menuProperty;
               } else if (menuProperty instanceof MenuTitle) {
                 this.menuTitle = (MenuTitle) menuProperty;
+              } else if (menuProperty instanceof MenuRequirement) {
+                if (setting.equals("view-requirement")) {
+                  viewRequirement = ((MenuRequirement) menuProperty).getParsed(null);
+                } else if (setting.equals("close-requirement")) {
+                  closeRequirement = ((MenuRequirement) menuProperty).getParsed(null);
+                }
+              } else if (menuProperty instanceof MenuVariable) {
+                ((MenuVariable) menuProperty).getParsed(null).forEach(menuLocalVariable -> this.registerVariable(menuLocalVariable.getIdentifier(), menuLocalVariable));
               }
             });
 
@@ -91,16 +102,6 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
         if (keys.containsKey(Settings.PERMISSION)) {
           permission = new Permission(String.valueOf(keys.get(Settings.PERMISSION)));
-        }
-
-        if (keys.containsKey(Settings.VIEW_REQUIREMENT)) {
-          viewRequirement = new GlobalRequirement(
-              (ConfigurationSection) keys.get(Settings.VIEW_REQUIREMENT));
-        }
-
-        if (keys.containsKey(Settings.CLOSE_REQUIREMENT)) {
-          closeRequirement = new GlobalRequirement(
-              (ConfigurationSection) keys.get(Settings.CLOSE_REQUIREMENT));
         }
       } else if (key.equalsIgnoreCase("default-icon")) {
         defaultIcon = IconBuilder.getIcon(this, file.getConfigurationSection(key));
@@ -215,8 +216,6 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
     static final String COMMAND = "command";
     static final String PERMISSION = "permission";
-    static final String VIEW_REQUIREMENT = "view-requirement";
-    static final String CLOSE_REQUIREMENT = "close-requirement";
   }
 
   protected class SimpleInventory extends FastInv {

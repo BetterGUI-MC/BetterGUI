@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.object.property;
 
-import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.Property;
 import org.bukkit.entity.Player;
@@ -29,8 +28,7 @@ public abstract class MenuProperty<V, L> extends Property<V> {
    * @return the parsed string
    */
   protected final String parseFromString(String input, Player player) {
-    return VariableManager.hasVariables(input) ? VariableManager.setVariables(input, player)
-        : input;
+    return menu.hasVariables(input) ? menu.setVariables(input, player) : input;
   }
 
   public Menu<?> getMenu() {

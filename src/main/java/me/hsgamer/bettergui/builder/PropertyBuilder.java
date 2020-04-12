@@ -27,9 +27,11 @@ import me.hsgamer.bettergui.object.property.item.impl.Name;
 import me.hsgamer.bettergui.object.property.item.impl.Type;
 import me.hsgamer.bettergui.object.property.menu.MenuAction;
 import me.hsgamer.bettergui.object.property.menu.MenuInventoryType;
+import me.hsgamer.bettergui.object.property.menu.MenuRequirement;
 import me.hsgamer.bettergui.object.property.menu.MenuRows;
 import me.hsgamer.bettergui.object.property.menu.MenuTicks;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
+import me.hsgamer.bettergui.object.property.menu.MenuVariable;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringLinkedMap;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
@@ -71,6 +73,10 @@ public final class PropertyBuilder {
     registerMenuProperty("ticks", MenuTicks.class);
     registerMenuProperty("name", MenuTitle.class);
     registerMenuProperty("title", MenuTitle.class);
+    registerMenuProperty("view-requirement", MenuRequirement.class);
+    registerMenuProperty("close-requirement", MenuRequirement.class);
+    registerMenuProperty("variable", MenuVariable.class);
+    registerMenuProperty("placeholder", MenuVariable.class);
   }
 
   private PropertyBuilder() {

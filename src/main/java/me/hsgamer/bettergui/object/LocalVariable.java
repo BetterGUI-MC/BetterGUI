@@ -4,9 +4,9 @@ import java.util.Optional;
 import org.bukkit.entity.Player;
 
 /**
- * Same as GlobalVariable but this is icon-only
+ * Same as GlobalVariable but this is local
  */
-public interface IconVariable {
+public interface LocalVariable<T> {
 
   /**
    * @return a string identifying the variable
@@ -16,7 +16,7 @@ public interface IconVariable {
   /**
    * @return the icon involved in
    */
-  Optional<Icon> getIconInvolved();
+  Optional<T> getInvolved();
 
   /**
    * Get the string from the variable

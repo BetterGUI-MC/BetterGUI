@@ -1,12 +1,20 @@
 package me.hsgamer.bettergui.object;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import me.hsgamer.bettergui.manager.VariableManager;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-public abstract class Menu<T> {
+public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
 
+  private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private final String name;
+  private final Map<String, LocalVariable<Menu<?>>> variables = new HashMap<>();
   private Menu<?> parentMenu;
 
   public Menu(String name) {
@@ -57,5 +65,40 @@ public abstract class Menu<T> {
    */
   public void setParentMenu(Menu<?> parentMenu) {
     this.parentMenu = parentMenu;
+  }
+
+  @Override
+  public void registerVariable(String identifier, LocalVariable<Menu<?>> variable) {
+    variables.put(identifier, variable);
+  }
+
+  @Override
+  public boolean hasVariables(String message) {
+    if (message == null || message.trim().isEmpty()) {
+      return false;
+    }
+    if (VariableManager.hasVariables(message)) {
+      return true;
+    }
+    return Validate.isMatch(message, pattern, variables.keySet());
+  }
+
+  @Override
+  public String setSingleVariables(String message, Player executor) {
+    Matcher matcher = pattern.matcher(message);
+    while (matcher.find()) {
+      String identifier = matcher.group(1).trim();
+      for (Map.Entry<String, LocalVariable<Menu<?>>> variable : variables.entrySet()) {
+        if (identifier.startsWith(variable.getKey())) {
+          String replace = variable.getValue()
+              .getReplacement(executor, identifier.substring(variable.getKey().length()));
+          if (replace != null) {
+            message = message
+                .replaceAll(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
+          }
+        }
+      }
+    }
+    return message;
   }
 }

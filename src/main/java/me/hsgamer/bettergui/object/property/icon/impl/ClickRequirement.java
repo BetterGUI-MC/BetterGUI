@@ -12,7 +12,7 @@ import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.object.CheckedRequirementSet;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
-import me.hsgamer.bettergui.object.IconVariable;
+import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.RequirementSet;
 import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
@@ -97,13 +97,14 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     taskChain.execute();
   }
 
+  @SuppressWarnings("unchecked")
   private void registerVariable(String prefix, List<RequirementSet> requirementSets) {
     requirementSets
         .forEach(requirementSet -> requirementSet.getRequirements().forEach(iconRequirement -> {
-          if (iconRequirement instanceof IconVariable) {
+          if (iconRequirement instanceof LocalVariable) {
             getIcon().registerVariable(String.join("_", prefix, requirementSet.getName(),
-                ((IconVariable) iconRequirement).getIdentifier()),
-                (IconVariable) iconRequirement);
+                ((LocalVariable<Icon>) iconRequirement).getIdentifier()),
+                (LocalVariable<Icon>) iconRequirement);
           }
         }));
   }
