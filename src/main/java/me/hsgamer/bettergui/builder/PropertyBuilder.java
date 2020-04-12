@@ -25,9 +25,8 @@ import me.hsgamer.bettergui.object.property.item.impl.Flag;
 import me.hsgamer.bettergui.object.property.item.impl.Lore;
 import me.hsgamer.bettergui.object.property.item.impl.Name;
 import me.hsgamer.bettergui.object.property.item.impl.Type;
-import me.hsgamer.bettergui.object.property.menu.MenuCloseAction;
+import me.hsgamer.bettergui.object.property.menu.MenuAction;
 import me.hsgamer.bettergui.object.property.menu.MenuInventoryType;
-import me.hsgamer.bettergui.object.property.menu.MenuOpenAction;
 import me.hsgamer.bettergui.object.property.menu.MenuRows;
 import me.hsgamer.bettergui.object.property.menu.MenuTicks;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
@@ -63,8 +62,8 @@ public final class PropertyBuilder {
     registerIconProperty("close-on-click", CloseOnClick.class);
     registerIconProperty("command", ClickCommand.class);
 
-    registerMenuProperty("open-action", MenuOpenAction.class);
-    registerMenuProperty("close-action", MenuCloseAction.class);
+    registerMenuProperty("open-action", MenuAction.class);
+    registerMenuProperty("close-action", MenuAction.class);
     registerMenuProperty("inventory-type", MenuInventoryType.class);
     registerMenuProperty("inventory", MenuInventoryType.class);
     registerMenuProperty("rows", MenuRows.class);

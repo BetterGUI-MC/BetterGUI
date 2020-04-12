@@ -8,9 +8,9 @@ import me.hsgamer.bettergui.object.property.MenuProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.entity.Player;
 
-public class MenuCloseAction extends MenuProperty<Object, TaskChain<?>> {
+public class MenuAction extends MenuProperty<Object, TaskChain<?>> {
 
-  public MenuCloseAction(Menu<?> menu) {
+  public MenuAction(Menu<?> menu) {
     super(menu);
   }
 

@@ -19,9 +19,8 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.ParentIcon;
 import me.hsgamer.bettergui.object.menu.SimpleMenu.SimpleInventory;
-import me.hsgamer.bettergui.object.property.menu.MenuCloseAction;
+import me.hsgamer.bettergui.object.property.menu.MenuAction;
 import me.hsgamer.bettergui.object.property.menu.MenuInventoryType;
-import me.hsgamer.bettergui.object.property.menu.MenuOpenAction;
 import me.hsgamer.bettergui.object.property.menu.MenuRows;
 import me.hsgamer.bettergui.object.property.menu.MenuTicks;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
@@ -47,8 +46,8 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   private GlobalRequirement viewRequirement;
   private GlobalRequirement closeRequirement;
 
-  private MenuCloseAction menuCloseAction;
-  private MenuOpenAction menuOpenAction;
+  private MenuAction menuCloseAction;
+  private MenuAction menuOpenAction;
   private MenuInventoryType menuInventoryType;
   private MenuRows menuRows;
   private MenuTicks menuTicks;
@@ -64,12 +63,14 @@ public class SimpleMenu extends Menu<SimpleInventory> {
       if (key.equalsIgnoreCase("menu-settings")) {
         ConfigurationSection settingsSection = file.getConfigurationSection(key);
 
-        PropertyBuilder.loadMenuPropertiesFromSection(this, settingsSection).values()
-            .forEach(menuProperty -> {
-              if (menuProperty instanceof MenuCloseAction) {
-                this.menuCloseAction = (MenuCloseAction) menuProperty;
-              } else if (menuProperty instanceof MenuOpenAction) {
-                this.menuOpenAction = (MenuOpenAction) menuProperty;
+        PropertyBuilder.loadMenuPropertiesFromSection(this, settingsSection)
+            .forEach((setting, menuProperty) -> {
+              if (menuProperty instanceof MenuAction) {
+                if (setting.equals("open-action")) {
+                  this.menuOpenAction = (MenuAction) menuProperty;
+                } else if (setting.equals("close-action")) {
+                  this.menuCloseAction = (MenuAction) menuProperty;
+                }
               } else if (menuProperty instanceof MenuInventoryType) {
                 this.menuInventoryType = (MenuInventoryType) menuProperty;
               } else if (menuProperty instanceof MenuRows) {
