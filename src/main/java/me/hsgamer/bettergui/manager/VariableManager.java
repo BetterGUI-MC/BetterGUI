@@ -15,7 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class VariableManager {
+public final class VariableManager {
 
   private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private static final Map<String, GlobalVariable> variables = new HashMap<>();

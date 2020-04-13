@@ -19,11 +19,11 @@ public class GlobalRequirement {
   private final List<Command> commands = new ArrayList<>();
   private final CheckedRequirementSet checked = new CheckedRequirementSet();
 
-  public GlobalRequirement(ConfigurationSection section) {
+  public GlobalRequirement(Menu<?> menu, ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
     requirements.addAll(RequirementBuilder.getRequirementSet(section, null));
     if (keys.containsKey("fail-command")) {
-      commands.addAll(CommandBuilder.getCommands(null,
+      commands.addAll(CommandBuilder.getCommands(menu,
           CommonUtils.createStringListFromObject(keys.get("fail-command"), true)));
     }
   }
@@ -46,5 +46,9 @@ public class GlobalRequirement {
     TaskChain<?> taskChain = BetterGUI.newChain();
     commands.forEach(command -> command.addToTaskChain(player, taskChain));
     taskChain.execute();
+  }
+
+  public List<RequirementSet> getRequirements() {
+    return requirements;
   }
 }

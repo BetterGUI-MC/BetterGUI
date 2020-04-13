@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 
-public class Validate {
+public final class Validate {
 
   private Validate() {
 

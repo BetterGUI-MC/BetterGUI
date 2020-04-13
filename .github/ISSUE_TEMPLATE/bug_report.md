@@ -24,10 +24,14 @@ A clear and concise description of what you expected to happen.
 ### **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
+### **Details**
+Your menu config, addon config or anything related to your problem
+
 ### **Version**
 - Minecraft: [1.12, 1.14, etc]
-- Spigot/Bukkit: [1.12, 1.14, etc] 
+- Spigot/Bukkit/...: [1.12, 1.14, etc]
 - BetterGUI: [1.0, 1.1, etc]
+- Installed Addons: []
 
 ### **Additional context**
 Add any other context about the problem here.

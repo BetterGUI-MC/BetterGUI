@@ -26,7 +26,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>BetterGUI</artifactId>
-      <version>1.9</version>
+      <version>1.10</version>
       <scope>provided</scope>
     </dependency>
 ```

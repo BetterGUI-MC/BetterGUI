@@ -18,7 +18,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
-public class GetAddonsCommand extends BukkitCommand {
+public final class GetAddonsCommand extends BukkitCommand {
 
   private final TestCase<CommandSender> testCase = new TestCase<CommandSender>()
       .setPredicate(commandSender -> commandSender.hasPermission(Permissions.ADDONS))

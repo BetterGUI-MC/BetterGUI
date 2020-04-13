@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
-import me.hsgamer.bettergui.object.Icon;
+import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.object.RequirementSet;
 import me.hsgamer.bettergui.object.requirement.ConditionRequirement;
@@ -19,7 +19,7 @@ import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class RequirementBuilder {
+public final class RequirementBuilder {
 
   private static final Map<String, Class<? extends Requirement<?, ?>>> requirementsClass = new CaseInsensitiveStringMap<>();
 
@@ -59,14 +59,13 @@ public class RequirementBuilder {
     }
   }
 
-  public static Optional<Requirement<?, ?>> getRequirement(String type, Icon icon) {
+  public static Optional<Requirement<?, ?>> getRequirement(String type,
+      LocalVariableManager<?> localVariableManager) {
     if (requirementsClass.containsKey(type)) {
       Class<? extends Requirement<?, ?>> clazz = requirementsClass.get(type);
       try {
         Requirement<?, ?> requirement = clazz.getDeclaredConstructor().newInstance();
-        if (icon != null) {
-          requirement.setIcon(icon);
-        }
+        requirement.setVariableManager(localVariableManager);
         return Optional.of(requirement);
       } catch (Exception e) {
         // IGNORED
@@ -75,12 +74,11 @@ public class RequirementBuilder {
     return Optional.empty();
   }
 
-  public static List<Requirement<?, ?>> loadRequirementsFromSection(
-      ConfigurationSection section,
-      Icon icon) {
+  public static List<Requirement<?, ?>> loadRequirementsFromSection(ConfigurationSection section,
+      LocalVariableManager<?> localVariableManager) {
     List<Requirement<?, ?>> requirements = new ArrayList<>();
     section.getKeys(false).forEach(type -> {
-      Optional<Requirement<?, ?>> rawRequirement = getRequirement(type, icon);
+      Optional<Requirement<?, ?>> rawRequirement = getRequirement(type, localVariableManager);
       if (!rawRequirement.isPresent()) {
         return;
       }
@@ -108,22 +106,23 @@ public class RequirementBuilder {
     return requirements;
   }
 
-  public static List<RequirementSet> getRequirementSet(ConfigurationSection section, Icon icon) {
+  public static List<RequirementSet> getRequirementSet(ConfigurationSection section,
+      LocalVariableManager<?> localVariableManager) {
     List<RequirementSet> list = new ArrayList<>();
     section.getKeys(false).forEach(key -> {
       if (section.isConfigurationSection(key)) {
         ConfigurationSection subsection = section.getConfigurationSection(key);
         List<Requirement<?, ?>> requirements = loadRequirementsFromSection(subsection,
-            icon);
+            localVariableManager);
         if (!requirements.isEmpty()) {
           RequirementSet requirementSet = new RequirementSet(key, requirements);
           Map<String, Object> keys = new CaseInsensitiveStringMap<>(subsection.getValues(false));
           if (keys.containsKey(Settings.SUCCESS_COMMAND)) {
-            requirementSet.setSuccessCommands(CommandBuilder.getCommands(icon,
+            requirementSet.setSuccessCommands(CommandBuilder.getCommands(localVariableManager,
                 CommonUtils.createStringListFromObject(keys.get(Settings.SUCCESS_COMMAND), true)));
           }
           if (keys.containsKey(Settings.FAIL_COMMAND)) {
-            requirementSet.setFailCommands(CommandBuilder.getCommands(icon,
+            requirementSet.setFailCommands(CommandBuilder.getCommands(localVariableManager,
                 CommonUtils.createStringListFromObject(keys.get(Settings.FAIL_COMMAND), true)));
           }
           list.add(requirementSet);

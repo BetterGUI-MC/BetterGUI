@@ -16,7 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
-public class OpenCommand extends BukkitCommand {
+public final class OpenCommand extends BukkitCommand {
 
   public OpenCommand() {
     super("openmenu", "Open the specific menu", "/openmenu <menu_name> [player]",

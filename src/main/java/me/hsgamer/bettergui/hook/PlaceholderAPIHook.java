@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class PlaceholderAPIHook {
+public final class PlaceholderAPIHook {
 
   private static PlaceholderAPIPlugin placeholderAPI;
 

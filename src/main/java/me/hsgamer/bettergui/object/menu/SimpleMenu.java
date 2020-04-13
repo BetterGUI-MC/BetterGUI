@@ -1,31 +1,32 @@
 package me.hsgamer.bettergui.object.menu;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
-import static me.hsgamer.bettergui.BetterGUI.newChain;
 
-import co.aikar.taskchain.TaskChain;
 import fr.mrmicky.fastinv.FastInv;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.IconBuilder;
+import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
-import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.object.ClickableItem;
-import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.GlobalRequirement;
 import me.hsgamer.bettergui.object.Icon;
+import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.ParentIcon;
 import me.hsgamer.bettergui.object.menu.SimpleMenu.SimpleInventory;
-import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
+import me.hsgamer.bettergui.object.property.menu.MenuAction;
+import me.hsgamer.bettergui.object.property.menu.MenuInventoryType;
+import me.hsgamer.bettergui.object.property.menu.MenuRequirement;
+import me.hsgamer.bettergui.object.property.menu.MenuRows;
+import me.hsgamer.bettergui.object.property.menu.MenuTicks;
+import me.hsgamer.bettergui.object.property.menu.MenuTitle;
+import me.hsgamer.bettergui.object.property.menu.MenuVariable;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -42,18 +43,19 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   private final Map<UUID, SimpleInventory> inventoryMap = new ConcurrentHashMap<>();
 
   private final Map<Integer, Icon> icons = new HashMap<>();
-  private final List<Command> openActions = new ArrayList<>();
-  private final List<Command> closeActions = new ArrayList<>();
-  private InventoryType inventoryType = InventoryType.CHEST;
-  private String title;
-  private boolean titleHasVariable = false;
-  private int maxSlots = 27;
-  private long ticks = 0;
   private Permission permission = new Permission(
       getInstance().getName().toLowerCase() + "." + getName());
   private Icon defaultIcon;
+
   private GlobalRequirement viewRequirement;
   private GlobalRequirement closeRequirement;
+
+  private MenuAction menuCloseAction;
+  private MenuAction menuOpenAction;
+  private MenuInventoryType menuInventoryType;
+  private MenuRows menuRows;
+  private MenuTicks menuTicks;
+  private MenuTitle menuTitle;
 
   public SimpleMenu(String name) {
     super(name);
@@ -63,74 +65,53 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   public void setFromFile(FileConfiguration file) {
     for (String key : file.getKeys(false)) {
       if (key.equalsIgnoreCase("menu-settings")) {
-        Map<String, Object> keys = new CaseInsensitiveStringMap<>(
-            file.getConfigurationSection(key).getValues(false));
+        ConfigurationSection settingsSection = file.getConfigurationSection(key);
 
-        if (keys.containsKey(Settings.NAME)) {
-          title = String.valueOf(keys.get(Settings.NAME));
-          titleHasVariable = VariableManager.hasVariables(title);
-        }
+        PropertyBuilder.loadMenuPropertiesFromSection(this, settingsSection)
+            .forEach((setting, menuProperty) -> {
+              if (menuProperty instanceof MenuAction) {
+                if (setting.equals("open-action")) {
+                  this.menuOpenAction = (MenuAction) menuProperty;
+                } else if (setting.equals("close-action")) {
+                  this.menuCloseAction = (MenuAction) menuProperty;
+                }
+              } else if (menuProperty instanceof MenuInventoryType) {
+                this.menuInventoryType = (MenuInventoryType) menuProperty;
+              } else if (menuProperty instanceof MenuRows) {
+                this.menuRows = (MenuRows) menuProperty;
+              } else if (menuProperty instanceof MenuTicks) {
+                this.menuTicks = (MenuTicks) menuProperty;
+              } else if (menuProperty instanceof MenuTitle) {
+                this.menuTitle = (MenuTitle) menuProperty;
+              } else if (menuProperty instanceof MenuRequirement) {
+                if (setting.equals("view-requirement")) {
+                  viewRequirement = ((MenuRequirement) menuProperty).getParsed(null);
+                } else if (setting.equals("close-requirement")) {
+                  closeRequirement = ((MenuRequirement) menuProperty).getParsed(null);
+                  closeRequirement.getRequirements().forEach(
+                      requirementSet -> requirementSet.getRequirements().forEach(requirement -> {
+                        if (requirement instanceof LocalVariable) {
+                          registerVariable(String.join("_", "close", requirementSet.getName(),
+                              ((LocalVariable) requirement).getIdentifier()),
+                              (LocalVariable) requirement);
+                        }
+                      }));
+                }
+              } else if (menuProperty instanceof MenuVariable) {
+                ((MenuVariable) menuProperty).getParsed(null).forEach(menuLocalVariable -> this
+                    .registerVariable(menuLocalVariable.getIdentifier(), menuLocalVariable));
+              }
+            });
 
-        if (keys.containsKey(Settings.INVENTORY_TYPE)) {
-          try {
-            inventoryType = InventoryType
-                .valueOf((String.valueOf(keys.get(Settings.INVENTORY_TYPE))).toUpperCase());
-          } catch (IllegalArgumentException e) {
-            getInstance().getLogger().log(Level.WARNING, "The menu \"" + file.getName()
-                + "\" contains an illegal inventory type, it will be CHEST by default");
-          }
-          switch (inventoryType) {
-            case FURNACE:
-            case ENDER_CHEST:
-            case CHEST:
-            case HOPPER:
-            case WORKBENCH:
-            case DISPENSER:
-            case DROPPER:
-              maxSlots = inventoryType.getDefaultSize();
-              break;
-            default:
-              inventoryType = InventoryType.CHEST;
-              getInstance().getLogger().log(Level.WARNING, "The menu \"" + file.getName()
-                  + "\"'s inventory type is not supported, it will be CHEST by default");
-          }
-        } else if (keys.containsKey(Settings.ROWS)) {
-          int temp = Integer.parseInt(String.valueOf(keys.get(Settings.ROWS))) * 9;
-          maxSlots = temp > 0 ? temp : maxSlots;
-        }
+        Map<String, Object> keys = settingsSection.getValues(false);
 
         if (keys.containsKey(Settings.COMMAND)) {
           CommonUtils.createStringListFromObject(keys.get(Settings.COMMAND), true)
               .forEach(s -> getInstance().getCommandManager().registerMenuCommand(s, this));
         }
 
-        if (keys.containsKey(Settings.OPEN_ACTION)) {
-          openActions.addAll(
-              CommandBuilder.getCommands(null,
-                  CommonUtils.createStringListFromObject(keys.get(Settings.OPEN_ACTION), true)));
-        }
-        if (keys.containsKey(Settings.CLOSE_ACTION)) {
-          closeActions.addAll(
-              CommandBuilder.getCommands(null,
-                  CommonUtils.createStringListFromObject(keys.get(Settings.CLOSE_ACTION), true)));
-        }
-
         if (keys.containsKey(Settings.PERMISSION)) {
           permission = new Permission(String.valueOf(keys.get(Settings.PERMISSION)));
-        }
-
-        if (keys.containsKey(Settings.AUTO_REFRESH)) {
-          ticks = Integer.parseInt(String.valueOf(keys.get(Settings.AUTO_REFRESH)));
-        }
-
-        if (keys.containsKey(Settings.VIEW_REQUIREMENT)) {
-          viewRequirement = new GlobalRequirement(
-              (ConfigurationSection) keys.get(Settings.VIEW_REQUIREMENT));
-        }
-
-        if (keys.containsKey(Settings.CLOSE_REQUIREMENT)) {
-          closeRequirement = new GlobalRequirement(
-              (ConfigurationSection) keys.get(Settings.CLOSE_REQUIREMENT));
         }
       } else if (key.equalsIgnoreCase("default-icon")) {
         defaultIcon = IconBuilder.getIcon(this, file.getConfigurationSection(key));
@@ -149,12 +130,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
                       + " have the same slot. Only one of them will be set");
             }
           } else {
-            if (slot < maxSlots) {
-              icons.put(slot, icon.cloneIcon());
-            } else {
-              getInstance().getLogger().warning(
-                  icon.getName() + " from " + getName() + " has invalid slot (Exceed the limit)");
-            }
+            icons.put(slot, icon.cloneIcon());
           }
         }
       }
@@ -180,19 +156,11 @@ public class SimpleMenu extends Menu<SimpleInventory> {
       SimpleInventory inventory = initInventory(player);
 
       // Add Actions
-      if (!openActions.isEmpty()) {
-        inventory.addOpenHandler(event -> {
-          TaskChain<?> taskChain = newChain();
-          openActions.forEach(action -> action.addToTaskChain(player, taskChain));
-          taskChain.execute();
-        });
+      if (menuOpenAction != null) {
+        inventory.addOpenHandler(event -> menuOpenAction.getParsed(player).execute());
       }
-      if (!closeActions.isEmpty()) {
-        inventory.addCloseHandler(event -> {
-          TaskChain<?> taskChain = newChain();
-          closeActions.forEach(action -> action.addToTaskChain(player, taskChain));
-          taskChain.execute();
-        });
+      if (menuCloseAction != null) {
+        inventory.addCloseHandler(event -> menuCloseAction.getParsed(player).execute());
       }
 
       inventory.open();
@@ -204,8 +172,16 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
   private SimpleInventory initInventory(Player player) {
     SimpleInventory inventory;
-    String parsedTitle = CommonUtils
-        .colorize(titleHasVariable ? VariableManager.setVariables(title, player) : title);
+    InventoryType inventoryType =
+        menuInventoryType != null ? menuInventoryType.getParsed(player) : InventoryType.CHEST;
+    int maxSlots;
+    if (menuRows != null) {
+      inventoryType = InventoryType.CHEST;
+      maxSlots = menuRows.getParsed(player);
+    } else {
+      maxSlots = inventoryType.getDefaultSize();
+    }
+    String parsedTitle = menuTitle != null ? menuTitle.getParsed(player) : null;
     if (inventoryType.equals(InventoryType.CHEST)) {
       if (parsedTitle != null) {
         inventory = new SimpleInventory(player, maxSlots, parsedTitle);
@@ -248,27 +224,23 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
   private static class Settings {
 
-    static final String NAME = "name";
-    static final String ROWS = "rows";
-    static final String INVENTORY_TYPE = "inventory-type";
     static final String COMMAND = "command";
-    static final String OPEN_ACTION = "open-action";
-    static final String CLOSE_ACTION = "close-action";
     static final String PERMISSION = "permission";
-    static final String AUTO_REFRESH = "auto-refresh";
-    static final String VIEW_REQUIREMENT = "view-requirement";
-    static final String CLOSE_REQUIREMENT = "close-requirement";
   }
 
   protected class SimpleInventory extends FastInv {
 
     private final Player player;
+    private final int maxSlots;
     private BukkitTask task;
     private boolean forced = false;
+    private long ticks = 0;
 
     public SimpleInventory(Player player, int size, String title) {
       super(size, title != null ? title : InventoryType.CHEST.getDefaultTitle());
+      this.maxSlots = size;
       this.player = player;
+      setTicks();
       setCloseRequirement();
       createItems();
     }
@@ -276,6 +248,8 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     public SimpleInventory(Player player, InventoryType type, String title) {
       super(type, title != null ? title : type.getDefaultTitle());
       this.player = player;
+      this.maxSlots = type.getDefaultSize();
+      setTicks();
       setCloseRequirement();
       createItems();
     }
@@ -283,6 +257,8 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     public SimpleInventory(Player player, int size) {
       super(size);
       this.player = player;
+      this.maxSlots = size;
+      setTicks();
       setCloseRequirement();
       createItems();
     }
@@ -290,8 +266,16 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     public SimpleInventory(Player player, InventoryType type) {
       super(type);
       this.player = player;
+      this.maxSlots = type.getDefaultSize();
+      setTicks();
       setCloseRequirement();
       createItems();
+    }
+
+    private void setTicks() {
+      if (menuTicks != null) {
+        ticks = menuTicks.getParsed(player);
+      }
     }
 
     @Override

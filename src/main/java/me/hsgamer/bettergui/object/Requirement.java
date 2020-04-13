@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.object;
 
-import java.util.Optional;
 import me.hsgamer.bettergui.manager.VariableManager;
 import org.bukkit.entity.Player;
 
@@ -14,7 +13,7 @@ import org.bukkit.entity.Player;
 public abstract class Requirement<V, L> {
 
   protected V value;
-  private Icon icon;
+  private LocalVariableManager<?> variableManager;
   private boolean canTake;
 
   /**
@@ -71,21 +70,21 @@ public abstract class Requirement<V, L> {
   }
 
   /**
-   * Get the icon involved in this command
+   * Get the variable manager from the requirement
    *
-   * @return the icon
+   * @return the local variable manager
    */
-  protected Optional<Icon> getIcon() {
-    return Optional.ofNullable(icon);
+  protected LocalVariableManager<?> getVariableManager() {
+    return variableManager;
   }
 
   /**
-   * Set the icon to this command
+   * Set the variable manager to the requirement
    *
-   * @param icon the icon
+   * @param variableManager the variable manager
    */
-  public void setIcon(Icon icon) {
-    this.icon = icon;
+  public void setVariableManager(LocalVariableManager<?> variableManager) {
+    this.variableManager = variableManager;
   }
 
   /**
@@ -95,9 +94,10 @@ public abstract class Requirement<V, L> {
    * @param player the player involved in
    * @return the parsed string
    */
-  protected String parseFromString(String input, Player player) {
-    if (icon != null) {
-      return icon.hasVariables(input) ? icon.setVariables(input, player) : input;
+  protected final String parseFromString(String input, Player player) {
+    if (variableManager != null) {
+      return variableManager.hasVariables(input) ? variableManager.setVariables(input, player)
+          : input;
     } else {
       return VariableManager.hasVariables(input) ? VariableManager.setVariables(input, player)
           : input;

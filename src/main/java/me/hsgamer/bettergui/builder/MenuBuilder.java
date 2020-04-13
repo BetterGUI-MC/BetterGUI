@@ -10,7 +10,7 @@ import me.hsgamer.bettergui.object.menu.SimpleMenu;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class MenuBuilder {
+public final class MenuBuilder {
 
   private static final Map<String, Class<? extends Menu<?>>> menuTypes = new CaseInsensitiveStringMap<>();
 
@@ -48,6 +48,7 @@ public class MenuBuilder {
     });
   }
 
+  @SuppressWarnings("SuspiciousMethodCalls")
   public static Menu<?> getMenu(String name, FileConfiguration file) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(file.getValues(true));
     if (keys.containsKey("menu-settings.menu-type")) {

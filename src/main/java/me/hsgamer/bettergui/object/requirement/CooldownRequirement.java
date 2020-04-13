@@ -5,18 +5,17 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
-import me.hsgamer.bettergui.object.Icon;
-import me.hsgamer.bettergui.object.IconVariable;
+import me.hsgamer.bettergui.object.LocalVariable;
+import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
 import org.bukkit.entity.Player;
 
-public class CooldownRequirement extends Requirement<Object, Duration> implements IconVariable {
+public class CooldownRequirement extends Requirement<Object, Duration> implements LocalVariable {
 
   private final Map<UUID, Instant> cooldownMap = new HashMap<>();
 
@@ -30,8 +29,8 @@ public class CooldownRequirement extends Requirement<Object, Duration> implement
   }
 
   @Override
-  public Optional<Icon> getIconInvolved() {
-    return getIcon();
+  public LocalVariableManager<?> getInvolved() {
+    return getVariableManager();
   }
 
   @Override

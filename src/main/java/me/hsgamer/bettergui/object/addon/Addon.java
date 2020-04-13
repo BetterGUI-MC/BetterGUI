@@ -31,7 +31,7 @@ public abstract class Addon {
     this.jarFile = addonClassLoader.getFile();
   }
 
-  protected AddonClassLoader getClassLoader() {
+  protected final AddonClassLoader getClassLoader() {
     return addonClassLoader;
   }
 
@@ -51,24 +51,28 @@ public abstract class Addon {
    * Called when enabling the addon
    */
   public void onEnable() {
+    // EMPTY
   }
 
   /**
    * Called after all addons enabled
    */
   public void onPostEnable() {
+    // EMPTY
   }
 
   /**
    * Called when disabling the addon
    */
   public void onDisable() {
+    // EMPTY
   }
 
   /**
    * Called when reloading
    */
   public void onReload() {
+    // EMPTY
   }
 
   /**
@@ -76,7 +80,7 @@ public abstract class Addon {
    *
    * @return the plugin
    */
-  protected BetterGUI getPlugin() {
+  public final BetterGUI getPlugin() {
     return BetterGUI.getInstance();
   }
 
@@ -85,7 +89,7 @@ public abstract class Addon {
    *
    * @return the description
    */
-  public AddonDescription getDescription() {
+  public final AddonDescription getDescription() {
     return description;
   }
 
@@ -98,7 +102,7 @@ public abstract class Addon {
    *
    * @param command the Command object
    */
-  public void registerCommand(Command command) {
+  public final void registerCommand(Command command) {
     getPlugin().getAddonManager().registerCommand(this, command);
   }
 
@@ -107,14 +111,14 @@ public abstract class Addon {
    *
    * @param command the Command object
    */
-  public void unregisterCommand(Command command) {
+  public final void unregisterCommand(Command command) {
     getPlugin().getAddonManager().unregisterCommand(this, command);
   }
 
   /**
    * Create the config
    */
-  public void setupConfig() {
+  public final void setupConfig() {
     config = new PluginConfig(getPlugin(), new File(getDataFolder(), "config.yml"));
   }
 
@@ -123,7 +127,7 @@ public abstract class Addon {
    *
    * @return the config
    */
-  public FileConfiguration getConfig() {
+  public final FileConfiguration getConfig() {
     if (config == null) {
       setupConfig();
     }
@@ -133,7 +137,7 @@ public abstract class Addon {
   /**
    * Reload the config
    */
-  public void reloadConfig() {
+  public final void reloadConfig() {
     if (config == null) {
       setupConfig();
     } else {
@@ -144,7 +148,7 @@ public abstract class Addon {
   /**
    * Save the config
    */
-  public void saveConfig() {
+  public final void saveConfig() {
     if (config == null) {
       setupConfig();
     } else {
@@ -157,7 +161,7 @@ public abstract class Addon {
    *
    * @return the directory for the addon
    */
-  public File getDataFolder() {
+  public final File getDataFolder() {
     if (dataFolder == null) {
       dataFolder = new File(getPlugin().getDataFolder(),
           "addon" + File.separator + description.getName());
@@ -174,7 +178,7 @@ public abstract class Addon {
    * @param path    path to resource
    * @param replace whether it replaces the existed one
    */
-  public void saveResource(String path, boolean replace) {
+  public final void saveResource(String path, boolean replace) {
     if (Validate.isNullOrEmpty(path)) {
       throw new IllegalArgumentException("Path cannot be null or empty");
     }
@@ -208,7 +212,7 @@ public abstract class Addon {
    * @param path path to resource
    * @return the InputStream of the resource, or null if it's not found
    */
-  public InputStream getResource(String path) {
+  public final InputStream getResource(String path) {
     if (Validate.isNullOrEmpty(path)) {
       throw new IllegalArgumentException("Path cannot be null or empty");
     }
@@ -232,7 +236,7 @@ public abstract class Addon {
    *
    * @param listener the listener to register
    */
-  public void registerListener(Listener listener) {
+  public final void registerListener(Listener listener) {
     getPlugin().getAddonManager().registerListener(this, listener);
   }
 
@@ -241,7 +245,7 @@ public abstract class Addon {
    *
    * @param listener the listener to unregister
    */
-  public void unregisterListener(Listener listener) {
+  public final void unregisterListener(Listener listener) {
     getPlugin().getAddonManager().unregisterListener(this, listener);
   }
 }

@@ -1,12 +1,11 @@
 package me.hsgamer.bettergui.object;
 
-import java.util.Optional;
 import org.bukkit.entity.Player;
 
 /**
- * Same as GlobalVariable but this is icon-only
+ * Same as GlobalVariable but this is local
  */
-public interface IconVariable {
+public interface LocalVariable {
 
   /**
    * @return a string identifying the variable
@@ -14,9 +13,9 @@ public interface IconVariable {
   String getIdentifier();
 
   /**
-   * @return the icon involved in
+   * @return the variable manager
    */
-  Optional<Icon> getIconInvolved();
+  LocalVariableManager<?> getInvolved();
 
   /**
    * Get the string from the variable

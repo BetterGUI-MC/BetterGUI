@@ -7,7 +7,7 @@ import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-public class CommonUtils {
+public final class CommonUtils {
 
   private CommonUtils() {
 

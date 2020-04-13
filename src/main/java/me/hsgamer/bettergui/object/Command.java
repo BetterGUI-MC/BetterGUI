@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.object;
 
 import co.aikar.taskchain.TaskChain;
-import java.util.Optional;
 import me.hsgamer.bettergui.manager.VariableManager;
 import org.bukkit.entity.Player;
 
@@ -9,7 +8,7 @@ public abstract class Command {
 
   protected final boolean hasVariables;
   private final String string;
-  private Icon icon;
+  private LocalVariableManager<?> variableManager;
 
   public Command(String string) {
     this.string = string;
@@ -23,8 +22,8 @@ public abstract class Command {
    * @return the parsed command
    */
   protected String getParsedCommand(Player executor) {
-    if (icon != null) {
-      return hasVariables ? icon.setVariables(string, executor) : string;
+    if (variableManager != null) {
+      return hasVariables ? variableManager.setVariables(string, executor) : string;
     } else {
       return hasVariables ? VariableManager.setVariables(string, executor) : string;
     }
@@ -39,20 +38,20 @@ public abstract class Command {
   public abstract void addToTaskChain(Player player, TaskChain<?> taskChain);
 
   /**
-   * Get the icon involved in this command
+   * Get the variable manager from the command
    *
-   * @return the icon
+   * @return the local variable manager
    */
-  protected Optional<Icon> getIcon() {
-    return Optional.ofNullable(icon);
+  protected LocalVariableManager<?> getVariableManager() {
+    return variableManager;
   }
 
   /**
-   * Set the icon to this command
+   * Set the variable manager to the command
    *
-   * @param icon the icon
+   * @param variableManager the icon
    */
-  public void setIcon(Icon icon) {
-    this.icon = icon;
+  public void setVariableManager(LocalVariableManager<?> variableManager) {
+    this.variableManager = variableManager;
   }
 }

@@ -31,7 +31,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
-public class AddonManager {
+public final class AddonManager {
 
   private final Map<String, Addon> addons = new HashMap<>();
   private final Map<Addon, AddonClassLoader> loaderMap = new HashMap<>();

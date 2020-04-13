@@ -5,7 +5,7 @@ package me.hsgamer.bettergui.object;
  *
  * @param <V> The final value type from getValue()
  */
-public abstract class Property<V> {
+public class Property<V> {
 
   protected V value;
 

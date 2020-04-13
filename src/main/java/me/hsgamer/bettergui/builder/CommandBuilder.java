@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.object.Command;
-import me.hsgamer.bettergui.object.Icon;
+import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.command.BackCommand;
 import me.hsgamer.bettergui.object.command.BroadcastCommand;
 import me.hsgamer.bettergui.object.command.CloseMenuCommand;
@@ -23,7 +23,7 @@ import me.hsgamer.bettergui.object.command.PlayerCommand;
 import me.hsgamer.bettergui.object.command.TellCommand;
 import me.hsgamer.bettergui.object.command.UpdateMenuCommand;
 
-public class CommandBuilder {
+public final class CommandBuilder {
 
   private static final Map<Pattern, Class<? extends Command>> commands = new HashMap<>();
 
@@ -72,11 +72,12 @@ public class CommandBuilder {
     }
   }
 
-  public static List<Command> getCommands(Icon icon, List<String> input) {
+  public static List<Command> getCommands(LocalVariableManager<?> localVariableManager,
+      List<String> input) {
     input.replaceAll(String::trim);
 
     List<Command> list = new ArrayList<>();
-    input.forEach(string -> list.add(getCommand(icon, string)));
+    input.forEach(string -> list.add(getCommand(localVariableManager, string)));
     return list;
   }
 
@@ -84,11 +85,11 @@ public class CommandBuilder {
   /**
    * Get Command object from a String
    *
-   * @param icon  the icon that involves the command
-   * @param input the command string
+   * @param localVariableManager the local variable manager that involves the command
+   * @param input                the command string
    * @return Command Object
    */
-  public static Command getCommand(Icon icon, String input) {
+  public static Command getCommand(LocalVariableManager<?> localVariableManager, String input) {
     for (Entry<Pattern, Class<? extends Command>> entry : commands.entrySet()) {
       Matcher matcher = entry.getKey().matcher(input);
       if (matcher.find()) {
@@ -97,9 +98,7 @@ public class CommandBuilder {
         try {
           Command command = entry.getValue().getDeclaredConstructor(String.class)
               .newInstance(cleanCommand);
-          if (icon != null) {
-            command.setIcon(icon);
-          }
+          command.setVariableManager(localVariableManager);
           return command;
         } catch (Exception e) {
           // Checked at startup
@@ -108,9 +107,7 @@ public class CommandBuilder {
     }
 
     Command command = new PlayerCommand(input);
-    if (icon != null) {
-      command.setIcon(icon);
-    }
+    command.setVariableManager(localVariableManager);
     return command;
   }
 }

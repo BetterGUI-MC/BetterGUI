@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-public class VersionChecker {
+public final class VersionChecker {
 
   private final Plugin plugin;
   private final int resourceId;

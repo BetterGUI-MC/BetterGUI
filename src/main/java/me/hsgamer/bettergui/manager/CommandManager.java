@@ -20,7 +20,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class CommandManager {
+public final class CommandManager {
 
   private final HashMap<String, Command> registered = new HashMap<>();
   private final HashMap<String, Command> registeredMenuCommand = new HashMap<>();

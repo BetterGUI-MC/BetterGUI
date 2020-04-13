@@ -1,12 +1,19 @@
 package me.hsgamer.bettergui.object;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import me.hsgamer.bettergui.manager.VariableManager;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-public abstract class Menu<T> {
+public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
 
+  private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private final String name;
+  private final Map<String, LocalVariable> variables = new HashMap<>();
   private Menu<?> parentMenu;
 
   public Menu(String name) {
@@ -57,5 +64,36 @@ public abstract class Menu<T> {
    */
   public void setParentMenu(Menu<?> parentMenu) {
     this.parentMenu = parentMenu;
+  }
+
+  @Override
+  public void registerVariable(String identifier, LocalVariable variable) {
+    variables.put(identifier, variable);
+  }
+
+  @Override
+  public Menu<?> getParent() {
+    return this;
+  }
+
+  @Override
+  public boolean hasVariables(String message) {
+    if (message == null || message.trim().isEmpty()) {
+      return false;
+    }
+    if (VariableManager.hasVariables(message) || (parentMenu != null && parentMenu
+        .hasVariables(message))) {
+      return true;
+    }
+    return Validate.isMatch(message, pattern, variables.keySet());
+  }
+
+  @Override
+  public String setSingleVariables(String message, Player executor) {
+    message = setLocalVariables(message, executor, pattern, variables);
+    if (parentMenu != null) {
+      message = parentMenu.setSingleVariables(message, executor);
+    }
+    return message;
   }
 }
