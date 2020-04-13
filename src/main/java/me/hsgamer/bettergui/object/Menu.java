@@ -35,9 +35,10 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
    * Called when opening the menu for the player
    *
    * @param player the player involved in
+   * @param args   the arguments from the open command
    * @param bypass whether the plugin ignores the permission check
    */
-  public abstract void createInventory(Player player, boolean bypass);
+  public abstract void createInventory(Player player, String[] args, boolean bypass);
 
   public abstract void updateInventory(Player player);
 

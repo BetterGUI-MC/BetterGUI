@@ -107,7 +107,15 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
         if (keys.containsKey(Settings.COMMAND)) {
           CommonUtils.createStringListFromObject(keys.get(Settings.COMMAND), true)
-              .forEach(s -> getInstance().getCommandManager().registerMenuCommand(s, this));
+              .forEach(s -> {
+                if (s.contains(" ")) {
+                  getInstance().getLogger().warning(
+                      "Illegal characters in command '" + s + "'" + "in the menu '" + getName()
+                          + "'. Ignored");
+                } else {
+                  getInstance().getCommandManager().registerMenuCommand(s, this);
+                }
+              });
         }
 
         if (keys.containsKey(Settings.PERMISSION)) {
@@ -138,7 +146,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   }
 
   @Override
-  public void createInventory(Player player, boolean bypass) {
+  public void createInventory(Player player, String[] args, boolean bypass) {
     if (bypass || player.hasPermission(permission)) {
       // Check Requirement
       if (!bypass && viewRequirement != null) {

@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.object.command;
 
 import co.aikar.taskchain.TaskChain;
+import java.util.Arrays;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Command;
@@ -16,15 +17,24 @@ public class OpenMenuCommand extends Command {
 
   @Override
   public void addToTaskChain(Player player, TaskChain<?> taskChain) {
-    String parsed = getParsedCommand(player);
-    if (BetterGUI.getInstance().getMenuManager().contains(parsed)) {
+    // Get Menu and Arguments
+    String[] split = getParsedCommand(player).split(" ");
+    String menu = split[0];
+    String[] args = new String[0];
+    if (split.length > 1) {
+      args = Arrays.copyOfRange(split, 1, split.length);
+    }
+
+    // Open menu
+    if (BetterGUI.getInstance().getMenuManager().contains(menu)) {
       Object icon = getVariableManager().getParent();
+      String[] finalArgs = args;
       if (icon instanceof Icon) {
         taskChain.sync(() -> BetterGUI.getInstance().getMenuManager()
-            .openMenu(parsed, player, ((Icon) icon).getMenu(), false));
+            .openMenu(menu, player, finalArgs, ((Icon) icon).getMenu(), false));
       } else {
         taskChain
-            .sync(() -> BetterGUI.getInstance().getMenuManager().openMenu(parsed, player, false));
+            .sync(() -> BetterGUI.getInstance().getMenuManager().openMenu(menu, player, finalArgs, false));
       }
     } else {
       CommonUtils.sendMessage(player,

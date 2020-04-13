@@ -75,7 +75,7 @@ public class DummyMenu extends Menu<FastInv> {
 
   @SuppressWarnings("OptionalGetWithoutIsPresent")
   @Override
-  public void createInventory(Player player, boolean bypass) {
+  public void createInventory(Player player, String[] args, boolean bypass) {
     if (bypass || player.hasPermission(permission)) {
       FastInv inventory = initInventory(player);
       icons.values()

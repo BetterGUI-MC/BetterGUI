@@ -47,11 +47,13 @@ public final class MenuManager {
    *
    * @param name   the menu name
    * @param player the player
+   * @param args   the arguments from the open command
    * @param bypass whether the plugin ignores the permission check
    */
-  public void openMenu(String name, Player player, boolean bypass) {
+  public void openMenu(String name, Player player, String[] args, boolean bypass) {
     menuMap.get(name)
-        .createInventory(player, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
+        .createInventory(player, args,
+            bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
   }
 
   /**
@@ -59,13 +61,16 @@ public final class MenuManager {
    *
    * @param name       the menu name
    * @param player     the player
+   * @param args       the arguments from the open command
    * @param parentMenu the former menu that causes the player to open this menu
    * @param bypass     whether the plugin ignores the permission check
    */
-  public void openMenu(String name, Player player, Menu<?> parentMenu, boolean bypass) {
+  public void openMenu(String name, Player player, String[] args, Menu<?> parentMenu,
+      boolean bypass) {
     Menu<?> menu = menuMap.get(name);
     menu.setParentMenu(parentMenu);
-    menu.createInventory(player, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
+    menu.createInventory(player, args,
+        bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
   }
 
   /**

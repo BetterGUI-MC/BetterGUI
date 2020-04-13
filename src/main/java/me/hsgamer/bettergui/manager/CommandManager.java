@@ -124,11 +124,11 @@ public final class CommandManager {
       @Override
       public boolean execute(CommandSender commandSender, String s, String[] strings) {
         if (commandSender instanceof Player) {
-          menu.createInventory((Player) commandSender, commandSender.hasPermission(
-              Permissions.OPEN_MENU_BYPASS));
+          menu.createInventory((Player) commandSender, strings,
+              commandSender.hasPermission(Permissions.OPEN_MENU_BYPASS));
         } else {
-          CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-              DefaultMessage.PLAYER_ONLY));
+          CommonUtils.sendMessage(commandSender,
+              BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
         }
         return true;
       }
