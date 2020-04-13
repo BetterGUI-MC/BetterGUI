@@ -6,6 +6,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
+import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.entity.Player;
 
@@ -27,14 +28,23 @@ public class OpenMenuCommand extends Command {
 
     // Open menu
     if (BetterGUI.getInstance().getMenuManager().contains(menu)) {
-      Object icon = getVariableManager().getParent();
       String[] finalArgs = args;
-      if (icon instanceof Icon) {
+      Menu<?> parentMenu = null;
+
+      Object object = getVariableManager().getParent();
+      if (object instanceof Icon) {
+        parentMenu = ((Icon) object).getMenu();
+      } else if (object instanceof Menu) {
+        parentMenu = (Menu<?>) object;
+      }
+
+      Menu<?> finalParentMenu = parentMenu;
+      if (parentMenu != null) {
         taskChain.sync(() -> BetterGUI.getInstance().getMenuManager()
-            .openMenu(menu, player, finalArgs, ((Icon) icon).getMenu(), false));
+            .openMenu(menu, player, finalArgs, finalParentMenu, false));
       } else {
-        taskChain
-            .sync(() -> BetterGUI.getInstance().getMenuManager().openMenu(menu, player, finalArgs, false));
+        taskChain.sync(() -> BetterGUI.getInstance().getMenuManager()
+            .openMenu(menu, player, finalArgs, false));
       }
     } else {
       CommonUtils.sendMessage(player,
