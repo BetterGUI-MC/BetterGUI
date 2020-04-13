@@ -43,11 +43,11 @@ public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
   }
 
   @Override
-  public boolean hasVariables(String message) {
+  public boolean hasVariables(Player player, String message) {
     if (message == null || message.trim().isEmpty()) {
       return false;
     }
-    if (menu.hasVariables(message)) {
+    if (menu.hasVariables(player, message)) {
       return true;
     }
     return Validate.isMatch(message, pattern, variables.keySet());

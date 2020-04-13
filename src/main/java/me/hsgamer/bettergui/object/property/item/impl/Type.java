@@ -15,9 +15,7 @@ public class Type extends ItemProperty<String, Optional<XMaterial>> {
 
   @Override
   public Optional<XMaterial> getParsed(Player player) {
-    String value = getValue();
-    value = getIcon().hasVariables(value) ? getIcon().setVariables(value, player) : value;
-    return XMaterial.matchXMaterial(value);
+    return XMaterial.matchXMaterial(parseFromString(getValue(), player));
   }
 
   @Override

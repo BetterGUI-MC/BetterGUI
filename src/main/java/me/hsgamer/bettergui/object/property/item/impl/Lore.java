@@ -24,8 +24,7 @@ public class Lore extends ItemProperty<List<String>, List<String>> {
   @Override
   public List<String> getParsed(Player player) {
     List<String> parsed = new ArrayList<>();
-    getValue().forEach(lore -> parsed
-        .add(getIcon().hasVariables(lore) ? getIcon().setVariables(lore, player) : lore));
+    getValue().forEach(lore -> parsed.add(parseFromString(lore, player)));
     return parsed;
   }
 

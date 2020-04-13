@@ -68,7 +68,7 @@ public final class MenuManager {
   public void openMenu(String name, Player player, String[] args, Menu<?> parentMenu,
       boolean bypass) {
     Menu<?> menu = menuMap.get(name);
-    menu.setParentMenu(parentMenu);
+    menu.setParentMenu(player, parentMenu);
     menu.createInventory(player, args,
         bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
   }

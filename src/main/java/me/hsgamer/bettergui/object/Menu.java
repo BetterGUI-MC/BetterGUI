@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.object;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.util.Validate;
@@ -14,7 +15,7 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private final String name;
   private final Map<String, LocalVariable> variables = new HashMap<>();
-  private Menu<?> parentMenu;
+  private final Map<UUID, Menu<?>> parentMenu = new HashMap<>();
 
   public Menu(String name) {
     this.name = name;
@@ -52,19 +53,21 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   /**
    * Get the former menu that opened this menu
    *
+   * @param player the player
    * @return the former menu
    */
-  public Optional<Menu<?>> getParentMenu() {
-    return Optional.ofNullable(parentMenu);
+  public Optional<Menu<?>> getParentMenu(Player player) {
+    return Optional.ofNullable(parentMenu.get(player.getUniqueId()));
   }
 
   /**
    * Set the former menu
    *
-   * @param parentMenu the former menu
+   * @param player the player
+   * @param menu   the former menu
    */
-  public void setParentMenu(Menu<?> parentMenu) {
-    this.parentMenu = parentMenu;
+  public void setParentMenu(Player player, Menu<?> menu) {
+    parentMenu.put(player.getUniqueId(), menu);
   }
 
   @Override
@@ -78,23 +81,29 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   }
 
   @Override
-  public boolean hasVariables(String message) {
+  public boolean hasVariables(Player player, String message) {
     if (message == null || message.trim().isEmpty()) {
       return false;
     }
-    if (VariableManager.hasVariables(message) || (parentMenu != null && parentMenu
-        .hasVariables(message))) {
+
+    UUID uuid = player.getUniqueId();
+    if (VariableManager.hasVariables(message) ||
+        (parentMenu.containsKey(uuid) && parentMenu.get(uuid).hasVariables(player, message))) {
       return true;
     }
+
     return Validate.isMatch(message, pattern, variables.keySet());
   }
 
   @Override
   public String setSingleVariables(String message, Player executor) {
     message = setLocalVariables(message, executor, pattern, variables);
-    if (parentMenu != null) {
-      message = parentMenu.setSingleVariables(message, executor);
+
+    UUID uuid = executor.getUniqueId();
+    if (parentMenu.containsKey(uuid)) {
+      message = parentMenu.get(uuid).setSingleVariables(message, executor);
     }
+
     return message;
   }
 }

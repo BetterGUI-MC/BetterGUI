@@ -24,10 +24,11 @@ public interface LocalVariableManager<T> {
   /**
    * Check if the string contains variables
    *
+   * @param player  the player
    * @param message the string
    * @return true if it has, otherwise false
    */
-  boolean hasVariables(String message);
+  boolean hasVariables(Player player, String message);
 
   /**
    * Replace the variables of the string
@@ -41,7 +42,7 @@ public interface LocalVariableManager<T> {
     do {
       old = message;
       message = setSingleVariables(message, executor);
-    } while (hasVariables(message) && !old.equals(message));
+    } while (hasVariables(executor, message) && !old.equals(message));
     return VariableManager.setVariables(message, executor);
   }
 

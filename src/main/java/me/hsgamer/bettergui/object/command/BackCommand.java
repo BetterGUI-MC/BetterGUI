@@ -18,10 +18,11 @@ public class BackCommand extends Command {
   public void addToTaskChain(Player player, TaskChain<?> taskChain) {
     Object object = getVariableManager().getParent();
     if (object instanceof Icon) {
-      Optional<Menu<?>> parentMenu = ((Icon) object).getMenu().getParentMenu();
+      Optional<Menu<?>> parentMenu = ((Icon) object).getMenu().getParentMenu(player);
       if (parentMenu.isPresent()) {
         parentMenu.get()
-            .createInventory(player, new String[0], player.hasPermission(Permissions.OPEN_MENU_BYPASS));
+            .createInventory(player, new String[0],
+                player.hasPermission(Permissions.OPEN_MENU_BYPASS));
       } else {
         player.closeInventory();
       }

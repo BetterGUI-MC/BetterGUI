@@ -96,7 +96,8 @@ public abstract class Requirement<V, L> {
    */
   protected final String parseFromString(String input, Player player) {
     if (variableManager != null) {
-      return variableManager.hasVariables(input) ? variableManager.setVariables(input, player)
+      return variableManager.hasVariables(player, input) ? variableManager
+          .setVariables(input, player)
           : input;
     } else {
       return VariableManager.hasVariables(input) ? VariableManager.setVariables(input, player)
