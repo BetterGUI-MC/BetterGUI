@@ -1,8 +1,8 @@
 package me.hsgamer.bettergui.object.property.icon.impl;
 
-import java.util.Optional;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.LocalVariable;
+import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.property.IconProperty;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -18,15 +18,15 @@ public class Variable extends IconProperty<ConfigurationSection> {
     super.setValue(value);
     getValue().getValues(false).forEach((prefix, object) -> {
       String parsed = String.valueOf(object);
-      getIcon().registerVariable(prefix, new LocalVariable<Icon>() {
+      getIcon().registerVariable(prefix, new LocalVariable() {
         @Override
         public String getIdentifier() {
           return prefix;
         }
 
         @Override
-        public Optional<Icon> getInvolved() {
-          return Optional.of(getIcon());
+        public LocalVariableManager<?> getInvolved() {
+          return getIcon();
         }
 
         @Override

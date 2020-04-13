@@ -1,12 +1,11 @@
 package me.hsgamer.bettergui.object;
 
-import java.util.Optional;
 import org.bukkit.entity.Player;
 
 /**
  * Same as GlobalVariable but this is local
  */
-public interface LocalVariable<T> {
+public interface LocalVariable {
 
   /**
    * @return a string identifying the variable
@@ -14,9 +13,9 @@ public interface LocalVariable<T> {
   String getIdentifier();
 
   /**
-   * @return the icon involved in
+   * @return the variable manager
    */
-  Optional<T> getInvolved();
+  LocalVariableManager<?> getInvolved();
 
   /**
    * Get the string from the variable

@@ -3,7 +3,6 @@ package me.hsgamer.bettergui.object;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.util.Validate;
@@ -14,7 +13,7 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
 
   private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private final String name;
-  private final Map<String, LocalVariable<Menu<?>>> variables = new HashMap<>();
+  private final Map<String, LocalVariable> variables = new HashMap<>();
   private Menu<?> parentMenu;
 
   public Menu(String name) {
@@ -68,8 +67,13 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   }
 
   @Override
-  public void registerVariable(String identifier, LocalVariable<Menu<?>> variable) {
+  public void registerVariable(String identifier, LocalVariable variable) {
     variables.put(identifier, variable);
+  }
+
+  @Override
+  public Menu<?> getParent() {
+    return this;
   }
 
   @Override
@@ -85,20 +89,7 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
 
   @Override
   public String setSingleVariables(String message, Player executor) {
-    Matcher matcher = pattern.matcher(message);
-    while (matcher.find()) {
-      String identifier = matcher.group(1).trim();
-      for (Map.Entry<String, LocalVariable<Menu<?>>> variable : variables.entrySet()) {
-        if (identifier.startsWith(variable.getKey())) {
-          String replace = variable.getValue()
-              .getReplacement(executor, identifier.substring(variable.getKey().length()));
-          if (replace != null) {
-            message = message
-                .replaceAll(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
-          }
-        }
-      }
-    }
+    message = setLocalVariables(message, executor, pattern, variables);
     return message;
   }
 }

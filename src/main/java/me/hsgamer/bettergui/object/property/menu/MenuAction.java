@@ -17,8 +17,7 @@ public class MenuAction extends MenuProperty<Object, TaskChain<?>> {
   @Override
   public TaskChain<?> getParsed(Player player) {
     TaskChain<?> taskChain = BetterGUI.newChain();
-    CommandBuilder.getCommands(null,
-        CommonUtils.createStringListFromObject(getValue(), true))
+    CommandBuilder.getCommands(getMenu(), CommonUtils.createStringListFromObject(getValue(), true))
         .forEach(command -> command.addToTaskChain(player, taskChain));
     return taskChain;
   }

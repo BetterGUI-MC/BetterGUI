@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.object.command;
 
 import co.aikar.taskchain.TaskChain;
 import me.hsgamer.bettergui.object.Command;
+import me.hsgamer.bettergui.object.Icon;
 import org.bukkit.entity.Player;
 
 public class UpdateMenuCommand extends Command {
@@ -12,6 +13,9 @@ public class UpdateMenuCommand extends Command {
 
   @Override
   public void addToTaskChain(Player player, TaskChain<?> taskChain) {
-    getIcon().ifPresent(icon -> taskChain.sync(() -> icon.getMenu().updateInventory(player)));
+    Object object = getVariableManager().getParent();
+    if (object instanceof Icon) {
+      taskChain.sync(() -> ((Icon) object).getMenu().updateInventory(player));
+    }
   }
 }

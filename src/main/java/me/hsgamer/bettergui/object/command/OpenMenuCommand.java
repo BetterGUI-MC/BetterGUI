@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.object.command;
 
 import co.aikar.taskchain.TaskChain;
-import java.util.Optional;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Command;
@@ -19,10 +18,10 @@ public class OpenMenuCommand extends Command {
   public void addToTaskChain(Player player, TaskChain<?> taskChain) {
     String parsed = getParsedCommand(player);
     if (BetterGUI.getInstance().getMenuManager().contains(parsed)) {
-      Optional<Icon> icon = getIcon();
-      if (icon.isPresent()) {
+      Object icon = getVariableManager().getParent();
+      if (icon instanceof Icon) {
         taskChain.sync(() -> BetterGUI.getInstance().getMenuManager()
-            .openMenu(parsed, player, icon.get().getMenu(), false));
+            .openMenu(parsed, player, ((Icon) icon).getMenu(), false));
       } else {
         taskChain
             .sync(() -> BetterGUI.getInstance().getMenuManager().openMenu(parsed, player, false));

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.util.Validate;
@@ -16,7 +15,7 @@ public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
   private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private final String name;
   private final Menu<?> menu;
-  private final Map<String, LocalVariable<Icon>> variables = new HashMap<>();
+  private final Map<String, LocalVariable> variables = new HashMap<>();
 
   public Icon(String name, Menu<?> menu) {
     this.name = name;
@@ -34,7 +33,12 @@ public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
   }
 
   @Override
-  public void registerVariable(String identifier, LocalVariable<Icon> variable) {
+  public Icon getParent() {
+    return this;
+  }
+
+  @Override
+  public void registerVariable(String identifier, LocalVariable variable) {
     variables.put(identifier, variable);
   }
 
@@ -51,20 +55,7 @@ public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
 
   @Override
   public String setSingleVariables(String message, Player executor) {
-    Matcher matcher = pattern.matcher(message);
-    while (matcher.find()) {
-      String identifier = matcher.group(1).trim();
-      for (Map.Entry<String, LocalVariable<Icon>> variable : variables.entrySet()) {
-        if (identifier.startsWith(variable.getKey())) {
-          String replace = variable.getValue()
-              .getReplacement(executor, identifier.substring(variable.getKey().length()));
-          if (replace != null) {
-            message = message
-                .replaceAll(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
-          }
-        }
-      }
-    }
+    message = setLocalVariables(message, executor, pattern, variables);
     return menu.setSingleVariables(message, executor);
   }
 

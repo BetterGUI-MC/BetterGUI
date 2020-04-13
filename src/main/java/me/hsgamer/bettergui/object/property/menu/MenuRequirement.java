@@ -14,6 +14,6 @@ public class MenuRequirement extends MenuProperty<ConfigurationSection, GlobalRe
 
   @Override
   public GlobalRequirement getParsed(Player player) {
-    return new GlobalRequirement(getValue());
+    return new GlobalRequirement(getMenu(), getValue());
   }
 }

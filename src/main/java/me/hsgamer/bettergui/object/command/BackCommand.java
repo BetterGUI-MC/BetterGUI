@@ -16,9 +16,9 @@ public class BackCommand extends Command {
 
   @Override
   public void addToTaskChain(Player player, TaskChain<?> taskChain) {
-    Optional<Icon> icon = getIcon();
-    if (icon.isPresent()) {
-      Optional<Menu<?>> parentMenu = icon.get().getMenu().getParentMenu();
+    Object object = getVariableManager().getParent();
+    if (object instanceof Icon) {
+      Optional<Menu<?>> parentMenu = ((Icon) object).getMenu().getParentMenu();
       if (parentMenu.isPresent()) {
         parentMenu.get()
             .createInventory(player, player.hasPermission(Permissions.OPEN_MENU_BYPASS));

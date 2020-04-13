@@ -16,6 +16,7 @@ import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.GlobalRequirement;
 import me.hsgamer.bettergui.object.Icon;
+import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.ParentIcon;
 import me.hsgamer.bettergui.object.menu.SimpleMenu.SimpleInventory;
@@ -87,9 +88,18 @@ public class SimpleMenu extends Menu<SimpleInventory> {
                   viewRequirement = ((MenuRequirement) menuProperty).getParsed(null);
                 } else if (setting.equals("close-requirement")) {
                   closeRequirement = ((MenuRequirement) menuProperty).getParsed(null);
+                  closeRequirement.getRequirements().forEach(
+                      requirementSet -> requirementSet.getRequirements().forEach(requirement -> {
+                        if (requirement instanceof LocalVariable) {
+                          registerVariable(String.join("_", "close", requirementSet.getName(),
+                              ((LocalVariable) requirement).getIdentifier()),
+                              (LocalVariable) requirement);
+                        }
+                      }));
                 }
               } else if (menuProperty instanceof MenuVariable) {
-                ((MenuVariable) menuProperty).getParsed(null).forEach(menuLocalVariable -> this.registerVariable(menuLocalVariable.getIdentifier(), menuLocalVariable));
+                ((MenuVariable) menuProperty).getParsed(null).forEach(menuLocalVariable -> this
+                    .registerVariable(menuLocalVariable.getIdentifier(), menuLocalVariable));
               }
             });
 

@@ -97,14 +97,13 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     taskChain.execute();
   }
 
-  @SuppressWarnings("unchecked")
   private void registerVariable(String prefix, List<RequirementSet> requirementSets) {
     requirementSets
         .forEach(requirementSet -> requirementSet.getRequirements().forEach(iconRequirement -> {
           if (iconRequirement instanceof LocalVariable) {
             getIcon().registerVariable(String.join("_", prefix, requirementSet.getName(),
-                ((LocalVariable<Icon>) iconRequirement).getIdentifier()),
-                (LocalVariable<Icon>) iconRequirement);
+                ((LocalVariable) iconRequirement).getIdentifier()),
+                (LocalVariable) iconRequirement);
           }
         }));
   }
