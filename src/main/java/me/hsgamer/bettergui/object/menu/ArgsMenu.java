@@ -72,11 +72,18 @@ public class ArgsMenu extends SimpleMenu {
 
   @Override
   public void createInventory(Player player, String[] args, boolean bypass) {
-    if (args.length < minArgs) {
-      CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.NOT_ENOUGH_ARGS));
-      return;
+    UUID uuid = player.getUniqueId();
+    if (argsPerPlayer.containsKey(uuid)) {
+      if (args.length >= minArgs) {
+        argsPerPlayer.put(uuid, Arrays.asList(args));
+      }
+    } else {
+      if (args.length < minArgs) {
+        CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.NOT_ENOUGH_ARGS));
+        return;
+      }
+      argsPerPlayer.put(player.getUniqueId(), Arrays.asList(args));
     }
-    argsPerPlayer.put(player.getUniqueId(), Arrays.asList(args));
     super.createInventory(player, args, bypass);
   }
 
