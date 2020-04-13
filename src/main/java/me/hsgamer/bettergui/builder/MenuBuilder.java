@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
 import me.hsgamer.bettergui.object.Menu;
+import me.hsgamer.bettergui.object.menu.ArgsMenu;
 import me.hsgamer.bettergui.object.menu.DummyMenu;
 import me.hsgamer.bettergui.object.menu.SimpleMenu;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
@@ -17,6 +18,7 @@ public final class MenuBuilder {
   static {
     register("dummy", DummyMenu.class);
     register("simple", SimpleMenu.class);
+    register("args", ArgsMenu.class);
   }
 
   private MenuBuilder() {

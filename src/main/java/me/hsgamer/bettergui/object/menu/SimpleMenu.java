@@ -27,6 +27,7 @@ import me.hsgamer.bettergui.object.property.menu.MenuRows;
 import me.hsgamer.bettergui.object.property.menu.MenuTicks;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
 import me.hsgamer.bettergui.object.property.menu.MenuVariable;
+import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -103,7 +104,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
               }
             });
 
-        Map<String, Object> keys = settingsSection.getValues(false);
+        Map<String, Object> keys = new CaseInsensitiveStringMap<>(settingsSection.getValues(false));
 
         if (keys.containsKey(Settings.COMMAND)) {
           CommonUtils.createStringListFromObject(keys.get(Settings.COMMAND), true)
