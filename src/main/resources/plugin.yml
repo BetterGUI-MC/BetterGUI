@@ -1,5 +1,5 @@
 name: ${project.name}
-version: ${project.version}
+version: "${project.version}"
 main: ${project.mainClass}
 authors: [HSGamer]
 api-version: "1.13"
