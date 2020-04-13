@@ -81,7 +81,8 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
     if (message == null || message.trim().isEmpty()) {
       return false;
     }
-    if (VariableManager.hasVariables(message)) {
+    if (VariableManager.hasVariables(message) || (parentMenu != null && parentMenu
+        .hasVariables(message))) {
       return true;
     }
     return Validate.isMatch(message, pattern, variables.keySet());
@@ -90,6 +91,9 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   @Override
   public String setSingleVariables(String message, Player executor) {
     message = setLocalVariables(message, executor, pattern, variables);
+    if (parentMenu != null) {
+      message = parentMenu.setSingleVariables(message, executor);
+    }
     return message;
   }
 }
