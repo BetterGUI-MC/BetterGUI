@@ -98,9 +98,7 @@ public final class CommandBuilder {
         try {
           Command command = entry.getValue().getDeclaredConstructor(String.class)
               .newInstance(cleanCommand);
-          if (localVariableManager != null) {
-            command.setVariableManager(localVariableManager);
-          }
+          command.setVariableManager(localVariableManager);
           return command;
         } catch (Exception e) {
           // Checked at startup
@@ -109,9 +107,7 @@ public final class CommandBuilder {
     }
 
     Command command = new PlayerCommand(input);
-    if (localVariableManager != null) {
-      command.setVariableManager(localVariableManager);
-    }
+    command.setVariableManager(localVariableManager);
     return command;
   }
 }
