@@ -31,16 +31,10 @@ public final class CommonUtils {
     sender.sendMessage(colorize(message));
   }
 
-  @Deprecated
-  public static List<String> createStringListFromObject(Object value) {
-    return createStringListFromObject(value, true);
-  }
-
-  @SuppressWarnings("unchecked")
   public static List<String> createStringListFromObject(Object value, boolean trim) {
     List<String> list = new ArrayList<>();
     if (value instanceof List) {
-      list.addAll((List<String>) value);
+      ((List<?>) value).forEach(o -> list.add(String.valueOf(o)));
     } else {
       list.add(String.valueOf(value));
     }
