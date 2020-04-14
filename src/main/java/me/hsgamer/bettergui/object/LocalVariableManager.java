@@ -28,7 +28,19 @@ public interface LocalVariableManager<T> {
    * @param message the string
    * @return true if it has, otherwise false
    */
-  boolean hasVariables(Player player, String message);
+  default boolean hasVariables(Player player, String message) {
+    return hasVariables(player, message, true);
+  }
+
+  /**
+   * Check if the string contains variables
+   *
+   * @param player      the player
+   * @param message     the string
+   * @param checkParent whether it checks the the parent manager
+   * @return true if it has, otherwise false
+   */
+  boolean hasVariables(Player player, String message, boolean checkParent);
 
   /**
    * Replace the variables of the string
@@ -53,7 +65,19 @@ public interface LocalVariableManager<T> {
    * @param executor the player involved in
    * @return the replaced string
    */
-  String setSingleVariables(String message, Player executor);
+  default String setSingleVariables(String message, Player executor) {
+    return setSingleVariables(message, executor, true);
+  }
+
+  /**
+   * Replace the variables of the string (single time)
+   *
+   * @param message     the string
+   * @param executor    the player involved in
+   * @param checkParent whether it checks the the parent manager
+   * @return the replaced string
+   */
+  String setSingleVariables(String message, Player executor, boolean checkParent);
 
   /**
    * Replace the local variables of the string

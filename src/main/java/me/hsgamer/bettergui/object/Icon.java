@@ -43,20 +43,23 @@ public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
   }
 
   @Override
-  public boolean hasVariables(Player player, String message) {
+  public boolean hasVariables(Player player, String message, boolean checkParent) {
     if (message == null || message.trim().isEmpty()) {
       return false;
     }
-    if (menu.hasVariables(player, message)) {
+    if (checkParent && menu.hasVariables(player, message)) {
       return true;
     }
     return Validate.isMatch(message, pattern, variables.keySet());
   }
 
   @Override
-  public String setSingleVariables(String message, Player executor) {
+  public String setSingleVariables(String message, Player executor, boolean checkParent) {
     message = setLocalVariables(message, executor, pattern, variables);
-    return menu.setSingleVariables(message, executor);
+    if (checkParent) {
+      message = menu.setSingleVariables(message, executor);
+    }
+    return message;
   }
 
   /**

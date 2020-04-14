@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -81,14 +82,20 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   }
 
   @Override
-  public boolean hasVariables(Player player, String message) {
+  public boolean hasVariables(Player player, String message, boolean checkParent) {
     if (message == null || message.trim().isEmpty()) {
       return false;
     }
 
-    UUID uuid = player.getUniqueId();
-    if (VariableManager.hasVariables(message) ||
-        (parentMenu.containsKey(uuid) && parentMenu.get(uuid).hasVariables(player, message))) {
+    if (checkParent) {
+      for (Menu<?> pmenu : MenuManager.getAllParentMenu(this, player)) {
+        if (pmenu.hasVariables(player, message, false)) {
+          return true;
+        }
+      }
+    }
+
+    if (VariableManager.hasVariables(message)) {
       return true;
     }
 
@@ -96,12 +103,13 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   }
 
   @Override
-  public String setSingleVariables(String message, Player executor) {
+  public String setSingleVariables(String message, Player executor, boolean checkParent) {
     message = setLocalVariables(message, executor, pattern, variables);
 
-    UUID uuid = executor.getUniqueId();
-    if (parentMenu.containsKey(uuid)) {
-      message = parentMenu.get(uuid).setSingleVariables(message, executor);
+    if (checkParent) {
+      for (Menu<?> pmenu : MenuManager.getAllParentMenu(this, executor)) {
+        message = pmenu.setSingleVariables(message, executor, false);
+      }
     }
 
     return message;

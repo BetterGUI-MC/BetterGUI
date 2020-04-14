@@ -1,7 +1,10 @@
 package me.hsgamer.bettergui.manager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
@@ -15,6 +18,27 @@ import org.bukkit.entity.Player;
 public final class MenuManager {
 
   private final Map<String, Menu<?>> menuMap = new HashMap<>();
+
+  /**
+   * Get all parent menus from a menu
+   *
+   * @param menu   the start menu
+   * @param player the player
+   * @return all parent menus
+   */
+  public static List<Menu<?>> getAllParentMenu(Menu<?> menu, Player player) {
+    List<Menu<?>> list = new ArrayList<>();
+    Optional<Menu<?>> optional = menu.getParentMenu(player);
+    while (optional.isPresent()) {
+      Menu<?> parentMenu = optional.get();
+      if (list.contains(parentMenu)) {
+        break;
+      }
+      list.add(parentMenu);
+      optional = parentMenu.getParentMenu(player);
+    }
+    return list;
+  }
 
   public void registerMenu(PluginConfig file) {
     String name = file.getFileName();
