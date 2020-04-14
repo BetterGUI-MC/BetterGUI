@@ -22,8 +22,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class CommandManager {
 
-  private final HashMap<String, Command> registered = new HashMap<>();
-  private final HashMap<String, Command> registeredMenuCommand = new HashMap<>();
+  private final Map<String, Command> registered = new HashMap<>();
+  private final Map<String, Command> registeredMenuCommand = new HashMap<>();
   private final JavaPlugin plugin;
   private final Field knownCommandsField;
   private final CommandMap bukkitCommandMap;
