@@ -8,6 +8,7 @@ import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.util.CommonUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class OpenMenuCommand extends Command {
@@ -39,13 +40,16 @@ public class OpenMenuCommand extends Command {
       }
 
       Menu<?> finalParentMenu = parentMenu;
+      Runnable runnable;
       if (parentMenu != null) {
-        taskChain.sync(() -> BetterGUI.getInstance().getMenuManager()
-            .openMenu(menu, player, finalArgs, finalParentMenu, false));
+        runnable = () -> BetterGUI.getInstance().getMenuManager()
+            .openMenu(menu, player, finalArgs, finalParentMenu, false);
       } else {
-        taskChain.sync(() -> BetterGUI.getInstance().getMenuManager()
-            .openMenu(menu, player, finalArgs, false));
+        runnable = () -> BetterGUI.getInstance().getMenuManager()
+            .openMenu(menu, player, finalArgs, false);
       }
+      taskChain.sync(
+          () -> Bukkit.getScheduler().scheduleSyncDelayedTask(BetterGUI.getInstance(), runnable));
     } else {
       CommonUtils.sendMessage(player,
           BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
