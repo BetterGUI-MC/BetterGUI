@@ -1,17 +1,13 @@
 package me.hsgamer.bettergui.object.menu;
 
-import co.aikar.taskchain.TaskChain;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.builder.CommandBuilder;
-import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.LocalVariableManager;
+import me.hsgamer.bettergui.object.property.menu.MenuAction;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,7 +16,7 @@ import org.bukkit.entity.Player;
 public class ArgsMenu extends SimpleMenu {
 
   private final Map<UUID, List<String>> argsPerPlayer = new HashMap<>();
-  private final List<Command> minArgsAction = new ArrayList<>();
+  private MenuAction minArgsAction;
   private int minArgs = 0;
   private boolean clearOnClose = false;
 
@@ -80,8 +76,8 @@ public class ArgsMenu extends SimpleMenu {
         }
 
         if (settings.containsKey(Settings.MIN_ARGS_ACTION)) {
-          minArgsAction.addAll(CommandBuilder.getCommands(this, CommonUtils
-              .createStringListFromObject(settings.get(Settings.MIN_ARGS_ACTION), true)));
+          minArgsAction = new MenuAction(this);
+          minArgsAction.setValue(settings.get(Settings.MIN_ARGS_ACTION));
         }
       }
     }
@@ -96,10 +92,8 @@ public class ArgsMenu extends SimpleMenu {
       }
     } else {
       if (args.length < minArgs) {
-        if (!minArgsAction.isEmpty()) {
-          TaskChain<?> taskChain = BetterGUI.newChain();
-          minArgsAction.forEach(command -> command.addToTaskChain(player, taskChain));
-          taskChain.execute();
+        if (minArgsAction != null) {
+          minArgsAction.getParsed(player).execute();
         }
         return;
       }
