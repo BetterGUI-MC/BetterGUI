@@ -179,7 +179,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     }
   }
 
-  private SimpleInventory initInventory(Player player) {
+  protected SimpleInventory initInventory(Player player) {
     SimpleInventory inventory;
     InventoryType inventoryType =
         menuInventoryType != null ? menuInventoryType.getParsed(player) : InventoryType.CHEST;

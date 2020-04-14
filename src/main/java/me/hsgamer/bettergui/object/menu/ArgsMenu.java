@@ -18,6 +18,7 @@ public class ArgsMenu extends SimpleMenu {
 
   private final Map<UUID, List<String>> argsPerPlayer = new HashMap<>();
   private int minArgs = 0;
+  private boolean clearOnClose = false;
 
   public ArgsMenu(String name) {
     super(name);
@@ -68,6 +69,11 @@ public class ArgsMenu extends SimpleMenu {
             });
           }
         }
+
+        if (settings.containsKey(Settings.CLEAR_ARGS_ON_CLOSE)) {
+          clearOnClose = Boolean
+              .parseBoolean(String.valueOf(settings.get(Settings.CLEAR_ARGS_ON_CLOSE)));
+        }
       }
     }
   }
@@ -90,9 +96,21 @@ public class ArgsMenu extends SimpleMenu {
     super.createInventory(player, args, bypass);
   }
 
+  @Override
+  protected SimpleInventory initInventory(Player player) {
+    SimpleInventory inventory = super.initInventory(player);
+
+    if (clearOnClose) {
+      inventory.addCloseHandler(event -> argsPerPlayer.remove(event.getPlayer().getUniqueId()));
+    }
+
+    return inventory;
+  }
+
   private static final class Settings {
 
     static final String MIN_ARGS = "min-args";
     static final String ARGS = "args";
+    static final String CLEAR_ARGS_ON_CLOSE = "clear-args-on-close";
   }
 }
