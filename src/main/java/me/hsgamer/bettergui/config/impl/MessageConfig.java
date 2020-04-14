@@ -32,8 +32,7 @@ public final class MessageConfig extends PluginConfig {
     INVALID_ENCHANTMENT("invalid-enchantment",
         "Error parsing enchantment! {input} is not a valid enchantment"),
     PLAYER_NOT_FOUND("player-not-found",
-        "&cThe player is not found. Maybe he is offline or didn't join your server"),
-    NOT_ENOUGH_ARGS("not-enough-args", "&cNot enough arguments");
+        "&cThe player is not found. Maybe he is offline or didn't join your server");
     final String path;
     final Object def;
 
