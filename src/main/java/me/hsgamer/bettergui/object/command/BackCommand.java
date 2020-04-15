@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.object.command;
 
+import static me.hsgamer.bettergui.BetterGUI.getInstance;
+
 import co.aikar.taskchain.TaskChain;
 import java.util.Optional;
 import me.hsgamer.bettergui.Permissions;
@@ -17,17 +19,16 @@ public class BackCommand extends Command {
   @Override
   public void addToTaskChain(Player player, TaskChain<?> taskChain) {
     Object object = getVariableManager().getParent();
+    Runnable runnable = player::closeInventory;
     if (object instanceof Icon) {
       Optional<Menu<?>> parentMenu = ((Icon) object).getMenu().getParentMenu(player);
       if (parentMenu.isPresent()) {
-        parentMenu.get()
-            .createInventory(player, new String[0],
-                player.hasPermission(Permissions.OPEN_MENU_BYPASS));
-      } else {
-        player.closeInventory();
+        runnable = () -> parentMenu.get().createInventory(player, new String[0],
+            player.hasPermission(Permissions.OPEN_MENU_BYPASS));
       }
-    } else {
-      player.closeInventory();
     }
+    Runnable finalRunnable = runnable;
+    taskChain.sync(() -> getInstance().getServer().getScheduler().scheduleSyncDelayedTask(
+        getInstance(), finalRunnable));
   }
 }

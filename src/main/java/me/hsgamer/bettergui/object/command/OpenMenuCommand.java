@@ -1,14 +1,14 @@
 package me.hsgamer.bettergui.object.command;
 
+import static me.hsgamer.bettergui.BetterGUI.getInstance;
+
 import co.aikar.taskchain.TaskChain;
 import java.util.Arrays;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.util.CommonUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class OpenMenuCommand extends Command {
@@ -28,7 +28,7 @@ public class OpenMenuCommand extends Command {
     }
 
     // Open menu
-    if (BetterGUI.getInstance().getMenuManager().contains(menu)) {
+    if (getInstance().getMenuManager().contains(menu)) {
       String[] finalArgs = args;
       Menu<?> parentMenu = null;
 
@@ -42,17 +42,18 @@ public class OpenMenuCommand extends Command {
       Menu<?> finalParentMenu = parentMenu;
       Runnable runnable;
       if (parentMenu != null) {
-        runnable = () -> BetterGUI.getInstance().getMenuManager()
+        runnable = () -> getInstance().getMenuManager()
             .openMenu(menu, player, finalArgs, finalParentMenu, false);
       } else {
-        runnable = () -> BetterGUI.getInstance().getMenuManager()
+        runnable = () -> getInstance().getMenuManager()
             .openMenu(menu, player, finalArgs, false);
       }
       taskChain.sync(
-          () -> Bukkit.getScheduler().scheduleSyncDelayedTask(BetterGUI.getInstance(), runnable));
+          () -> getInstance().getServer().getScheduler()
+              .scheduleSyncDelayedTask(getInstance(), runnable));
     } else {
       CommonUtils.sendMessage(player,
-          BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
+          getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
     }
   }
 }
