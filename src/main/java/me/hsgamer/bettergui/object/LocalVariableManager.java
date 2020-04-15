@@ -29,18 +29,24 @@ public interface LocalVariableManager<T> {
    * @return true if it has, otherwise false
    */
   default boolean hasVariables(Player player, String message) {
-    return hasVariables(player, message, true);
+    if (message == null || message.trim().isEmpty()) {
+      return false;
+    }
+    if (VariableManager.hasVariables(message)) {
+      return true;
+    }
+    return hasLocalVariables(player, message, true);
   }
 
   /**
-   * Check if the string contains variables
+   * Check if the string contains local variables
    *
    * @param player      the player
    * @param message     the string
    * @param checkParent whether it checks the the parent manager
    * @return true if it has, otherwise false
    */
-  boolean hasVariables(Player player, String message, boolean checkParent);
+  boolean hasLocalVariables(Player player, String message, boolean checkParent);
 
   /**
    * Replace the variables of the string

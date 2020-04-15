@@ -79,23 +79,14 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   }
 
   @Override
-  public boolean hasVariables(Player player, String message, boolean checkParent) {
-    if (message == null || message.trim().isEmpty()) {
-      return false;
-    }
-
+  public boolean hasLocalVariables(Player player, String message, boolean checkParent) {
     if (checkParent) {
       for (Menu<?> pmenu : MenuManager.getAllParentMenu(this, player)) {
-        if (pmenu.hasVariables(player, message, false)) {
+        if (pmenu.hasLocalVariables(player, message, false)) {
           return true;
         }
       }
     }
-
-    if (VariableManager.hasVariables(message)) {
-      return true;
-    }
-
     return VariableManager.isMatch(message, variables.keySet());
   }
 
