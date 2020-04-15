@@ -53,7 +53,7 @@ public final class AddonManager {
       return 0;
     }
   };
-  private final Map<String, Addon> addons = new HashMap<>();
+  private final Map<String, Addon> addons = new LinkedHashMap<>();
   private final Map<Addon, AddonClassLoader> loaderMap = new HashMap<>();
   private final Map<Addon, List<Command>> commands = new HashMap<>();
   private final Map<Addon, List<Listener>> listeners = new HashMap<>();
@@ -149,7 +149,7 @@ public final class AddonManager {
 
     // Sort and load the addons
     addonMap = sortAddons(addonMap);
-    Map<String, Addon> finalAddons = new HashMap<>();
+    Map<String, Addon> finalAddons = new LinkedHashMap<>();
     for (Map.Entry<String, Addon> entry : addonMap.entrySet()) {
       Addon addon = entry.getValue();
       try {
