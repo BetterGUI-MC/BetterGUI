@@ -109,6 +109,6 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
       }
     }
 
-    return VariableManager.setVariables(message, executor);
+    return message;
   }
 }
