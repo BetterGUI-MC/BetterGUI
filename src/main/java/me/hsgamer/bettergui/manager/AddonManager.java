@@ -46,9 +46,9 @@ public final class AddonManager {
     List<String> softDepends2 = addon2.getDescription().getSoftDepends();
 
     if (depends1.contains(name2) || softDepends1.contains(name2)) {
-      return -1;
-    } else if (depends2.contains(name1) || softDepends2.contains(name1)) {
       return 1;
+    } else if (depends2.contains(name1) || softDepends2.contains(name1)) {
+      return -1;
     } else {
       return 0;
     }
