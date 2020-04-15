@@ -4,15 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.util.Validate;
+import me.hsgamer.bettergui.manager.VariableManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
 
-  private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private final String name;
   private final Menu<?> menu;
   private final Map<String, LocalVariable> variables = new HashMap<>();
@@ -50,12 +48,12 @@ public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
     if (checkParent && menu.hasVariables(player, message)) {
       return true;
     }
-    return Validate.isMatch(message, pattern, variables.keySet());
+    return VariableManager.isMatch(message, variables.keySet());
   }
 
   @Override
   public String setSingleVariables(String message, Player executor, boolean checkParent) {
-    message = setLocalVariables(message, executor, pattern, variables);
+    message = setLocalVariables(message, executor, variables);
     if (checkParent) {
       message = menu.setSingleVariables(message, executor);
     }

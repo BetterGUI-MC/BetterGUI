@@ -4,16 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.VariableManager;
-import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
 
-  private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private final String name;
   private final Map<String, LocalVariable> variables = new HashMap<>();
   private final Map<UUID, Menu<?>> parentMenu = new HashMap<>();
@@ -99,12 +96,12 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
       return true;
     }
 
-    return Validate.isMatch(message, pattern, variables.keySet());
+    return VariableManager.isMatch(message, variables.keySet());
   }
 
   @Override
   public String setSingleVariables(String message, Player executor, boolean checkParent) {
-    message = setLocalVariables(message, executor, pattern, variables);
+    message = setLocalVariables(message, executor, variables);
 
     if (checkParent) {
       for (Menu<?> pmenu : MenuManager.getAllParentMenu(this, executor)) {
@@ -112,6 +109,6 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
       }
     }
 
-    return message;
+    return VariableManager.setVariables(message, executor);
   }
 }

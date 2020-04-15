@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.manager;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -17,7 +18,7 @@ import org.bukkit.entity.Player;
 
 public final class VariableManager {
 
-  private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
+  public static final Pattern PATTERN = Pattern.compile("[{]([^{}]+)[}]");
   private static final Map<String, GlobalVariable> variables = new HashMap<>();
 
   static {
@@ -116,7 +117,7 @@ public final class VariableManager {
     if (message == null || message.trim().isEmpty()) {
       return false;
     }
-    if (Validate.isMatch(message, pattern, variables.keySet())) {
+    if (isMatch(message, variables.keySet())) {
       return true;
     }
     return PlaceholderAPIHook.hasValidPlugin() && PlaceholderAPIHook.hasPlaceholders(message);
@@ -142,7 +143,7 @@ public final class VariableManager {
   }
 
   private static String setSingleVariables(String message, Player executor) {
-    Matcher matcher = pattern.matcher(message);
+    Matcher matcher = PATTERN.matcher(message);
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
       for (Map.Entry<String, GlobalVariable> variable : variables.entrySet()) {
@@ -157,5 +158,17 @@ public final class VariableManager {
       }
     }
     return message;
+  }
+
+  public static boolean isMatch(String string, Collection<String> matchString) {
+    Pattern pattern = Pattern.compile("(" + String.join("|", matchString) + ").*");
+    Matcher matcher = PATTERN.matcher(string);
+    while (matcher.find()) {
+      String identifier = matcher.group(1).trim();
+      if (pattern.matcher(identifier).find()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

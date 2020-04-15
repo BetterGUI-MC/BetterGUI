@@ -84,13 +84,12 @@ public interface LocalVariableManager<T> {
    *
    * @param message   the string
    * @param executor  the player involved in
-   * @param pattern   the detect pattern
    * @param variables the map of variables
    * @return the replaced string
    */
-  default String setLocalVariables(String message, Player executor, Pattern pattern,
+  default String setLocalVariables(String message, Player executor,
       Map<String, LocalVariable> variables) {
-    Matcher matcher = pattern.matcher(message);
+    Matcher matcher = VariableManager.PATTERN.matcher(message);
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
       for (Map.Entry<String, LocalVariable> variable : variables.entrySet()) {
