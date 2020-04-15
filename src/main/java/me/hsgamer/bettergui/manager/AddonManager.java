@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +34,25 @@ import org.bukkit.event.Listener;
 
 public final class AddonManager {
 
+  private static final Comparator<Map.Entry<String, Addon>> DEPEND_COMPARATOR = (entry1, entry2) -> {
+    Addon addon1 = entry1.getValue();
+    String name1 = entry1.getKey();
+    List<String> depends1 = addon1.getDescription().getDepends();
+    List<String> softDepends1 = addon1.getDescription().getSoftDepends();
+
+    Addon addon2 = entry2.getValue();
+    String name2 = entry2.getKey();
+    List<String> depends2 = addon2.getDescription().getDepends();
+    List<String> softDepends2 = addon2.getDescription().getSoftDepends();
+
+    if (depends1.contains(name2) || softDepends1.contains(name2)) {
+      return -1;
+    } else if (depends2.contains(name1) || softDepends2.contains(name1)) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
   private final Map<String, Addon> addons = new HashMap<>();
   private final Map<Addon, AddonClassLoader> loaderMap = new HashMap<>();
   private final Map<Addon, List<Command>> commands = new HashMap<>();
@@ -283,17 +303,10 @@ public final class AddonManager {
     original.entrySet().forEach(entry -> testCase.setTestObject(entry).test());
 
     // Organize the remaining
-    while (!remaining.isEmpty()) {
-      Map<String, Addon> tempMap = new HashMap<>();
-
-      remaining.forEach((name, addon) -> {
-        List<String> depends = addon.getDescription().getDepends();
-        List<String> softDepends = addon.getDescription().getSoftDepends();
-
-        // Filter
-        depends.removeIf(sorted::containsKey);
-        softDepends.removeIf(softDepend ->
-            sorted.containsKey(softDepend) || !original.containsKey(softDepend));
+    if (!remaining.isEmpty()) {
+      remaining.entrySet().stream().filter(stringAddonEntry -> {
+        Addon addon = stringAddonEntry.getValue();
+        String name = stringAddonEntry.getKey();
 
         // Check if the required plugins are enabled
         List<String> missing = Validate
@@ -302,27 +315,22 @@ public final class AddonManager {
           plugin.getLogger().warning("Missing plugin dependency for " + name + ": " + Arrays
               .toString(missing.toArray()));
           closeClassLoader(addon);
-          return;
+          return false;
         }
 
         // Check if the required dependencies are loaded
+        List<String> depends = addon.getDescription().getDepends();
         for (String depend : depends) {
           if (!original.containsKey(depend)) {
             plugin.getLogger().warning("Missing dependency for " + name + ": " + depend);
             closeClassLoader(addon);
-            return;
+            return false;
           }
         }
 
-        if (depends.isEmpty() && softDepends.isEmpty()) {
-          sorted.put(name, addon);
-        } else {
-          tempMap.put(name, addon);
-        }
-      });
-
-      remaining.clear();
-      remaining.putAll(tempMap);
+        return true;
+      }).sorted(DEPEND_COMPARATOR).forEach(
+          stringAddonEntry -> sorted.put(stringAddonEntry.getKey(), stringAddonEntry.getValue()));
     }
 
     return sorted;
