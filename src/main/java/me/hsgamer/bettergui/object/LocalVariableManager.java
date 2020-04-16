@@ -24,10 +24,29 @@ public interface LocalVariableManager<T> {
   /**
    * Check if the string contains variables
    *
+   * @param player  the player
    * @param message the string
    * @return true if it has, otherwise false
    */
-  boolean hasVariables(String message);
+  default boolean hasVariables(Player player, String message) {
+    if (message == null || message.trim().isEmpty()) {
+      return false;
+    }
+    if (VariableManager.hasVariables(message)) {
+      return true;
+    }
+    return hasLocalVariables(player, message, true);
+  }
+
+  /**
+   * Check if the string contains local variables
+   *
+   * @param player      the player
+   * @param message     the string
+   * @param checkParent whether it checks the the parent manager
+   * @return true if it has, otherwise false
+   */
+  boolean hasLocalVariables(Player player, String message, boolean checkParent);
 
   /**
    * Replace the variables of the string
@@ -41,7 +60,7 @@ public interface LocalVariableManager<T> {
     do {
       old = message;
       message = setSingleVariables(message, executor);
-    } while (hasVariables(message) && !old.equals(message));
+    } while (hasVariables(executor, message) && !old.equals(message));
     return VariableManager.setVariables(message, executor);
   }
 
@@ -52,24 +71,35 @@ public interface LocalVariableManager<T> {
    * @param executor the player involved in
    * @return the replaced string
    */
-  String setSingleVariables(String message, Player executor);
+  default String setSingleVariables(String message, Player executor) {
+    return setSingleVariables(message, executor, true);
+  }
+
+  /**
+   * Replace the variables of the string (single time)
+   *
+   * @param message     the string
+   * @param executor    the player involved in
+   * @param checkParent whether it checks the the parent manager
+   * @return the replaced string
+   */
+  String setSingleVariables(String message, Player executor, boolean checkParent);
 
   /**
    * Replace the local variables of the string
    *
    * @param message   the string
    * @param executor  the player involved in
-   * @param pattern   the detect pattern
    * @param variables the map of variables
    * @return the replaced string
    */
-  default String setLocalVariables(String message, Player executor, Pattern pattern,
+  default String setLocalVariables(String message, Player executor,
       Map<String, LocalVariable> variables) {
-    Matcher matcher = pattern.matcher(message);
+    Matcher matcher = VariableManager.PATTERN.matcher(message);
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
       for (Map.Entry<String, LocalVariable> variable : variables.entrySet()) {
-        if (identifier.startsWith(variable.getKey())) {
+        if (identifier.toLowerCase().startsWith(variable.getKey())) {
           String replace = variable.getValue()
               .getReplacement(executor, identifier.substring(variable.getKey().length()));
           if (replace != null) {

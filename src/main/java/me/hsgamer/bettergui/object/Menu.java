@@ -3,18 +3,17 @@ package me.hsgamer.bettergui.object;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
+import java.util.UUID;
+import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.VariableManager;
-import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
 
-  private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private final String name;
   private final Map<String, LocalVariable> variables = new HashMap<>();
-  private Menu<?> parentMenu;
+  private final Map<UUID, Menu<?>> parentMenu = new HashMap<>();
 
   public Menu(String name) {
     this.name = name;
@@ -35,9 +34,10 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
    * Called when opening the menu for the player
    *
    * @param player the player involved in
+   * @param args   the arguments from the open command
    * @param bypass whether the plugin ignores the permission check
    */
-  public abstract void createInventory(Player player, boolean bypass);
+  public abstract void createInventory(Player player, String[] args, boolean bypass);
 
   public abstract void updateInventory(Player player);
 
@@ -51,19 +51,21 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   /**
    * Get the former menu that opened this menu
    *
+   * @param player the player
    * @return the former menu
    */
-  public Optional<Menu<?>> getParentMenu() {
-    return Optional.ofNullable(parentMenu);
+  public Optional<Menu<?>> getParentMenu(Player player) {
+    return Optional.ofNullable(parentMenu.get(player.getUniqueId()));
   }
 
   /**
    * Set the former menu
    *
-   * @param parentMenu the former menu
+   * @param player the player
+   * @param menu   the former menu
    */
-  public void setParentMenu(Menu<?> parentMenu) {
-    this.parentMenu = parentMenu;
+  public void setParentMenu(Player player, Menu<?> menu) {
+    parentMenu.put(player.getUniqueId(), menu);
   }
 
   @Override
@@ -77,23 +79,27 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   }
 
   @Override
-  public boolean hasVariables(String message) {
-    if (message == null || message.trim().isEmpty()) {
-      return false;
+  public boolean hasLocalVariables(Player player, String message, boolean checkParent) {
+    if (checkParent) {
+      for (Menu<?> pmenu : MenuManager.getAllParentMenu(this, player)) {
+        if (pmenu.hasLocalVariables(player, message, false)) {
+          return true;
+        }
+      }
     }
-    if (VariableManager.hasVariables(message) || (parentMenu != null && parentMenu
-        .hasVariables(message))) {
-      return true;
-    }
-    return Validate.isMatch(message, pattern, variables.keySet());
+    return VariableManager.isMatch(message, variables.keySet());
   }
 
   @Override
-  public String setSingleVariables(String message, Player executor) {
-    message = setLocalVariables(message, executor, pattern, variables);
-    if (parentMenu != null) {
-      message = parentMenu.setSingleVariables(message, executor);
+  public String setSingleVariables(String message, Player executor, boolean checkParent) {
+    message = setLocalVariables(message, executor, variables);
+
+    if (checkParent) {
+      for (Menu<?> pmenu : MenuManager.getAllParentMenu(this, executor)) {
+        message = pmenu.setSingleVariables(message, executor, false);
+      }
     }
+
     return message;
   }
 }

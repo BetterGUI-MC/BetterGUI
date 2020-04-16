@@ -22,8 +22,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class CommandManager {
 
-  private final HashMap<String, Command> registered = new HashMap<>();
-  private final HashMap<String, Command> registeredMenuCommand = new HashMap<>();
+  private final Map<String, Command> registered = new HashMap<>();
+  private final Map<String, Command> registeredMenuCommand = new HashMap<>();
   private final JavaPlugin plugin;
   private final Field knownCommandsField;
   private final CommandMap bukkitCommandMap;
@@ -124,11 +124,11 @@ public final class CommandManager {
       @Override
       public boolean execute(CommandSender commandSender, String s, String[] strings) {
         if (commandSender instanceof Player) {
-          menu.createInventory((Player) commandSender, commandSender.hasPermission(
-              Permissions.OPEN_MENU_BYPASS));
+          menu.createInventory((Player) commandSender, strings,
+              commandSender.hasPermission(Permissions.OPEN_MENU_BYPASS));
         } else {
-          CommonUtils.sendMessage(commandSender, BetterGUI.getInstance().getMessageConfig().get(
-              DefaultMessage.PLAYER_ONLY));
+          CommonUtils.sendMessage(commandSender,
+              BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
         }
         return true;
       }

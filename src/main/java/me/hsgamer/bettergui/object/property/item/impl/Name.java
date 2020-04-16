@@ -21,8 +21,7 @@ public class Name extends ItemProperty<String, String> {
 
   @Override
   public String getParsed(Player player) {
-    return getIcon().hasVariables(getValue()) ? getIcon().setVariables(getValue(), player)
-        : getValue();
+    return parseFromString(getValue(), player);
   }
 
   @Override

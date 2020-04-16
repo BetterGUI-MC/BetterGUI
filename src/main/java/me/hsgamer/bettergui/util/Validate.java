@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 
 public final class Validate {
@@ -39,19 +37,6 @@ public final class Validate {
     } catch (ClassNotFoundException e) {
       return false;
     }
-  }
-
-  public static boolean isMatch(String string, Pattern detectPattern,
-      Collection<String> matchString) {
-    Pattern pattern = Pattern.compile("(" + String.join("|", matchString) + ").*");
-    Matcher matcher = detectPattern.matcher(string);
-    while (matcher.find()) {
-      String identifier = matcher.group(1).trim();
-      if (pattern.matcher(identifier).find()) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public static List<String> getMissingDepends(List<String> depends) {

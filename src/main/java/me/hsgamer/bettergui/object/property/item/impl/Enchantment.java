@@ -28,7 +28,7 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
     Map<XEnchantment, Integer> enchantments = new EnumMap<>(XEnchantment.class);
     for (String string : getValue()) {
       Optional<XEnchantment> enchantment;
-      string = getIcon().hasVariables(string) ? getIcon().setVariables(string, player) : string;
+      string = parseFromString(string, player);
 
       int level = 1;
       if (string.contains(",")) {

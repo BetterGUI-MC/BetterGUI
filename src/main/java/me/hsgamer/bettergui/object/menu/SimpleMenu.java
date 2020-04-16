@@ -27,6 +27,7 @@ import me.hsgamer.bettergui.object.property.menu.MenuRows;
 import me.hsgamer.bettergui.object.property.menu.MenuTicks;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
 import me.hsgamer.bettergui.object.property.menu.MenuVariable;
+import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -46,6 +47,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   private Permission permission = new Permission(
       getInstance().getName().toLowerCase() + "." + getName());
   private Icon defaultIcon;
+  private boolean cloneIcon = true;
 
   private GlobalRequirement viewRequirement;
   private GlobalRequirement closeRequirement;
@@ -103,15 +105,27 @@ public class SimpleMenu extends Menu<SimpleInventory> {
               }
             });
 
-        Map<String, Object> keys = settingsSection.getValues(false);
+        Map<String, Object> keys = new CaseInsensitiveStringMap<>(settingsSection.getValues(false));
 
         if (keys.containsKey(Settings.COMMAND)) {
           CommonUtils.createStringListFromObject(keys.get(Settings.COMMAND), true)
-              .forEach(s -> getInstance().getCommandManager().registerMenuCommand(s, this));
+              .forEach(s -> {
+                if (s.contains(" ")) {
+                  getInstance().getLogger().warning(
+                      "Illegal characters in command '" + s + "'" + "in the menu '" + getName()
+                          + "'. Ignored");
+                } else {
+                  getInstance().getCommandManager().registerMenuCommand(s, this);
+                }
+              });
         }
 
         if (keys.containsKey(Settings.PERMISSION)) {
           permission = new Permission(String.valueOf(keys.get(Settings.PERMISSION)));
+        }
+
+        if (keys.containsKey(Settings.CLONE_ICON)) {
+          cloneIcon = Boolean.parseBoolean(String.valueOf(keys.get(Settings.CLONE_ICON)));
         }
       } else if (key.equalsIgnoreCase("default-icon")) {
         defaultIcon = IconBuilder.getIcon(this, file.getConfigurationSection(key));
@@ -120,17 +134,22 @@ public class SimpleMenu extends Menu<SimpleInventory> {
         Icon icon = IconBuilder.getIcon(this, section);
         List<Integer> slots = IconBuilder.getSlots(section);
         for (Integer slot : slots) {
+          Icon clone = icon;
+          if (cloneIcon) {
+            clone = clone.cloneIcon();
+          }
+
           if (icons.containsKey(slot)) {
             Icon tempIcon = icons.get(slot);
             if (tempIcon instanceof ParentIcon) {
-              ((ParentIcon) tempIcon).addChild(icon.cloneIcon());
+              ((ParentIcon) tempIcon).addChild(clone);
             } else {
               getInstance().getLogger().warning(
                   icon.getName() + " & " + tempIcon.getName() + " from " + getName()
                       + " have the same slot. Only one of them will be set");
             }
           } else {
-            icons.put(slot, icon.cloneIcon());
+            icons.put(slot, clone);
           }
         }
       }
@@ -138,7 +157,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   }
 
   @Override
-  public void createInventory(Player player, boolean bypass) {
+  public void createInventory(Player player, String[] args, boolean bypass) {
     if (bypass || player.hasPermission(permission)) {
       // Check Requirement
       if (!bypass && viewRequirement != null) {
@@ -170,7 +189,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     }
   }
 
-  private SimpleInventory initInventory(Player player) {
+  protected SimpleInventory initInventory(Player player) {
     SimpleInventory inventory;
     InventoryType inventoryType =
         menuInventoryType != null ? menuInventoryType.getParsed(player) : InventoryType.CHEST;
@@ -226,6 +245,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
     static final String COMMAND = "command";
     static final String PERMISSION = "permission";
+    static final String CLONE_ICON = "clone-icon";
   }
 
   protected class SimpleInventory extends FastInv {

@@ -28,7 +28,7 @@ public abstract class MenuProperty<V, L> extends Property<V> {
    * @return the parsed string
    */
   protected final String parseFromString(String input, Player player) {
-    return menu.hasVariables(input) ? menu.setVariables(input, player) : input;
+    return menu.hasVariables(player, input) ? menu.setVariables(input, player) : input;
   }
 
   public Menu<?> getMenu() {

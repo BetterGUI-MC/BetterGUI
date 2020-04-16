@@ -23,7 +23,6 @@ public class AnimatedIcon extends Icon implements ParentIcon {
   private final Map<UUID, Icon> currentIconMap = new HashMap<>();
   private final Map<UUID, Integer> updateMap = new HashMap<>();
   private String updatePattern = "0";
-  private boolean hasVariables = false;
 
   public AnimatedIcon(String name, Menu<?> menu) {
     super(name, menu);
@@ -34,7 +33,6 @@ public class AnimatedIcon extends Icon implements ParentIcon {
     if (original instanceof AnimatedIcon) {
       this.icons.addAll(((AnimatedIcon) original).icons);
       this.updatePattern = ((AnimatedIcon) original).updatePattern;
-      this.hasVariables = ((AnimatedIcon) original).hasVariables;
     }
   }
 
@@ -44,7 +42,6 @@ public class AnimatedIcon extends Icon implements ParentIcon {
     section.getKeys(false).forEach(key -> {
       if (key.equalsIgnoreCase("update")) {
         updatePattern = section.getString(key);
-        hasVariables = hasVariables(updatePattern);
       }
     });
   }
@@ -54,7 +51,8 @@ public class AnimatedIcon extends Icon implements ParentIcon {
     Icon currentIcon = icons.get(0);
     int update = 0;
 
-    String parsed = hasVariables ? setVariables(updatePattern, player) : updatePattern;
+    String parsed =
+        hasVariables(player, updatePattern) ? setVariables(updatePattern, player) : updatePattern;
     if (ExpressionUtils.isValidExpression(parsed)) {
       update = ExpressionUtils.getResult(parsed).intValue();
     }

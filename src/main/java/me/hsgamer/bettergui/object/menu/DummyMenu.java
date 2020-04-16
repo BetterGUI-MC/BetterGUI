@@ -17,6 +17,7 @@ import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.object.property.menu.MenuInventoryType;
 import me.hsgamer.bettergui.object.property.menu.MenuRows;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
+import me.hsgamer.bettergui.object.property.menu.MenuVariable;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.Bukkit;
@@ -56,6 +57,9 @@ public class DummyMenu extends Menu<FastInv> {
                 this.menuRows = (MenuRows) menuProperty;
               } else if (menuProperty instanceof MenuTitle) {
                 this.menuTitle = (MenuTitle) menuProperty;
+              } else if (menuProperty instanceof MenuVariable) {
+                ((MenuVariable) menuProperty).getParsed(null).forEach(menuLocalVariable -> this
+                    .registerVariable(menuLocalVariable.getIdentifier(), menuLocalVariable));
               }
             });
 
@@ -75,7 +79,7 @@ public class DummyMenu extends Menu<FastInv> {
 
   @SuppressWarnings("OptionalGetWithoutIsPresent")
   @Override
-  public void createInventory(Player player, boolean bypass) {
+  public void createInventory(Player player, String[] args, boolean bypass) {
     if (bypass || player.hasPermission(permission)) {
       FastInv inventory = initInventory(player);
       icons.values()

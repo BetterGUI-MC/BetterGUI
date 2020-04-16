@@ -4,15 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.util.Validate;
+import me.hsgamer.bettergui.manager.VariableManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
 
-  private static final Pattern pattern = Pattern.compile("[{]([^{}]+)[}]");
   private final String name;
   private final Menu<?> menu;
   private final Map<String, LocalVariable> variables = new HashMap<>();
@@ -43,20 +41,20 @@ public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
   }
 
   @Override
-  public boolean hasVariables(String message) {
-    if (message == null || message.trim().isEmpty()) {
-      return false;
-    }
-    if (menu.hasVariables(message)) {
+  public boolean hasLocalVariables(Player player, String message, boolean checkParent) {
+    if (checkParent && menu.hasLocalVariables(player, message, true)) {
       return true;
     }
-    return Validate.isMatch(message, pattern, variables.keySet());
+    return VariableManager.isMatch(message, variables.keySet());
   }
 
   @Override
-  public String setSingleVariables(String message, Player executor) {
-    message = setLocalVariables(message, executor, pattern, variables);
-    return menu.setSingleVariables(message, executor);
+  public String setSingleVariables(String message, Player executor, boolean checkParent) {
+    message = setLocalVariables(message, executor, variables);
+    if (checkParent) {
+      message = menu.setSingleVariables(message, executor);
+    }
+    return message;
   }
 
   /**

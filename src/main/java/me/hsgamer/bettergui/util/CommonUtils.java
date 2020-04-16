@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
@@ -31,16 +32,10 @@ public final class CommonUtils {
     sender.sendMessage(colorize(message));
   }
 
-  @Deprecated
-  public static List<String> createStringListFromObject(Object value) {
-    return createStringListFromObject(value, true);
-  }
-
-  @SuppressWarnings("unchecked")
   public static List<String> createStringListFromObject(Object value, boolean trim) {
     List<String> list = new ArrayList<>();
-    if (value instanceof List) {
-      list.addAll((List<String>) value);
+    if (value instanceof Collection) {
+      ((Collection<?>) value).forEach(o -> list.add(String.valueOf(o)));
     } else {
       list.add(String.valueOf(value));
     }

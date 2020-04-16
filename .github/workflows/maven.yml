@@ -12,8 +12,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Unshallow
+        run: git fetch --unshallow --quiet
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B package org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file pom.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:

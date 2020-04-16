@@ -1,10 +1,13 @@
 package me.hsgamer.bettergui.object.command;
 
+import static me.hsgamer.bettergui.BetterGUI.getInstance;
+
 import co.aikar.taskchain.TaskChain;
-import me.hsgamer.bettergui.BetterGUI;
+import java.util.Arrays;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
+import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.entity.Player;
 
@@ -16,19 +19,41 @@ public class OpenMenuCommand extends Command {
 
   @Override
   public void addToTaskChain(Player player, TaskChain<?> taskChain) {
-    String parsed = getParsedCommand(player);
-    if (BetterGUI.getInstance().getMenuManager().contains(parsed)) {
-      Object icon = getVariableManager().getParent();
-      if (icon instanceof Icon) {
-        taskChain.sync(() -> BetterGUI.getInstance().getMenuManager()
-            .openMenu(parsed, player, ((Icon) icon).getMenu(), false));
-      } else {
-        taskChain
-            .sync(() -> BetterGUI.getInstance().getMenuManager().openMenu(parsed, player, false));
+    // Get Menu and Arguments
+    String[] split = getParsedCommand(player).split(" ");
+    String menu = split[0];
+    String[] args = new String[0];
+    if (split.length > 1) {
+      args = Arrays.copyOfRange(split, 1, split.length);
+    }
+
+    // Open menu
+    if (getInstance().getMenuManager().contains(menu)) {
+      String[] finalArgs = args;
+      Menu<?> parentMenu = null;
+
+      Object object = getVariableManager().getParent();
+      if (object instanceof Icon) {
+        parentMenu = ((Icon) object).getMenu();
+      } else if (object instanceof Menu) {
+        parentMenu = (Menu<?>) object;
       }
+
+      Menu<?> finalParentMenu = parentMenu;
+      Runnable runnable;
+      if (parentMenu != null) {
+        runnable = () -> getInstance().getMenuManager()
+            .openMenu(menu, player, finalArgs, finalParentMenu, false);
+      } else {
+        runnable = () -> getInstance().getMenuManager()
+            .openMenu(menu, player, finalArgs, false);
+      }
+      taskChain.sync(
+          () -> getInstance().getServer().getScheduler()
+              .scheduleSyncDelayedTask(getInstance(), runnable));
     } else {
       CommonUtils.sendMessage(player,
-          BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
+          getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
     }
   }
 }

@@ -23,7 +23,8 @@ public abstract class Command {
    */
   protected String getParsedCommand(Player executor) {
     if (variableManager != null) {
-      return hasVariables ? variableManager.setVariables(string, executor) : string;
+      return variableManager.hasVariables(executor, string) ? variableManager
+          .setVariables(string, executor) : string;
     } else {
       return hasVariables ? VariableManager.setVariables(string, executor) : string;
     }
