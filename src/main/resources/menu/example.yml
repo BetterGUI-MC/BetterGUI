@@ -8,6 +8,7 @@ menu-settings:
   rows: 6
   command: menu
   auto-refresh: 5
+  clone-icon: false
   open-action:
     - 'tell: &eYou opened the example menu'
   close-action:
@@ -43,7 +44,7 @@ spawncmd:
     - 'as the player who clicked.'
   ID: ender_pearl
   POSITION-X: 1
-  POSITION-Y: 1
+  POSITION-Y: 2
 
 durability-armor:
   NAME: '&aDamaged armor'
@@ -52,7 +53,7 @@ durability-armor:
   ID: diamond helmet
   DAMAGE: 100
   POSITION-X: 2
-  POSITION-Y: 1
+  POSITION-Y: 2
 
 enchanted-sword:
   NAME: '&aEnchanted sword'
@@ -62,7 +63,7 @@ enchanted-sword:
   ENCHANTMENT:
     - "durability, 1"
   POSITION-X: 3
-  POSITION-Y: 1
+  POSITION-Y: 2
 
 some-arrows:
   NAME: '&aSome arrows'
@@ -71,7 +72,7 @@ some-arrows:
   ID: arrow
   AMOUNT: 5
   POSITION-X: 4
-  POSITION-Y: 1
+  POSITION-Y: 2
 
 test-from-console:
   COMMAND: 'console: say Hello {player}!'
@@ -80,7 +81,7 @@ test-from-console:
     - 'It broadcasts your name with the command /say.'
   ID: command_block
   POSITION-X: 5
-  POSITION-Y: 1
+  POSITION-Y: 2
 
 test-as-op:
   COMMAND: 'op: say Hello world!'
@@ -90,7 +91,7 @@ test-as-op:
     - 'It will ignore nearly all the permissions.'
   ID: command_block
   POSITION-X: 6
-  POSITION-Y: 1
+  POSITION-Y: 2
 
 test-with-placeholder:
   COMMAND:
@@ -104,7 +105,7 @@ test-with-placeholder:
     - 'is clicked.'
   ID: water_bucket
   POSITION-X: 7
-  POSITION-Y: 1
+  POSITION-Y: 2
 
 formatting-codes:
   NAME: '&dFormatting codes'
@@ -118,7 +119,7 @@ formatting-codes:
     - '&fItalic (#o): &oexample'
   ID: paper
   POSITION-X: 8
-  POSITION-Y: 1
+  POSITION-Y: 2
 
 talking-fish:
   COMMAND: 'tell: This is a simple message, without using commands!'
@@ -127,7 +128,7 @@ talking-fish:
     - '&7It tells you something without commands.'
   ID: torch
   POSITION-X: 9
-  POSITION-Y: 1
+  POSITION-Y: 2
 
 test-multiple-command:
   COMMAND:
@@ -138,7 +139,7 @@ test-multiple-command:
     - 'Example of multiple commands.'
   ID: golden_apple
   POSITION-X: 1
-  POSITION-Y: 2
+  POSITION-Y: 3
 
 permission:
   COMMAND: 'tell: &a[v] You have the correct permission!'
@@ -150,7 +151,7 @@ permission:
     - 'message will be displayed.'
   ID: iron bars
   POSITION-X: 2
-  POSITION-Y: 2
+  POSITION-Y: 3
   CLICK-REQUIREMENT:
     default:
       permission:
@@ -166,7 +167,7 @@ condition:
     - "condition: {level} > 5"
     - "tell: &aYou did it"
   POSITION-X: 3
-  POSITION-Y: 2
+  POSITION-Y: 3
 
 test-per-click-command:
   COMMAND:
@@ -185,7 +186,7 @@ test-per-click-command:
     - 'And you get different messages.'
   ID: redstone_block
   POSITION-X: 4
-  POSITION-Y: 2
+  POSITION-Y: 3
 
 test-delay-command:
   COMMAND:
@@ -197,7 +198,7 @@ test-delay-command:
     - 'This is a test of delay command.'
   ID: clock
   POSITION-X: 5
-  POSITION-Y: 2
+  POSITION-Y: 3
 
 # Simple Cooldown Example
 cooldown:
@@ -213,7 +214,7 @@ cooldown:
         - "tell: &cWait until the cooldown is finished"
   ID: paper
   POSITION-X: 6
-  POSITION-Y: 2
+  POSITION-Y: 3
 
 enchanted-sword-flag:
   NAME: '&aEnchanted sword'
@@ -225,13 +226,13 @@ enchanted-sword-flag:
   FLAG:
     - HIDE_ENCHANTS
   POSITION-X: 7
-  POSITION-Y: 2
+  POSITION-Y: 3
 
 # Advanced Cooldown Example
 advanced_cooldown:
   id: paper
   POSITION-X: 8
-  POSITION-Y: 2
+  POSITION-Y: 3
   name: '&cCooldown'
   lore:
     - '&eLEFT: &f{left_test_cooldown_h}h{left_test_cooldown_m}m{left_test_cooldown_s}s (&cTotal millis: {left_test_cooldown})'
@@ -262,7 +263,7 @@ advanced_cooldown:
 list-icon:
   type: list
   position-x: 9
-  position-y: 2
+  position-y: 3
   child:
     world:
       id: grass
@@ -285,7 +286,7 @@ list-icon:
 
 test-view-requirement:
   position-x: 1
-  position-y: 3
+  position-y: 4
   id: exp_bottle
   name: "&cA exp bottle"
   lore:
@@ -296,7 +297,7 @@ test-view-requirement:
 
 animated-icon:
   position-x: 2
-  position-y: 3
+  position-y: 4
   type: animated
   update: 2
   child:
@@ -318,7 +319,7 @@ animated-icon:
 
 requirement-set:
   position-x: 3
-  position-y: 3
+  position-y: 4
   id: paper
   name: "&eRequirement Set"
   lore:
@@ -345,13 +346,19 @@ requirement-set:
       fail-command:
         - "tell: &cTry again later"
 
-slot:
-  id: WHITE_STAINED_GLASS_PANE
-  slot: 45
-
 multi-slot:
-  id: BLACK_STAINED_GLASS_PANE
-  slot: 46,47-52
+  slot: 0-8,45,46,47-52
+  type: animated
+  child:
+    frame1:
+      name: ' '
+      id: black stained glass pane
+    frame2:
+      name: ' '
+      id: gray stained glass pane
+    frame3:
+      name: ' '
+      id: white stained glass pane
 
 close-the-menu:
   id: BARRIER
