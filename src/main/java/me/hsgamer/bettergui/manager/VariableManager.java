@@ -147,7 +147,7 @@ public final class VariableManager {
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
       for (Map.Entry<String, GlobalVariable> variable : variables.entrySet()) {
-        if (identifier.startsWith(variable.getKey())) {
+        if (identifier.toLowerCase().startsWith(variable.getKey())) {
           String replace = variable.getValue()
               .getReplacement(executor, identifier.substring(variable.getKey().length()));
           if (replace != null) {
@@ -161,12 +161,13 @@ public final class VariableManager {
   }
 
   public static boolean isMatch(String string, Collection<String> matchString) {
-    Pattern pattern = Pattern.compile("(" + String.join("|", matchString) + ").*");
     Matcher matcher = PATTERN.matcher(string);
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
-      if (pattern.matcher(identifier).find()) {
-        return true;
+      for (String s : matchString) {
+        if (identifier.toLowerCase().startsWith(s)) {
+          return true;
+        }
       }
     }
     return false;
