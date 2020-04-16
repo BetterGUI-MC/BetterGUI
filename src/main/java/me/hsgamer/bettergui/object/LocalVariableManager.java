@@ -99,7 +99,7 @@ public interface LocalVariableManager<T> {
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
       for (Map.Entry<String, LocalVariable> variable : variables.entrySet()) {
-        if (identifier.startsWith(variable.getKey())) {
+        if (identifier.toLowerCase().startsWith(variable.getKey())) {
           String replace = variable.getValue()
               .getReplacement(executor, identifier.substring(variable.getKey().length()));
           if (replace != null) {

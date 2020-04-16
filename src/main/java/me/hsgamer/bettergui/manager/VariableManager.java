@@ -1,7 +1,9 @@
 package me.hsgamer.bettergui.manager;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
@@ -162,14 +164,22 @@ public final class VariableManager {
 
   public static boolean isMatch(String string, Collection<String> matchString) {
     Matcher matcher = PATTERN.matcher(string);
+    List<String> found = new ArrayList<>();
     while (matcher.find()) {
-      String identifier = matcher.group(1).trim();
-      for (String s : matchString) {
-        if (identifier.toLowerCase().startsWith(s)) {
-          return true;
-        }
-      }
+      found.add(matcher.group(1).trim());
     }
-    return false;
+
+    if (found.isEmpty()) {
+      return false;
+    } else {
+      return found.stream().map(String::toLowerCase).parallel().anyMatch(s -> {
+        for (String match : matchString) {
+          if (s.startsWith(match)) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
   }
 }
