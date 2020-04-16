@@ -93,6 +93,7 @@ public final class OpenCommand extends BukkitCommand {
     if (args.length == 1) {
       list.addAll(getInstance().getMenuManager().getMenuNames());
     } else if (args.length == 2) {
+      list.add("me");
       BukkitUtils.getOnlinePlayers().forEach(player -> list.add(player.getName()));
     }
     return list;
