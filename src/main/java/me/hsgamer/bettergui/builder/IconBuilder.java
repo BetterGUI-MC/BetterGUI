@@ -55,8 +55,8 @@ public final class IconBuilder {
         clazz.getDeclaredConstructor(String.class, Menu.class).newInstance("", null);
       } catch (Exception ex) {
         BetterGUI.getInstance().getLogger()
-            .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
-                + ". The icon will be ignored", ex);
+            .log(Level.WARNING, ex, () -> "There is an unknown error on " + clazz.getSimpleName()
+                + ". The icon will be ignored");
       }
     }
   }
@@ -83,9 +83,9 @@ public final class IconBuilder {
       icon.setFromSection(section);
       return icon;
     } catch (Exception ex) {
-      BetterGUI.getInstance().getLogger().log(Level.WARNING,
+      BetterGUI.getInstance().getLogger().log(Level.WARNING, ex, () ->
           "Something wrong when creating the icon '" + section.getName() + "' in the menu '" + menu
-              .getName() + "'", ex);
+              .getName() + "'");
     }
     return null;
   }

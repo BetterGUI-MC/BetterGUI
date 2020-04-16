@@ -44,8 +44,8 @@ public final class MenuBuilder {
         clazz.getDeclaredConstructor(String.class).newInstance("");
       } catch (Exception ex) {
         BetterGUI.getInstance().getLogger()
-            .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
-                + ". The menu type will be ignored", ex);
+            .log(Level.WARNING, ex, () -> "There is an unknown error on " + clazz.getSimpleName()
+                + ". The menu type will be ignored");
       }
     });
   }
@@ -72,7 +72,7 @@ public final class MenuBuilder {
       return menu;
     } catch (Exception ex) {
       BetterGUI.getInstance().getLogger()
-          .log(Level.WARNING, "Something wrong when creating the menu '" + name + "'", ex);
+          .log(Level.WARNING, ex, () -> "Something wrong when creating the menu '" + name + "'");
     }
     return null;
   }

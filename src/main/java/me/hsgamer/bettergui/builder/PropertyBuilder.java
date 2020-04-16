@@ -38,6 +38,11 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public final class PropertyBuilder {
 
+  private static final String CHECK_ERROR_MESSAGE = "There is an unknown error on %s. The property will be ignored";
+  private static final String IN_MENU = " in the menu '%s'";
+  private static final String IN_ICON = " in the icon '%s'";
+  private static final String PROPERTY_ERROR_MESSAGE = "Something wrong when creating the property '%s'";
+
   private static final Map<String, Class<? extends ItemProperty<?, ?>>> itemProperties = new CaseInsensitiveStringMap<>();
   private static final Map<String, Class<? extends IconProperty<?>>> iconProperties = new CaseInsensitiveStringMap<>();
   private static final Map<String, Class<? extends MenuProperty<?, ?>>> menuProperties = new CaseInsensitiveStringMap<>();
@@ -138,8 +143,8 @@ public final class PropertyBuilder {
         clazz.getDeclaredConstructor(Menu.class).newInstance(new DummyMenu("dummy"));
       } catch (Exception ex) {
         getInstance().getLogger()
-            .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
-                + ". The property will be ignored", ex);
+            .log(Level.WARNING, ex,
+                () -> String.format(CHECK_ERROR_MESSAGE, clazz.getSimpleName()));
       }
     }
     for (Class<? extends Property<?>> clazz : otherProperties.values()) {
@@ -147,8 +152,8 @@ public final class PropertyBuilder {
         clazz.getDeclaredConstructor().newInstance();
       } catch (Exception ex) {
         getInstance().getLogger()
-            .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
-                + ". The property will be ignored", ex);
+            .log(Level.WARNING, ex,
+                () -> String.format(CHECK_ERROR_MESSAGE, clazz.getSimpleName()));
       }
     }
   }
@@ -158,8 +163,7 @@ public final class PropertyBuilder {
       clazz.getDeclaredConstructor(Icon.class).newInstance(new RawIcon("", null));
     } catch (Exception ex) {
       getInstance().getLogger()
-          .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
-              + ". The property will be ignored", ex);
+          .log(Level.WARNING, ex, () -> String.format(CHECK_ERROR_MESSAGE, clazz.getSimpleName()));
     }
   }
 
@@ -176,9 +180,9 @@ public final class PropertyBuilder {
         properties.put(path, property);
       } catch (Exception e) {
         getInstance().getLogger()
-            .log(Level.WARNING,
-                "Something wrong when creating the property '" + path + "' in the icon '" +
-                    icon.getName() + "' in the menu '" + icon.getMenu().getName() + "'", e);
+            .log(Level.WARNING, e, () -> String
+                .format(PROPERTY_ERROR_MESSAGE + IN_ICON + IN_MENU, path, icon.getName(),
+                    icon.getMenu().getName()));
       }
     });
     return properties;
@@ -197,9 +201,9 @@ public final class PropertyBuilder {
         properties.put(path, property);
       } catch (Exception e) {
         getInstance().getLogger()
-            .log(Level.WARNING,
-                "Something wrong when creating the property '" + path + "' in the icon '" +
-                    icon.getName() + "' in the menu '" + icon.getMenu().getName() + "'", e);
+            .log(Level.WARNING, e, () -> String
+                .format(PROPERTY_ERROR_MESSAGE + IN_ICON + IN_MENU, path, icon.getName(),
+                    icon.getMenu().getName()));
       }
     });
     return properties;
@@ -218,9 +222,8 @@ public final class PropertyBuilder {
         properties.put(path, property);
       } catch (Exception e) {
         getInstance().getLogger()
-            .log(Level.WARNING,
-                "Something wrong when creating the property '" + path + "' in the menu '" + menu
-                    .getName() + "'", e);
+            .log(Level.WARNING, e,
+                () -> String.format(PROPERTY_ERROR_MESSAGE + IN_MENU, path, menu.getName()));
       }
     });
     return properties;
@@ -239,7 +242,7 @@ public final class PropertyBuilder {
         properties.put(path, property);
       } catch (Exception e) {
         getInstance().getLogger()
-            .log(Level.WARNING, "Something wrong when creating the property '" + path + "'", e);
+            .log(Level.WARNING, e, () -> String.format(PROPERTY_ERROR_MESSAGE, path));
       }
     });
     return properties;

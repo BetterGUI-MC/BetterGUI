@@ -30,7 +30,7 @@ public class PluginConfig {
       try {
         configFile.createNewFile();
       } catch (IOException e) {
-        plugin.getLogger().log(Level.WARNING, "Something wrong when creating " + fileName, e);
+        plugin.getLogger().log(Level.WARNING, e, () -> "Something wrong when creating " + fileName);
       }
     }
     config = YamlConfiguration.loadConfiguration(configFile);
@@ -44,7 +44,7 @@ public class PluginConfig {
     try {
       config.save(configFile);
     } catch (IOException e) {
-      plugin.getLogger().log(Level.WARNING, "Something wrong when saving " + fileName, e);
+      plugin.getLogger().log(Level.WARNING, e, () -> "Something wrong when saving " + fileName);
     }
   }
 

@@ -53,8 +53,8 @@ public final class RequirementBuilder {
         clazz.getDeclaredConstructor().newInstance();
       } catch (Exception ex) {
         getInstance().getLogger()
-            .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
-                + ". The requirement will be ignored", ex);
+            .log(Level.WARNING, ex, () -> "There is an unknown error on " + clazz.getSimpleName()
+                + ". The requirement will be ignored");
       }
     }
   }

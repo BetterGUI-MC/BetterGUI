@@ -163,7 +163,7 @@ public final class AddonManager {
           closeClassLoader(addon);
         }
       } catch (Exception e) {
-        plugin.getLogger().log(Level.WARNING, "Error when loading " + entry.getKey(), e);
+        plugin.getLogger().log(Level.WARNING, e, () -> "Error when loading " + entry.getKey());
         closeClassLoader(addon);
       }
     }
@@ -179,7 +179,7 @@ public final class AddonManager {
       plugin.getLogger().log(Level.INFO, "Enabled {0}",
           String.join(" ", name, addon.getDescription().getVersion()));
     } catch (Exception e) {
-      plugin.getLogger().log(Level.WARNING, "Error when enabling " + name, e);
+      plugin.getLogger().log(Level.WARNING, e, () -> "Error when enabling " + name);
       closeClassLoader(addons.remove(name));
     }
   }
@@ -201,7 +201,7 @@ public final class AddonManager {
       plugin.getLogger().log(Level.INFO, "Disabled {0}",
           String.join(" ", name, addon.getDescription().getVersion()));
     } catch (Exception e) {
-      plugin.getLogger().log(Level.WARNING, "Error when disabling " + name, e);
+      plugin.getLogger().log(Level.WARNING, e, () -> "Error when disabling " + name);
       closeClassLoader(addons.remove(name));
     }
   }

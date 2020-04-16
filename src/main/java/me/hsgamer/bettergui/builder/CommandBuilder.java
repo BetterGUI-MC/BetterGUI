@@ -66,8 +66,8 @@ public final class CommandBuilder {
         clazz.getDeclaredConstructor(String.class).newInstance("");
       } catch (Exception ex) {
         BetterGUI.getInstance().getLogger()
-            .log(Level.WARNING, "There is an unknown error on " + clazz.getSimpleName()
-                + ". The command will be ignored", ex);
+            .log(Level.WARNING, ex, () -> "There is an unknown error on " + clazz.getSimpleName()
+                + ". The command will be ignored");
       }
     }
   }

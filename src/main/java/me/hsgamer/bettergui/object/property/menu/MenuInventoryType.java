@@ -30,12 +30,12 @@ public class MenuInventoryType extends MenuProperty<String, InventoryType> {
           break;
         default:
           inventoryType = InventoryType.CHEST;
-          getInstance().getLogger().log(Level.WARNING, "The menu \"" + getMenu().getName()
+          getInstance().getLogger().log(Level.WARNING, () -> "The menu \"" + getMenu().getName()
               + "\"'s inventory type is not supported, it will be CHEST by default");
       }
     } catch (IllegalArgumentException e) {
       inventoryType = InventoryType.CHEST;
-      getInstance().getLogger().log(Level.WARNING, "The menu \"" + getMenu().getName()
+      getInstance().getLogger().log(Level.WARNING, () -> "The menu \"" + getMenu().getName()
           + "\" contains an illegal inventory type, it will be CHEST by default");
     }
     return inventoryType;
