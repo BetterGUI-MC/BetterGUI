@@ -6,7 +6,6 @@ import java.util.Arrays;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
@@ -19,27 +18,26 @@ public final class ReloadCommand extends BukkitCommand {
 
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
-    return TestCase.create(commandSender)
-        .setPredicate(commandSender1 -> commandSender1.hasPermission(Permissions.RELOAD))
-        .setSuccessConsumer(commandSender1 -> {
-          getInstance().getCommandManager().clearMenuCommand();
-          getInstance().getMenuManager().clear();
-          getInstance().getMainConfig().reloadConfig();
-          getInstance().getMessageConfig().reloadConfig();
-          if (s.equalsIgnoreCase("reloadplugin") || s.equalsIgnoreCase("rlplugin")) {
-            getInstance().getAddonManager().reloadAddons();
-          } else {
-            getInstance().getAddonManager().callReload();
-          }
-          getInstance().checkClass();
-          getInstance().loadMenuConfig();
-          getInstance().getCommandManager().syncCommand();
-          CommonUtils
-              .sendMessage(commandSender1,
-                  getInstance().getMessageConfig().get(DefaultMessage.SUCCESS));
-        })
-        .setFailConsumer(commandSender1 -> CommonUtils.sendMessage(commandSender,
-            getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION)))
-        .test();
+    if (!commandSender.hasPermission(Permissions.RELOAD)) {
+      CommonUtils.sendMessage(commandSender,
+          getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+      return false;
+    }
+
+    getInstance().getCommandManager().clearMenuCommand();
+    getInstance().getMenuManager().clear();
+    getInstance().getMainConfig().reloadConfig();
+    getInstance().getMessageConfig().reloadConfig();
+    if (s.equalsIgnoreCase("reloadplugin") || s.equalsIgnoreCase("rlplugin")) {
+      getInstance().getAddonManager().reloadAddons();
+    } else {
+      getInstance().getAddonManager().callReload();
+    }
+    getInstance().checkClass();
+    getInstance().loadMenuConfig();
+    getInstance().getCommandManager().syncCommand();
+    CommonUtils
+        .sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.SUCCESS));
+    return true;
   }
 }

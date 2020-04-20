@@ -16,7 +16,6 @@ import me.hsgamer.bettergui.object.requirement.ExpLevelRequirement;
 import me.hsgamer.bettergui.object.requirement.PermissionRequirement;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.TestCase;
 import org.bukkit.configuration.ConfigurationSection;
 
 public final class RequirementBuilder {
@@ -83,23 +82,21 @@ public final class RequirementBuilder {
         return;
       }
       Requirement<?, ?> requirement = rawRequirement.get();
-      TestCase.create(type)
-          .setPredicate(section::isConfigurationSection)
-          .setSuccessConsumer(s -> {
-            Map<String, Object> keys = new CaseInsensitiveStringMap<>(
-                section.getConfigurationSection(s).getValues(false));
-            if (keys.containsKey(Settings.VALUE)) {
-              requirement.setValue(keys.get(Settings.VALUE));
-              if (keys.containsKey(Settings.TAKE)) {
-                requirement.canTake((Boolean) keys.get(Settings.TAKE));
-              }
-            } else {
-              getInstance().getLogger().warning(
-                  "The requirement \"" + s + "\" doesn't have VALUE");
-            }
-          })
-          .setFailConsumer(s -> requirement.setValue(section.get(s)))
-          .test();
+      if (section.isConfigurationSection(type)) {
+        Map<String, Object> keys = new CaseInsensitiveStringMap<>(
+            section.getConfigurationSection(type).getValues(false));
+        if (keys.containsKey(Settings.VALUE)) {
+          requirement.setValue(keys.get(Settings.VALUE));
+          if (keys.containsKey(Settings.TAKE)) {
+            requirement.canTake((Boolean) keys.get(Settings.TAKE));
+          }
+        } else {
+          getInstance().getLogger().warning(
+              "The requirement \"" + type + "\" doesn't have VALUE");
+        }
+      } else {
+        requirement.setValue(section.get(type));
+      }
       requirements.add(requirement);
     });
 
