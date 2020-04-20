@@ -105,23 +105,28 @@ public final class IconBuilder {
       slots.add((y - 1) * 9 + x - 1);
     }
     if (map.containsKey(SlotSetting.SLOT)) {
-      String input = String.valueOf(map.get(SlotSetting.SLOT)).trim();
-      if (Validate.isValidInteger(input)) {
-        slots.add(Integer.parseInt(input));
-      } else {
-        String[] split = input.split("-", 2);
-        Optional<BigDecimal> s1 = Validate.getNumber(split[0]);
-        Optional<BigDecimal> s2 = Validate.getNumber(split[1]);
-        if (s1.isPresent() && s2.isPresent()) {
-          int start = Math.min(s1.get().intValue(), s2.get().intValue());
-          int end = Math.max(s1.get().intValue(), s2.get().intValue());
-          for (int i = start; i <= end; i++) {
-            slots.add(i);
-          }
-        }
+      for (String s : String.valueOf(map.get(SlotSetting.SLOT)).trim().split(",")) {
+        addSlots(s, slots);
       }
     }
     return slots;
+  }
+
+  private static void addSlots(String input, List<Integer> slots) {
+    if (Validate.isValidInteger(input)) {
+      slots.add(Integer.parseInt(input));
+    } else {
+      String[] split = input.split("-", 2);
+      Optional<BigDecimal> s1 = Validate.getNumber(split[0]);
+      Optional<BigDecimal> s2 = Validate.getNumber(split[1]);
+      if (s1.isPresent() && s2.isPresent()) {
+        int start = Math.min(s1.get().intValue(), s2.get().intValue());
+        int end = Math.max(s1.get().intValue(), s2.get().intValue());
+        for (int i = start; i <= end; i++) {
+          slots.add(i);
+        }
+      }
+    }
   }
 
   private static class SlotSetting {
