@@ -2,10 +2,12 @@ package me.hsgamer.bettergui.builder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.IntStream;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
 import me.hsgamer.bettergui.object.Icon;
@@ -105,28 +107,26 @@ public final class IconBuilder {
       slots.add((y - 1) * 9 + x - 1);
     }
     if (map.containsKey(SlotSetting.SLOT)) {
-      for (String s : String.valueOf(map.get(SlotSetting.SLOT)).trim().split(",")) {
-        addSlots(s, slots);
-      }
+      Arrays.stream(String.valueOf(map.get(SlotSetting.SLOT)).trim().split(",")).map(String::trim)
+          .flatMapToInt(IconBuilder::generateSlots).forEach(slots::add);
     }
     return slots;
   }
 
-  private static void addSlots(String input, List<Integer> slots) {
+  private static IntStream generateSlots(String input) {
     if (Validate.isValidInteger(input)) {
-      slots.add(Integer.parseInt(input));
+      return IntStream.of(Integer.parseInt(input));
     } else {
       String[] split = input.split("-", 2);
-      Optional<BigDecimal> s1 = Validate.getNumber(split[0]);
-      Optional<BigDecimal> s2 = Validate.getNumber(split[1]);
+      Optional<BigDecimal> s1 = Validate.getNumber(split[0].trim());
+      Optional<BigDecimal> s2 = Validate.getNumber(split[1].trim());
       if (s1.isPresent() && s2.isPresent()) {
         int start = Math.min(s1.get().intValue(), s2.get().intValue());
         int end = Math.max(s1.get().intValue(), s2.get().intValue());
-        for (int i = start; i <= end; i++) {
-          slots.add(i);
-        }
+        return IntStream.range(start, end + 1);
       }
     }
+    return IntStream.empty();
   }
 
   private static class SlotSetting {
