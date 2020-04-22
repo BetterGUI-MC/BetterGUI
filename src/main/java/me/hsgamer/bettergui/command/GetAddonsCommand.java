@@ -9,7 +9,6 @@ import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
 import me.hsgamer.bettergui.object.addon.AddonDescription;
 import me.hsgamer.bettergui.util.BukkitUtils;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.TestCase;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -20,12 +19,6 @@ import org.bukkit.command.defaults.BukkitCommand;
 
 public final class GetAddonsCommand extends BukkitCommand {
 
-  private final TestCase<CommandSender> testCase = new TestCase<CommandSender>()
-      .setPredicate(commandSender -> commandSender.hasPermission(Permissions.ADDONS))
-      .setSuccessConsumer(this::send)
-      .setFailConsumer(commandSender -> CommonUtils.sendMessage(commandSender,
-          getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION)));
-
   public GetAddonsCommand() {
     super("addons", "Get the loaded addons", "/addons",
         Arrays.asList("menuaddons", "getmenuaddons"));
@@ -33,7 +26,13 @@ public final class GetAddonsCommand extends BukkitCommand {
 
   @Override
   public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-    return testCase.setTestObject(sender).test();
+    if (!sender.hasPermission(Permissions.ADDONS)) {
+      CommonUtils.sendMessage(sender,
+          getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+      return false;
+    }
+    send(sender);
+    return true;
   }
 
   private void send(CommandSender commandSender) {

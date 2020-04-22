@@ -9,6 +9,7 @@ assignees: ''
 
 ### **Describe the bug**
 A clear and concise description of what the bug is.
+* [ ] Make sure you've read the wiki
 
 ### **To Reproduce**
 Steps to reproduce the behavior:

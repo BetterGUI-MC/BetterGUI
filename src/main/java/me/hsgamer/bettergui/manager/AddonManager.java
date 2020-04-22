@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
@@ -24,7 +24,6 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.object.addon.Addon;
 import me.hsgamer.bettergui.object.addon.AddonClassLoader;
 import me.hsgamer.bettergui.object.addon.AddonDescription;
-import me.hsgamer.bettergui.util.TestCase;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -293,14 +292,16 @@ public final class AddonManager {
     Map<String, Addon> remaining = new HashMap<>();
 
     // Start with addons with no dependency and get the remaining
-    TestCase<Entry<String, Addon>> testCase = new TestCase<Map.Entry<String, Addon>>()
-        .setPredicate(
-            entry -> entry.getValue().getDescription().getDepends().isEmpty()
-                && entry.getValue().getDescription().getSoftDepends().isEmpty()
-                && entry.getValue().getDescription().getPluginDepends().isEmpty())
-        .setSuccessConsumer(entry -> sorted.put(entry.getKey(), entry.getValue()))
-        .setFailConsumer(entry -> remaining.put(entry.getKey(), entry.getValue()));
-    original.entrySet().forEach(entry -> testCase.setTestObject(entry).test());
+    Consumer<Map.Entry<String, Addon>> consumer = entry -> {
+      AddonDescription description = entry.getValue().getDescription();
+      if (description.getDepends().isEmpty() && description.getSoftDepends().isEmpty()
+          && description.getPluginDepends().isEmpty()) {
+        sorted.put(entry.getKey(), entry.getValue());
+      } else {
+        remaining.put(entry.getKey(), entry.getValue());
+      }
+    };
+    original.entrySet().forEach(consumer::accept);
 
     // Organize the remaining
     if (!remaining.isEmpty()) {

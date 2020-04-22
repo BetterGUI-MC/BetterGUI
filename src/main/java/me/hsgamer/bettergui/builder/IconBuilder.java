@@ -2,10 +2,12 @@ package me.hsgamer.bettergui.builder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.IntStream;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
 import me.hsgamer.bettergui.object.Icon;
@@ -16,7 +18,6 @@ import me.hsgamer.bettergui.object.icon.ListIcon;
 import me.hsgamer.bettergui.object.icon.RawIcon;
 import me.hsgamer.bettergui.object.icon.SimpleIcon;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
-import me.hsgamer.bettergui.util.TestCase;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -94,48 +95,38 @@ public final class IconBuilder {
     List<Integer> slots = new ArrayList<>();
     Map<String, Object> map = new CaseInsensitiveStringMap<>(section.getValues(false));
 
-    TestCase.create(map)
-        .setPredicate(
-            stringObjectMap -> stringObjectMap.containsKey(SlotSetting.X) || stringObjectMap
-                .containsKey(SlotSetting.Y))
-        .setSuccessConsumer(stringObjectMap -> {
-          int x = 1;
-          int y = 1;
-          if (stringObjectMap.containsKey(SlotSetting.X)) {
-            x = Integer.parseInt(String.valueOf(map.get(SlotSetting.X)));
-          }
-          if (stringObjectMap.containsKey(SlotSetting.Y)) {
-            y = Integer.parseInt(String.valueOf(map.get(SlotSetting.Y)));
-          }
-          slots.add((y - 1) * 9 + x - 1);
-        })
-        .setFailNextTestCase(stringObjectMap -> TestCase.create(stringObjectMap)
-            .setPredicate(stringObjectMap1 -> stringObjectMap1.containsKey(SlotSetting.SLOT))
-            .setSuccessConsumer(stringObjectMap1 -> {
-              String input = String.valueOf(stringObjectMap1.get(SlotSetting.SLOT));
-              TestCase<String> testCase = new TestCase<String>()
-                  .setBeforeTestOperator(String::trim)
-                  .setPredicate(Validate::isValidInteger)
-                  .setFailConsumer(s -> {
-                    String[] split = s.split("-", 2);
-                    Optional<BigDecimal> s1 = Validate.getNumber(split[0]);
-                    Optional<BigDecimal> s2 = Validate.getNumber(split[1]);
-                    if (s1.isPresent() && s2.isPresent()) {
-                      int start = Math.min(s1.get().intValue(), s2.get().intValue());
-                      int end = Math.max(s1.get().intValue(), s2.get().intValue());
-                      for (int i = start; i <= end; i++) {
-                        slots.add(i);
-                      }
-                    }
-                  })
-                  .setSuccessConsumer(s -> slots.add(Integer.parseInt(s)));
-              for (String s : input.split(",")) {
-                testCase.setTestObject(s).test();
-              }
-            }))
-        .test();
-
+    if (map.containsKey(SlotSetting.X) || map.containsKey(SlotSetting.Y)) {
+      int x = 1;
+      int y = 1;
+      if (map.containsKey(SlotSetting.X)) {
+        x = Integer.parseInt(String.valueOf(map.get(SlotSetting.X)));
+      }
+      if (map.containsKey(SlotSetting.Y)) {
+        y = Integer.parseInt(String.valueOf(map.get(SlotSetting.Y)));
+      }
+      slots.add((y - 1) * 9 + x - 1);
+    }
+    if (map.containsKey(SlotSetting.SLOT)) {
+      Arrays.stream(String.valueOf(map.get(SlotSetting.SLOT)).trim().split(",")).map(String::trim)
+          .flatMapToInt(IconBuilder::generateSlots).forEach(slots::add);
+    }
     return slots;
+  }
+
+  private static IntStream generateSlots(String input) {
+    if (Validate.isValidInteger(input)) {
+      return IntStream.of(Integer.parseInt(input));
+    } else {
+      String[] split = input.split("-", 2);
+      Optional<BigDecimal> s1 = Validate.getNumber(split[0].trim());
+      Optional<BigDecimal> s2 = Validate.getNumber(split[1].trim());
+      if (s1.isPresent() && s2.isPresent()) {
+        int start = Math.min(s1.get().intValue(), s2.get().intValue());
+        int end = Math.max(s1.get().intValue(), s2.get().intValue());
+        return IntStream.range(start, end + 1);
+      }
+    }
+    return IntStream.empty();
   }
 
   private static class SlotSetting {
