@@ -28,6 +28,7 @@ If applicable, add screenshots to help explain your problem.
 Your menu config, addon config or anything related to your problem
 
 ### **Version**
+- [ ] Make sure you read the wiki
 - Minecraft: [1.12, 1.14, etc]
 - Spigot/Bukkit/...: [1.12, 1.14, etc]
 - BetterGUI: [1.0, 1.1, etc]
