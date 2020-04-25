@@ -8,15 +8,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.CompletableFuture;
-import org.bukkit.plugin.Plugin;
 
 public final class VersionChecker {
 
-  private final Plugin plugin;
   private final int resourceId;
 
-  public VersionChecker(Plugin plugin, int resourceId) {
-    this.plugin = plugin;
+  public VersionChecker(int resourceId) {
     this.resourceId = resourceId;
   }
 
@@ -40,9 +37,8 @@ public final class VersionChecker {
         }
         return version;
       } catch (IOException exception) {
-        this.plugin.getLogger().warning("Cannot look for updates: " + exception.getMessage());
+        return "Error when getting version: " + exception.getMessage();
       }
-      return "";
     });
   }
 }
