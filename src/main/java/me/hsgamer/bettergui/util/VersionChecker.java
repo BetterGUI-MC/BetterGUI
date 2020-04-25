@@ -1,13 +1,13 @@
 package me.hsgamer.bettergui.util;
 
+import com.google.common.base.Supplier;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.function.Consumer;
-import org.bukkit.Bukkit;
+import java.util.concurrent.CompletableFuture;
 import org.bukkit.plugin.Plugin;
 
 public final class VersionChecker {
@@ -20,8 +20,8 @@ public final class VersionChecker {
     this.resourceId = resourceId;
   }
 
-  public void getVersion(final Consumer<String> consumer) {
-    Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+  public CompletableFuture<String> getVersion() {
+    return CompletableFuture.supplyAsync((Supplier<String>) () -> {
       try {
         URL url = new URL(
             "https://api.spigotmc.org/simple/0.1/index.php?action=getResource&id=" + resourceId);
@@ -38,10 +38,11 @@ public final class VersionChecker {
         if (version == null) {
           throw new IOException("Cannot get the plugin version");
         }
-        consumer.accept(version);
+        return version;
       } catch (IOException exception) {
         this.plugin.getLogger().warning("Cannot look for updates: " + exception.getMessage());
       }
+      return "";
     });
   }
 }

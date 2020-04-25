@@ -86,7 +86,7 @@ public final class BetterGUI extends JavaPlugin {
       getLogger().warning("This is not ready for production");
       getLogger().warning("Use in your own risk");
     } else {
-      new VersionChecker(this, 75620).getVersion(version -> {
+      new VersionChecker(this, 75620).getVersion().thenAccept(version -> {
         if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
           getLogger().info("You are using the latest version");
         } else {
