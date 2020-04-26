@@ -171,19 +171,21 @@ public final class AddonManager {
     addons.putAll(finalAddons);
   }
 
-  public void enableAddon(String name) {
+  public boolean enableAddon(String name) {
     Addon addon = addons.get(name);
     try {
       addon.onEnable();
       plugin.getLogger().log(Level.INFO, "Enabled {0}",
           String.join(" ", name, addon.getDescription().getVersion()));
+      return true;
     } catch (Throwable t) {
       plugin.getLogger().log(Level.WARNING, t, () -> "Error when enabling " + name);
-      closeClassLoader(addons.remove(name));
+      closeClassLoader(addon);
+      return false;
     }
   }
 
-  public void disableAddon(String name) {
+  public boolean disableAddon(String name) {
     Addon addon = addons.get(name);
     try {
       addon.onDisable();
@@ -199,14 +201,22 @@ public final class AddonManager {
       });
       plugin.getLogger().log(Level.INFO, "Disabled {0}",
           String.join(" ", name, addon.getDescription().getVersion()));
+      return true;
     } catch (Throwable t) {
       plugin.getLogger().log(Level.WARNING, t, () -> "Error when disabling " + name);
-      closeClassLoader(addons.remove(name));
+      closeClassLoader(addon);
+      return false;
     }
   }
 
   public void enableAddons() {
-    addons.keySet().forEach(this::enableAddon);
+    List<String> failed = new ArrayList<>();
+    addons.keySet().forEach(name -> {
+      if (!enableAddon(name)) {
+        failed.add(name);
+      }
+    });
+    failed.forEach(addons::remove);
   }
 
   public void callPostEnable() {
@@ -218,7 +228,14 @@ public final class AddonManager {
   }
 
   public void disableAddons() {
-    addons.keySet().forEach(this::disableAddon);
+    List<String> failed = new ArrayList<>();
+    addons.keySet().forEach(name -> {
+      if (!disableAddon(name)) {
+        failed.add(name);
+      }
+    });
+    failed.forEach(addons::remove);
+
     addons.values().forEach(this::closeClassLoader);
     addons.clear();
   }
