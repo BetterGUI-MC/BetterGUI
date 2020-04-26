@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.util;
 
-import com.google.common.base.Supplier;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
@@ -18,7 +17,7 @@ public final class VersionChecker {
   }
 
   public CompletableFuture<String> getVersion() {
-    return CompletableFuture.supplyAsync((Supplier<String>) () -> {
+    return CompletableFuture.supplyAsync(() -> {
       try {
         URL url = new URL(
             "https://api.spigotmc.org/simple/0.1/index.php?action=getResource&id=" + resourceId);
