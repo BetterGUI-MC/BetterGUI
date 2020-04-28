@@ -22,7 +22,7 @@ public abstract class StringComparator extends AbstractLazyFunction {
     }
 
     public String getString() {
-      return null;
+      return "1";
     }
   };
 
