@@ -149,23 +149,23 @@ public final class AddonManager {
     // Sort and load the addons
     addonMap = sortAddons(addonMap);
     Map<String, Addon> finalAddons = new LinkedHashMap<>();
-    for (Map.Entry<String, Addon> entry : addonMap.entrySet()) {
-      Addon addon = entry.getValue();
+    addonMap.forEach((key, addon) -> {
       try {
-        if (addon.onLoad()) {
-          plugin.getLogger()
-              .info("Loaded " + entry.getKey() + " " + addon.getDescription().getVersion());
-          finalAddons.put(entry.getKey(), addon);
-        } else {
+        if (!addon.onLoad()) {
           plugin.getLogger().warning(
-              "Failed to load " + entry.getKey() + " " + addon.getDescription().getVersion());
+              "Failed to load " + key + " " + addon.getDescription().getVersion());
           closeClassLoader(addon);
+          return;
         }
+
+        plugin.getLogger()
+            .info("Loaded " + key + " " + addon.getDescription().getVersion());
+        finalAddons.put(key, addon);
       } catch (Throwable t) {
-        plugin.getLogger().log(Level.WARNING, t, () -> "Error when loading " + entry.getKey());
+        plugin.getLogger().log(Level.WARNING, t, () -> "Error when loading " + key);
         closeClassLoader(addon);
       }
-    }
+    });
 
     // Store the final addons map
     addons.putAll(finalAddons);
@@ -318,7 +318,7 @@ public final class AddonManager {
         remaining.put(entry.getKey(), entry.getValue());
       }
     };
-    original.entrySet().forEach(consumer::accept);
+    original.entrySet().forEach(consumer);
 
     // Organize the remaining
     if (!remaining.isEmpty()) {
