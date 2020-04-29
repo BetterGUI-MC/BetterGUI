@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.util.expression.string.Contains;
 import me.hsgamer.bettergui.util.expression.string.EndsWith;
 import me.hsgamer.bettergui.util.expression.string.Equals;
 import me.hsgamer.bettergui.util.expression.string.EqualsIgnoreCase;
+import me.hsgamer.bettergui.util.expression.string.Length;
 import me.hsgamer.bettergui.util.expression.string.StartsWith;
 
 public final class ExpressionUtils {
@@ -22,6 +23,7 @@ public final class ExpressionUtils {
     lazyFunctionList.add(new Contains());
     lazyFunctionList.add(new StartsWith());
     lazyFunctionList.add(new EndsWith());
+    lazyFunctionList.add(new Length());
   }
 
   private ExpressionUtils() {

@@ -1,4 +1,4 @@
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=BetterGUI-MC_BetterGUI&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=BetterGUI-MC_BetterGUI) [![Build Status](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/badge/icon)](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/) ![Master Build](https://github.com/BetterGUI-MC/BetterGUI/workflows/Master%20Build/badge.svg) [![Discord](https://img.shields.io/discord/660795353037144064)](https://discord.gg/9m4GdFD)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=BetterGUI-MC_BetterGUI&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=BetterGUI-MC_BetterGUI) [![Build Status](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/badge/icon)](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/) ![Master Build](https://github.com/BetterGUI-MC/BetterGUI/workflows/Master%20Build/badge.svg) [![Discord](https://img.shields.io/discord/660795353037144064)](https://discord.gg/9m4GdFD) [![Javadocs](https://img.shields.io/badge/javadocs-link-green)](https://bettergui-mc.github.io/BetterGUI)
 ## Feature
 * Modular design (Base plugin with addons)
 * Simple settings
@@ -26,7 +26,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>BetterGUI</artifactId>
-      <version>2.0</version>
+      <version>2.2</version>
       <scope>provided</scope>
     </dependency>
 ```

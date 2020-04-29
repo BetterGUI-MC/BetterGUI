@@ -149,41 +149,43 @@ public final class AddonManager {
     // Sort and load the addons
     addonMap = sortAddons(addonMap);
     Map<String, Addon> finalAddons = new LinkedHashMap<>();
-    for (Map.Entry<String, Addon> entry : addonMap.entrySet()) {
-      Addon addon = entry.getValue();
+    addonMap.forEach((key, addon) -> {
       try {
-        if (addon.onLoad()) {
-          plugin.getLogger()
-              .info("Loaded " + entry.getKey() + " " + addon.getDescription().getVersion());
-          finalAddons.put(entry.getKey(), addon);
-        } else {
+        if (!addon.onLoad()) {
           plugin.getLogger().warning(
-              "Failed to load " + entry.getKey() + " " + addon.getDescription().getVersion());
+              "Failed to load " + key + " " + addon.getDescription().getVersion());
           closeClassLoader(addon);
+          return;
         }
-      } catch (Exception e) {
-        plugin.getLogger().log(Level.WARNING, e, () -> "Error when loading " + entry.getKey());
+
+        plugin.getLogger()
+            .info("Loaded " + key + " " + addon.getDescription().getVersion());
+        finalAddons.put(key, addon);
+      } catch (Throwable t) {
+        plugin.getLogger().log(Level.WARNING, t, () -> "Error when loading " + key);
         closeClassLoader(addon);
       }
-    }
+    });
 
     // Store the final addons map
     addons.putAll(finalAddons);
   }
 
-  public void enableAddon(String name) {
+  public boolean enableAddon(String name, boolean closeLoaderOnFailed) {
     Addon addon = addons.get(name);
     try {
       addon.onEnable();
-      plugin.getLogger().log(Level.INFO, "Enabled {0}",
-          String.join(" ", name, addon.getDescription().getVersion()));
-    } catch (Exception e) {
-      plugin.getLogger().log(Level.WARNING, e, () -> "Error when enabling " + name);
-      closeClassLoader(addons.remove(name));
+      return true;
+    } catch (Throwable t) {
+      plugin.getLogger().log(Level.WARNING, t, () -> "Error when enabling " + name);
+      if (closeLoaderOnFailed) {
+        closeClassLoader(addon);
+      }
+      return false;
     }
   }
 
-  public void disableAddon(String name) {
+  public boolean disableAddon(String name, boolean closeLoaderOnFailed) {
     Addon addon = addons.get(name);
     try {
       addon.onDisable();
@@ -197,16 +199,27 @@ public final class AddonManager {
         list.forEach(command -> plugin.getCommandManager().unregister(command));
         return null;
       });
-      plugin.getLogger().log(Level.INFO, "Disabled {0}",
-          String.join(" ", name, addon.getDescription().getVersion()));
-    } catch (Exception e) {
-      plugin.getLogger().log(Level.WARNING, e, () -> "Error when disabling " + name);
-      closeClassLoader(addons.remove(name));
+      return true;
+    } catch (Throwable t) {
+      plugin.getLogger().log(Level.WARNING, t, () -> "Error when disabling " + name);
+      if (closeLoaderOnFailed) {
+        closeClassLoader(addon);
+      }
+      return false;
     }
   }
 
   public void enableAddons() {
-    addons.keySet().forEach(this::enableAddon);
+    List<String> failed = new ArrayList<>();
+    addons.keySet().forEach(name -> {
+      if (!enableAddon(name, true)) {
+        failed.add(name);
+      } else {
+        plugin.getLogger().log(Level.INFO, "Enabled {0}",
+            String.join(" ", name, addons.get(name).getDescription().getVersion()));
+      }
+    });
+    failed.forEach(addons::remove);
   }
 
   public void callPostEnable() {
@@ -218,7 +231,13 @@ public final class AddonManager {
   }
 
   public void disableAddons() {
-    addons.keySet().forEach(this::disableAddon);
+    addons.keySet().forEach(name -> {
+      if (disableAddon(name, false)) {
+        plugin.getLogger().log(Level.INFO, "Disabled {0}",
+            String.join(" ", name, addons.get(name).getDescription().getVersion()));
+      }
+    });
+
     addons.values().forEach(this::closeClassLoader);
     addons.clear();
   }
@@ -301,7 +320,7 @@ public final class AddonManager {
         remaining.put(entry.getKey(), entry.getValue());
       }
     };
-    original.entrySet().forEach(consumer::accept);
+    original.entrySet().forEach(consumer);
 
     // Organize the remaining
     if (!remaining.isEmpty()) {

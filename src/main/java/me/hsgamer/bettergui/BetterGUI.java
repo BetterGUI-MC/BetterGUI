@@ -86,12 +86,14 @@ public final class BetterGUI extends JavaPlugin {
       getLogger().warning("This is not ready for production");
       getLogger().warning("Use in your own risk");
     } else {
-      new VersionChecker(this, 75620).getVersion(version -> {
-        if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+      new VersionChecker(75620).getVersion().thenAccept(output -> {
+        if (output.startsWith("Error when getting version:")) {
+          getLogger().warning(output);
+        } else if (this.getDescription().getVersion().equalsIgnoreCase(output)) {
           getLogger().info("You are using the latest version");
         } else {
           getLogger().warning("There is an available update");
-          getLogger().warning("New Version: " + version);
+          getLogger().warning("New Version: " + output);
         }
       });
     }
