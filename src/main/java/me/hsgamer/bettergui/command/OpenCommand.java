@@ -44,42 +44,29 @@ public final class OpenCommand extends BukkitCommand {
       return false;
     }
 
-    if (strings.length > 1) {
-      Player player;
-      if (strings[1].equalsIgnoreCase("me")) {
-        if (commandSender instanceof Player) {
-          player = (Player) commandSender;
-        } else {
-          sendMessage(commandSender,
-              getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
-          return false;
-        }
-      } else {
-        player = Bukkit.getPlayer(strings[1]);
-      }
-
-      String[] args = new String[0];
-      if (strings.length > 2) {
-        args = Arrays.copyOfRange(strings, 2, strings.length);
-      }
-
-      if (player != null && player.isOnline()) {
-        menuManager.openMenu(strings[0], player, args, true);
-      } else {
-        sendMessage(commandSender,
-            getInstance().getMessageConfig().get(DefaultMessage.PLAYER_NOT_FOUND));
-        return false;
-      }
-    } else {
+    if (strings.length == 1) {
       if (commandSender instanceof Player) {
         menuManager
             .openMenu(strings[0], (Player) commandSender, new String[0], false);
+        return true;
       } else {
         sendMessage(commandSender,
             getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
         return false;
       }
     }
+
+    Player player = Bukkit.getPlayer(strings[1]);
+    if (player == null || !player.isOnline()) {
+      sendMessage(commandSender,
+          getInstance().getMessageConfig().get(DefaultMessage.PLAYER_NOT_FOUND));
+      return false;
+    }
+
+    String[] args =
+        strings.length > 2 ? Arrays.copyOfRange(strings, 2, strings.length) : new String[0];
+
+    menuManager.openMenu(strings[0], player, args, true);
     return true;
   }
 
@@ -89,7 +76,6 @@ public final class OpenCommand extends BukkitCommand {
     if (args.length == 1) {
       list.addAll(getInstance().getMenuManager().getMenuNames());
     } else if (args.length == 2) {
-      list.add("me");
       BukkitUtils.getOnlinePlayers().forEach(player -> list.add(player.getName()));
     }
     return list;
