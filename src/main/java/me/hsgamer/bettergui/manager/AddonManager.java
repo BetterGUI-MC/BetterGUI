@@ -171,21 +171,21 @@ public final class AddonManager {
     addons.putAll(finalAddons);
   }
 
-  public boolean enableAddon(String name) {
+  public boolean enableAddon(String name, boolean closeLoaderOnFailed) {
     Addon addon = addons.get(name);
     try {
       addon.onEnable();
-      plugin.getLogger().log(Level.INFO, "Enabled {0}",
-          String.join(" ", name, addon.getDescription().getVersion()));
       return true;
     } catch (Throwable t) {
       plugin.getLogger().log(Level.WARNING, t, () -> "Error when enabling " + name);
-      closeClassLoader(addon);
+      if (closeLoaderOnFailed) {
+        closeClassLoader(addon);
+      }
       return false;
     }
   }
 
-  public boolean disableAddon(String name) {
+  public boolean disableAddon(String name, boolean closeLoaderOnFailed) {
     Addon addon = addons.get(name);
     try {
       addon.onDisable();
@@ -199,12 +199,12 @@ public final class AddonManager {
         list.forEach(command -> plugin.getCommandManager().unregister(command));
         return null;
       });
-      plugin.getLogger().log(Level.INFO, "Disabled {0}",
-          String.join(" ", name, addon.getDescription().getVersion()));
       return true;
     } catch (Throwable t) {
       plugin.getLogger().log(Level.WARNING, t, () -> "Error when disabling " + name);
-      closeClassLoader(addon);
+      if (closeLoaderOnFailed) {
+        closeClassLoader(addon);
+      }
       return false;
     }
   }
@@ -212,8 +212,11 @@ public final class AddonManager {
   public void enableAddons() {
     List<String> failed = new ArrayList<>();
     addons.keySet().forEach(name -> {
-      if (!enableAddon(name)) {
+      if (!enableAddon(name, true)) {
         failed.add(name);
+      } else {
+        plugin.getLogger().log(Level.INFO, "Enabled {0}",
+            String.join(" ", name, addons.get(name).getDescription().getVersion()));
       }
     });
     failed.forEach(addons::remove);
@@ -228,13 +231,12 @@ public final class AddonManager {
   }
 
   public void disableAddons() {
-    List<String> failed = new ArrayList<>();
     addons.keySet().forEach(name -> {
-      if (!disableAddon(name)) {
-        failed.add(name);
+      if (disableAddon(name, false)) {
+        plugin.getLogger().log(Level.INFO, "Disabled {0}",
+            String.join(" ", name, addons.get(name).getDescription().getVersion()));
       }
     });
-    failed.forEach(addons::remove);
 
     addons.values().forEach(this::closeClassLoader);
     addons.clear();
