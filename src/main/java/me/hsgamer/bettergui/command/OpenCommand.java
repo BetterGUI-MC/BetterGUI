@@ -22,7 +22,7 @@ public final class OpenCommand extends BukkitCommand {
 
   public OpenCommand() {
     super("openmenu", "Open the specific menu",
-        "/openmenu <menu_name> [<player_name>/me] [args...]",
+        "/openmenu <menu_name> [player] [args...]",
         Collections.singletonList("om"));
   }
 
