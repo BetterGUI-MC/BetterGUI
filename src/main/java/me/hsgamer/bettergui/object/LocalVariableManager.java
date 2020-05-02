@@ -1,8 +1,6 @@
 package me.hsgamer.bettergui.object;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import me.hsgamer.bettergui.manager.VariableManager;
 import org.bukkit.entity.Player;
 
@@ -95,20 +93,6 @@ public interface LocalVariableManager<T> {
    */
   default String setLocalVariables(String message, Player executor,
       Map<String, LocalVariable> variables) {
-    Matcher matcher = VariableManager.PATTERN.matcher(message);
-    while (matcher.find()) {
-      String identifier = matcher.group(1).trim();
-      for (Map.Entry<String, LocalVariable> variable : variables.entrySet()) {
-        if (identifier.toLowerCase().startsWith(variable.getKey())) {
-          String replace = variable.getValue()
-              .getReplacement(executor, identifier.substring(variable.getKey().length()));
-          if (replace != null) {
-            message = message
-                .replaceAll(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
-          }
-        }
-      }
-    }
-    return message;
+    return VariableManager.setSingleVariables(message, executor, variables);
   }
 }
