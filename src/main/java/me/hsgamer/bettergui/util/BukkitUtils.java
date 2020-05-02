@@ -84,6 +84,6 @@ public final class BukkitUtils {
   public static IntStream getEmptySlots(Inventory inventory) {
     return IntStream
         .range(0, inventory.getSize())
-        .filter(slot -> inventory.getItem(slot) != null);
+        .filter(slot -> inventory.getItem(slot) == null);
   }
 }
