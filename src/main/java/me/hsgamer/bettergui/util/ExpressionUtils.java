@@ -30,6 +30,12 @@ public final class ExpressionUtils {
 
   }
 
+  /**
+   * Check if the expression is an Boolean expression
+   *
+   * @param input the expression
+   * @return whether it's an Boolean expression
+   */
   public static boolean isBoolean(String input) {
     Expression expression = new Expression(input);
     applyLazyFunction(expression);
@@ -40,6 +46,12 @@ public final class ExpressionUtils {
     }
   }
 
+  /**
+   * Get the result of the expression
+   *
+   * @param input the expression
+   * @return the result
+   */
   public static BigDecimal getResult(String input) {
     Optional<BigDecimal> number = Validate.getNumber(input);
     if (number.isPresent()) {
@@ -55,6 +67,12 @@ public final class ExpressionUtils {
     }
   }
 
+  /**
+   * Check if it's a valid expression
+   *
+   * @param input the expression
+   * @return whether it's valid
+   */
   public static boolean isValidExpression(String input) {
     return getResult(input) != null;
   }
@@ -63,6 +81,11 @@ public final class ExpressionUtils {
     lazyFunctionList.forEach(expression::addLazyFunction);
   }
 
+  /**
+   * Register a function the expression system
+   *
+   * @param lazyFunction the function
+   */
   @SuppressWarnings("unused")
   public static void registerLazyFunction(LazyFunction lazyFunction) {
     lazyFunctionList.add(lazyFunction);

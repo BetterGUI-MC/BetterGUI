@@ -6,9 +6,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
+import java.util.stream.IntStream;
 import me.hsgamer.bettergui.BetterGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 public final class BukkitUtils {
 
@@ -27,6 +29,11 @@ public final class BukkitUtils {
   private BukkitUtils() {
   }
 
+  /**
+   * Get online players
+   *
+   * @return the list of player
+   */
   public static Collection<? extends Player> getOnlinePlayers() {
     try {
       if (LEGACY_GET_ONLINE_PLAYERS == null) {
@@ -42,6 +49,12 @@ public final class BukkitUtils {
     }
   }
 
+  /**
+   * Get ping
+   *
+   * @param player the player
+   * @return the ping of the player
+   */
   public static String getPing(Player player) {
     try {
       Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
@@ -53,7 +66,24 @@ public final class BukkitUtils {
     }
   }
 
+  /**
+   * Check if the server is Spigot
+   *
+   * @return whether the server is Spigot
+   */
   public static boolean isSpigot() {
     return Validate.isClassLoaded("org.bukkit.entity.Player$Spigot");
+  }
+
+  /**
+   * Get empty slots of the inventory
+   *
+   * @param inventory the inventory
+   * @return a IntStream of empty slots
+   */
+  public static IntStream getEmptySlots(Inventory inventory) {
+    return IntStream
+        .range(0, inventory.getSize())
+        .filter(slot -> inventory.getItem(slot) != null);
   }
 }
