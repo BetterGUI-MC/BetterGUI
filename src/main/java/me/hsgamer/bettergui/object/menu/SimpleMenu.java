@@ -382,6 +382,8 @@ public class SimpleMenu extends Menu<SimpleInventory> {
         if (rawClickableItem.isPresent()) {
           ClickableItem clickableItem = rawClickableItem.get();
           setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
+        } else {
+          removeItem(slot);
         }
       });
 
