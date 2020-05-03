@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.object.menu;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import fr.mrmicky.fastinv.FastInv;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.IntStream;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
@@ -254,6 +254,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
     private final Player player;
     private final int maxSlots;
+    private final List<Integer> emptySlots = new ArrayList<>();
     private BukkitTask task;
     private boolean forced = false;
     private long ticks = 0;
@@ -308,12 +309,13 @@ public class SimpleMenu extends Menu<SimpleInventory> {
           public void run() {
             updateInventory();
           }
-        }.runTaskTimerAsynchronously(BetterGUI.getInstance(), ticks, ticks);
+        }.runTaskTimerAsynchronously(getInstance(), ticks, ticks);
       }
       inventoryMap.put(player.getUniqueId(), this);
     }
 
     public void updateInventory() {
+      emptySlots.forEach(this::removeItem);
       createItems(true);
       player.updateInventory();
     }
@@ -347,12 +349,16 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     private void createDefaultItem(boolean updateMode) {
       if (defaultIcon != null) {
         IntStream emptySlotsStream = BukkitUtils.getEmptySlots(this.getInventory());
+        emptySlots.clear();
         if (cloneIcon) {
           Optional<ClickableItem> optional = updateMode ?
               defaultIcon.updateClickableItem(player) : defaultIcon.createClickableItem(player);
           optional.ifPresent(clickableItem ->
               emptySlotsStream.forEach(
-                  slot -> setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent()))
+                  slot -> {
+                    setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
+                    emptySlots.add(slot);
+                  })
           );
         } else {
           emptySlotsStream.forEach(slot -> {
@@ -360,6 +366,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
                 defaultIcon.updateClickableItem(player) : defaultIcon.createClickableItem(player);
             optional.ifPresent(clickableItem ->
                 setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent()));
+            emptySlots.add(slot);
           });
         }
       }
