@@ -79,7 +79,7 @@ public final class VariableManager {
           int i2 = Integer.parseInt(s2);
           int max = Math.max(i1, i2);
           int min = Math.min(i1, i2);
-          return String.valueOf(min + ThreadLocalRandom.current().nextInt(max - min + 1));
+          return String.valueOf(ThreadLocalRandom.current().nextInt(min, max + 1));
         }
       } else if (Validate.isValidInteger(identifier)) {
         return String.valueOf(ThreadLocalRandom.current().nextInt(Integer.parseInt(identifier)));
