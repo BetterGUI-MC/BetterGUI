@@ -378,7 +378,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
           .forEach(emptySlots::add);
 
       icons.forEach((slot, icon) -> {
-        if (slot >= this.getInventory().getSize()) {
+        if (slot >= size) {
           return;
         }
         Optional<ClickableItem> rawClickableItem =
