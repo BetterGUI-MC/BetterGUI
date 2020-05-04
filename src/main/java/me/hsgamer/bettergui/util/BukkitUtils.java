@@ -6,11 +6,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
-import java.util.stream.IntStream;
 import me.hsgamer.bettergui.BetterGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 public final class BukkitUtils {
 
@@ -73,17 +71,5 @@ public final class BukkitUtils {
    */
   public static boolean isSpigot() {
     return Validate.isClassLoaded("org.bukkit.entity.Player$Spigot");
-  }
-
-  /**
-   * Get empty slots of the inventory
-   *
-   * @param inventory the inventory
-   * @return a IntStream of empty slots
-   */
-  public static IntStream getEmptySlots(Inventory inventory) {
-    return IntStream
-        .range(0, inventory.getSize())
-        .filter(slot -> inventory.getItem(slot) == null);
   }
 }

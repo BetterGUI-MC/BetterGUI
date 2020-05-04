@@ -28,7 +28,6 @@ import me.hsgamer.bettergui.object.property.menu.MenuRows;
 import me.hsgamer.bettergui.object.property.menu.MenuTicks;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
 import me.hsgamer.bettergui.object.property.menu.MenuVariable;
-import me.hsgamer.bettergui.util.BukkitUtils;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -255,15 +254,12 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   protected class SimpleInventory extends FastInv {
 
     private final Player player;
-    private final int maxSlots;
-    private final List<Integer> emptySlots = new ArrayList<>();
     private BukkitTask task;
     private boolean forced = false;
     private long ticks = 0;
 
     public SimpleInventory(Player player, int size, String title) {
       super(size, title != null ? title : InventoryType.CHEST.getDefaultTitle());
-      this.maxSlots = size;
       this.player = player;
       setTicks();
       setCloseRequirement();
@@ -273,7 +269,6 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     public SimpleInventory(Player player, InventoryType type, String title) {
       super(type, title != null ? title : type.getDefaultTitle());
       this.player = player;
-      this.maxSlots = type.getDefaultSize();
       setTicks();
       setCloseRequirement();
       createItems(false);
@@ -282,7 +277,6 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     public SimpleInventory(Player player, int size) {
       super(size);
       this.player = player;
-      this.maxSlots = size;
       setTicks();
       setCloseRequirement();
       createItems(false);
@@ -291,7 +285,6 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     public SimpleInventory(Player player, InventoryType type) {
       super(type);
       this.player = player;
-      this.maxSlots = type.getDefaultSize();
       setTicks();
       setCloseRequirement();
       createItems(false);
@@ -317,7 +310,6 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     }
 
     public void updateInventory() {
-      emptySlots.forEach(this::removeItem);
       createItems(true);
       player.updateInventory();
     }
@@ -348,35 +340,45 @@ public class SimpleMenu extends Menu<SimpleInventory> {
       }
     }
 
-    private void createDefaultItem(boolean updateMode) {
-      if (defaultIcon != null) {
-        IntStream emptySlotsStream = BukkitUtils.getEmptySlots(this.getInventory());
-        emptySlots.clear();
-        if (cloneIcon) {
-          Optional<ClickableItem> optional = updateMode ?
-              defaultIcon.updateClickableItem(player) : defaultIcon.createClickableItem(player);
-          optional.ifPresent(clickableItem ->
-              emptySlotsStream.forEach(
-                  slot -> {
-                    setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
-                    emptySlots.add(slot);
-                  })
-          );
+    private void fillDefaultIcon(List<Integer> slots, boolean updateMode) {
+      if (defaultIcon == null) {
+        return;
+      }
+
+      if (cloneIcon) {
+        Optional<ClickableItem> optional = updateMode ? defaultIcon.updateClickableItem(player)
+            : defaultIcon.createClickableItem(player);
+        if (optional.isPresent()) {
+          ClickableItem clickableItem = optional.get();
+          slots.forEach(
+              slot -> setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent()));
         } else {
-          emptySlotsStream.forEach(slot -> {
-            Optional<ClickableItem> optional = updateMode ?
-                defaultIcon.updateClickableItem(player) : defaultIcon.createClickableItem(player);
-            optional.ifPresent(clickableItem ->
-                setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent()));
-            emptySlots.add(slot);
-          });
+          slots.forEach(this::removeItem);
         }
+      } else {
+        slots.forEach(slot -> {
+          Optional<ClickableItem> optional = updateMode ? defaultIcon.updateClickableItem(player)
+              : defaultIcon.createClickableItem(player);
+          if (optional.isPresent()) {
+            ClickableItem clickableItem = optional.get();
+            setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
+          } else {
+            removeItem(slot);
+          }
+        });
       }
     }
 
     private void createItems(boolean updateMode) {
+      int size = this.getInventory().getSize();
+      List<Integer> emptySlots = new ArrayList<>();
+      IntStream
+          .range(0, size)
+          .filter(slot -> !icons.containsKey(slot))
+          .forEach(emptySlots::add);
+
       icons.forEach((slot, icon) -> {
-        if (slot >= maxSlots) {
+        if (slot >= this.getInventory().getSize()) {
           return;
         }
         Optional<ClickableItem> rawClickableItem =
@@ -386,10 +388,12 @@ public class SimpleMenu extends Menu<SimpleInventory> {
           setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
         } else {
           removeItem(slot);
+          emptySlots.add(slot);
         }
       });
 
-      createDefaultItem(updateMode);
+      emptySlots.sort(Integer::compareTo);
+      fillDefaultIcon(emptySlots, updateMode);
     }
 
     public void forceClose() {
