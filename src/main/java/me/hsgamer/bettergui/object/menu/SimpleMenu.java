@@ -159,13 +159,13 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   }
 
   @Override
-  public void createInventory(Player player, String[] args, boolean bypass) {
+  public boolean createInventory(Player player, String[] args, boolean bypass) {
     if (bypass || player.hasPermission(permission)) {
       // Check Requirement
       if (!bypass && viewRequirement != null) {
         if (!viewRequirement.check(player)) {
           viewRequirement.sendFailCommand(player);
-          return;
+          return false;
         }
         viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
           iconRequirementSet.take(player);
@@ -188,7 +188,9 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     } else {
       CommonUtils
           .sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+      return false;
     }
+    return true;
   }
 
   protected SimpleInventory initInventory(Player player) {

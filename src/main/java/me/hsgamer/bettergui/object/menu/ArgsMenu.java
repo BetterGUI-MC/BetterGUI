@@ -84,7 +84,7 @@ public class ArgsMenu extends SimpleMenu {
   }
 
   @Override
-  public void createInventory(Player player, String[] args, boolean bypass) {
+  public boolean createInventory(Player player, String[] args, boolean bypass) {
     UUID uuid = player.getUniqueId();
     if (argsPerPlayer.containsKey(uuid)) {
       if (args.length >= minArgs) {
@@ -95,11 +95,11 @@ public class ArgsMenu extends SimpleMenu {
         if (minArgsAction != null) {
           minArgsAction.getParsed(player).execute();
         }
-        return;
+        return false;
       }
       argsPerPlayer.put(player.getUniqueId(), Arrays.asList(args));
     }
-    super.createInventory(player, args, bypass);
+    return super.createInventory(player, args, bypass);
   }
 
   @Override
