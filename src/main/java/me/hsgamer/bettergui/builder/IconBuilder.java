@@ -3,11 +3,13 @@ package me.hsgamer.bettergui.builder;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
 import me.hsgamer.bettergui.object.Icon;
@@ -108,25 +110,29 @@ public final class IconBuilder {
     }
     if (map.containsKey(SlotSetting.SLOT)) {
       Arrays.stream(String.valueOf(map.get(SlotSetting.SLOT)).trim().split(",")).map(String::trim)
-          .flatMapToInt(IconBuilder::generateSlots).forEach(slots::add);
+          .flatMap(IconBuilder::generateSlots).forEach(slots::add);
     }
     return slots;
   }
 
-  private static IntStream generateSlots(String input) {
+  private static Stream<Integer> generateSlots(String input) {
     if (Validate.isValidInteger(input)) {
-      return IntStream.of(Integer.parseInt(input));
+      return IntStream.of(Integer.parseInt(input)).boxed();
     } else {
       String[] split = input.split("-", 2);
-      Optional<BigDecimal> s1 = Validate.getNumber(split[0].trim());
-      Optional<BigDecimal> s2 = Validate.getNumber(split[1].trim());
-      if (s1.isPresent() && s2.isPresent()) {
-        int start = Math.min(s1.get().intValue(), s2.get().intValue());
-        int end = Math.max(s1.get().intValue(), s2.get().intValue());
-        return IntStream.range(start, end + 1);
+      Optional<BigDecimal> optional1 = Validate.getNumber(split[0].trim());
+      Optional<BigDecimal> optional2 = Validate.getNumber(split[1].trim());
+      if (optional1.isPresent() && optional2.isPresent()) {
+        int s1 = optional1.get().intValue();
+        int s2 = optional2.get().intValue();
+        if (s1 <= s2) {
+          return IntStream.rangeClosed(s1, s2).boxed();
+        } else {
+          return IntStream.rangeClosed(s2, s1).boxed().sorted(Collections.reverseOrder());
+        }
       }
     }
-    return IntStream.empty();
+    return Stream.empty();
   }
 
   private static class SlotSetting {
