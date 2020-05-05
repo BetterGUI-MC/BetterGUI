@@ -120,7 +120,7 @@ public final class IconBuilder {
 
   public static Stream<Integer> generateSlots(String input) {
     if (Validate.isValidInteger(input)) {
-      return IntStream.of(Integer.parseInt(input)).boxed();
+      return Stream.of(Integer.parseInt(input));
     } else {
       String[] split = input.split("-", 2);
       Optional<BigDecimal> optional1 = Validate.getNumber(split[0].trim());
