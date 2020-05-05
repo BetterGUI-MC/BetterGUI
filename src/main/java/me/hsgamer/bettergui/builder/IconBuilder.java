@@ -115,7 +115,7 @@ public final class IconBuilder {
     return slots;
   }
 
-  private static Stream<Integer> generateSlots(String input) {
+  public static Stream<Integer> generateSlots(String input) {
     if (Validate.isValidInteger(input)) {
       return IntStream.of(Integer.parseInt(input)).boxed();
     } else {
