@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import me.hsgamer.bettergui.BetterGUI;
@@ -109,8 +110,10 @@ public final class IconBuilder {
       slots.add((y - 1) * 9 + x - 1);
     }
     if (map.containsKey(SlotSetting.SLOT)) {
-      Arrays.stream(String.valueOf(map.get(SlotSetting.SLOT)).trim().split(",")).map(String::trim)
-          .flatMap(IconBuilder::generateSlots).forEach(slots::add);
+      slots.addAll(Arrays
+          .stream(String.valueOf(map.get(SlotSetting.SLOT)).split(","))
+          .map(String::trim)
+          .flatMap(IconBuilder::generateSlots).collect(Collectors.toList()));
     }
     return slots;
   }
