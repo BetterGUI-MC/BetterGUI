@@ -3,13 +3,13 @@ package me.hsgamer.bettergui.object.menu;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import fr.mrmicky.fastinv.FastInv;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
@@ -371,11 +371,10 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
     private void createItems(boolean updateMode) {
       int size = this.getInventory().getSize();
-      List<Integer> emptySlots = new ArrayList<>();
-      IntStream
+      List<Integer> emptySlots = IntStream
           .range(0, size)
           .filter(slot -> !icons.containsKey(slot))
-          .forEach(emptySlots::add);
+          .boxed().collect(Collectors.toList());
 
       icons.forEach((slot, icon) -> {
         if (slot >= size) {
