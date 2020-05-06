@@ -14,6 +14,12 @@ public final class CommonUtils {
 
   }
 
+  /**
+   * Convert to colored string
+   *
+   * @param input the string
+   * @return the colored string
+   */
   public static String colorize(String input) {
     if (input == null || input.trim().isEmpty()) {
       return input;
@@ -21,10 +27,23 @@ public final class CommonUtils {
     return ChatColor.translateAlternateColorCodes('&', input);
   }
 
+  /**
+   * Send message
+   *
+   * @param sender  the receiver
+   * @param message the message
+   */
   public static void sendMessage(CommandSender sender, String message) {
     sendMessage(sender, message, true);
   }
 
+  /**
+   * Send message with prefix
+   *
+   * @param sender  the receiver
+   * @param message the message
+   * @param prefix  whether the prefix should be included
+   */
   public static void sendMessage(CommandSender sender, String message, boolean prefix) {
     if (prefix) {
       message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PREFIX) + message;
@@ -32,6 +51,13 @@ public final class CommonUtils {
     sender.sendMessage(colorize(message));
   }
 
+  /**
+   * Create a list of string
+   *
+   * @param value the object
+   * @param trim  should we trim the strings
+   * @return the string list
+   */
   public static List<String> createStringListFromObject(Object value, boolean trim) {
     List<String> list = new ArrayList<>();
     if (value instanceof Collection) {

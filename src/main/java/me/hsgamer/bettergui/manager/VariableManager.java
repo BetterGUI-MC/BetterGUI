@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 
 public final class VariableManager {
 
-  public static final Pattern PATTERN = Pattern.compile("[{]([^{}]+)[}]");
+  private static final Pattern PATTERN = Pattern.compile("[{]([^{}]+)[}]");
   private static final Map<String, GlobalVariable> variables = new HashMap<>();
 
   static {
@@ -79,7 +79,7 @@ public final class VariableManager {
           int i2 = Integer.parseInt(s2);
           int max = Math.max(i1, i2);
           int min = Math.min(i1, i2);
-          return String.valueOf(min + ThreadLocalRandom.current().nextInt(max - min + 1));
+          return String.valueOf(ThreadLocalRandom.current().nextInt(min, max + 1));
         }
       } else if (Validate.isValidInteger(identifier)) {
         return String.valueOf(ThreadLocalRandom.current().nextInt(Integer.parseInt(identifier)));
@@ -136,7 +136,7 @@ public final class VariableManager {
     String old;
     do {
       old = message;
-      message = setSingleVariables(message, executor);
+      message = setSingleVariables(message, executor, variables);
     } while (hasVariables(message) && !old.equals(message));
     if (PlaceholderAPIHook.hasValidPlugin()) {
       message = PlaceholderAPIHook.setPlaceholders(message, executor);
@@ -144,11 +144,20 @@ public final class VariableManager {
     return message;
   }
 
-  private static String setSingleVariables(String message, Player executor) {
+  /**
+   * Replace the local variables of the string
+   *
+   * @param message         the string
+   * @param executor        the player involved in
+   * @param globalVariables the map of variables
+   * @return the replaced string
+   */
+  public static String setSingleVariables(String message, Player executor,
+      Map<String, ? extends GlobalVariable> globalVariables) {
     Matcher matcher = PATTERN.matcher(message);
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
-      for (Map.Entry<String, GlobalVariable> variable : variables.entrySet()) {
+      for (Map.Entry<String, ? extends GlobalVariable> variable : globalVariables.entrySet()) {
         if (identifier.toLowerCase().startsWith(variable.getKey())) {
           String replace = variable.getValue()
               .getReplacement(executor, identifier.substring(variable.getKey().length()));

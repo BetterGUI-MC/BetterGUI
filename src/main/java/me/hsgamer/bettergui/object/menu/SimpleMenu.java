@@ -3,13 +3,14 @@ package me.hsgamer.bettergui.object.menu;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import fr.mrmicky.fastinv.FastInv;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import me.hsgamer.bettergui.BetterGUI;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
@@ -43,7 +44,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
   private final Map<UUID, SimpleInventory> inventoryMap = new ConcurrentHashMap<>();
 
-  private final Map<Integer, Icon> icons = new HashMap<>();
+  private final Map<Integer, Icon> icons = new LinkedHashMap<>();
   private Permission permission = new Permission(
       getInstance().getName().toLowerCase() + "." + getName());
   private Icon defaultIcon;
@@ -157,13 +158,13 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   }
 
   @Override
-  public void createInventory(Player player, String[] args, boolean bypass) {
+  public boolean createInventory(Player player, String[] args, boolean bypass) {
     if (bypass || player.hasPermission(permission)) {
       // Check Requirement
       if (!bypass && viewRequirement != null) {
         if (!viewRequirement.check(player)) {
           viewRequirement.sendFailCommand(player);
-          return;
+          return false;
         }
         viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
           iconRequirementSet.take(player);
@@ -186,7 +187,9 @@ public class SimpleMenu extends Menu<SimpleInventory> {
     } else {
       CommonUtils
           .sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+      return false;
     }
+    return true;
   }
 
   protected SimpleInventory initInventory(Player player) {
@@ -251,45 +254,40 @@ public class SimpleMenu extends Menu<SimpleInventory> {
   protected class SimpleInventory extends FastInv {
 
     private final Player player;
-    private final int maxSlots;
     private BukkitTask task;
     private boolean forced = false;
     private long ticks = 0;
 
     public SimpleInventory(Player player, int size, String title) {
       super(size, title != null ? title : InventoryType.CHEST.getDefaultTitle());
-      this.maxSlots = size;
       this.player = player;
       setTicks();
       setCloseRequirement();
-      createItems();
+      createItems(false);
     }
 
     public SimpleInventory(Player player, InventoryType type, String title) {
       super(type, title != null ? title : type.getDefaultTitle());
       this.player = player;
-      this.maxSlots = type.getDefaultSize();
       setTicks();
       setCloseRequirement();
-      createItems();
+      createItems(false);
     }
 
     public SimpleInventory(Player player, int size) {
       super(size);
       this.player = player;
-      this.maxSlots = size;
       setTicks();
       setCloseRequirement();
-      createItems();
+      createItems(false);
     }
 
     public SimpleInventory(Player player, InventoryType type) {
       super(type);
       this.player = player;
-      this.maxSlots = type.getDefaultSize();
       setTicks();
       setCloseRequirement();
-      createItems();
+      createItems(false);
     }
 
     private void setTicks() {
@@ -306,13 +304,13 @@ public class SimpleMenu extends Menu<SimpleInventory> {
           public void run() {
             updateInventory();
           }
-        }.runTaskTimerAsynchronously(BetterGUI.getInstance(), ticks, ticks);
+        }.runTaskTimerAsynchronously(getInstance(), ticks, ticks);
       }
       inventoryMap.put(player.getUniqueId(), this);
     }
 
     public void updateInventory() {
-      updateItems();
+      createItems(true);
       player.updateInventory();
     }
 
@@ -342,58 +340,59 @@ public class SimpleMenu extends Menu<SimpleInventory> {
       }
     }
 
-    private void createDefaultItem(int slot) {
-      if (defaultIcon != null) {
-        Optional<ClickableItem> rawDefaultClickableItem = defaultIcon
-            .createClickableItem(player);
-        if (rawDefaultClickableItem.isPresent()) {
-          ClickableItem clickableItem = rawDefaultClickableItem.get();
-          setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
-        }
+    private void fillDefaultIcon(List<Integer> slots, boolean updateMode) {
+      if (defaultIcon == null) {
+        return;
       }
-    }
 
-    private void updateDefaultItem(int slot) {
-      if (defaultIcon != null) {
-        Optional<ClickableItem> rawDefaultClickableItem = defaultIcon
-            .updateClickableItem(player);
-        if (rawDefaultClickableItem.isPresent()) {
-          ClickableItem clickableItem = rawDefaultClickableItem.get();
-          setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
-        }
-      }
-    }
-
-    private void createItems() {
-      for (int i = 0; i < maxSlots; i++) {
-        if (icons.containsKey(i)) {
-          Optional<ClickableItem> rawClickableItem = icons.get(i).createClickableItem(player);
-          if (rawClickableItem.isPresent()) {
-            ClickableItem clickableItem = rawClickableItem.get();
-            setItem(i, clickableItem.getItem(), clickableItem.getClickEvent());
-          } else {
-            createDefaultItem(i);
-          }
+      if (cloneIcon) {
+        Optional<ClickableItem> optional = updateMode ? defaultIcon.updateClickableItem(player)
+            : defaultIcon.createClickableItem(player);
+        if (optional.isPresent()) {
+          ClickableItem clickableItem = optional.get();
+          slots.forEach(
+              slot -> setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent()));
         } else {
-          createDefaultItem(i);
+          slots.forEach(this::removeItem);
         }
+      } else {
+        slots.forEach(slot -> {
+          Optional<ClickableItem> optional = updateMode ? defaultIcon.updateClickableItem(player)
+              : defaultIcon.createClickableItem(player);
+          if (optional.isPresent()) {
+            ClickableItem clickableItem = optional.get();
+            setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
+          } else {
+            removeItem(slot);
+          }
+        });
       }
     }
 
-    private void updateItems() {
-      for (int i = 0; i < maxSlots; i++) {
-        if (icons.containsKey(i)) {
-          Optional<ClickableItem> rawClickableItem = icons.get(i).updateClickableItem(player);
-          if (rawClickableItem.isPresent()) {
-            ClickableItem clickableItem = rawClickableItem.get();
-            setItem(i, clickableItem.getItem(), clickableItem.getClickEvent());
-          } else {
-            updateDefaultItem(i);
-          }
-        } else {
-          updateDefaultItem(i);
+    private void createItems(boolean updateMode) {
+      int size = this.getInventory().getSize();
+      List<Integer> emptySlots = IntStream
+          .range(0, size)
+          .filter(slot -> !icons.containsKey(slot))
+          .boxed().collect(Collectors.toList());
+
+      icons.forEach((slot, icon) -> {
+        if (slot >= size) {
+          return;
         }
-      }
+        Optional<ClickableItem> rawClickableItem =
+            updateMode ? icon.updateClickableItem(player) : icon.createClickableItem(player);
+        if (rawClickableItem.isPresent()) {
+          ClickableItem clickableItem = rawClickableItem.get();
+          setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
+        } else {
+          removeItem(slot);
+          emptySlots.add(slot);
+        }
+      });
+
+      emptySlots.sort(Integer::compareTo);
+      fillDefaultIcon(emptySlots, updateMode);
     }
 
     public void forceClose() {

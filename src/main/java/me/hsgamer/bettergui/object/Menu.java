@@ -36,15 +36,35 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
    * @param player the player involved in
    * @param args   the arguments from the open command
    * @param bypass whether the plugin ignores the permission check
+   * @return Whether it's successful
    */
-  public abstract void createInventory(Player player, String[] args, boolean bypass);
+  public abstract boolean createInventory(Player player, String[] args, boolean bypass);
 
+  /**
+   * Called when updating the menu
+   *
+   * @param player the player involved in
+   */
   public abstract void updateInventory(Player player);
 
+  /**
+   * Close the inventory
+   *
+   * @param player the player involved in
+   */
   public abstract void closeInventory(Player player);
 
+  /**
+   * Close/Clear all inventories of the type
+   */
   public abstract void closeAll();
 
+  /**
+   * Get the player's inventory
+   *
+   * @param player the player
+   * @return the player's inventory
+   */
   @SuppressWarnings("unused")
   public abstract Optional<T> getInventory(Player player);
 
@@ -95,8 +115,8 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
     message = setLocalVariables(message, executor, variables);
 
     if (checkParent) {
-      for (Menu<?> pmenu : MenuManager.getAllParentMenu(this, executor)) {
-        message = pmenu.setSingleVariables(message, executor, false);
+      for (Menu<?> menu : MenuManager.getAllParentMenu(this, executor)) {
+        message = menu.setSingleVariables(message, executor, false);
       }
     }
 

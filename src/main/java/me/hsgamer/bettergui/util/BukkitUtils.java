@@ -27,6 +27,11 @@ public final class BukkitUtils {
   private BukkitUtils() {
   }
 
+  /**
+   * Get online players
+   *
+   * @return the list of player
+   */
   public static Collection<? extends Player> getOnlinePlayers() {
     try {
       if (LEGACY_GET_ONLINE_PLAYERS == null) {
@@ -42,6 +47,12 @@ public final class BukkitUtils {
     }
   }
 
+  /**
+   * Get ping
+   *
+   * @param player the player
+   * @return the ping of the player
+   */
   public static String getPing(Player player) {
     try {
       Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
@@ -53,6 +64,11 @@ public final class BukkitUtils {
     }
   }
 
+  /**
+   * Check if the server is Spigot
+   *
+   * @return whether the server is Spigot
+   */
   public static boolean isSpigot() {
     return Validate.isClassLoaded("org.bukkit.entity.Player$Spigot");
   }
