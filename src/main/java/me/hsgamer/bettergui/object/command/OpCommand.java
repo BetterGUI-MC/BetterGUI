@@ -12,18 +12,18 @@ public class OpCommand extends Command {
 
   @Override
   public void addToTaskChain(Player player, TaskChain<?> taskChain) {
-    taskChain.sync(() -> {
-      if (player.isOp()) {
-        player.chat("/" + getParsedCommand(player));
-
-      } else {
+    String parsed = getParsedCommand(player);
+    if (player.isOp()) {
+      taskChain.sync(() -> player.chat("/" + parsed));
+    } else {
+      taskChain.sync(() -> {
         try {
           player.setOp(true);
-          player.chat("/" + getParsedCommand(player));
+          player.chat("/" + parsed);
         } finally {
           player.setOp(false);
         }
-      }
-    });
+      });
+    }
   }
 }

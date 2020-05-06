@@ -19,6 +19,7 @@ import me.hsgamer.bettergui.object.command.ConsoleCommand;
 import me.hsgamer.bettergui.object.command.DelayCommand;
 import me.hsgamer.bettergui.object.command.OpCommand;
 import me.hsgamer.bettergui.object.command.OpenMenuCommand;
+import me.hsgamer.bettergui.object.command.PermissionCommand;
 import me.hsgamer.bettergui.object.command.PlayerCommand;
 import me.hsgamer.bettergui.object.command.TellCommand;
 import me.hsgamer.bettergui.object.command.UpdateMenuCommand;
@@ -40,6 +41,7 @@ public final class CommandBuilder {
     register("broadcast:", BroadcastCommand.class);
     register("close-?menu", CloseMenuCommand.class);
     register("update-?menu", UpdateMenuCommand.class);
+    register("permission:", PermissionCommand.class);
   }
 
   private CommandBuilder() {
