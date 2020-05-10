@@ -22,8 +22,7 @@ public final class MainConfig extends PluginConfig {
   public enum DefaultConfig {
     DEFAULT_MENU_TYPE(String.class, "default-menu-type", "simple"),
     DEFAULT_ICON_TYPE(String.class, "default-icon-type", "simple"),
-    METRICS(Boolean.class, "metrics", true),
-    REPLACE_ALL_VARIABLE(Boolean.class, "replace-all-variables-on-every-check", true);
+    METRICS(Boolean.class, "metrics", true);
     final Class<?> classType;
     final String path;
     final Object def;
