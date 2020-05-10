@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.object.GlobalVariable;
 import me.hsgamer.bettergui.util.BukkitUtils;
@@ -162,8 +164,13 @@ public final class VariableManager {
           String replace = variable.getValue()
               .getReplacement(executor, identifier.substring(variable.getKey().length()));
           if (replace != null) {
-            message = message
-                .replaceAll(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
+            if (BetterGUI.getInstance().getMainConfig().get(DefaultConfig.REPLACE_ALL_VARIABLE)) {
+              message = message
+                  .replaceAll(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
+            } else {
+              message = message
+                  .replaceFirst(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
+            }
           }
         }
       }
