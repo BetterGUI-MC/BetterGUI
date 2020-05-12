@@ -345,27 +345,19 @@ public class SimpleMenu extends Menu<SimpleInventory> {
         return;
       }
 
-      if (cloneIcon) {
-        Optional<ClickableItem> optional = updateMode ? defaultIcon.updateClickableItem(player)
-            : defaultIcon.createClickableItem(player);
-        if (optional.isPresent()) {
-          ClickableItem clickableItem = optional.get();
-          slots.forEach(
-              slot -> setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent()));
-        } else {
-          slots.forEach(this::removeItem);
+      Optional<ClickableItem> optional = updateMode ? defaultIcon.updateClickableItem(player)
+          : defaultIcon.createClickableItem(player);
+      for (int slot : slots) {
+        if (!optional.isPresent()) {
+          removeItem(slot);
         }
-      } else {
-        slots.forEach(slot -> {
-          Optional<ClickableItem> optional = updateMode ? defaultIcon.updateClickableItem(player)
-              : defaultIcon.createClickableItem(player);
-          if (optional.isPresent()) {
-            ClickableItem clickableItem = optional.get();
-            setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
-          } else {
-            removeItem(slot);
-          }
-        });
+
+        ClickableItem clickableItem = optional.get();
+        setItem(slot, clickableItem.getItem(), clickableItem.getClickEvent());
+
+        if (!cloneIcon) {
+          optional = defaultIcon.updateClickableItem(player);
+        }
       }
     }
 
