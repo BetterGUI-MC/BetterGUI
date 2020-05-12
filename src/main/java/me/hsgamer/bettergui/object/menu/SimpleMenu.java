@@ -350,6 +350,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
       for (int slot : slots) {
         if (!optional.isPresent()) {
           removeItem(slot);
+          continue;
         }
 
         ClickableItem clickableItem = optional.get();
