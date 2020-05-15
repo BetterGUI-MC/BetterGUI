@@ -75,7 +75,7 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
   @Override
   public boolean compareWithItemStack(Player player, ItemStack item) {
     Map<XEnchantment, Integer> list1 = getParsed(player);
-    if (list1.isEmpty() && (!item.hasItemMeta() || item.getItemMeta().hasEnchants())) {
+    if (list1.isEmpty() && (!item.hasItemMeta() || !item.getItemMeta().hasEnchants())) {
       return true;
     }
     Map<XEnchantment, Integer> list2 = new EnumMap<>(XEnchantment.class);

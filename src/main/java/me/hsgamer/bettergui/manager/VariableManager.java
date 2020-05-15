@@ -163,7 +163,7 @@ public final class VariableManager {
               .getReplacement(executor, identifier.substring(variable.getKey().length()));
           if (replace != null) {
             message = message
-                .replaceAll(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
+                .replaceFirst(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
           }
         }
       }
