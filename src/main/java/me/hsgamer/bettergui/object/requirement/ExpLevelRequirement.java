@@ -3,8 +3,7 @@ package me.hsgamer.bettergui.object.requirement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Requirement;
@@ -26,9 +25,8 @@ public class ExpLevelRequirement extends Requirement<Object, Integer> implements
     if (ExpressionUtils.isValidExpression(parsed)) {
       return ExpressionUtils.getResult(parsed).intValue();
     } else {
-      CommonUtils.sendMessage(player,
-          BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
-              .replace("{input}", parsed));
+      CommonUtils
+          .sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed));
       return 0;
     }
   }
@@ -64,7 +62,6 @@ public class ExpLevelRequirement extends Requirement<Object, Integer> implements
     if (level > 0 && executor.getLevel() < level) {
       return String.valueOf(level);
     }
-    return BetterGUI.getInstance().getMessageConfig()
-        .get(DefaultMessage.HAVE_MET_REQUIREMENT_PLACEHOLDER);
+    return MessageConfig.HAVE_MET_REQUIREMENT_PLACEHOLDER.getValue();
   }
 }

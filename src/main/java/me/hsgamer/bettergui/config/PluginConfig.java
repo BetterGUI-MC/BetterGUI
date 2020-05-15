@@ -55,12 +55,15 @@ public class PluginConfig {
     return config;
   }
 
-  public <T> T get(Class<T> classType, String path, Object def) {
-    return classType.cast(getConfig().get(path, def));
+
+  @SuppressWarnings("unchecked")
+  public <T> T get(Class<T> classType, String path, T def) {
+    Object o = getConfig().get(path, def);
+    return classType.isInstance(o) ? (T) o : def;
   }
 
   public <T> T get(Class<T> classType, String path) {
-    return classType.cast(getConfig().get(path));
+    return get(classType, path, null);
   }
 
   public String getFileName() {

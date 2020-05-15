@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.util.BukkitUtils;
 import org.bukkit.Bukkit;
@@ -29,18 +29,15 @@ public final class OpenCommand extends BukkitCommand {
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
     if (!commandSender.hasPermission(Permissions.OPEN_MENU)) {
-      sendMessage(commandSender,
-          getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+      sendMessage(commandSender, MessageConfig.NO_PERMISSION.getValue());
       return false;
     }
     if (strings.length <= 0) {
-      sendMessage(commandSender,
-          getInstance().getMessageConfig().get(DefaultMessage.MENU_REQUIRED));
+      sendMessage(commandSender, MessageConfig.MENU_REQUIRED.getValue());
       return false;
     }
     if (!menuManager.contains(strings[0])) {
-      sendMessage(commandSender,
-          getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
+      sendMessage(commandSender, MessageConfig.MENU_NOT_FOUND.getValue());
       return false;
     }
 
@@ -50,16 +47,14 @@ public final class OpenCommand extends BukkitCommand {
             .openMenu(strings[0], (Player) commandSender, new String[0], false);
         return true;
       } else {
-        sendMessage(commandSender,
-            getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
+        sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
         return false;
       }
     }
 
     Player player = Bukkit.getPlayer(strings[1]);
     if (player == null || !player.isOnline()) {
-      sendMessage(commandSender,
-          getInstance().getMessageConfig().get(DefaultMessage.PLAYER_NOT_FOUND));
+      sendMessage(commandSender, MessageConfig.PLAYER_NOT_FOUND.getValue());
       return false;
     }
 

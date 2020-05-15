@@ -6,8 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -39,8 +38,8 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
         if (optional.isPresent()) {
           level = optional.get().intValue();
         } else {
-          CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
-              DefaultMessage.INVALID_NUMBER).replace("{input}", rawLevel));
+          CommonUtils.sendMessage(player,
+              MessageConfig.INVALID_NUMBER.getValue().replace("{input}", rawLevel));
           continue;
         }
       } else {
@@ -50,8 +49,7 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
         enchantments.put(enchantment.get(), level);
       } else {
         CommonUtils.sendMessage(player,
-            BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_ENCHANTMENT)
-                .replace("{input}", string));
+            MessageConfig.INVALID_ENCHANTMENT.getValue().replace("{input}", string));
       }
     }
     return enchantments;

@@ -4,7 +4,7 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import java.util.Arrays;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -19,8 +19,7 @@ public final class ReloadCommand extends BukkitCommand {
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
     if (!commandSender.hasPermission(Permissions.RELOAD)) {
-      CommonUtils.sendMessage(commandSender,
-          getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+      CommonUtils.sendMessage(commandSender, MessageConfig.NO_PERMISSION.getValue());
       return false;
     }
 
@@ -36,8 +35,7 @@ public final class ReloadCommand extends BukkitCommand {
     getInstance().checkClass();
     getInstance().loadMenuConfig();
     getInstance().getCommandManager().syncCommand();
-    CommonUtils
-        .sendMessage(commandSender, getInstance().getMessageConfig().get(DefaultMessage.SUCCESS));
+    CommonUtils.sendMessage(commandSender, MessageConfig.SUCCESS.getValue());
     return true;
   }
 }

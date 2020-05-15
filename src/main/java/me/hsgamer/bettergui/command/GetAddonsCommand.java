@@ -3,9 +3,8 @@ package me.hsgamer.bettergui.command;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import java.util.Arrays;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.addon.AddonDescription;
 import me.hsgamer.bettergui.util.BukkitUtils;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -27,8 +26,7 @@ public final class GetAddonsCommand extends BukkitCommand {
   @Override
   public boolean execute(CommandSender sender, String commandLabel, String[] args) {
     if (!sender.hasPermission(Permissions.ADDONS)) {
-      CommonUtils.sendMessage(sender,
-          getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+      CommonUtils.sendMessage(sender, MessageConfig.NO_PERMISSION.getValue());
       return false;
     }
     send(sender);
@@ -37,9 +35,8 @@ public final class GetAddonsCommand extends BukkitCommand {
 
   private void send(CommandSender commandSender) {
     if (BukkitUtils.isSpigot()) {
-      ComponentBuilder builder = new ComponentBuilder(CommonUtils.colorize(
-          BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PREFIX)
-              + "&b&lLoaded Addons: "));
+      ComponentBuilder builder = new ComponentBuilder(
+          CommonUtils.colorize(MessageConfig.PREFIX.getValue()) + "&b&lLoaded Addons: ");
       getInstance().getAddonManager().getLoadedAddons().forEach((name, addon) -> {
         builder.append(new TextComponent(name));
         builder.color(ChatColor.GREEN);

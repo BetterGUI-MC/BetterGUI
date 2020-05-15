@@ -6,8 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Requirement;
@@ -66,9 +65,8 @@ public class CooldownRequirement extends Requirement<Object, Duration> implement
     if (ExpressionUtils.isValidExpression(parsed)) {
       return Duration.ofMillis((long) ExpressionUtils.getResult(parsed).doubleValue() * 1000);
     } else {
-      CommonUtils.sendMessage(player,
-          BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
-              .replace("{input}", parsed));
+      CommonUtils
+          .sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed));
       return Duration.ZERO;
     }
   }

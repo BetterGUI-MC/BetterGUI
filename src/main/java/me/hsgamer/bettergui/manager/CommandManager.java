@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.Bukkit;
@@ -127,8 +127,7 @@ public final class CommandManager {
           menu.createInventory((Player) commandSender, strings,
               commandSender.hasPermission(Permissions.OPEN_MENU_BYPASS));
         } else {
-          CommonUtils.sendMessage(commandSender,
-              BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PLAYER_ONLY));
+          CommonUtils.sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
         }
         return true;
       }

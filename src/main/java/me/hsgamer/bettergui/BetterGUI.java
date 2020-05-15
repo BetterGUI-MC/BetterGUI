@@ -22,7 +22,6 @@ import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.command.ReloadCommand;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.config.impl.MainConfig;
-import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.manager.AddonManager;
@@ -111,7 +110,7 @@ public final class BetterGUI extends JavaPlugin {
       checkClass();
       loadMenuConfig();
       commandManager.syncCommand();
-      if (mainConfig.get(DefaultConfig.METRICS)) {
+      if (MainConfig.METRICS.getValue().equals(Boolean.TRUE)) {
         enableMetrics();
       }
     });
