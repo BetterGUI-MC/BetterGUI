@@ -4,8 +4,8 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.property.IconProperty;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 public class Variable extends IconProperty<ConfigurationSection> {
 
@@ -30,7 +30,7 @@ public class Variable extends IconProperty<ConfigurationSection> {
         }
 
         @Override
-        public String getReplacement(Player executor, String identifier) {
+        public String getReplacement(OfflinePlayer executor, String identifier) {
           return parsed;
         }
       });

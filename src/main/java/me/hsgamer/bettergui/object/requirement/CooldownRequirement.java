@@ -12,6 +12,7 @@ import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class CooldownRequirement extends Requirement<Object, Duration> implements LocalVariable {
@@ -33,8 +34,11 @@ public class CooldownRequirement extends Requirement<Object, Duration> implement
   }
 
   @Override
-  public String getReplacement(Player executor, String identifier) {
-    long millis = getCooldown(executor);
+  public String getReplacement(OfflinePlayer executor, String identifier) {
+    if (!executor.isOnline()) {
+      return "";
+    }
+    long millis = getCooldown(executor.getPlayer());
     millis = millis > 0 ? millis : 0;
     int divide;
 

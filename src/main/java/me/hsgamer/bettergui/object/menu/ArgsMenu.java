@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.property.menu.MenuAction;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -56,7 +57,7 @@ public class ArgsMenu extends SimpleMenu {
               }
 
               @Override
-              public String getReplacement(Player executor, String identifier) {
+              public String getReplacement(OfflinePlayer executor, String identifier) {
                 UUID uuid = executor.getUniqueId();
                 if (argsPerPlayer.containsKey(uuid)) {
                   List<String> playerArgs = argsPerPlayer.get(uuid);

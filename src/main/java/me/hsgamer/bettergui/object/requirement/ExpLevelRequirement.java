@@ -9,6 +9,7 @@ import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class ExpLevelRequirement extends Requirement<Object, Integer> implements LocalVariable {
@@ -57,9 +58,13 @@ public class ExpLevelRequirement extends Requirement<Object, Integer> implements
   }
 
   @Override
-  public String getReplacement(Player executor, String identifier) {
-    int level = getParsedValue(executor);
-    if (level > 0 && executor.getLevel() < level) {
+  public String getReplacement(OfflinePlayer executor, String identifier) {
+    if (!executor.isOnline()) {
+      return "";
+    }
+    Player player = executor.getPlayer();
+    int level = getParsedValue(player);
+    if (level > 0 && player.getLevel() < level) {
       return String.valueOf(level);
     }
     return MessageConfig.HAVE_MET_REQUIREMENT_PLACEHOLDER.getValue();

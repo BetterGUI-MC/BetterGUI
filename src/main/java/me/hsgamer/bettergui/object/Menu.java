@@ -101,8 +101,8 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   @Override
   public boolean hasLocalVariables(Player player, String message, boolean checkParent) {
     if (checkParent) {
-      for (Menu<?> pmenu : MenuManager.getAllParentMenu(this, player)) {
-        if (pmenu.hasLocalVariables(player, message, false)) {
+      for (Menu<?> menu : MenuManager.getAllParentMenu(this, player)) {
+        if (menu.hasLocalVariables(player, message, false)) {
           return true;
         }
       }
