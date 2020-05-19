@@ -12,14 +12,15 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.MenuClickType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 
 public class ClickCommand extends IconProperty<Object> {
 
   private final List<Command> defaultCommands = new ArrayList<>();
-  private final Map<ClickType, List<Command>> commandsPerClickType = new EnumMap<>(ClickType.class);
+  private final Map<MenuClickType, List<Command>> commandsPerClickType = new EnumMap<>(
+      MenuClickType.class);
 
   public ClickCommand(Icon icon) {
     super(icon);
@@ -31,7 +32,7 @@ public class ClickCommand extends IconProperty<Object> {
     if (getValue() instanceof ConfigurationSection) {
       Map<String, Object> keys = new CaseInsensitiveStringMap<>(
           ((ConfigurationSection) getValue()).getValues(false));
-      for (ClickType clickType : ClickType.values()) {
+      for (MenuClickType clickType : MenuClickType.values()) {
         String subsection = clickType.name();
         if (keys.containsKey(subsection)) {
           List<Command> commands = new ArrayList<>(
@@ -52,7 +53,7 @@ public class ClickCommand extends IconProperty<Object> {
     }
   }
 
-  public <T> TaskChain<T> getTaskChain(Player player, ClickType clickType) {
+  public <T> TaskChain<T> getTaskChain(Player player, MenuClickType clickType) {
     TaskChain<T> taskChain = BetterGUI.newChain();
     commandsPerClickType.getOrDefault(clickType, defaultCommands)
         .forEach(command -> command.addToTaskChain(player, taskChain));
