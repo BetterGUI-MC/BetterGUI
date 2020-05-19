@@ -216,12 +216,14 @@ public final class VariableManager {
         if (identifier.toLowerCase().startsWith(variable.getKey())) {
           String replace = variable.getValue()
               .getReplacement(executor, identifier.substring(variable.getKey().length()));
-          if (replace != null) {
-            if (MainConfig.REPLACE_ALL_VARIABLES.getValue().equals(Boolean.TRUE)) {
-              message = message
-                  .replaceAll(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
-              continue;
-            }
+          if (replace == null) {
+            continue;
+          }
+
+          if (MainConfig.REPLACE_ALL_VARIABLES.getValue().equals(Boolean.TRUE)) {
+            message = message
+                .replaceAll(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
+          } else {
             message = message
                 .replaceFirst(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
           }
