@@ -34,6 +34,10 @@ public class ExpLevelRequirement extends Requirement<Object, Integer> implements
 
   @Override
   public boolean check(Player player) {
+    return checkLevel(player) != isInverted();
+  }
+
+  private boolean checkLevel(Player player) {
     int levels = getParsedValue(player);
     if (levels > 0 && player.getLevel() < levels) {
       return false;
@@ -44,7 +48,8 @@ public class ExpLevelRequirement extends Requirement<Object, Integer> implements
 
   @Override
   public void take(Player player) {
-    player.setLevel(player.getLevel() - checked.remove(player.getUniqueId()));
+    player.setLevel(
+        player.getLevel() + ((isInverted() ? 1 : -1) * checked.remove(player.getUniqueId())));
   }
 
   @Override

@@ -32,7 +32,7 @@ public class ConditionRequirement extends Requirement<Object, Boolean> {
 
   @Override
   public boolean check(Player player) {
-    return getParsedValue(player).equals(Boolean.TRUE);
+    return !getParsedValue(player).equals(isInverted());
   }
 
   @Override
