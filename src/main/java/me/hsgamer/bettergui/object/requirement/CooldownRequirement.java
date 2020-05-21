@@ -35,10 +35,7 @@ public class CooldownRequirement extends Requirement<Object, Duration> implement
 
   @Override
   public String getReplacement(OfflinePlayer executor, String identifier) {
-    if (!executor.isOnline()) {
-      return "";
-    }
-    long millis = getCooldown(executor.getPlayer());
+    long millis = getCooldown(executor);
     millis = millis > 0 ? millis : 0;
     int divide;
 
@@ -88,7 +85,7 @@ public class CooldownRequirement extends Requirement<Object, Duration> implement
     }
   }
 
-  private long getCooldown(Player player) {
+  private long getCooldown(OfflinePlayer player) {
     UUID uuid = player.getUniqueId();
     if (cooldownMap.containsKey(uuid)) {
       return Instant.now().until(cooldownMap.get(uuid), ChronoUnit.MILLIS);
