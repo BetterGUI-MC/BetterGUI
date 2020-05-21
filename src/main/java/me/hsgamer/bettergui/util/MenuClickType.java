@@ -61,38 +61,47 @@ public enum MenuClickType {
 
   /**
    * Only work if use-modern-click-type is enabled
+   * NUMBER_KEY with hotbar slot 1
    */
   NUMBER_KEY_1(ClickType.NUMBER_KEY, 0),
   /**
    * Only work if use-modern-click-type is enabled
+   * NUMBER_KEY with hotbar slot 2
    */
   NUMBER_KEY_2(ClickType.NUMBER_KEY, 1),
   /**
    * Only work if use-modern-click-type is enabled
+   * NUMBER_KEY with hotbar slot 3
    */
   NUMBER_KEY_3(ClickType.NUMBER_KEY, 2),
   /**
    * Only work if use-modern-click-type is enabled
+   * NUMBER_KEY with hotbar slot 4
    */
   NUMBER_KEY_4(ClickType.NUMBER_KEY, 3),
   /**
    * Only work if use-modern-click-type is enabled
+   * NUMBER_KEY with hotbar slot 5
    */
   NUMBER_KEY_5(ClickType.NUMBER_KEY, 4),
   /**
    * Only work if use-modern-click-type is enabled
+   * NUMBER_KEY with hotbar slot 6
    */
   NUMBER_KEY_6(ClickType.NUMBER_KEY, 5),
   /**
    * Only work if use-modern-click-type is enabled
+   * NUMBER_KEY with hotbar slot 7
    */
   NUMBER_KEY_7(ClickType.NUMBER_KEY, 6),
   /**
    * Only work if use-modern-click-type is enabled
+   * NUMBER_KEY with hotbar slot 8
    */
   NUMBER_KEY_8(ClickType.NUMBER_KEY, 7),
   /**
    * Only work if use-modern-click-type is enabled
+   * NUMBER_KEY with hotbar slot 9
    */
   NUMBER_KEY_9(ClickType.NUMBER_KEY, 8);
   private final ClickType clickType;
