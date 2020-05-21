@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.object;
 
 import java.util.Map;
 import me.hsgamer.bettergui.manager.VariableManager;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 public interface LocalVariableManager<T> {
 
@@ -26,7 +26,7 @@ public interface LocalVariableManager<T> {
    * @param message the string
    * @return true if it has, otherwise false
    */
-  default boolean hasVariables(Player player, String message) {
+  default boolean hasVariables(OfflinePlayer player, String message) {
     if (message == null || message.trim().isEmpty()) {
       return false;
     }
@@ -44,7 +44,7 @@ public interface LocalVariableManager<T> {
    * @param checkParent whether it checks the the parent manager
    * @return true if it has, otherwise false
    */
-  boolean hasLocalVariables(Player player, String message, boolean checkParent);
+  boolean hasLocalVariables(OfflinePlayer player, String message, boolean checkParent);
 
   /**
    * Replace the variables of the string
@@ -53,7 +53,7 @@ public interface LocalVariableManager<T> {
    * @param executor the player involved in
    * @return the replaced string
    */
-  default String setVariables(String message, Player executor) {
+  default String setVariables(String message, OfflinePlayer executor) {
     String old;
     do {
       old = message;
@@ -69,7 +69,7 @@ public interface LocalVariableManager<T> {
    * @param executor the player involved in
    * @return the replaced string
    */
-  default String setSingleVariables(String message, Player executor) {
+  default String setSingleVariables(String message, OfflinePlayer executor) {
     return setSingleVariables(message, executor, true);
   }
 
@@ -81,7 +81,7 @@ public interface LocalVariableManager<T> {
    * @param checkParent whether it checks the the parent manager
    * @return the replaced string
    */
-  String setSingleVariables(String message, Player executor, boolean checkParent);
+  String setSingleVariables(String message, OfflinePlayer executor, boolean checkParent);
 
   /**
    * Replace the local variables of the string
@@ -91,7 +91,7 @@ public interface LocalVariableManager<T> {
    * @param variables the map of variables
    * @return the replaced string
    */
-  default String setLocalVariables(String message, Player executor,
+  default String setLocalVariables(String message, OfflinePlayer executor,
       Map<String, LocalVariable> variables) {
     return VariableManager.setSingleVariables(message, executor, variables);
   }

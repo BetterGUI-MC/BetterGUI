@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.VariableManager;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -99,9 +100,9 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   }
 
   @Override
-  public boolean hasLocalVariables(Player player, String message, boolean checkParent) {
-    if (checkParent) {
-      for (Menu<?> menu : MenuManager.getAllParentMenu(this, player)) {
+  public boolean hasLocalVariables(OfflinePlayer player, String message, boolean checkParent) {
+    if (checkParent && player.isOnline()) {
+      for (Menu<?> menu : MenuManager.getAllParentMenu(this, player.getPlayer())) {
         if (menu.hasLocalVariables(player, message, false)) {
           return true;
         }
@@ -111,11 +112,11 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
   }
 
   @Override
-  public String setSingleVariables(String message, Player executor, boolean checkParent) {
+  public String setSingleVariables(String message, OfflinePlayer executor, boolean checkParent) {
     message = setLocalVariables(message, executor, variables);
 
-    if (checkParent) {
-      for (Menu<?> menu : MenuManager.getAllParentMenu(this, executor)) {
+    if (checkParent && executor.isOnline()) {
+      for (Menu<?> menu : MenuManager.getAllParentMenu(this, executor.getPlayer())) {
         message = menu.setSingleVariables(message, executor, false);
       }
     }
