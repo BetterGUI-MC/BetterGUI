@@ -18,7 +18,7 @@ public class ListIcon extends Icon implements ParentIcon {
 
   private final List<Icon> icons = new ArrayList<>();
   private final Map<UUID, Integer> currentIndexMap = new HashMap<>();
-  private boolean checkOnlyOnCreation = false;
+  private boolean keepCurrentIndex = false;
 
   public ListIcon(String name, Menu<?> menu) {
     super(name, menu);
@@ -27,8 +27,8 @@ public class ListIcon extends Icon implements ParentIcon {
   public ListIcon(Icon original) {
     super(original);
     if (original instanceof ListIcon) {
-      icons.addAll(((ListIcon) original).icons);
-      checkOnlyOnCreation = ((ListIcon) original).checkOnlyOnCreation;
+      this.icons.addAll(((ListIcon) original).icons);
+      this.keepCurrentIndex = ((ListIcon) original).keepCurrentIndex;
     }
   }
 
@@ -36,8 +36,8 @@ public class ListIcon extends Icon implements ParentIcon {
   public void setFromSection(ConfigurationSection section) {
     setChildFromSection(getMenu(), section);
     section.getKeys(false).forEach(key -> {
-      if (key.equalsIgnoreCase("check-only-on-creation")) {
-        checkOnlyOnCreation = section.getBoolean(key);
+      if (key.equalsIgnoreCase("keep-current-index")) {
+        keepCurrentIndex = section.getBoolean(key);
       }
     });
   }
@@ -56,7 +56,7 @@ public class ListIcon extends Icon implements ParentIcon {
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
-    if (checkOnlyOnCreation && currentIndexMap.containsKey(player.getUniqueId())) {
+    if (keepCurrentIndex && currentIndexMap.containsKey(player.getUniqueId())) {
       return icons.get(currentIndexMap.get(player.getUniqueId())).updateClickableItem(player);
     }
 

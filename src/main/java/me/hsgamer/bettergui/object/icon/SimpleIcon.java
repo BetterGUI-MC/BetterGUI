@@ -20,6 +20,7 @@ public class SimpleIcon extends Icon {
 
   private Map<String, ItemProperty<?, ?>> itemProperties;
   private Map<String, Property<?>> otherProperties;
+  private boolean checkOnlyOnCreation = false;
 
   private SimpleIconPropertyBuilder iconPropertyBuilder = new SimpleIconPropertyBuilder(this);
 
@@ -33,6 +34,7 @@ public class SimpleIcon extends Icon {
       this.itemProperties = ((SimpleIcon) original).itemProperties;
       this.otherProperties = ((SimpleIcon) original).otherProperties;
       this.iconPropertyBuilder = ((SimpleIcon) original).iconPropertyBuilder;
+      this.checkOnlyOnCreation = ((SimpleIcon) original).checkOnlyOnCreation;
     }
   }
 
@@ -41,6 +43,11 @@ public class SimpleIcon extends Icon {
     itemProperties = PropertyBuilder.loadItemPropertiesFromSection(this, section);
     iconPropertyBuilder.init(section);
     otherProperties = PropertyBuilder.loadOtherPropertiesFromSection(section);
+    section.getKeys(false).forEach(key -> {
+      if (key.equalsIgnoreCase("check-only-on-creation")) {
+        checkOnlyOnCreation = section.getBoolean(key);
+      }
+    });
   }
 
   @Override
@@ -61,9 +68,11 @@ public class SimpleIcon extends Icon {
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
-    ViewRequirement viewRequirement = iconPropertyBuilder.getViewRequirement();
-    if (viewRequirement != null && !viewRequirement.check(player)) {
-      return Optional.empty();
+    if (!checkOnlyOnCreation) {
+      ViewRequirement viewRequirement = iconPropertyBuilder.getViewRequirement();
+      if (viewRequirement != null && !viewRequirement.check(player)) {
+        return Optional.empty();
+      }
     }
     return Optional.of(getClickableItem(player));
   }
