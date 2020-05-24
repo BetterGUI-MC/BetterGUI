@@ -28,6 +28,7 @@ public class ListIcon extends Icon implements ParentIcon {
     super(original);
     if (original instanceof ListIcon) {
       icons.addAll(((ListIcon) original).icons);
+      checkOnlyOnCreation = ((ListIcon) original).checkOnlyOnCreation;
     }
   }
 
@@ -55,7 +56,7 @@ public class ListIcon extends Icon implements ParentIcon {
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
-    if (checkOnlyOnCreation) {
+    if (checkOnlyOnCreation && currentIndexMap.containsKey(player.getUniqueId())) {
       return icons.get(currentIndexMap.get(player.getUniqueId())).updateClickableItem(player);
     }
 
@@ -64,7 +65,7 @@ public class ListIcon extends Icon implements ParentIcon {
       Icon icon = icons.get(i);
       item = icon.updateClickableItem(player);
       if (item.isPresent()) {
-        int currentIndex = currentIndexMap.get(player.getUniqueId());
+        int currentIndex = currentIndexMap.getOrDefault(player.getUniqueId(), -1);
         if (currentIndex != i) {
           currentIndexMap.put(player.getUniqueId(), i);
           return icon.createClickableItem(player);
