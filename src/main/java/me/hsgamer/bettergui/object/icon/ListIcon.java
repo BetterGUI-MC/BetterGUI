@@ -18,6 +18,7 @@ public class ListIcon extends Icon implements ParentIcon {
 
   private final List<Icon> icons = new ArrayList<>();
   private final Map<UUID, Integer> currentIndexMap = new HashMap<>();
+  private boolean checkOnlyOnCreation = false;
 
   public ListIcon(String name, Menu<?> menu) {
     super(name, menu);
@@ -33,6 +34,11 @@ public class ListIcon extends Icon implements ParentIcon {
   @Override
   public void setFromSection(ConfigurationSection section) {
     setChildFromSection(getMenu(), section);
+    section.getKeys(false).forEach(key -> {
+      if (key.equalsIgnoreCase("check-only-on-creation")) {
+        checkOnlyOnCreation = section.getBoolean(key);
+      }
+    });
   }
 
   @Override
@@ -49,6 +55,10 @@ public class ListIcon extends Icon implements ParentIcon {
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
+    if (checkOnlyOnCreation) {
+      return icons.get(currentIndexMap.get(player.getUniqueId())).updateClickableItem(player);
+    }
+
     Optional<ClickableItem> item = Optional.empty();
     for (int i = 0; i < icons.size(); i++) {
       Icon icon = icons.get(i);
