@@ -21,11 +21,10 @@ import org.bukkit.inventory.ItemStack;
 @SuppressWarnings("unused")
 public class SimpleIcon extends Icon {
 
+  private final List<UUID> failToCreate = new ArrayList<>();
   private Map<String, ItemProperty<?, ?>> itemProperties;
   private Map<String, Property<?>> otherProperties;
   private boolean checkOnlyOnCreation = false;
-  private final List<UUID> failToCreate = new ArrayList<>();
-
   private SimpleIconPropertyBuilder iconPropertyBuilder = new SimpleIconPropertyBuilder(this);
 
   public SimpleIcon(String name, Menu<?> menu) {
