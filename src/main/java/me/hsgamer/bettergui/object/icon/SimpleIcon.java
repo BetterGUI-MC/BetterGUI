@@ -1,8 +1,11 @@
 package me.hsgamer.bettergui.object.icon;
 
 import com.cryptomorin.xseries.XMaterial;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
@@ -21,7 +24,7 @@ public class SimpleIcon extends Icon {
   private Map<String, ItemProperty<?, ?>> itemProperties;
   private Map<String, Property<?>> otherProperties;
   private boolean checkOnlyOnCreation = false;
-  private boolean failToCreate = false;
+  private final List<UUID> failToCreate = new ArrayList<>();
 
   private SimpleIconPropertyBuilder iconPropertyBuilder = new SimpleIconPropertyBuilder(this);
 
@@ -53,11 +56,12 @@ public class SimpleIcon extends Icon {
 
   @Override
   public Optional<ClickableItem> createClickableItem(Player player) {
+    failToCreate.remove(player.getUniqueId());
     ViewRequirement viewRequirement = iconPropertyBuilder.getViewRequirement();
     if (viewRequirement != null) {
       if (!viewRequirement.check(player)) {
         viewRequirement.sendFailCommand(player);
-        failToCreate = true;
+        failToCreate.add(player.getUniqueId());
         return Optional.empty();
       }
       viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
@@ -71,7 +75,7 @@ public class SimpleIcon extends Icon {
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
     if (checkOnlyOnCreation) {
-      if (failToCreate) {
+      if (failToCreate.contains(player.getUniqueId())) {
         return Optional.empty();
       }
     } else {
