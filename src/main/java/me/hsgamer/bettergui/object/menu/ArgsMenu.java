@@ -20,6 +20,7 @@ public class ArgsMenu extends SimpleMenu {
   private MenuAction minArgsAction;
   private int minArgs = 0;
   private boolean clearOnClose = false;
+  private String[] defaultArgs;
 
   public ArgsMenu(String name) {
     super(name);
@@ -80,6 +81,10 @@ public class ArgsMenu extends SimpleMenu {
           minArgsAction = new MenuAction(this);
           minArgsAction.setValue(settings.get(Settings.MIN_ARGS_ACTION));
         }
+
+        if (settings.containsKey(Settings.DEFAULT_ARGS)) {
+          defaultArgs = String.valueOf(settings.get(Settings.DEFAULT_ARGS)).split(" ");
+        }
       }
     }
   }
@@ -93,10 +98,14 @@ public class ArgsMenu extends SimpleMenu {
       }
     } else {
       if (args.length < minArgs) {
-        if (minArgsAction != null) {
-          minArgsAction.getParsed(player).execute();
+        if (defaultArgs != null) {
+          args = defaultArgs.clone();
+        } else {
+          if (minArgsAction != null) {
+            minArgsAction.getParsed(player).execute();
+          }
+          return false;
         }
-        return false;
       }
       argsPerPlayer.put(player.getUniqueId(), Arrays.asList(args));
     }
@@ -120,5 +129,6 @@ public class ArgsMenu extends SimpleMenu {
     static final String ARGS = "args";
     static final String CLEAR_ARGS_ON_CLOSE = "clear-args-on-close";
     static final String MIN_ARGS_ACTION = "min-args-action";
+    static final String DEFAULT_ARGS = "default-args";
   }
 }
