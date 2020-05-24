@@ -21,6 +21,7 @@ public class SimpleIcon extends Icon {
   private Map<String, ItemProperty<?, ?>> itemProperties;
   private Map<String, Property<?>> otherProperties;
   private boolean checkOnlyOnCreation = false;
+  private boolean failToCreate = false;
 
   private SimpleIconPropertyBuilder iconPropertyBuilder = new SimpleIconPropertyBuilder(this);
 
@@ -56,6 +57,7 @@ public class SimpleIcon extends Icon {
     if (viewRequirement != null) {
       if (!viewRequirement.check(player)) {
         viewRequirement.sendFailCommand(player);
+        failToCreate = true;
         return Optional.empty();
       }
       viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
@@ -68,7 +70,11 @@ public class SimpleIcon extends Icon {
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
-    if (!checkOnlyOnCreation) {
+    if (checkOnlyOnCreation) {
+      if (failToCreate) {
+        return Optional.empty();
+      }
+    } else {
       ViewRequirement viewRequirement = iconPropertyBuilder.getViewRequirement();
       if (viewRequirement != null && !viewRequirement.check(player)) {
         return Optional.empty();
