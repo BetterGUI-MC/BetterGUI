@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import me.hsgamer.bettergui.config.impl.MainConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.object.GlobalVariable;
 import me.hsgamer.bettergui.util.BukkitUtils;
@@ -16,7 +17,7 @@ import me.hsgamer.bettergui.util.ExpressionUtils;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 public final class VariableManager {
 
@@ -28,10 +29,30 @@ public final class VariableManager {
     register("online",
         (executor, identifier) -> String.valueOf(BukkitUtils.getOnlinePlayers().size()));
     register("max_players", (executor, identifier) -> String.valueOf(Bukkit.getMaxPlayers()));
-    register("world", (executor, identifier) -> executor.getWorld().getName());
-    register("x", (executor, identifier) -> String.valueOf(executor.getLocation().getX()));
-    register("y", (executor, identifier) -> String.valueOf(executor.getLocation().getY()));
-    register("z", (executor, identifier) -> String.valueOf(executor.getLocation().getZ()));
+    register("world", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return executor.getPlayer().getWorld().getName();
+      }
+      return "";
+    });
+    register("x", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getLocation().getX());
+      }
+      return "";
+    });
+    register("y", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getLocation().getY());
+      }
+      return "";
+    });
+    register("z", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getLocation().getZ());
+      }
+      return "";
+    });
     register("bed_", ((executor, identifier) -> {
       if (executor.getBedSpawnLocation() == null) {
         return null;
@@ -47,14 +68,48 @@ public final class VariableManager {
         return null;
       }
     }));
-    register("exp", (executor, identifier) -> String.valueOf(executor.getTotalExperience()));
-    register("level", (executor, identifier) -> String.valueOf(executor.getLevel()));
-    register("exp_to_level", (executor, identifier) -> String.valueOf(executor.getExpToLevel()));
-    register("food_level", (executor, identifier) -> String.valueOf(executor.getFoodLevel()));
-    register("ip", (executor, identifier) -> executor.getAddress().getAddress().getHostAddress());
-    register("biome",
-        (executor, identifier) -> String.valueOf(executor.getLocation().getBlock().getBiome()));
-    register("ping", ((executor, identifier) -> BukkitUtils.getPing(executor)));
+    register("exp", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getTotalExperience());
+      }
+      return "";
+    });
+    register("level", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getLevel());
+      }
+      return "";
+    });
+    register("exp_to_level", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getExpToLevel());
+      }
+      return "";
+    });
+    register("food_level", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getFoodLevel());
+      }
+      return "";
+    });
+    register("ip", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return executor.getPlayer().getAddress().getAddress().getHostAddress();
+      }
+      return "";
+    });
+    register("biome", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getLocation().getBlock().getBiome());
+      }
+      return "";
+    });
+    register("ping", ((executor, identifier) -> {
+      if (executor.isOnline()) {
+        return BukkitUtils.getPing(executor.getPlayer());
+      }
+      return "";
+    }));
     register("rainbow", (executor, identifier) -> {
       ChatColor[] values = ChatColor.values();
       ChatColor color;
@@ -132,7 +187,7 @@ public final class VariableManager {
    * @param executor the player involved in
    * @return the replaced string
    */
-  public static String setVariables(String message, Player executor) {
+  public static String setVariables(String message, OfflinePlayer executor) {
     String old;
     do {
       old = message;
@@ -152,7 +207,7 @@ public final class VariableManager {
    * @param globalVariables the map of variables
    * @return the replaced string
    */
-  public static String setSingleVariables(String message, Player executor,
+  public static String setSingleVariables(String message, OfflinePlayer executor,
       Map<String, ? extends GlobalVariable> globalVariables) {
     Matcher matcher = PATTERN.matcher(message);
     while (matcher.find()) {
@@ -161,7 +216,14 @@ public final class VariableManager {
         if (identifier.toLowerCase().startsWith(variable.getKey())) {
           String replace = variable.getValue()
               .getReplacement(executor, identifier.substring(variable.getKey().length()));
-          if (replace != null) {
+          if (replace == null) {
+            continue;
+          }
+
+          if (MainConfig.REPLACE_ALL_VARIABLES.getValue().equals(Boolean.TRUE)) {
+            message = message
+                .replaceAll(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
+          } else {
             message = message
                 .replaceFirst(Pattern.quote(matcher.group()), Matcher.quoteReplacement(replace));
           }

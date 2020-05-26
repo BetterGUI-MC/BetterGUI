@@ -40,6 +40,12 @@ public final class RequirementBuilder {
    * @param clazz the class
    */
   public static void register(String type, Class<? extends Requirement<?, ?>> clazz) {
+    if (type.toLowerCase().startsWith("not-")) {
+      getInstance().getLogger()
+          .warning(() -> "Invalid requirement type '" + type
+              + "': Should not start with 'not-'. Ignored...");
+      return;
+    }
     requirementsClass.put(type, clazz);
   }
 
@@ -60,11 +66,19 @@ public final class RequirementBuilder {
 
   public static Optional<Requirement<?, ?>> getRequirement(String type,
       LocalVariableManager<?> localVariableManager) {
+    // Check Inverted mode
+    boolean inverted = false;
+    if (type.toLowerCase().startsWith("not-")) {
+      type = type.substring(4);
+      inverted = true;
+    }
+
     if (requirementsClass.containsKey(type)) {
       Class<? extends Requirement<?, ?>> clazz = requirementsClass.get(type);
       try {
         Requirement<?, ?> requirement = clazz.getDeclaredConstructor().newInstance();
         requirement.setVariableManager(localVariableManager);
+        requirement.setInverted(inverted);
         return Optional.of(requirement);
       } catch (Exception e) {
         // IGNORED

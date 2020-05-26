@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.GlobalRequirement;
 import me.hsgamer.bettergui.object.Icon;
@@ -186,7 +186,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
       inventory.open();
     } else {
       CommonUtils
-          .sendMessage(player, getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+          .sendMessage(player, MessageConfig.NO_PERMISSION.getValue());
       return false;
     }
     return true;

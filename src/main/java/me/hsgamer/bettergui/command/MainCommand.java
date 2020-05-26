@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.manager.CommandManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -21,8 +21,7 @@ public final class MainCommand extends BukkitCommand {
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
     if (!commandSender.hasPermission(Permissions.HELP)) {
-      sendMessage(commandSender,
-          BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.NO_PERMISSION));
+      sendMessage(commandSender, MessageConfig.NO_PERMISSION.getValue());
       return false;
     }
 

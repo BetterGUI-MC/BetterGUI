@@ -6,6 +6,7 @@ import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.property.MenuProperty;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -32,7 +33,7 @@ public class MenuVariable extends MenuProperty<ConfigurationSection, List<LocalV
         }
 
         @Override
-        public String getReplacement(Player executor, String identifier) {
+        public String getReplacement(OfflinePlayer executor, String identifier) {
           return parsed;
         }
       });

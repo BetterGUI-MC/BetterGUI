@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.object;
 
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 /**
  * A variable that is used globally
@@ -14,5 +14,5 @@ public interface GlobalVariable {
    * @param identifier the variable
    * @return the replaced string
    */
-  String getReplacement(Player executor, String identifier);
+  String getReplacement(OfflinePlayer executor, String identifier);
 }

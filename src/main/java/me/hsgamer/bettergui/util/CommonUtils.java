@@ -3,8 +3,7 @@ package me.hsgamer.bettergui.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -46,7 +45,7 @@ public final class CommonUtils {
    */
   public static void sendMessage(CommandSender sender, String message, boolean prefix) {
     if (prefix) {
-      message = BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.PREFIX) + message;
+      message = MessageConfig.PREFIX.getValue() + message;
     }
     sender.sendMessage(colorize(message));
   }

@@ -7,9 +7,9 @@ import me.hsgamer.bettergui.object.property.icon.impl.ClickCommand;
 import me.hsgamer.bettergui.object.property.icon.impl.ClickRequirement;
 import me.hsgamer.bettergui.object.property.icon.impl.CloseOnClick;
 import me.hsgamer.bettergui.object.property.icon.impl.ViewRequirement;
+import me.hsgamer.bettergui.util.MenuClickType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class SimpleIconPropertyBuilder {
@@ -61,7 +61,7 @@ public class SimpleIconPropertyBuilder {
 
   public Consumer<InventoryClickEvent> createClickEvent(Player player) {
     return event -> {
-      ClickType clickType = event.getClick();
+      MenuClickType clickType = MenuClickType.fromEvent(event);
       if (clickRequirement != null) {
         if (!clickRequirement.check(player, clickType)) {
           clickRequirement.sendFailCommand(player, clickType);

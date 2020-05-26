@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.builder;
 import java.util.Map;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.impl.MainConfig.DefaultConfig;
+import me.hsgamer.bettergui.config.impl.MainConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.menu.ArgsMenu;
 import me.hsgamer.bettergui.object.menu.DummyMenu;
@@ -50,7 +50,6 @@ public final class MenuBuilder {
     });
   }
 
-  @SuppressWarnings("SuspiciousMethodCalls")
   public static Menu<?> getMenu(String name, FileConfiguration file) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(file.getValues(true));
     if (keys.containsKey("menu-settings.menu-type")) {
@@ -59,8 +58,7 @@ public final class MenuBuilder {
         return getMenu(name, file, menuTypes.get(type));
       }
     }
-    return getMenu(name, file, menuTypes
-        .get(BetterGUI.getInstance().getMainConfig().get(DefaultConfig.DEFAULT_MENU_TYPE)));
+    return getMenu(name, file, menuTypes.get(MainConfig.DEFAULT_MENU_TYPE.getValue()));
   }
 
   public static Menu<?> getMenu(String name, FileConfiguration file,

@@ -1,8 +1,7 @@
 package me.hsgamer.bettergui.object.requirement;
 
 import java.util.List;
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
@@ -20,9 +19,8 @@ public class ConditionRequirement extends Requirement<Object, Boolean> {
     list.replaceAll(s -> parseFromString(s, player));
     for (String s : list) {
       if (!ExpressionUtils.isBoolean(s)) {
-        CommonUtils.sendMessage(player,
-            BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_CONDITION)
-                .replace("{input}", s));
+        CommonUtils
+            .sendMessage(player, MessageConfig.INVALID_CONDITION.getValue().replace("{input}", s));
         continue;
       }
       if (ExpressionUtils.getResult(s).intValue() != 1) {
@@ -34,7 +32,7 @@ public class ConditionRequirement extends Requirement<Object, Boolean> {
 
   @Override
   public boolean check(Player player) {
-    return getParsedValue(player).equals(Boolean.TRUE);
+    return !getParsedValue(player).equals(isInverted());
   }
 
   @Override

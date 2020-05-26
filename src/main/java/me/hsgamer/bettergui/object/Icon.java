@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.manager.VariableManager;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -41,7 +42,7 @@ public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
   }
 
   @Override
-  public boolean hasLocalVariables(Player player, String message, boolean checkParent) {
+  public boolean hasLocalVariables(OfflinePlayer player, String message, boolean checkParent) {
     if (checkParent && menu.hasLocalVariables(player, message, true)) {
       return true;
     }
@@ -49,7 +50,7 @@ public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
   }
 
   @Override
-  public String setSingleVariables(String message, Player executor, boolean checkParent) {
+  public String setSingleVariables(String message, OfflinePlayer executor, boolean checkParent) {
     message = setLocalVariables(message, executor, variables);
     if (checkParent) {
       message = menu.setSingleVariables(message, executor);

@@ -15,6 +15,7 @@ public abstract class Requirement<V, L> {
   protected V value;
   private LocalVariableManager<?> variableManager;
   private boolean canTake;
+  private boolean inverted;
 
   /**
    * The requirement
@@ -103,5 +104,23 @@ public abstract class Requirement<V, L> {
       return VariableManager.hasVariables(input) ? VariableManager.setVariables(input, player)
           : input;
     }
+  }
+
+  /**
+   * Whether the requirement is in inverted mode
+   *
+   * @return true if it is
+   */
+  public boolean isInverted() {
+    return inverted;
+  }
+
+  /**
+   * Set the inverted mode
+   *
+   * @param inverted whether it's in inverted mode
+   */
+  public void setInverted(boolean inverted) {
+    this.inverted = inverted;
   }
 }

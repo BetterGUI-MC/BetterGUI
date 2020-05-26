@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.object.property.item.impl;
 
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -21,8 +20,8 @@ public class Durability extends ItemProperty<Object, Short> {
     if (ExpressionUtils.isValidExpression(value)) {
       return ExpressionUtils.getResult(value).shortValue();
     } else {
-      CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
-          DefaultMessage.INVALID_NUMBER).replace("{input}", value));
+      CommonUtils
+          .sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", value));
       return 1;
     }
   }

@@ -21,7 +21,7 @@ public class PermissionRequirement extends Requirement<Object, List<String>> {
   @Override
   public boolean check(Player player) {
     for (String value : getParsedValue(player)) {
-      if (!hasPermission(player, value)) {
+      if (hasPermission(player, value) == isInverted()) {
         return false;
       }
     }

@@ -17,21 +17,21 @@ import me.hsgamer.bettergui.object.RequirementSet;
 import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.MenuClickType;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 
 public class ClickRequirement extends IconProperty<ConfigurationSection> {
 
   private static final String FAIL_COMMAND = "fail-command";
 
-  private final Map<ClickType, List<RequirementSet>> requirementsPerClickType = new EnumMap<>(
-      ClickType.class);
-  private final Map<ClickType, CheckedRequirementSet> checkedSetPerClickType = new EnumMap<>(
-      ClickType.class);
-  private final Map<ClickType, List<Command>> failCommandsPerClickType = new EnumMap<>(
-      ClickType.class);
+  private final Map<MenuClickType, List<RequirementSet>> requirementsPerClickType = new EnumMap<>(
+      MenuClickType.class);
+  private final Map<MenuClickType, CheckedRequirementSet> checkedSetPerClickType = new EnumMap<>(
+      MenuClickType.class);
+  private final Map<MenuClickType, List<Command>> failCommandsPerClickType = new EnumMap<>(
+      MenuClickType.class);
 
   public ClickRequirement(Icon icon) {
     super(icon);
@@ -42,7 +42,7 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     super.setValue(value);
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(getValue().getValues(false));
     // Per Click Type
-    for (ClickType clickType : ClickType.values()) {
+    for (MenuClickType clickType : MenuClickType.values()) {
       String subsection = clickType.name();
       if (keys.containsKey(subsection)) {
         setRequirements(clickType, (ConfigurationSection) keys.get(subsection));
@@ -54,7 +54,7 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     }
   }
 
-  private void setRequirements(ClickType clickType, ConfigurationSection section) {
+  private void setRequirements(MenuClickType clickType, ConfigurationSection section) {
     List<RequirementSet> requirements = RequirementBuilder
         .getRequirementSet(section,
             getIcon());
@@ -83,14 +83,14 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
           .createStringListFromObject(keys.get(FAIL_COMMAND), true)));
     }
     registerVariable("default", requirements);
-    for (ClickType clickType : ClickType.values()) {
+    for (MenuClickType clickType : MenuClickType.values()) {
       requirementsPerClickType.putIfAbsent(clickType, requirements);
       checkedSetPerClickType.putIfAbsent(clickType, checkedRequirementSet);
       failCommandsPerClickType.putIfAbsent(clickType, commands);
     }
   }
 
-  public void sendFailCommand(Player player, ClickType clickType) {
+  public void sendFailCommand(Player player, MenuClickType clickType) {
     TaskChain<?> taskChain = BetterGUI.newChain();
     failCommandsPerClickType.get(clickType)
         .forEach(command -> command.addToTaskChain(player, taskChain));
@@ -108,7 +108,7 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
         }));
   }
 
-  public boolean check(Player player, ClickType clickType) {
+  public boolean check(Player player, MenuClickType clickType) {
     List<RequirementSet> requirements = requirementsPerClickType
         .get(clickType);
     if (Validate.isNullOrEmpty(requirements)) {
@@ -124,7 +124,7 @@ public class ClickRequirement extends IconProperty<ConfigurationSection> {
     return false;
   }
 
-  public Optional<RequirementSet> getCheckedRequirement(Player player, ClickType clickType) {
+  public Optional<RequirementSet> getCheckedRequirement(Player player, MenuClickType clickType) {
     CheckedRequirementSet checkedRequirementSet = checkedSetPerClickType.get(clickType);
     if (checkedRequirementSet == null) {
       return Optional.empty();

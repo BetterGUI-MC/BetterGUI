@@ -6,13 +6,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class CooldownRequirement extends Requirement<Object, Duration> implements LocalVariable {
@@ -34,7 +34,7 @@ public class CooldownRequirement extends Requirement<Object, Duration> implement
   }
 
   @Override
-  public String getReplacement(Player executor, String identifier) {
+  public String getReplacement(OfflinePlayer executor, String identifier) {
     long millis = getCooldown(executor);
     millis = millis > 0 ? millis : 0;
     int divide;
@@ -66,9 +66,8 @@ public class CooldownRequirement extends Requirement<Object, Duration> implement
     if (ExpressionUtils.isValidExpression(parsed)) {
       return Duration.ofMillis((long) ExpressionUtils.getResult(parsed).doubleValue() * 1000);
     } else {
-      CommonUtils.sendMessage(player,
-          BetterGUI.getInstance().getMessageConfig().get(DefaultMessage.INVALID_NUMBER)
-              .replace("{input}", parsed));
+      CommonUtils
+          .sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed));
       return Duration.ZERO;
     }
   }
@@ -86,7 +85,7 @@ public class CooldownRequirement extends Requirement<Object, Duration> implement
     }
   }
 
-  private long getCooldown(Player player) {
+  private long getCooldown(OfflinePlayer player) {
     UUID uuid = player.getUniqueId();
     if (cooldownMap.containsKey(uuid)) {
       return Instant.now().until(cooldownMap.get(uuid), ChronoUnit.MILLIS);

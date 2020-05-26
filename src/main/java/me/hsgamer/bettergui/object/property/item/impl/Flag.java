@@ -3,8 +3,7 @@ package me.hsgamer.bettergui.object.property.item.impl;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -26,8 +25,8 @@ public class Flag extends ItemProperty<List<String>, Set<ItemFlag>> {
       try {
         flags.add(ItemFlag.valueOf(s.trim().toUpperCase().replace(" ", "_")));
       } catch (IllegalArgumentException e) {
-        CommonUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().get(
-            DefaultMessage.INVALID_FLAG).replace("{input}", s));
+        CommonUtils
+            .sendMessage(player, MessageConfig.INVALID_FLAG.getValue().replace("{input}", s));
       }
     });
     return flags;

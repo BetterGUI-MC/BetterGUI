@@ -4,7 +4,7 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import co.aikar.taskchain.TaskChain;
 import java.util.Arrays;
-import me.hsgamer.bettergui.config.impl.MessageConfig.DefaultMessage;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
@@ -52,8 +52,7 @@ public class OpenMenuCommand extends Command {
           () -> getInstance().getServer().getScheduler()
               .scheduleSyncDelayedTask(getInstance(), runnable));
     } else {
-      CommonUtils.sendMessage(player,
-          getInstance().getMessageConfig().get(DefaultMessage.MENU_NOT_FOUND));
+      CommonUtils.sendMessage(player, MessageConfig.MENU_NOT_FOUND.getValue());
     }
   }
 }

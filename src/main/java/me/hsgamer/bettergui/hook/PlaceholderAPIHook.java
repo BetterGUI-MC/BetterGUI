@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.hook;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
 
 public final class PlaceholderAPIHook {
@@ -37,7 +37,7 @@ public final class PlaceholderAPIHook {
     return PlaceholderAPI.containsPlaceholders(message);
   }
 
-  public static String setPlaceholders(String message, Player executor) {
+  public static String setPlaceholders(String message, OfflinePlayer executor) {
     return PlaceholderAPI.setPlaceholders(executor, message);
   }
 

@@ -18,6 +18,7 @@ public class ListIcon extends Icon implements ParentIcon {
 
   private final List<Icon> icons = new ArrayList<>();
   private final Map<UUID, Integer> currentIndexMap = new HashMap<>();
+  private boolean keepCurrentIndex = false;
 
   public ListIcon(String name, Menu<?> menu) {
     super(name, menu);
@@ -26,13 +27,19 @@ public class ListIcon extends Icon implements ParentIcon {
   public ListIcon(Icon original) {
     super(original);
     if (original instanceof ListIcon) {
-      icons.addAll(((ListIcon) original).icons);
+      this.icons.addAll(((ListIcon) original).icons);
+      this.keepCurrentIndex = ((ListIcon) original).keepCurrentIndex;
     }
   }
 
   @Override
   public void setFromSection(ConfigurationSection section) {
     setChildFromSection(getMenu(), section);
+    section.getKeys(false).forEach(key -> {
+      if (key.equalsIgnoreCase("keep-current-index")) {
+        keepCurrentIndex = section.getBoolean(key);
+      }
+    });
   }
 
   @Override
@@ -49,12 +56,16 @@ public class ListIcon extends Icon implements ParentIcon {
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
+    if (keepCurrentIndex && currentIndexMap.containsKey(player.getUniqueId())) {
+      return icons.get(currentIndexMap.get(player.getUniqueId())).updateClickableItem(player);
+    }
+
     Optional<ClickableItem> item = Optional.empty();
     for (int i = 0; i < icons.size(); i++) {
       Icon icon = icons.get(i);
       item = icon.updateClickableItem(player);
       if (item.isPresent()) {
-        int currentIndex = currentIndexMap.get(player.getUniqueId());
+        int currentIndex = currentIndexMap.getOrDefault(player.getUniqueId(), -1);
         if (currentIndex != i) {
           currentIndexMap.put(player.getUniqueId(), i);
           return icon.createClickableItem(player);
