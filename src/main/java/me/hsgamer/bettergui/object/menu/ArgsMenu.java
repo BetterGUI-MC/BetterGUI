@@ -97,7 +97,7 @@ public class ArgsMenu extends SimpleMenu {
     UUID uuid = player.getUniqueId();
     if (argsPerPlayer.containsKey(uuid)) {
       if (args.length >= minArgs) {
-        argsPerPlayer.put(uuid, Arrays.asList(fillEmptyArgs(args.clone())));
+        argsPerPlayer.put(uuid, Arrays.asList(fillEmptyArgs(args)));
       }
     } else {
       if (args.length < minArgs) {
@@ -110,7 +110,7 @@ public class ArgsMenu extends SimpleMenu {
           return false;
         }
       }
-      argsPerPlayer.put(player.getUniqueId(), Arrays.asList(fillEmptyArgs(args.clone())));
+      argsPerPlayer.put(player.getUniqueId(), Arrays.asList(fillEmptyArgs(args)));
     }
     return super.createInventory(player, args, bypass);
   }
@@ -119,7 +119,7 @@ public class ArgsMenu extends SimpleMenu {
     if (args.length < registeredArgs) {
       String[] clone = Arrays.copyOf(args, registeredArgs);
       Arrays.fill(clone, args.length, clone.length, MessageConfig.EMPTY_ARG_VALUE.getValue());
-      args = clone;
+      return clone;
     }
     return args;
   }
