@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 
 public class ArgsMenu extends SimpleMenu {
 
-  private final Map<UUID, List<String>> argsPerPlayer = new HashMap<>();
+  private final Map<UUID, String[]> argsPerPlayer = new HashMap<>();
   private MenuAction minArgsAction;
   private int minArgs = 0;
   private int registeredArgs = 0;
@@ -31,6 +31,28 @@ public class ArgsMenu extends SimpleMenu {
   @Override
   public void setFromFile(FileConfiguration file) {
     super.setFromFile(file);
+
+    registerVariable("merged_args", new LocalVariable() {
+      @Override
+      public String getIdentifier() {
+        return "merged_args";
+      }
+
+      @Override
+      public LocalVariableManager<?> getInvolved() {
+        return getParent();
+      }
+
+      @Override
+      public String getReplacement(OfflinePlayer executor, String identifier) {
+        UUID uuid = executor.getUniqueId();
+        if (argsPerPlayer.containsKey(uuid)) {
+          return String.join(" ", argsPerPlayer.get(uuid));
+        }
+        return "";
+      }
+    });
+
     for (String key : file.getKeys(false)) {
       if (key.equalsIgnoreCase("menu-settings")) {
         Map<String, Object> settings = new CaseInsensitiveStringMap<>(
@@ -64,9 +86,9 @@ public class ArgsMenu extends SimpleMenu {
               public String getReplacement(OfflinePlayer executor, String identifier) {
                 UUID uuid = executor.getUniqueId();
                 if (argsPerPlayer.containsKey(uuid)) {
-                  List<String> playerArgs = argsPerPlayer.get(uuid);
-                  if (index < playerArgs.size()) {
-                    return playerArgs.get(index);
+                  String[] playerArgs = argsPerPlayer.get(uuid);
+                  if (index < playerArgs.length) {
+                    return playerArgs[index];
                   }
                 }
                 return "";
@@ -97,7 +119,7 @@ public class ArgsMenu extends SimpleMenu {
     UUID uuid = player.getUniqueId();
     if (argsPerPlayer.containsKey(uuid)) {
       if (args.length >= minArgs) {
-        argsPerPlayer.put(uuid, Arrays.asList(fillEmptyArgs(args)));
+        argsPerPlayer.put(uuid, fillEmptyArgs(args));
       }
     } else {
       if (args.length < minArgs) {
@@ -110,7 +132,7 @@ public class ArgsMenu extends SimpleMenu {
           return false;
         }
       }
-      argsPerPlayer.put(player.getUniqueId(), Arrays.asList(fillEmptyArgs(args)));
+      argsPerPlayer.put(player.getUniqueId(), fillEmptyArgs(args));
     }
     return super.createInventory(player, args, bypass);
   }
