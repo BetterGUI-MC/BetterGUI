@@ -117,8 +117,9 @@ public class ArgsMenu extends SimpleMenu {
 
   private String[] fillEmptyArgs(String[] args) {
     if (args.length < registeredArgs) {
-      args = Arrays.copyOf(args, registeredArgs);
-      Arrays.fill(args, MessageConfig.EMPTY_ARG_VALUE.getValue());
+      String[] clone = Arrays.copyOf(args, registeredArgs);
+      Arrays.fill(clone, args.length, clone.length, MessageConfig.EMPTY_ARG_VALUE.getValue());
+      args = clone;
     }
     return args;
   }
