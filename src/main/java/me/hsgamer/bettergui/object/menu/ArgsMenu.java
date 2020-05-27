@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.property.menu.MenuAction;
@@ -19,6 +20,7 @@ public class ArgsMenu extends SimpleMenu {
   private final Map<UUID, List<String>> argsPerPlayer = new HashMap<>();
   private MenuAction minArgsAction;
   private int minArgs = 0;
+  private int registeredArgs = 0;
   private boolean clearOnClose = false;
   private String[] defaultArgs;
 
@@ -41,6 +43,7 @@ public class ArgsMenu extends SimpleMenu {
         if (settings.containsKey(Settings.ARGS)) {
           List<String> args = CommonUtils
               .createStringListFromObject(settings.get(Settings.ARGS), true);
+          registeredArgs = args.size();
           for (int i = 0; i < args.size(); i++) {
             String arg = args.get(i);
             int finalI = i;
@@ -94,7 +97,7 @@ public class ArgsMenu extends SimpleMenu {
     UUID uuid = player.getUniqueId();
     if (argsPerPlayer.containsKey(uuid)) {
       if (args.length >= minArgs) {
-        argsPerPlayer.put(uuid, Arrays.asList(args));
+        argsPerPlayer.put(uuid, Arrays.asList(fillEmptyArgs(args.clone())));
       }
     } else {
       if (args.length < minArgs) {
@@ -107,9 +110,17 @@ public class ArgsMenu extends SimpleMenu {
           return false;
         }
       }
-      argsPerPlayer.put(player.getUniqueId(), Arrays.asList(args));
+      argsPerPlayer.put(player.getUniqueId(), Arrays.asList(fillEmptyArgs(args.clone())));
     }
     return super.createInventory(player, args, bypass);
+  }
+
+  private String[] fillEmptyArgs(String[] args) {
+    if (args.length < registeredArgs) {
+      args = Arrays.copyOf(args, registeredArgs);
+      Arrays.fill(args, MessageConfig.EMPTY_ARG_VALUE.getValue());
+    }
+    return args;
   }
 
   @Override
