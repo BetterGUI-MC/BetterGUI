@@ -74,7 +74,7 @@ public class ArgsMenu extends SimpleMenu {
 
               @Override
               public String getIdentifier() {
-                return arg;
+                return "arg_" + arg;
               }
 
               @Override
