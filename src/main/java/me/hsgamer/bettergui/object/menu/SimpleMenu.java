@@ -311,7 +311,6 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
     public void updateInventory() {
       createItems(true);
-      player.updateInventory();
     }
 
     @Override
