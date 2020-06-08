@@ -26,11 +26,6 @@ public class ArgsMenu extends SimpleMenu {
 
   public ArgsMenu(String name) {
     super(name);
-  }
-
-  @Override
-  public void setFromFile(FileConfiguration file) {
-    super.setFromFile(file);
 
     registerVariable("merged_args", new LocalVariable() {
       @Override
@@ -52,6 +47,11 @@ public class ArgsMenu extends SimpleMenu {
         return "";
       }
     });
+  }
+
+  @Override
+  public void setFromFile(FileConfiguration file) {
+    super.setFromFile(file);
 
     for (String key : file.getKeys(false)) {
       if (key.equalsIgnoreCase("menu-settings")) {
@@ -68,32 +68,7 @@ public class ArgsMenu extends SimpleMenu {
           registeredArgs = args.size();
           for (int i = 0; i < args.size(); i++) {
             String arg = args.get(i);
-            int finalI = i;
-            registerVariable("arg_" + arg, new LocalVariable() {
-              private final int index = finalI;
-
-              @Override
-              public String getIdentifier() {
-                return "arg_" + arg;
-              }
-
-              @Override
-              public LocalVariableManager<?> getInvolved() {
-                return getParent();
-              }
-
-              @Override
-              public String getReplacement(OfflinePlayer executor, String identifier) {
-                UUID uuid = executor.getUniqueId();
-                if (argsPerPlayer.containsKey(uuid)) {
-                  String[] playerArgs = argsPerPlayer.get(uuid);
-                  if (index < playerArgs.length) {
-                    return playerArgs[index];
-                  }
-                }
-                return "";
-              }
-            });
+            registerVariable("arg_" + arg, new ArgVariable(arg, i));
           }
         }
 
@@ -164,5 +139,38 @@ public class ArgsMenu extends SimpleMenu {
     static final String CLEAR_ARGS_ON_CLOSE = "clear-args-on-close";
     static final String MIN_ARGS_ACTION = "min-args-action";
     static final String DEFAULT_ARGS = "default-args";
+  }
+
+  private class ArgVariable implements LocalVariable {
+
+    private final int index;
+    private final String arg;
+
+    ArgVariable(String arg, int index) {
+      this.index = index;
+      this.arg = arg;
+    }
+
+    @Override
+    public String getIdentifier() {
+      return "arg_" + arg;
+    }
+
+    @Override
+    public LocalVariableManager<?> getInvolved() {
+      return getParent();
+    }
+
+    @Override
+    public String getReplacement(OfflinePlayer executor, String identifier) {
+      UUID uuid = executor.getUniqueId();
+      if (argsPerPlayer.containsKey(uuid)) {
+        String[] playerArgs = argsPerPlayer.get(uuid);
+        if (index < playerArgs.length) {
+          return playerArgs[index];
+        }
+      }
+      return "";
+    }
   }
 }
