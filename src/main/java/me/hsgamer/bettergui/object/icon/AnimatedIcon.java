@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.ParentIcon;
+import me.hsgamer.bettergui.object.property.icon.impl.ViewRequirement;
 import me.hsgamer.bettergui.util.ExpressionUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -17,12 +18,15 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("unused")
 public class AnimatedIcon extends Icon implements ParentIcon {
 
+  private final List<UUID> failToCreate = new ArrayList<>();
   private final List<Icon> icons = new ArrayList<>();
   private final Map<UUID, Integer> currentIndexMap = new HashMap<>();
   private final Map<UUID, Integer> currentTimeMap = new HashMap<>();
   private final Map<UUID, Icon> currentIconMap = new HashMap<>();
   private final Map<UUID, Integer> updateMap = new HashMap<>();
+  private ViewRequirement viewRequirement;
   private String updatePattern = "0";
+  private boolean checkOnlyOnCreation = false;
 
   public AnimatedIcon(String name, Menu<?> menu) {
     super(name, menu);
@@ -33,6 +37,8 @@ public class AnimatedIcon extends Icon implements ParentIcon {
     if (original instanceof AnimatedIcon) {
       this.icons.addAll(((AnimatedIcon) original).icons);
       this.updatePattern = ((AnimatedIcon) original).updatePattern;
+      this.checkOnlyOnCreation = ((AnimatedIcon) original).checkOnlyOnCreation;
+      this.viewRequirement = ((AnimatedIcon) original).viewRequirement;
     }
   }
 
@@ -42,12 +48,33 @@ public class AnimatedIcon extends Icon implements ParentIcon {
     section.getKeys(false).forEach(key -> {
       if (key.equalsIgnoreCase("update")) {
         updatePattern = section.getString(key);
+      } else if (key.equalsIgnoreCase("view-requirement")) {
+        viewRequirement = new ViewRequirement(this);
+        viewRequirement.setValue(section.get(key));
+      } else if (key.equalsIgnoreCase("check-only-on-creation")) {
+        checkOnlyOnCreation = section.getBoolean(key);
       }
     });
   }
 
   @Override
   public Optional<ClickableItem> createClickableItem(Player player) {
+    failToCreate.remove(player.getUniqueId());
+    if (viewRequirement != null) {
+      if (!viewRequirement.check(player)) {
+        viewRequirement.sendFailCommand(player);
+        failToCreate.add(player.getUniqueId());
+        return Optional.empty();
+      }
+      viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
+        iconRequirementSet.take(player);
+        iconRequirementSet.sendSuccessCommands(player);
+      });
+    }
+    return createFirstItem(player);
+  }
+
+  private Optional<ClickableItem> createFirstItem(Player player) {
     Icon currentIcon = icons.get(0);
     int update = 0;
 
@@ -66,6 +93,26 @@ public class AnimatedIcon extends Icon implements ParentIcon {
 
   @Override
   public Optional<ClickableItem> updateClickableItem(Player player) {
+    if (checkOnlyOnCreation) {
+      if (failToCreate.contains(player.getUniqueId())) {
+        return Optional.empty();
+      }
+    } else {
+      if (viewRequirement != null && !viewRequirement.check(player)) {
+        failToCreate.add(player.getUniqueId());
+        return Optional.empty();
+      } else if (failToCreate.contains(player.getUniqueId())) {
+        if (viewRequirement != null) {
+          viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
+            iconRequirementSet.take(player);
+            iconRequirementSet.sendSuccessCommands(player);
+          });
+        }
+        failToCreate.remove(player.getUniqueId());
+        return createFirstItem(player);
+      }
+    }
+
     Icon currentIcon = currentIconMap.get(player.getUniqueId());
 
     if (currentTimeMap.get(player.getUniqueId()) > 0) {
