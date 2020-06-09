@@ -97,17 +97,15 @@ public class AnimatedIcon extends Icon implements ParentIcon {
       if (failToCreate.contains(player.getUniqueId())) {
         return Optional.empty();
       }
-    } else {
-      if (viewRequirement != null && !viewRequirement.check(player)) {
+    } else if (viewRequirement != null) {
+      if (!viewRequirement.check(player)) {
         failToCreate.add(player.getUniqueId());
         return Optional.empty();
       } else if (failToCreate.contains(player.getUniqueId())) {
-        if (viewRequirement != null) {
-          viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
-            iconRequirementSet.take(player);
-            iconRequirementSet.sendSuccessCommands(player);
-          });
-        }
+        viewRequirement.getCheckedRequirement(player).ifPresent(iconRequirementSet -> {
+          iconRequirementSet.take(player);
+          iconRequirementSet.sendSuccessCommands(player);
+        });
         failToCreate.remove(player.getUniqueId());
         return createFirstItem(player);
       }
