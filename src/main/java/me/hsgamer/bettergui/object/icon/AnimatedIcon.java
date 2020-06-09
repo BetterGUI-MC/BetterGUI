@@ -2,9 +2,11 @@ package me.hsgamer.bettergui.object.icon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.Icon;
@@ -18,7 +20,7 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("unused")
 public class AnimatedIcon extends Icon implements ParentIcon {
 
-  private final List<UUID> failToCreate = new ArrayList<>();
+  private final Set<UUID> failToCreate = new HashSet<>();
   private final List<Icon> icons = new ArrayList<>();
   private final Map<UUID, Integer> currentIndexMap = new HashMap<>();
   private final Map<UUID, Integer> currentTimeMap = new HashMap<>();
@@ -59,7 +61,6 @@ public class AnimatedIcon extends Icon implements ParentIcon {
 
   @Override
   public Optional<ClickableItem> createClickableItem(Player player) {
-    failToCreate.remove(player.getUniqueId());
     if (viewRequirement != null) {
       if (!viewRequirement.check(player)) {
         viewRequirement.sendFailCommand(player);
@@ -70,6 +71,7 @@ public class AnimatedIcon extends Icon implements ParentIcon {
         iconRequirementSet.take(player);
         iconRequirementSet.sendSuccessCommands(player);
       });
+      failToCreate.remove(player.getUniqueId());
     }
     return createFirstItem(player);
   }

@@ -55,7 +55,6 @@ public class SimpleIcon extends Icon {
 
   @Override
   public Optional<ClickableItem> createClickableItem(Player player) {
-    failToCreate.remove(player.getUniqueId());
     ViewRequirement viewRequirement = iconPropertyBuilder.getViewRequirement();
     if (viewRequirement != null) {
       if (!viewRequirement.check(player)) {
@@ -67,6 +66,7 @@ public class SimpleIcon extends Icon {
         iconRequirementSet.take(player);
         iconRequirementSet.sendSuccessCommands(player);
       });
+      failToCreate.remove(player.getUniqueId());
     }
     return Optional.of(getClickableItem(player));
   }
