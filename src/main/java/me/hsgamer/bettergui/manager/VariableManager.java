@@ -243,7 +243,7 @@ public final class VariableManager {
     if (found.isEmpty()) {
       return false;
     } else {
-      return found.stream().map(String::toLowerCase).parallel().anyMatch(s -> {
+      return found.stream().parallel().anyMatch(s -> {
         for (String match : matchString) {
           if (s.startsWith(match)) {
             return true;
