@@ -213,7 +213,7 @@ public final class VariableManager {
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
       for (Map.Entry<String, ? extends GlobalVariable> variable : globalVariables.entrySet()) {
-        if (identifier.toLowerCase().startsWith(variable.getKey())) {
+        if (identifier.startsWith(variable.getKey())) {
           String replace = variable.getValue()
               .getReplacement(executor, identifier.substring(variable.getKey().length()));
           if (replace == null) {
