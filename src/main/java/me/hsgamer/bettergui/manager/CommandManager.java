@@ -117,11 +117,7 @@ public final class CommandManager {
    * @param menu    the menu
    */
   public void registerMenuCommand(String command, Menu<?> menu) {
-    if (registeredMenuCommand.containsKey(command)) {
-      plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", command);
-      return;
-    }
-    BukkitCommand bukkitCommand = new BukkitCommand(command) {
+    registerMenuCommand(new BukkitCommand(command) {
       @Override
       public boolean execute(CommandSender commandSender, String s, String[] strings) {
         if (commandSender instanceof Player) {
@@ -132,9 +128,22 @@ public final class CommandManager {
         }
         return true;
       }
-    };
-    bukkitCommandMap.register(plugin.getName() + "_menu", bukkitCommand);
-    registeredMenuCommand.put(command, bukkitCommand);
+    });
+  }
+
+  /**
+   * Register the command that opens the menu
+   *
+   * @param command the menu command
+   */
+  public void registerMenuCommand(Command command) {
+    String name = command.getName();
+    if (registeredMenuCommand.containsKey(name)) {
+      plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", name);
+      return;
+    }
+    bukkitCommandMap.register(plugin.getName() + "_menu", command);
+    registeredMenuCommand.put(name, command);
   }
 
 
