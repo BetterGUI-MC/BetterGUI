@@ -18,8 +18,6 @@ public final class MainConfig extends PluginConfig {
       "replace-all-variables-each-check", true);
   public static final ConfigPath<Boolean> FORCED_UPDATE_INVENTORY = new ConfigPath<>(Boolean.class,
       "forced-update-inventory", false);
-  public static final ConfigPath<Boolean> SYNC_COMMANDS = new ConfigPath<>(Boolean.class,
-      "sync-commands", true);
 
   public MainConfig(JavaPlugin plugin) {
     super(plugin, "config.yml");
@@ -35,6 +33,5 @@ public final class MainConfig extends PluginConfig {
     MODERN_CLICK_TYPE.setConfig(this);
     REPLACE_ALL_VARIABLES.setConfig(this);
     FORCED_UPDATE_INVENTORY.setConfig(this);
-    SYNC_COMMANDS.setConfig(this);
   }
 }
