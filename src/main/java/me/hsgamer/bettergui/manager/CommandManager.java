@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
+import me.hsgamer.bettergui.config.impl.MainConfig;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -42,15 +43,18 @@ public final class CommandManager {
       throw new ExceptionInInitializerError(e);
     }
 
-    try {
-      Class<?> craftServer = Class.forName("org.bukkit.craftbukkit."
-          + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + ".CraftServer");
-      syncCommandsMethod = craftServer.getDeclaredMethod("syncCommands");
-    } catch (NoSuchMethodException | ClassNotFoundException e) {
-      // Ignored
-    }
-    if (syncCommandsMethod != null) {
-      syncCommandsMethod.setAccessible(true);
+    if (MainConfig.SYNC_COMMANDS.getValue().equals(Boolean.TRUE)) {
+      try {
+        Class<?> craftServer = Class.forName("org.bukkit.craftbukkit."
+            + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3]
+            + ".CraftServer");
+        syncCommandsMethod = craftServer.getDeclaredMethod("syncCommands");
+      } catch (NoSuchMethodException | ClassNotFoundException e) {
+        // Ignored
+      }
+      if (syncCommandsMethod != null) {
+        syncCommandsMethod.setAccessible(true);
+      }
     }
   }
 
