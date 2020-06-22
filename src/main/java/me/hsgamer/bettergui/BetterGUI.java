@@ -106,9 +106,9 @@ public final class BetterGUI extends JavaPlugin {
     Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
       loadCommands();
       addonManager.enableAddons();
-      addonManager.callPostEnable();
       checkClass();
       loadMenuConfig();
+      addonManager.callPostEnable();
       commandManager.syncCommand();
       if (MainConfig.METRICS.getValue().equals(Boolean.TRUE)) {
         enableMetrics();

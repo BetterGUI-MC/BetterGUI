@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
+import me.hsgamer.bettergui.config.impl.MainConfig;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.object.GlobalRequirement;
@@ -311,7 +312,10 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
     public void updateInventory() {
       createItems(true);
-      player.updateInventory();
+
+      if (MainConfig.FORCED_UPDATE_INVENTORY.getValue().equals(Boolean.TRUE)) {
+        player.updateInventory();
+      }
     }
 
     @Override

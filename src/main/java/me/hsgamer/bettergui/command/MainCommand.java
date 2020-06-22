@@ -4,10 +4,12 @@ import static me.hsgamer.bettergui.util.CommonUtils.sendMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.manager.CommandManager;
+import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -35,10 +37,17 @@ public final class MainCommand extends BukkitCommand {
     sendMessage(commandSender, "");
     sendMessage(commandSender, "&b&lCommand: ");
     for (Command command : manager.getRegistered().values()) {
-      sendMessage(commandSender,
-          "  &6" + command.getUsage() + ": &f" + command.getDescription());
-      sendMessage(commandSender,
-          "    &cAlias: " + Arrays.toString(command.getAliases().toArray()));
+      sendMessage(commandSender, "  &6" + command.getUsage());
+
+      String description = command.getDescription();
+      if (!Validate.isNullOrEmpty(description.trim())) {
+        sendMessage(commandSender, "    &bDesc: &f" + description);
+      }
+
+      List<String> aliases = command.getAliases();
+      if (!aliases.isEmpty()) {
+        sendMessage(commandSender, "    &cAlias: " + Arrays.toString(aliases.toArray()));
+      }
     }
     sendMessage(commandSender, "");
     sendMessage(commandSender, "&b&lMenu Command: ");

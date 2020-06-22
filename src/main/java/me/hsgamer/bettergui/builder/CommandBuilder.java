@@ -34,8 +34,7 @@ public final class CommandBuilder {
     register("player:", PlayerCommand.class);
     register("delay:", DelayCommand.class);
     register("condition:", ConditionCommand.class);
-    register("(open|menu):", OpenMenuCommand.class);
-    register("open-?menu:", OpenMenuCommand.class);
+    register("(open|menu|open-?menu):", OpenMenuCommand.class);
     register("back-?menu", BackCommand.class);
     register("tell:", TellCommand.class);
     register("broadcast:", BroadcastCommand.class);

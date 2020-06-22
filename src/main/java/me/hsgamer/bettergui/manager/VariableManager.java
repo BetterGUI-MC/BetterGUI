@@ -27,7 +27,7 @@ public final class VariableManager {
   static {
     register("player", (executor, identifier) -> executor.getName());
     register("online",
-        (executor, identifier) -> String.valueOf(BukkitUtils.getOnlinePlayers().size()));
+        (executor, identifier) -> String.valueOf(Bukkit.getOnlinePlayers().size()));
     register("max_players", (executor, identifier) -> String.valueOf(Bukkit.getMaxPlayers()));
     register("world", (executor, identifier) -> {
       if (executor.isOnline()) {
@@ -213,7 +213,7 @@ public final class VariableManager {
     while (matcher.find()) {
       String identifier = matcher.group(1).trim();
       for (Map.Entry<String, ? extends GlobalVariable> variable : globalVariables.entrySet()) {
-        if (identifier.toLowerCase().startsWith(variable.getKey())) {
+        if (identifier.startsWith(variable.getKey())) {
           String replace = variable.getValue()
               .getReplacement(executor, identifier.substring(variable.getKey().length()));
           if (replace == null) {
@@ -243,7 +243,7 @@ public final class VariableManager {
     if (found.isEmpty()) {
       return false;
     } else {
-      return found.stream().map(String::toLowerCase).parallel().anyMatch(s -> {
+      return found.stream().parallel().anyMatch(s -> {
         for (String match : matchString) {
           if (s.startsWith(match)) {
             return true;

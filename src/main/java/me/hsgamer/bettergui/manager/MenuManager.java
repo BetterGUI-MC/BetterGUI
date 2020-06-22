@@ -1,11 +1,11 @@
 package me.hsgamer.bettergui.manager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
@@ -102,7 +102,16 @@ public final class MenuManager {
    *
    * @return the list of the names
    */
-  public Set<String> getMenuNames() {
+  public Collection<String> getMenuNames() {
     return menuMap.keySet();
+  }
+
+  /**
+   * Get the menu
+   *
+   * @param name the menu name
+   */
+  public Menu<?> getMenu(String name) {
+    return menuMap.get(name);
   }
 }

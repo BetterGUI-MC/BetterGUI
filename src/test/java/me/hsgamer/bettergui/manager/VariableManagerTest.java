@@ -34,6 +34,7 @@ class VariableManagerTest {
     assertEquals("output1", VariableManager.setVariables("{test {test}}", dummyPlayer));
     assertEquals("output1 {something output1}",
         VariableManager.setVariables("{test} {something {test}}", dummyPlayer));
+    assertEquals("{Test}", VariableManager.setVariables("{Test}", dummyPlayer));
   }
 
   @Test

@@ -16,6 +16,8 @@ public final class MainConfig extends PluginConfig {
       "use-modern-click-type", false);
   public static final ConfigPath<Boolean> REPLACE_ALL_VARIABLES = new ConfigPath<>(Boolean.class,
       "replace-all-variables-each-check", true);
+  public static final ConfigPath<Boolean> FORCED_UPDATE_INVENTORY = new ConfigPath<>(Boolean.class,
+      "forced-update-inventory", false);
 
   public MainConfig(JavaPlugin plugin) {
     super(plugin, "config.yml");
@@ -30,5 +32,6 @@ public final class MainConfig extends PluginConfig {
     METRICS.setConfig(this);
     MODERN_CLICK_TYPE.setConfig(this);
     REPLACE_ALL_VARIABLES.setConfig(this);
+    FORCED_UPDATE_INVENTORY.setConfig(this);
   }
 }

@@ -31,6 +31,8 @@ public final class MessageConfig extends PluginConfig {
   public static final ConfigPath<String> PLAYER_NOT_FOUND = new ConfigPath<>(String.class,
       "player-not-found",
       "&cThe player is not found. Maybe he is offline or didn't join your server");
+  public static final ConfigPath<String> EMPTY_ARG_VALUE = new ConfigPath<>(String.class,
+      "empty-arg-value", "/empty/");
 
   public MessageConfig(JavaPlugin plugin) {
     super(plugin, "messages.yml");
@@ -52,5 +54,6 @@ public final class MessageConfig extends PluginConfig {
     INVALID_CONDITION.setConfig(this);
     INVALID_FLAG.setConfig(this);
     INVALID_ENCHANTMENT.setConfig(this);
+    EMPTY_ARG_VALUE.setConfig(this);
   }
 }
