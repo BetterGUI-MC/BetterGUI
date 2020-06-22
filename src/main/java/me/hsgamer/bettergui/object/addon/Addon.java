@@ -10,8 +10,10 @@ import java.util.jar.JarFile;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.util.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 /**
@@ -103,7 +105,7 @@ public abstract class Addon {
    * @param command the Command object
    */
   public final void registerCommand(Command command) {
-    getPlugin().getAddonManager().registerCommand(this, command);
+    getPlugin().getCommandManager().register(command);
   }
 
   /**
@@ -112,7 +114,7 @@ public abstract class Addon {
    * @param command the Command object
    */
   public final void unregisterCommand(Command command) {
-    getPlugin().getAddonManager().unregisterCommand(this, command);
+    getPlugin().getCommandManager().unregister(command);
   }
 
   /**
@@ -237,7 +239,7 @@ public abstract class Addon {
    * @param listener the listener to register
    */
   public final void registerListener(Listener listener) {
-    getPlugin().getAddonManager().registerListener(this, listener);
+    Bukkit.getPluginManager().registerEvents(listener, getPlugin());
   }
 
   /**
@@ -246,6 +248,6 @@ public abstract class Addon {
    * @param listener the listener to unregister
    */
   public final void unregisterListener(Listener listener) {
-    getPlugin().getAddonManager().unregisterListener(this, listener);
+    HandlerList.unregisterAll(listener);
   }
 }

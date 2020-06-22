@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.manager.MenuManager;
-import me.hsgamer.bettergui.util.BukkitUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 public final class OpenCommand extends BukkitCommand {
@@ -71,7 +72,8 @@ public final class OpenCommand extends BukkitCommand {
     if (args.length == 1) {
       list.addAll(getInstance().getMenuManager().getMenuNames());
     } else if (args.length == 2) {
-      BukkitUtils.getOnlinePlayers().forEach(player -> list.add(player.getName()));
+      list.addAll(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName)
+          .collect(Collectors.toList()));
     }
     return list;
   }

@@ -27,7 +27,7 @@ public final class VariableManager {
   static {
     register("player", (executor, identifier) -> executor.getName());
     register("online",
-        (executor, identifier) -> String.valueOf(BukkitUtils.getOnlinePlayers().size()));
+        (executor, identifier) -> String.valueOf(Bukkit.getOnlinePlayers().size()));
     register("max_players", (executor, identifier) -> String.valueOf(Bukkit.getMaxPlayers()));
     register("world", (executor, identifier) -> {
       if (executor.isOnline()) {

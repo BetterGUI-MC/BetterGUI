@@ -25,11 +25,8 @@ import me.hsgamer.bettergui.object.addon.Addon;
 import me.hsgamer.bettergui.object.addon.AddonClassLoader;
 import me.hsgamer.bettergui.object.addon.AddonDescription;
 import me.hsgamer.bettergui.util.Validate;
-import org.bukkit.command.Command;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 
 public final class AddonManager {
 
@@ -54,8 +51,6 @@ public final class AddonManager {
   };
   private final Map<String, Addon> addons = new LinkedHashMap<>();
   private final Map<Addon, AddonClassLoader> loaderMap = new HashMap<>();
-  private final Map<Addon, List<Command>> commands = new HashMap<>();
-  private final Map<Addon, List<Listener>> listeners = new HashMap<>();
   private final File addonsDir;
   private final BetterGUI plugin;
 
@@ -189,16 +184,6 @@ public final class AddonManager {
     Addon addon = addons.get(name);
     try {
       addon.onDisable();
-      // Unregister all listeners
-      listeners.computeIfPresent(addon, (a, list) -> {
-        list.forEach(HandlerList::unregisterAll);
-        return null;
-      });
-      // Unregister all commands
-      commands.computeIfPresent(addon, (a, list) -> {
-        list.forEach(command -> plugin.getCommandManager().unregister(command));
-        return null;
-      });
       return true;
     } catch (Throwable t) {
       plugin.getLogger().log(Level.WARNING, t, () -> "Error when disabling " + name);
@@ -251,45 +236,6 @@ public final class AddonManager {
       }
       return null;
     });
-  }
-
-  public void registerListener(Addon addon, Listener listener) {
-    listeners.putIfAbsent(addon, new ArrayList<>());
-    plugin.getServer().getPluginManager().registerEvents(listener, plugin);
-    listeners.get(addon).add(listener);
-  }
-
-  public void unregisterListener(Addon addon, Listener listener) {
-    listeners.computeIfPresent(addon, (a, list) -> {
-      if (list.contains(listener)) {
-        list.remove(listener);
-        HandlerList.unregisterAll(listener);
-      }
-      return list;
-    });
-  }
-
-  public void registerCommand(Addon addon, Command command) {
-    commands.putIfAbsent(addon, new ArrayList<>());
-    plugin.getCommandManager().register(command);
-    commands.get(addon).add(command);
-  }
-
-  public void unregisterCommand(Addon addon, Command command) {
-    commands.computeIfPresent(addon, (a, list) -> {
-      if (list.contains(command)) {
-        list.remove(command);
-        plugin.getCommandManager().unregister(command);
-      }
-      return list;
-    });
-  }
-
-  public void reloadAddons() {
-    disableAddons();
-    loadAddons();
-    enableAddons();
-    callPostEnable();
   }
 
   @SuppressWarnings("unused")
