@@ -148,13 +148,6 @@ public final class VariableManager {
       return null;
     });
     register("uuid", (executor, identifier) -> executor.getUniqueId().toString());
-    register("hcolor_", (executor, identifier) -> {
-      StringBuilder builder = new StringBuilder(ChatColor.COLOR_CHAR + "x");
-      for (char c : identifier.trim().toCharArray()) {
-        builder.append(ChatColor.COLOR_CHAR).append(Character.toLowerCase(c));
-      }
-      return builder.toString();
-    });
   }
 
   private VariableManager() {
