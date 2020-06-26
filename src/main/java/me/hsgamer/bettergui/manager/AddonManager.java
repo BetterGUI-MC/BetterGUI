@@ -62,6 +62,10 @@ public final class AddonManager {
     }
   }
 
+  public File getAddonsDir() {
+    return addonsDir;
+  }
+
   private AddonDescription getAddonDescription(JarFile jar)
       throws IOException, InvalidConfigurationException {
     // Load addon.yml file

@@ -7,13 +7,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.downloader.AddonInfo.Info;
-import me.hsgamer.bettergui.util.JSONUtils;
+import me.hsgamer.bettergui.util.WebUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 @SuppressWarnings("unchecked")
-public class AddonManager {
+public class AddonDownloader {
 
   private static final String ADDONS_DB = "https://raw.githubusercontent.com/BetterGUI-MC/Addon-List/master/addons.json";
   private final List<AddonInfo> addonInfoList = new ArrayList<>();
@@ -21,7 +21,7 @@ public class AddonManager {
   private void addAddonInfos() {
     CompletableFuture.supplyAsync(() -> {
       try {
-        return JSONUtils.getJSONFromURL(ADDONS_DB);
+        return WebUtils.getJSONFromURL(ADDONS_DB);
       } catch (IOException | ParseException e) {
         BetterGUI.getInstance().getLogger()
             .log(Level.WARNING, e, () -> "Something wrong when getting the addon info");
