@@ -34,8 +34,8 @@ public class AddonManager {
         JSONObject value = (JSONObject) jsonObject.get(key);
 
         String name = String.valueOf(key);
-        String version = (String) value.get(Info.VERSION);
-        String directLink = (String) value.get(Info.DIRECT_LINK);
+        String version = String.valueOf(value.get(Info.VERSION));
+        String directLink = String.valueOf(value.get(Info.DIRECT_LINK));
 
         AddonInfo addonInfo = new AddonInfo(name, version, directLink);
 
@@ -45,11 +45,11 @@ public class AddonManager {
         }
 
         if (value.containsKey(Info.DESCRIPTION)) {
-          addonInfo.setDescription((String) value.get(Info.DESCRIPTION));
+          addonInfo.setDescription(String.valueOf(value.get(Info.DESCRIPTION)));
         }
 
         if (value.containsKey(Info.SOURCE_LINK)) {
-          addonInfo.setSourceLink((String) value.get(Info.SOURCE_LINK));
+          addonInfo.setSourceLink(String.valueOf(value.get(Info.SOURCE_LINK)));
         }
       }
     });
