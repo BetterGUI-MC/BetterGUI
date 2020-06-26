@@ -53,6 +53,8 @@ public class AddonManager {
         if (value.containsKey(Info.SOURCE_LINK)) {
           addonInfo.setSourceLink(String.valueOf(value.get(Info.SOURCE_LINK)));
         }
+
+        addonInfoList.add(addonInfo);
       }
     });
   }

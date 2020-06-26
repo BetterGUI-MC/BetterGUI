@@ -18,25 +18,25 @@ public class AddonInfo {
     this.directLink = directLink;
   }
 
-  public void addAuthor(String author) {
+  void addAuthor(String author) {
     this.authors.add(author);
   }
 
-  public void setSourceLink(String sourceLink) {
+  void setSourceLink(String sourceLink) {
     this.sourceLink = sourceLink;
   }
 
-  public void setDescription(String description) {
+  void setDescription(String description) {
     this.description = description;
   }
 
-  public static class Info {
+  static class Info {
 
-    public static final String VERSION = "version";
-    public static final String DESCRIPTION = "description";
-    public static final String AUTHORS = "authors";
-    public static final String SOURCE_LINK = "source-code";
-    public static final String DIRECT_LINK = "direct-link";
+    static final String VERSION = "version";
+    static final String DESCRIPTION = "description";
+    static final String AUTHORS = "authors";
+    static final String SOURCE_LINK = "source-code";
+    static final String DIRECT_LINK = "direct-link";
 
     private Info() {
 
