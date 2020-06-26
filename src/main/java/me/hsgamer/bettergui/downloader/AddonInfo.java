@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddonInfo {
+
   private final String name;
   private final String version;
-  private String description = "";
   private final List<String> authors = new ArrayList<>();
-  private String sourceLink = "";
   private final String directLink;
+  private String description = "";
+  private String sourceLink = "";
 
   AddonInfo(String name, String version, String directLink) {
     this.name = name;
@@ -30,10 +31,15 @@ public class AddonInfo {
   }
 
   public static class Info {
+
     public static final String VERSION = "version";
     public static final String DESCRIPTION = "description";
     public static final String AUTHORS = "authors";
     public static final String SOURCE_LINK = "source-code";
     public static final String DIRECT_LINK = "direct-link";
+
+    private Info() {
+
+    }
   }
 }

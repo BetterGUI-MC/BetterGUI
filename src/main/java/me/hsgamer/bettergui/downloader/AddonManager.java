@@ -14,15 +14,17 @@ import org.json.simple.parser.ParseException;
 
 @SuppressWarnings("unchecked")
 public class AddonManager {
+
   private static final String ADDONS_DB = "https://raw.githubusercontent.com/BetterGUI-MC/Addon-List/master/addons.json";
-  private List<AddonInfo> addonInfoList = new ArrayList<>();
+  private final List<AddonInfo> addonInfoList = new ArrayList<>();
 
   private void addAddonInfos() {
     CompletableFuture.supplyAsync(() -> {
       try {
         return JSONUtils.getJSONFromURL(ADDONS_DB);
       } catch (IOException | ParseException e) {
-        BetterGUI.getInstance().getLogger().log(Level.WARNING, e, () -> "Something wrong when getting the addon info");
+        BetterGUI.getInstance().getLogger()
+            .log(Level.WARNING, e, () -> "Something wrong when getting the addon info");
         return null;
       }
     }).thenAccept(jsonObject -> {
