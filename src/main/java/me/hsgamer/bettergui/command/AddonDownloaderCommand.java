@@ -14,7 +14,7 @@ public class AddonDownloaderCommand extends BukkitCommand {
 
   public AddonDownloaderCommand() {
     super("addondownloader", "Open the addon downloader", "/addondownloader",
-        Arrays.asList("addondl, addondown"));
+        Arrays.asList("addondl", "addondown"));
   }
 
   @Override
