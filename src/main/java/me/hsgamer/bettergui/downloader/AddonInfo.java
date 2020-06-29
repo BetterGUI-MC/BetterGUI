@@ -2,17 +2,21 @@ package me.hsgamer.bettergui.downloader;
 
 import com.cryptomorin.xseries.XMaterial;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.util.CommonUtils;
-import org.apache.commons.io.FileUtils;
+import me.hsgamer.bettergui.util.WebUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
@@ -55,10 +59,11 @@ public class AddonInfo {
     }
 
     isDownloading = true;
-    try {
-      FileUtils.copyURLToFile(new URL(directLink),
-          new File(BetterGUI.getInstance().getAddonManager().getAddonsDir(), name + "-" + ".jar"),
-          3000, 3000);
+    try (ReadableByteChannel readableByteChannel = Channels
+        .newChannel(WebUtils.openConnection(directLink).getInputStream());
+        FileOutputStream fileOutputStream = new FileOutputStream(
+            new File(BetterGUI.getInstance().getAddonManager().getAddonsDir(), name + ".jar"))) {
+      fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
       isDownloading = false;
     } catch (IOException e) {
       isDownloading = false;
@@ -101,16 +106,24 @@ public class AddonInfo {
       ClickType clickType = inventoryClickEvent.getClick();
       if (clickType.isLeftClick()) {
         CommonUtils.sendMessage(humanEntity, "&eDownloading " + name);
-        try {
-          download();
-        } catch (DownloadingException e) {
-          CommonUtils.sendMessage(humanEntity, "&cIt's still downloading");
-        } catch (IOException e) {
-          BetterGUI.getInstance().getLogger()
-              .log(Level.WARNING, e, () -> "Unexpected issue when downloading " + name);
-          CommonUtils.sendMessage(humanEntity,
-              "&cAn unexpected issue occurs when downloading. Check the console");
-        }
+        CompletableFuture.supplyAsync(() -> {
+          try {
+            download();
+            return true;
+          } catch (DownloadingException e) {
+            CommonUtils.sendMessage(humanEntity, "&cIt's still downloading");
+          } catch (IOException e) {
+            BetterGUI.getInstance().getLogger()
+                .log(Level.WARNING, e, () -> "Unexpected issue when downloading " + name);
+            CommonUtils.sendMessage(humanEntity,
+                "&cAn unexpected issue occurs when downloading. Check the console");
+          }
+          return false;
+        }).thenAccept(complete -> {
+          if (complete.equals(Boolean.TRUE)) {
+            CommonUtils.sendMessage(humanEntity, MessageConfig.SUCCESS.getValue());
+          }
+        });
       } else if (clickType.isRightClick() && !sourceLink.isEmpty()) {
         CommonUtils.sendMessage(humanEntity, "&bLink: &f" + sourceLink);
       }
