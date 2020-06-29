@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.downloader;
 
+import static me.hsgamer.bettergui.BetterGUI.getInstance;
+
 import com.cryptomorin.xseries.XMaterial;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.logging.Level;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.util.CommonUtils;
@@ -62,7 +63,7 @@ public class AddonInfo {
     try (ReadableByteChannel readableByteChannel = Channels
         .newChannel(WebUtils.openConnection(directLink).getInputStream());
         FileOutputStream fileOutputStream = new FileOutputStream(
-            new File(BetterGUI.getInstance().getAddonManager().getAddonsDir(), name + ".jar"))) {
+            new File(getInstance().getAddonManager().getAddonsDir(), name + ".jar"))) {
       fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
       isDownloading = false;
     } catch (IOException e) {
@@ -78,12 +79,18 @@ public class AddonInfo {
     lores.add("&f" + description);
     lores.add("&fAuthors: &e" + Arrays.toString(authors.toArray()));
     lores.add("");
-    if (BetterGUI.getInstance().getAddonManager().isAddonLoaded(name)) {
-      xMaterial = XMaterial.ORANGE_WOOL;
-      lores.add("&6Status: &aLOADED");
+    if (getInstance().getAddonManager().isAddonLoaded(name)) {
+      if (getInstance().getAddonManager().getAddon(name).getDescription().getVersion()
+          .equals(version)) {
+        xMaterial = XMaterial.GREEN_WOOL;
+        lores.add("&6Status: &aUP-TO-DATE");
+      } else {
+        xMaterial = XMaterial.ORANGE_WOOL;
+        lores.add("&6Status: &eOUTDATED");
+      }
     } else {
-      xMaterial = XMaterial.WHITE_WOOL;
-      lores.add("&6Status: &aAVAILABLE");
+      xMaterial = XMaterial.LIGHT_BLUE_WOOL;
+      lores.add("&6Status: &bAVAILABLE");
     }
     lores.add("");
     lores.add("&bLeft click &fto download");
@@ -105,6 +112,13 @@ public class AddonInfo {
       HumanEntity humanEntity = inventoryClickEvent.getWhoClicked();
       ClickType clickType = inventoryClickEvent.getClick();
       if (clickType.isLeftClick()) {
+        if (getInstance().getAddonManager().isAddonLoaded(name)
+            && getInstance().getAddonManager().getAddon(name)
+            .getDescription().getVersion().equals(version)) {
+          CommonUtils.sendMessage(humanEntity, "&cIt's already up-to-date");
+          return;
+        }
+
         CommonUtils.sendMessage(humanEntity, "&eDownloading " + name);
         CompletableFuture.supplyAsync(() -> {
           try {
@@ -113,7 +127,7 @@ public class AddonInfo {
           } catch (DownloadingException e) {
             CommonUtils.sendMessage(humanEntity, "&cIt's still downloading");
           } catch (IOException e) {
-            BetterGUI.getInstance().getLogger()
+            getInstance().getLogger()
                 .log(Level.WARNING, e, () -> "Unexpected issue when downloading " + name);
             CommonUtils.sendMessage(humanEntity,
                 "&cAn unexpected issue occurs when downloading. Check the console");
