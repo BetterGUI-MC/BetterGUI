@@ -16,6 +16,7 @@ import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.command.AddonDownloaderCommand;
 import me.hsgamer.bettergui.command.GetAddonsCommand;
 import me.hsgamer.bettergui.command.MainCommand;
 import me.hsgamer.bettergui.command.OpenCommand;
@@ -23,6 +24,7 @@ import me.hsgamer.bettergui.command.ReloadCommand;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.config.impl.MainConfig;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.downloader.AddonDownloader;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.CommandManager;
@@ -40,6 +42,7 @@ public final class BetterGUI extends JavaPlugin {
   private final AddonManager addonManager = new AddonManager(this);
   private final CommandManager commandManager = new CommandManager(this);
   private final MenuManager menuManager = new MenuManager();
+  private final AddonDownloader addonDownloader = new AddonDownloader(this);
 
   private final MainConfig mainConfig = new MainConfig(this);
   private final MessageConfig messageConfig = new MessageConfig(this);
@@ -70,6 +73,7 @@ public final class BetterGUI extends JavaPlugin {
   public void onEnable() {
     FastInvManager.register(this);
     taskChainFactory = BukkitTaskChainFactory.create(this);
+    addonDownloader.createMenu();
 
     getLogger().info("");
     getLogger().info("    ____       __  __               ________  ______");
@@ -129,6 +133,7 @@ public final class BetterGUI extends JavaPlugin {
     commandManager.register(new ReloadCommand());
     commandManager.register(new GetAddonsCommand());
     commandManager.register(new MainCommand(getName().toLowerCase()));
+    commandManager.register(new AddonDownloaderCommand());
   }
 
   public void loadMenuConfig() {
@@ -170,6 +175,7 @@ public final class BetterGUI extends JavaPlugin {
     commandManager.clearMenuCommand();
     menuManager.clear();
     addonManager.disableAddons();
+    addonDownloader.cancelTask();
   }
 
   public CommandManager getCommandManager() {
@@ -186,5 +192,9 @@ public final class BetterGUI extends JavaPlugin {
 
   public MessageConfig getMessageConfig() {
     return messageConfig;
+  }
+
+  public AddonDownloader getAddonDownloader() {
+    return addonDownloader;
   }
 }

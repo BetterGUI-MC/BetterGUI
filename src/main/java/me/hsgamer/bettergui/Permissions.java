@@ -21,6 +21,8 @@ public final class Permissions {
   public static final Permission OPEN_MENU_BYPASS = createPermission(PREFIX + ".openmenu.bypass",
       null,
       PermissionDefault.OP);
+  public static final Permission ADDON_DOWNLOADER = createPermission(PREFIX + ".addons.downloader",
+      null, PermissionDefault.OP);
 
   private Permissions() {
 
