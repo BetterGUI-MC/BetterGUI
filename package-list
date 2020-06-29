@@ -3,6 +3,7 @@ me.hsgamer.bettergui.builder
 me.hsgamer.bettergui.command
 me.hsgamer.bettergui.config
 me.hsgamer.bettergui.config.impl
+me.hsgamer.bettergui.downloader
 me.hsgamer.bettergui.hook
 me.hsgamer.bettergui.manager
 me.hsgamer.bettergui.object
