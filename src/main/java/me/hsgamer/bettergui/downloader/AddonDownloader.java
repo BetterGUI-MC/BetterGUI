@@ -23,8 +23,8 @@ public class AddonDownloader {
 
   private static final String ADDONS_DB = "https://raw.githubusercontent.com/BetterGUI-MC/Addon-List/master/addons.json";
   private final List<AddonInfo> addonInfoList = new ArrayList<>();
-  private AddonMenu addonMenu;
   private final BetterGUI instance;
+  private AddonMenu addonMenu;
 
   public AddonDownloader(BetterGUI instance) {
     addAddonInfos();
