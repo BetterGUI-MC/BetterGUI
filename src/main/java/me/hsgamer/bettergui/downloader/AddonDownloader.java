@@ -96,17 +96,17 @@ public class AddonDownloader {
         public void run() {
           generateItems();
         }
-      }.runTaskAsynchronously(instance);
+      }.runTaskTimer(instance, 0, 2000);
     }
 
     private void generateItems() {
-      int slots = 0;
+      int slot = 0;
       for (AddonInfo addonInfo : addonInfoList) {
         ClickableItem item = addonInfo.getIcon();
-        addItem(item.getItem(), item.getClickEvent());
-        slots++;
+        setItem(slot, item.getItem(), item.getClickEvent());
+        slot++;
       }
-      clearItem(slots);
+      clearItem(slot);
     }
 
     private void clearItem(int startSlot) {

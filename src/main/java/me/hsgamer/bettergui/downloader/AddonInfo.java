@@ -78,7 +78,7 @@ public class AddonInfo {
       lores.add("&6Status: &aLOADED");
     } else {
       xMaterial = XMaterial.WHITE_WOOL;
-      lores.add("&6Status: &a");
+      lores.add("&6Status: &aAVAILABLE");
     }
     lores.add("");
     lores.add("&bLeft click &fto download");
