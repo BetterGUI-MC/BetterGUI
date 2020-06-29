@@ -31,25 +31,25 @@ public class AddonInfo {
 
   private boolean isDownloading = false;
 
-  AddonInfo(String name, String version, String directLink) {
+  public AddonInfo(String name, String version, String directLink) {
     this.name = name;
     this.version = version;
     this.directLink = directLink;
   }
 
-  void addAuthor(String author) {
+  public void addAuthor(String author) {
     this.authors.add(author);
   }
 
-  void setSourceLink(String sourceLink) {
+  public void setSourceLink(String sourceLink) {
     this.sourceLink = sourceLink;
   }
 
-  void setDescription(String description) {
+  public void setDescription(String description) {
     this.description = description;
   }
 
-  void download() throws IOException {
+  public void download() throws IOException {
     if (isDownloading) {
       throw new DownloadingException();
     }
@@ -66,7 +66,7 @@ public class AddonInfo {
     }
   }
 
-  ClickableItem getIcon() {
+  public ClickableItem getIcon() {
     XMaterial xMaterial;
     String displayName = "&f" + name + " &c- &4" + version;
     List<String> lores = new ArrayList<>();
@@ -119,13 +119,13 @@ public class AddonInfo {
     return new ClickableItem(itemStack, consumer);
   }
 
-  static class Info {
+  public static class Info {
 
-    static final String VERSION = "version";
-    static final String DESCRIPTION = "description";
-    static final String AUTHORS = "authors";
-    static final String SOURCE_LINK = "source-code";
-    static final String DIRECT_LINK = "direct-link";
+    public static final String VERSION = "version";
+    public static final String DESCRIPTION = "description";
+    public static final String AUTHORS = "authors";
+    public static final String SOURCE_LINK = "source-code";
+    public static final String DIRECT_LINK = "direct-link";
 
     private Info() {
 
