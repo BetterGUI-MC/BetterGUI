@@ -37,7 +37,7 @@ public final class Permissions {
     if (permissionDefault != null) {
       permission.setDefault(permissionDefault);
     }
-    getInstance().getServer().getPluginManager().removePermission(permission);
+    getInstance().getServer().getPluginManager().addPermission(permission);
     return permission;
   }
 }
