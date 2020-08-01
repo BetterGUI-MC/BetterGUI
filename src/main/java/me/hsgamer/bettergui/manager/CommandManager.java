@@ -56,7 +56,7 @@ public final class CommandManager {
   }
 
   /**
-   * Register new command
+   * Register the command
    *
    * @param command the command object
    */
@@ -72,7 +72,7 @@ public final class CommandManager {
   }
 
   /**
-   * Unregister new command
+   * Unregister the command
    *
    * @param command the command object
    */
@@ -91,22 +91,13 @@ public final class CommandManager {
   }
 
   /**
-   * Unregister new command
+   * Unregister the command
    *
    * @param command the command label
    */
   public void unregister(String command) {
     if (registered.containsKey(command)) {
-      try {
-        Map<?, ?> knownCommands = (Map<?, ?>) knownCommandsField.get(bukkitCommandMap);
-
-        knownCommands.values().removeIf(command::equals);
-
-        registered.remove(command).unregister(bukkitCommandMap);
-      } catch (ReflectiveOperationException e) {
-        plugin.getLogger()
-            .log(Level.WARNING, "Something wrong when unregister the command", e);
-      }
+      unregister(registered.remove(command));
     }
   }
 
@@ -148,7 +139,7 @@ public final class CommandManager {
 
 
   /**
-   * Sync the commands to the server Mainly used to make tab completer work in 1.13+
+   * Sync the commands to the server. Mainly used to make tab completer work in 1.13+
    */
   public void syncCommand() {
     if (syncCommandsMethod == null) {
