@@ -1,8 +1,7 @@
 package me.hsgamer.bettergui.builder;
 
 import java.util.Map;
-import java.util.logging.Level;
-import me.hsgamer.bettergui.BetterGUI;
+import java.util.function.Function;
 import me.hsgamer.bettergui.config.impl.MainConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.menu.ArgsMenu;
@@ -13,12 +12,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public final class MenuBuilder {
 
-  private static final Map<String, Class<? extends Menu<?>>> menuTypes = new CaseInsensitiveStringMap<>();
+  private static final Map<String, Function<String, Menu<?>>> menuTypes = new CaseInsensitiveStringMap<>();
 
   static {
-    register("dummy", DummyMenu.class);
-    register("simple", SimpleMenu.class);
-    register("args", ArgsMenu.class);
+    register("dummy", DummyMenu::new);
+    register("simple", SimpleMenu::new);
+    register("args", ArgsMenu::new);
   }
 
   private MenuBuilder() {
@@ -28,11 +27,28 @@ public final class MenuBuilder {
   /**
    * Register new Menu type
    *
+   * @param type         the name of the type
+   * @param menuFunction the "create menu" function
+   */
+  public static void register(String type, Function<String, Menu<?>> menuFunction) {
+    menuTypes.put(type, menuFunction);
+  }
+
+  /**
+   * Register new Menu type
+   *
    * @param type  the name of the type
    * @param clazz the class
+   * @deprecated use {@link #register(String, Function)} instead
    */
   public static void register(String type, Class<? extends Menu<?>> clazz) {
-    menuTypes.put(type, clazz);
+    menuTypes.put(type, s -> {
+      try {
+        return clazz.getDeclaredConstructor(String.class).newInstance(s);
+      } catch (Exception e) {
+        throw new RuntimeException("Invalid menu class");
+      }
+    });
   }
 
   public static Menu<?> getMenu(String name, FileConfiguration file) {
@@ -47,16 +63,9 @@ public final class MenuBuilder {
   }
 
   public static Menu<?> getMenu(String name, FileConfiguration file,
-      Class<? extends Menu<?>> tClass) {
-    try {
-      Menu<?> menu = tClass.getDeclaredConstructor(String.class)
-          .newInstance(name);
-      menu.setFromFile(file);
-      return menu;
-    } catch (Exception ex) {
-      BetterGUI.getInstance().getLogger()
-          .log(Level.WARNING, ex, () -> "Something wrong when creating the menu '" + name + "'");
-    }
-    return null;
+      Function<String, Menu<?>> menuFunction) {
+    Menu<?> menu = menuFunction.apply(name);
+    menu.setFromFile(file);
+    return menu;
   }
 }
