@@ -16,7 +16,7 @@ jobs:
       - name: Unshallow
         run: git fetch --unshallow --quiet
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B package
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
