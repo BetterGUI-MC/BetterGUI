@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.hsgamer.bettergui.object.Command;
@@ -24,21 +25,21 @@ import me.hsgamer.bettergui.object.variable.LocalVariableManager;
 
 public final class CommandBuilder {
 
-  private static final Map<Pattern, Class<? extends Command>> commands = new HashMap<>();
+  private static final Map<Pattern, Function<String, Command>> commands = new HashMap<>();
 
   static {
-    register("console:", ConsoleCommand.class);
-    register("op:", OpCommand.class);
-    register("player:", PlayerCommand.class);
-    register("delay:", DelayCommand.class);
-    register("condition:", ConditionCommand.class);
-    register("(open|menu|open-?menu):", OpenMenuCommand.class);
-    register("back-?menu", BackCommand.class);
-    register("tell:", TellCommand.class);
-    register("broadcast:", BroadcastCommand.class);
-    register("close-?menu", CloseMenuCommand.class);
-    register("update-?menu", UpdateMenuCommand.class);
-    register("permission:", PermissionCommand.class);
+    register("console:", ConsoleCommand::new);
+    register("op:", OpCommand::new);
+    register("player:", PlayerCommand::new);
+    register("delay:", DelayCommand::new);
+    register("condition:", ConditionCommand::new);
+    register("(open|menu|open-?menu):", OpenMenuCommand::new);
+    register("back-?menu", BackCommand::new);
+    register("tell:", TellCommand::new);
+    register("broadcast:", BroadcastCommand::new);
+    register("close-?menu", CloseMenuCommand::new);
+    register("update-?menu", UpdateMenuCommand::new);
+    register("permission:", PermissionCommand::new);
   }
 
   private CommandBuilder() {
@@ -48,12 +49,32 @@ public final class CommandBuilder {
   /**
    * Register new command type
    *
+   * @param regex           the regex that detects the prefix of the string
+   * @param commandFunction the "create command" function
+   */
+  public static void register(String regex, Function<String, Command> commandFunction) {
+    Pattern pattern = Pattern.compile("^(?i)" + regex, Pattern.CASE_INSENSITIVE);
+    commands.put(pattern, commandFunction);
+  }
+
+  /**
+   * Register new command type
+   *
    * @param regex the regex that detects the prefix of the string
    * @param clazz the class
+   * @deprecated use {@link #register(String, Function)} instead
    */
+  @Deprecated
   public static void register(String regex, Class<? extends Command> clazz) {
     Pattern pattern = Pattern.compile("^(?i)" + regex, Pattern.CASE_INSENSITIVE);
-    commands.put(pattern, clazz);
+    commands.put(pattern, s -> {
+      try {
+        return clazz.getDeclaredConstructor(String.class)
+            .newInstance(s);
+      } catch (Exception e) {
+        throw new RuntimeException("Invalid command class");
+      }
+    });
   }
 
   public static List<Command> getCommands(LocalVariableManager<?> localVariableManager,
@@ -74,19 +95,12 @@ public final class CommandBuilder {
    * @return Command Object
    */
   public static Command getCommand(LocalVariableManager<?> localVariableManager, String input) {
-    for (Entry<Pattern, Class<? extends Command>> entry : commands.entrySet()) {
+    for (Entry<Pattern, Function<String, Command>> entry : commands.entrySet()) {
       Matcher matcher = entry.getKey().matcher(input);
       if (matcher.find()) {
-        String cleanCommand = matcher.replaceFirst("").trim();
-
-        try {
-          Command command = entry.getValue().getDeclaredConstructor(String.class)
-              .newInstance(cleanCommand);
-          command.setVariableManager(localVariableManager);
-          return command;
-        } catch (Exception e) {
-          // Checked at startup
-        }
+        Command command = entry.getValue().apply(matcher.replaceFirst("").trim());
+        command.setVariableManager(localVariableManager);
+        return command;
       }
     }
 
