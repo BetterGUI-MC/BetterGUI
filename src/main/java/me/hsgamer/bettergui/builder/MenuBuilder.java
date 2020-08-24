@@ -41,6 +41,7 @@ public final class MenuBuilder {
    * @param clazz the class
    * @deprecated use {@link #register(String, Function)} instead
    */
+  @Deprecated
   public static void register(String type, Class<? extends Menu<?>> clazz) {
     menuTypes.put(type, s -> {
       try {

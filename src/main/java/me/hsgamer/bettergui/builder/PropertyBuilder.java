@@ -1,10 +1,9 @@
 package me.hsgamer.bettergui.builder;
 
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
-
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.Property;
@@ -36,49 +35,33 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public final class PropertyBuilder {
 
-  private static final String IN_MENU = " in the menu '%s'";
-  private static final String IN_ICON = " in the icon '%s'";
-  private static final String PROPERTY_ERROR_MESSAGE = "Something wrong when creating the property '%s'";
-
-  private static final Map<String, Class<? extends ItemProperty<?, ?>>> itemProperties = new CaseInsensitiveStringMap<>();
-  private static final Map<String, Class<? extends IconProperty<?>>> iconProperties = new CaseInsensitiveStringMap<>();
-  private static final Map<String, Class<? extends MenuProperty<?, ?>>> menuProperties = new CaseInsensitiveStringMap<>();
-  private static final Map<String, Class<? extends Property<?>>> otherProperties = new CaseInsensitiveStringMap<>();
+  private static final Map<String, Function<Icon, ItemProperty<?, ?>>> itemProperties = new CaseInsensitiveStringMap<>();
+  private static final Map<String, Function<Icon, IconProperty<?>>> iconProperties = new CaseInsensitiveStringMap<>();
+  private static final Map<String, Function<Menu<?>, MenuProperty<?, ?>>> menuProperties = new CaseInsensitiveStringMap<>();
+  private static final Map<String, Supplier<Property<?>>> otherProperties = new CaseInsensitiveStringMap<>();
 
   static {
-    registerItemProperty("name", Name.class);
-    registerItemProperty("lore", Lore.class);
-    registerItemProperty("amount", Amount.class);
-    registerItemProperty("id", Type.class);
-    registerItemProperty("material", Type.class);
-    registerItemProperty("enchantment", Enchantment.class);
-    registerItemProperty("enchant", Enchantment.class);
-    registerItemProperty("flag", Flag.class);
-    registerItemProperty("item-flags", Flag.class);
-    registerItemProperty("itemflag", Flag.class);
-    registerItemProperty("durability", Durability.class);
-    registerItemProperty("damage", Durability.class);
+    registerItemProperty(Name::new, "name");
+    registerItemProperty(Lore::new, "lore");
+    registerItemProperty(Amount::new, "amount");
+    registerItemProperty(Type::new, "id", "material");
+    registerItemProperty(Enchantment::new, "enchantment", "enchant");
+    registerItemProperty(Flag::new, "flag", "item-flags", "itemflag");
+    registerItemProperty(Durability::new, "durability", "damage");
 
-    registerIconProperty("variable", Variable.class);
-    registerIconProperty("placeholder", Variable.class);
-    registerIconProperty("view-requirement", ViewRequirement.class);
-    registerIconProperty("click-requirement", ClickRequirement.class);
-    registerIconProperty("close-on-click", CloseOnClick.class);
-    registerIconProperty("command", ClickCommand.class);
+    registerIconProperty(Variable::new, "variable", "placeholder");
+    registerIconProperty(ViewRequirement::new, "view-requirement");
+    registerIconProperty(ClickRequirement::new, "click-requirement");
+    registerIconProperty(CloseOnClick::new, "close-on-click");
+    registerIconProperty(ClickCommand::new, "command");
 
-    registerMenuProperty("open-action", MenuAction.class);
-    registerMenuProperty("close-action", MenuAction.class);
-    registerMenuProperty("inventory-type", MenuInventoryType.class);
-    registerMenuProperty("inventory", MenuInventoryType.class);
-    registerMenuProperty("rows", MenuRows.class);
-    registerMenuProperty("auto-refresh", MenuTicks.class);
-    registerMenuProperty("ticks", MenuTicks.class);
-    registerMenuProperty("name", MenuTitle.class);
-    registerMenuProperty("title", MenuTitle.class);
-    registerMenuProperty("view-requirement", MenuRequirement.class);
-    registerMenuProperty("close-requirement", MenuRequirement.class);
-    registerMenuProperty("variable", MenuVariable.class);
-    registerMenuProperty("placeholder", MenuVariable.class);
+    registerMenuProperty(MenuAction::new, "open-action", "close-action");
+    registerMenuProperty(MenuInventoryType::new, "inventory-type", "inventory");
+    registerMenuProperty(MenuRows::new, "rows");
+    registerMenuProperty(MenuTicks::new, "auto-refresh", "ticks");
+    registerMenuProperty(MenuTitle::new, "name", "title");
+    registerMenuProperty(MenuRequirement::new, "view-requirement", "close-requirement");
+    registerMenuProperty(MenuVariable::new, "variable", "placeholder");
   }
 
   private PropertyBuilder() {
@@ -88,11 +71,70 @@ public final class PropertyBuilder {
   /**
    * Register new item property
    *
+   * @param propertyFunction the "create property" function
+   * @param name             the name of the type
+   */
+  public static void registerItemProperty(Function<Icon, ItemProperty<?, ?>> propertyFunction,
+      String... name) {
+    for (String s : name) {
+      itemProperties.put(s, propertyFunction);
+    }
+  }
+
+  /**
+   * Register new icon property
+   *
+   * @param propertyFunction the "create property" function
+   * @param name             the name of the type
+   */
+  public static void registerIconProperty(Function<Icon, IconProperty<?>> propertyFunction,
+      String... name) {
+    for (String s : name) {
+      iconProperties.put(s, propertyFunction);
+    }
+  }
+
+  /**
+   * Register new menu property
+   *
+   * @param propertyFunction the "create property" function
+   * @param name             the name of the type
+   */
+  public static void registerMenuProperty(Function<Menu<?>, MenuProperty<?, ?>> propertyFunction,
+      String... name) {
+    for (String s : name) {
+      menuProperties.put(s, propertyFunction);
+    }
+  }
+
+  /**
+   * Register new other property
+   *
+   * @param propertySupplier the property supplier
+   * @param name             the name of the type
+   */
+  public static void registerOtherProperty(Supplier<Property<?>> propertySupplier, String... name) {
+    for (String s : name) {
+      otherProperties.put(s, propertySupplier);
+    }
+  }
+
+  /**
+   * Register new item property
+   *
    * @param name  the name of the type
    * @param clazz the class
+   * @deprecated use {@link #registerItemProperty(Function, String...)} instead
    */
+  @Deprecated
   public static void registerItemProperty(String name, Class<? extends ItemProperty<?, ?>> clazz) {
-    itemProperties.put(name, clazz);
+    itemProperties.put(name, icon -> {
+      try {
+        return clazz.getDeclaredConstructor(Icon.class).newInstance(icon);
+      } catch (Exception e) {
+        throw new RuntimeException("Invalid property class");
+      }
+    });
   }
 
   /**
@@ -100,9 +142,17 @@ public final class PropertyBuilder {
    *
    * @param name  the name of the type
    * @param clazz the class
+   * @deprecated use {@link #registerIconProperty(Function, String...)} instead
    */
+  @Deprecated
   public static void registerIconProperty(String name, Class<? extends IconProperty<?>> clazz) {
-    iconProperties.put(name, clazz);
+    iconProperties.put(name, icon -> {
+      try {
+        return clazz.getDeclaredConstructor(Icon.class).newInstance(icon);
+      } catch (Exception e) {
+        throw new RuntimeException("Invalid property class");
+      }
+    });
   }
 
   /**
@@ -110,9 +160,17 @@ public final class PropertyBuilder {
    *
    * @param name  the name of the type
    * @param clazz the class
+   * @deprecated use {@link #registerMenuProperty(Function, String...)} instead
    */
+  @Deprecated
   public static void registerMenuProperty(String name, Class<? extends MenuProperty<?, ?>> clazz) {
-    menuProperties.put(name, clazz);
+    menuProperties.put(name, menu -> {
+      try {
+        return clazz.getDeclaredConstructor(Menu.class).newInstance(menu);
+      } catch (Exception e) {
+        throw new RuntimeException("Invalid property class");
+      }
+    });
   }
 
   /**
@@ -120,28 +178,26 @@ public final class PropertyBuilder {
    *
    * @param name  the name of the type
    * @param clazz the class
+   * @deprecated use {@link #registerOtherProperty(Supplier, String...)} instead
    */
+  @Deprecated
   public static void registerOtherProperty(String name, Class<? extends Property<?>> clazz) {
-    otherProperties.put(name, clazz);
+    otherProperties.put(name, () -> {
+      try {
+        return clazz.getDeclaredConstructor().newInstance();
+      } catch (Exception e) {
+        throw new RuntimeException("Invalid property class");
+      }
+    });
   }
 
   public static Map<String, ItemProperty<?, ?>> loadItemPropertiesFromSection(Icon icon,
       ConfigurationSection section) {
     Map<String, ItemProperty<?, ?>> properties = new CaseInsensitiveStringLinkedMap<>();
-    Set<String> keys = section.getKeys(false);
-    keys.removeIf(s -> !itemProperties.containsKey(s));
-    keys.forEach(path -> {
-      Class<? extends ItemProperty<?, ?>> clazz = itemProperties.get(path);
-      try {
-        ItemProperty<?, ?> property = clazz.getDeclaredConstructor(Icon.class).newInstance(icon);
-        property.setValue(section.get(path));
-        properties.put(path, property);
-      } catch (Exception e) {
-        getInstance().getLogger()
-            .log(Level.WARNING, e, () -> String
-                .format(PROPERTY_ERROR_MESSAGE + IN_ICON + IN_MENU, path, icon.getName(),
-                    icon.getMenu().getName()));
-      }
+    section.getKeys(false).stream().filter(itemProperties::containsKey).forEach(path -> {
+      ItemProperty<?, ?> property = itemProperties.get(path).apply(icon);
+      property.setValue(section.get(path));
+      properties.put(path, property);
     });
     return properties;
   }
@@ -149,20 +205,10 @@ public final class PropertyBuilder {
   public static Map<String, IconProperty<?>> loadIconPropertiesFromSection(Icon icon,
       ConfigurationSection section) {
     Map<String, IconProperty<?>> properties = new CaseInsensitiveStringLinkedMap<>();
-    Set<String> keys = section.getKeys(false);
-    keys.removeIf(s -> !iconProperties.containsKey(s));
-    keys.forEach(path -> {
-      Class<? extends IconProperty<?>> clazz = iconProperties.get(path);
-      try {
-        IconProperty<?> property = clazz.getDeclaredConstructor(Icon.class).newInstance(icon);
-        property.setValue(section.get(path));
-        properties.put(path, property);
-      } catch (Exception e) {
-        getInstance().getLogger()
-            .log(Level.WARNING, e, () -> String
-                .format(PROPERTY_ERROR_MESSAGE + IN_ICON + IN_MENU, path, icon.getName(),
-                    icon.getMenu().getName()));
-      }
+    section.getKeys(false).stream().filter(iconProperties::containsKey).forEach(path -> {
+      IconProperty<?> property = iconProperties.get(path).apply(icon);
+      property.setValue(section.get(path));
+      properties.put(path, property);
     });
     return properties;
   }
@@ -170,19 +216,10 @@ public final class PropertyBuilder {
   public static Map<String, MenuProperty<?, ?>> loadMenuPropertiesFromSection(Menu<?> menu,
       ConfigurationSection section) {
     Map<String, MenuProperty<?, ?>> properties = new CaseInsensitiveStringLinkedMap<>();
-    Set<String> keys = section.getKeys(false);
-    keys.removeIf(s -> !menuProperties.containsKey(s));
-    keys.forEach(path -> {
-      Class<? extends MenuProperty<?, ?>> clazz = menuProperties.get(path);
-      try {
-        MenuProperty<?, ?> property = clazz.getDeclaredConstructor(Menu.class).newInstance(menu);
-        property.setValue(section.get(path));
-        properties.put(path, property);
-      } catch (Exception e) {
-        getInstance().getLogger()
-            .log(Level.WARNING, e,
-                () -> String.format(PROPERTY_ERROR_MESSAGE + IN_MENU, path, menu.getName()));
-      }
+    section.getKeys(false).stream().filter(menuProperties::containsKey).forEach(path -> {
+      MenuProperty<?, ?> property = menuProperties.get(path).apply(menu);
+      property.setValue(section.get(path));
+      properties.put(path, property);
     });
     return properties;
   }
@@ -190,18 +227,10 @@ public final class PropertyBuilder {
   public static Map<String, Property<?>> loadOtherPropertiesFromSection(
       ConfigurationSection section) {
     Map<String, Property<?>> properties = new CaseInsensitiveStringLinkedMap<>();
-    Set<String> keys = section.getKeys(false);
-    keys.removeIf(s -> !otherProperties.containsKey(s));
-    keys.forEach(path -> {
-      Class<? extends Property<?>> clazz = otherProperties.get(path);
-      try {
-        Property<?> property = clazz.getDeclaredConstructor().newInstance();
-        property.setValue(section.get(path));
-        properties.put(path, property);
-      } catch (Exception e) {
-        getInstance().getLogger()
-            .log(Level.WARNING, e, () -> String.format(PROPERTY_ERROR_MESSAGE, path));
-      }
+    section.getKeys(false).stream().filter(otherProperties::containsKey).forEach(path -> {
+      Property<?> property = otherProperties.get(path).get();
+      property.setValue(section.get(path));
+      properties.put(path, property);
     });
     return properties;
   }
