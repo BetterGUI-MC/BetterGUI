@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.object.requirement.ConditionRequirement;
 import me.hsgamer.bettergui.object.requirement.CooldownRequirement;
@@ -19,13 +20,13 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public final class RequirementBuilder {
 
-  private static final Map<String, Class<? extends Requirement<?, ?>>> requirementsClass = new CaseInsensitiveStringMap<>();
+  private static final Map<String, Supplier<Requirement<?, ?>>> requirementTypes = new CaseInsensitiveStringMap<>();
 
   static {
-    register("condition", ConditionRequirement.class);
-    register("level", ExpLevelRequirement.class);
-    register("permission", PermissionRequirement.class);
-    register("cooldown", CooldownRequirement.class);
+    register("condition", ConditionRequirement::new);
+    register("level", ExpLevelRequirement::new);
+    register("permission", PermissionRequirement::new);
+    register("cooldown", CooldownRequirement::new);
   }
 
   private RequirementBuilder() {
@@ -35,17 +36,35 @@ public final class RequirementBuilder {
   /**
    * Register new requirement type
    *
-   * @param type  the name of the type
-   * @param clazz the class
+   * @param type                the name of the type
+   * @param requirementSupplier the requirement supplier
    */
-  public static void register(String type, Class<? extends Requirement<?, ?>> clazz) {
+  public static void register(String type, Supplier<Requirement<?, ?>> requirementSupplier) {
     if (type.toLowerCase().startsWith("not-")) {
       getInstance().getLogger()
           .warning(() -> "Invalid requirement type '" + type
               + "': Should not start with 'not-'. Ignored...");
       return;
     }
-    requirementsClass.put(type, clazz);
+    requirementTypes.put(type, requirementSupplier);
+  }
+
+  /**
+   * Register new requirement type
+   *
+   * @param type  the name of the type
+   * @param clazz the class
+   * @deprecated use {@link #register(String, Supplier)} instead
+   */
+  @Deprecated
+  public static void register(String type, Class<? extends Requirement<?, ?>> clazz) {
+    register(type, () -> {
+      try {
+        return clazz.getDeclaredConstructor().newInstance();
+      } catch (Exception e) {
+        throw new RuntimeException("Invalid requirement class");
+      }
+    });
   }
 
   public static Optional<Requirement<?, ?>> getRequirement(String type,
@@ -57,18 +76,14 @@ public final class RequirementBuilder {
       inverted = true;
     }
 
-    if (requirementsClass.containsKey(type)) {
-      Class<? extends Requirement<?, ?>> clazz = requirementsClass.get(type);
-      try {
-        Requirement<?, ?> requirement = clazz.getDeclaredConstructor().newInstance();
-        requirement.setVariableManager(localVariableManager);
-        requirement.setInverted(inverted);
-        return Optional.of(requirement);
-      } catch (Exception e) {
-        // IGNORED
-      }
+    if (!requirementTypes.containsKey(type)) {
+      return Optional.empty();
     }
-    return Optional.empty();
+
+    Requirement<?, ?> requirement = requirementTypes.get(type).get();
+    requirement.setVariableManager(localVariableManager);
+    requirement.setInverted(inverted);
+    return Optional.of(requirement);
   }
 
   public static List<Requirement<?, ?>> loadRequirementsFromSection(ConfigurationSection section,
