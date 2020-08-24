@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.object;
 
 import me.hsgamer.bettergui.manager.VariableManager;
+import me.hsgamer.bettergui.object.variable.LocalVariableManager;
 import org.bukkit.entity.Player;
 
 /**

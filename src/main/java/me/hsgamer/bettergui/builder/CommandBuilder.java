@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.hsgamer.bettergui.object.Command;
-import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.command.BackCommand;
 import me.hsgamer.bettergui.object.command.BroadcastCommand;
 import me.hsgamer.bettergui.object.command.CloseMenuCommand;
@@ -21,6 +20,7 @@ import me.hsgamer.bettergui.object.command.PermissionCommand;
 import me.hsgamer.bettergui.object.command.PlayerCommand;
 import me.hsgamer.bettergui.object.command.TellCommand;
 import me.hsgamer.bettergui.object.command.UpdateMenuCommand;
+import me.hsgamer.bettergui.object.variable.LocalVariableManager;
 
 public final class CommandBuilder {
 

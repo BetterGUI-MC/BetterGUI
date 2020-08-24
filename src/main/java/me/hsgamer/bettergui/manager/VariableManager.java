@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.hsgamer.bettergui.config.impl.MainConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
-import me.hsgamer.bettergui.object.GlobalVariable;
+import me.hsgamer.bettergui.object.variable.GlobalVariable;
 import me.hsgamer.bettergui.util.BukkitUtils;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;

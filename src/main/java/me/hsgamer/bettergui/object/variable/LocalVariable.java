@@ -1,4 +1,4 @@
-package me.hsgamer.bettergui.object;
+package me.hsgamer.bettergui.object.variable;
 
 /**
  * Same as GlobalVariable but this is local

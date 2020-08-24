@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.UUID;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.VariableManager;
+import me.hsgamer.bettergui.object.variable.LocalVariable;
+import me.hsgamer.bettergui.object.variable.LocalVariableManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

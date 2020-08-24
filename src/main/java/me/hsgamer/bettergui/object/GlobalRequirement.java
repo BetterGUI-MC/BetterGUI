@@ -8,6 +8,8 @@ import java.util.Optional;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.object.requirementset.CheckedRequirementSet;
+import me.hsgamer.bettergui.object.requirementset.RequirementSet;
 import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.configuration.ConfigurationSection;

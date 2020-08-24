@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.object;
 
 import co.aikar.taskchain.TaskChain;
 import me.hsgamer.bettergui.manager.VariableManager;
+import me.hsgamer.bettergui.object.variable.LocalVariableManager;
 import org.bukkit.entity.Player;
 
 public abstract class Command {

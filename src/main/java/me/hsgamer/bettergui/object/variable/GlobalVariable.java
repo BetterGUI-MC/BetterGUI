@@ -1,4 +1,4 @@
-package me.hsgamer.bettergui.object;
+package me.hsgamer.bettergui.object.variable;
 
 import org.bukkit.OfflinePlayer;
 

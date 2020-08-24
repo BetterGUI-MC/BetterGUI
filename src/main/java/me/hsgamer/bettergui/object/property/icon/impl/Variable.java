@@ -1,9 +1,9 @@
 package me.hsgamer.bettergui.object.property.icon.impl;
 
 import me.hsgamer.bettergui.object.Icon;
-import me.hsgamer.bettergui.object.LocalVariable;
-import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.property.IconProperty;
+import me.hsgamer.bettergui.object.variable.LocalVariable;
+import me.hsgamer.bettergui.object.variable.LocalVariableManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 

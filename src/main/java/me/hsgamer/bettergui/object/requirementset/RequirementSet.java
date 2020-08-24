@@ -1,9 +1,11 @@
-package me.hsgamer.bettergui.object;
+package me.hsgamer.bettergui.object.requirementset;
 
 import co.aikar.taskchain.TaskChain;
 import java.util.ArrayList;
 import java.util.List;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.object.Command;
+import me.hsgamer.bettergui.object.Requirement;
 import org.bukkit.entity.Player;
 
 public class RequirementSet {

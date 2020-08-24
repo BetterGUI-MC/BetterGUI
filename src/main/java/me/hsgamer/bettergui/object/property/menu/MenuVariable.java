@@ -2,10 +2,10 @@ package me.hsgamer.bettergui.object.property.menu;
 
 import java.util.ArrayList;
 import java.util.List;
-import me.hsgamer.bettergui.object.LocalVariable;
-import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.property.MenuProperty;
+import me.hsgamer.bettergui.object.variable.LocalVariable;
+import me.hsgamer.bettergui.object.variable.LocalVariableManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
