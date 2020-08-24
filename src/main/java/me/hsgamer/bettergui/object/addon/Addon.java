@@ -19,7 +19,6 @@ import org.bukkit.event.Listener;
 /**
  * The main class of the addon
  */
-@SuppressWarnings("unused")
 public abstract class Addon {
 
   private final File jarFile;

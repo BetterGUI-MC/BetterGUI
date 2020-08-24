@@ -242,12 +242,10 @@ public final class AddonManager {
     });
   }
 
-  @SuppressWarnings("unused")
   public Addon getAddon(String name) {
     return addons.get(name);
   }
 
-  @SuppressWarnings("unused")
   public boolean isAddonLoaded(String name) {
     return addons.containsKey(name);
   }

@@ -17,7 +17,6 @@ import me.hsgamer.bettergui.util.ExpressionUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-@SuppressWarnings("unused")
 public class AnimatedIcon extends Icon implements ParentIcon {
 
   private final Set<UUID> failToCreate = new HashSet<>();

@@ -13,7 +13,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-@SuppressWarnings("unused")
 public class DummyIcon extends Icon {
 
   private Map<String, ItemProperty<?, ?>> itemProperties;

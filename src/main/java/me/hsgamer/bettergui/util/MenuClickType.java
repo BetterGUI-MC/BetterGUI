@@ -116,12 +116,10 @@ public enum MenuClickType {
     return valueOf("NUMBER_KEY_" + (event.getHotbarButton() + 1));
   }
 
-  @SuppressWarnings("unused")
   public ClickType getBukkitClickType() {
     return clickType;
   }
 
-  @SuppressWarnings("unused")
   public int getHotbarSlot() {
     return hotbarSlot;
   }

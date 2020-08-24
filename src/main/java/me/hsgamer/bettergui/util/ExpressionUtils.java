@@ -86,7 +86,6 @@ public final class ExpressionUtils {
    *
    * @param lazyFunction the function
    */
-  @SuppressWarnings("unused")
   public static void registerLazyFunction(LazyFunction lazyFunction) {
     lazyFunctionList.add(lazyFunction);
   }

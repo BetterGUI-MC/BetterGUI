@@ -66,7 +66,6 @@ public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
    * @param player the player
    * @return the player's inventory
    */
-  @SuppressWarnings("unused")
   public abstract Optional<T> getInventory(Player player);
 
   /**

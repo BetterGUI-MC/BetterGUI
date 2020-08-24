@@ -143,12 +143,10 @@ public class DummyMenu extends Menu<FastInv> {
     return Optional.ofNullable(inventoryMap.get(player.getUniqueId()));
   }
 
-  @SuppressWarnings("unused")
   public Map<String, DummyIcon> getIcons() {
     return icons;
   }
 
-  @SuppressWarnings("unused")
   public void setPermission(Permission permission) {
     this.permission = permission;
   }
