@@ -21,6 +21,7 @@ import me.hsgamer.bettergui.object.property.item.impl.Enchantment;
 import me.hsgamer.bettergui.object.property.item.impl.Flag;
 import me.hsgamer.bettergui.object.property.item.impl.Lore;
 import me.hsgamer.bettergui.object.property.item.impl.Name;
+import me.hsgamer.bettergui.object.property.item.impl.Skull;
 import me.hsgamer.bettergui.object.property.item.impl.Type;
 import me.hsgamer.bettergui.object.property.menu.MenuAction;
 import me.hsgamer.bettergui.object.property.menu.MenuInventoryType;
@@ -48,6 +49,7 @@ public final class PropertyBuilder {
     registerItemProperty(Enchantment::new, "enchantment", "enchant");
     registerItemProperty(Flag::new, "flag", "item-flags", "itemflag");
     registerItemProperty(Durability::new, "durability", "damage");
+    registerItemProperty(Skull::new, "head", "skull", "skull-owner");
 
     registerIconProperty(Variable::new, "variable", "placeholder");
     registerIconProperty(ViewRequirement::new, "view-requirement");
