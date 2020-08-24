@@ -8,8 +8,6 @@ import java.util.logging.Level;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.Property;
-import me.hsgamer.bettergui.object.icon.RawIcon;
-import me.hsgamer.bettergui.object.menu.DummyMenu;
 import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.object.property.MenuProperty;
 import me.hsgamer.bettergui.object.property.icon.impl.ClickCommand;
@@ -38,7 +36,6 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public final class PropertyBuilder {
 
-  private static final String CHECK_ERROR_MESSAGE = "There is an unknown error on %s. The property will be ignored";
   private static final String IN_MENU = " in the menu '%s'";
   private static final String IN_ICON = " in the icon '%s'";
   private static final String PROPERTY_ERROR_MESSAGE = "Something wrong when creating the property '%s'";
@@ -126,45 +123,6 @@ public final class PropertyBuilder {
    */
   public static void registerOtherProperty(String name, Class<? extends Property<?>> clazz) {
     otherProperties.put(name, clazz);
-  }
-
-  /**
-   * Check the integrity of the classes
-   */
-  public static void checkClass() {
-    for (Class<? extends ItemProperty<?, ?>> clazz : itemProperties.values()) {
-      checkIconProperty(clazz);
-    }
-    for (Class<? extends IconProperty<?>> clazz : iconProperties.values()) {
-      checkIconProperty(clazz);
-    }
-    for (Class<? extends MenuProperty<?, ?>> clazz : menuProperties.values()) {
-      try {
-        clazz.getDeclaredConstructor(Menu.class).newInstance(new DummyMenu("dummy"));
-      } catch (Exception ex) {
-        getInstance().getLogger()
-            .log(Level.WARNING, ex,
-                () -> String.format(CHECK_ERROR_MESSAGE, clazz.getSimpleName()));
-      }
-    }
-    for (Class<? extends Property<?>> clazz : otherProperties.values()) {
-      try {
-        clazz.getDeclaredConstructor().newInstance();
-      } catch (Exception ex) {
-        getInstance().getLogger()
-            .log(Level.WARNING, ex,
-                () -> String.format(CHECK_ERROR_MESSAGE, clazz.getSimpleName()));
-      }
-    }
-  }
-
-  private static void checkIconProperty(Class<? extends IconProperty<?>> clazz) {
-    try {
-      clazz.getDeclaredConstructor(Icon.class).newInstance(new RawIcon("", null));
-    } catch (Exception ex) {
-      getInstance().getLogger()
-          .log(Level.WARNING, ex, () -> String.format(CHECK_ERROR_MESSAGE, clazz.getSimpleName()));
-    }
   }
 
   public static Map<String, ItemProperty<?, ?>> loadItemPropertiesFromSection(Icon icon,

@@ -50,21 +50,6 @@ public final class IconBuilder {
     iconTypes.put(type, clazz);
   }
 
-  /**
-   * Check the integrity of the classes
-   */
-  public static void checkClass() {
-    for (Class<? extends Icon> clazz : iconTypes.values()) {
-      try {
-        clazz.getDeclaredConstructor(String.class, Menu.class).newInstance("", null);
-      } catch (Exception ex) {
-        BetterGUI.getInstance().getLogger()
-            .log(Level.WARNING, ex, () -> "There is an unknown error on " + clazz.getSimpleName()
-                + ". The icon will be ignored");
-      }
-    }
-  }
-
   public static Icon getIcon(Menu<?> menu, ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
     if (keys.containsKey("type")) {

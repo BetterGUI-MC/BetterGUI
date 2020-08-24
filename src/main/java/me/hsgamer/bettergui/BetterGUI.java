@@ -11,11 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
-import me.hsgamer.bettergui.builder.CommandBuilder;
-import me.hsgamer.bettergui.builder.IconBuilder;
-import me.hsgamer.bettergui.builder.MenuBuilder;
-import me.hsgamer.bettergui.builder.PropertyBuilder;
-import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.command.AddonDownloaderCommand;
 import me.hsgamer.bettergui.command.GetAddonsCommand;
 import me.hsgamer.bettergui.command.MainCommand;
@@ -110,7 +105,6 @@ public final class BetterGUI extends JavaPlugin {
     Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
       loadCommands();
       addonManager.enableAddons();
-      checkClass();
       loadMenuConfig();
       addonManager.callPostEnable();
       commandManager.syncCommand();
@@ -118,14 +112,6 @@ public final class BetterGUI extends JavaPlugin {
         enableMetrics();
       }
     });
-  }
-
-  public void checkClass() {
-    CommandBuilder.checkClass();
-    RequirementBuilder.checkClass();
-    PropertyBuilder.checkClass();
-    IconBuilder.checkClass();
-    MenuBuilder.checkClass();
   }
 
   public void loadCommands() {

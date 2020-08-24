@@ -5,10 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.command.BackCommand;
@@ -56,21 +54,6 @@ public final class CommandBuilder {
   public static void register(String regex, Class<? extends Command> clazz) {
     Pattern pattern = Pattern.compile("^(?i)" + regex, Pattern.CASE_INSENSITIVE);
     commands.put(pattern, clazz);
-  }
-
-  /**
-   * Check the integrity of the classes
-   */
-  public static void checkClass() {
-    for (Class<? extends Command> clazz : commands.values()) {
-      try {
-        clazz.getDeclaredConstructor(String.class).newInstance("");
-      } catch (Exception ex) {
-        BetterGUI.getInstance().getLogger()
-            .log(Level.WARNING, ex, () -> "There is an unknown error on " + clazz.getSimpleName()
-                + ". The command will be ignored");
-      }
-    }
   }
 
   public static List<Command> getCommands(LocalVariableManager<?> localVariableManager,

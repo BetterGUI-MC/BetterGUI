@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
 import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.object.RequirementSet;
@@ -47,21 +46,6 @@ public final class RequirementBuilder {
       return;
     }
     requirementsClass.put(type, clazz);
-  }
-
-  /**
-   * Check the integrity of the classes
-   */
-  public static void checkClass() {
-    for (Class<? extends Requirement<?, ?>> clazz : requirementsClass.values()) {
-      try {
-        clazz.getDeclaredConstructor().newInstance();
-      } catch (Exception ex) {
-        getInstance().getLogger()
-            .log(Level.WARNING, ex, () -> "There is an unknown error on " + clazz.getSimpleName()
-                + ". The requirement will be ignored");
-      }
-    }
   }
 
   public static Optional<Requirement<?, ?>> getRequirement(String type,

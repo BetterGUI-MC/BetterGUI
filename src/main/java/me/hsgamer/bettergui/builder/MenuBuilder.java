@@ -35,21 +35,6 @@ public final class MenuBuilder {
     menuTypes.put(type, clazz);
   }
 
-  /**
-   * Check the integrity of the classes
-   */
-  public static void checkClass() {
-    menuTypes.values().forEach(clazz -> {
-      try {
-        clazz.getDeclaredConstructor(String.class).newInstance("");
-      } catch (Exception ex) {
-        BetterGUI.getInstance().getLogger()
-            .log(Level.WARNING, ex, () -> "There is an unknown error on " + clazz.getSimpleName()
-                + ". The menu type will be ignored");
-      }
-    });
-  }
-
   public static Menu<?> getMenu(String name, FileConfiguration file) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(file.getValues(true));
     if (keys.containsKey("menu-settings.menu-type")) {
