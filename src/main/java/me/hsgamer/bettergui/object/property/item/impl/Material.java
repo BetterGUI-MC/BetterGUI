@@ -7,9 +7,9 @@ import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Type extends ItemProperty<String, Optional<XMaterial>> {
+public class Material extends ItemProperty<String, Optional<XMaterial>> {
 
-  public Type(Icon icon) {
+  public Material(Icon icon) {
     super(icon);
   }
 
