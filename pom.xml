@@ -126,6 +126,13 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>net.md-5</groupId>
+      <artifactId>bungeecord-chat</artifactId>
+      <version>1.16-R0.2-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>co.aikar</groupId>
       <artifactId>taskchain-bukkit</artifactId>
       <version>3.7.2</version>

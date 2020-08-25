@@ -3,6 +3,7 @@ package me.hsgamer.bettergui;
 import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
+import com.cryptomorin.xseries.XMaterial;
 import fr.mrmicky.fastinv.FastInvManager;
 import java.io.File;
 import java.util.ArrayList;
@@ -121,11 +122,18 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   private void registerDefaultVariables() {
+    // Player Name
     VariableManager.register("player", (executor, identifier) -> executor.getName());
+
+    // Online Player
     VariableManager.register("online",
         (executor, identifier) -> String.valueOf(Bukkit.getOnlinePlayers().size()));
+
+    // Max Players
     VariableManager
         .register("max_players", (executor, identifier) -> String.valueOf(Bukkit.getMaxPlayers()));
+
+    // Location
     VariableManager.register("world", (executor, identifier) -> {
       if (executor.isOnline()) {
         return executor.getPlayer().getWorld().getName();
@@ -150,6 +158,8 @@ public final class BetterGUI extends JavaPlugin {
       }
       return "";
     });
+
+    // Bed Location
     VariableManager.register("bed_", ((executor, identifier) -> {
       if (executor.getBedSpawnLocation() == null) {
         return null;
@@ -165,48 +175,64 @@ public final class BetterGUI extends JavaPlugin {
         return null;
       }
     }));
+
+    // Exp
     VariableManager.register("exp", (executor, identifier) -> {
       if (executor.isOnline()) {
         return String.valueOf(executor.getPlayer().getTotalExperience());
       }
       return "";
     });
+
+    // Level
     VariableManager.register("level", (executor, identifier) -> {
       if (executor.isOnline()) {
         return String.valueOf(executor.getPlayer().getLevel());
       }
       return "";
     });
+
+    // Exp to level
     VariableManager.register("exp_to_level", (executor, identifier) -> {
       if (executor.isOnline()) {
         return String.valueOf(executor.getPlayer().getExpToLevel());
       }
       return "";
     });
+
+    // Food Level
     VariableManager.register("food_level", (executor, identifier) -> {
       if (executor.isOnline()) {
         return String.valueOf(executor.getPlayer().getFoodLevel());
       }
       return "";
     });
+
+    // IP
     VariableManager.register("ip", (executor, identifier) -> {
       if (executor.isOnline()) {
         return executor.getPlayer().getAddress().getAddress().getHostAddress();
       }
       return "";
     });
+
+    // Biome
     VariableManager.register("biome", (executor, identifier) -> {
       if (executor.isOnline()) {
         return String.valueOf(executor.getPlayer().getLocation().getBlock().getBiome());
       }
       return "";
     });
+
+    // Ping
     VariableManager.register("ping", ((executor, identifier) -> {
       if (executor.isOnline()) {
         return BukkitUtils.getPing(executor.getPlayer());
       }
       return "";
     }));
+
+    // Rainbow Color
     VariableManager.register("rainbow", (executor, identifier) -> {
       ChatColor[] values = ChatColor.values();
       ChatColor color;
@@ -220,6 +246,8 @@ public final class BetterGUI extends JavaPlugin {
           || color.equals(ChatColor.UNDERLINE));
       return CommonUtils.colorize("&" + color.getChar());
     });
+
+    // Random
     VariableManager.register("random_", (executor, identifier) -> {
       identifier = identifier.trim();
       if (identifier.contains(":")) {
@@ -238,13 +266,26 @@ public final class BetterGUI extends JavaPlugin {
       }
       return null;
     });
+
+    // Condition
     VariableManager.register("condition_", (executor, identifier) -> {
       if (ExpressionUtils.isValidExpression(identifier)) {
         return ExpressionUtils.getResult(identifier).toString();
       }
       return null;
     });
+
+    // UUID
     VariableManager.register("uuid", (executor, identifier) -> executor.getUniqueId().toString());
+
+    // Hex Color
+    if (XMaterial.supports(16)) {
+      VariableManager.register("hcolor_", (executor, identifier) -> String
+          .valueOf(net.md_5.bungee.api.ChatColor.of("#" + identifier)));
+      VariableManager.register("hrainbow", (offlinePlayer, s) ->
+          String.valueOf(net.md_5.bungee.api.ChatColor
+              .of("#" + String.format("%06x", ThreadLocalRandom.current().nextInt(0xFFFFFF + 1)))));
+    }
   }
 
   public void loadMenuConfig() {
