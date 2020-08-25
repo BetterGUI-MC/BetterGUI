@@ -65,19 +65,6 @@ public final class BetterGUI extends JavaPlugin {
 
   @Override
   public void onEnable() {
-    FastInvManager.register(this);
-    taskChainFactory = BukkitTaskChainFactory.create(this);
-    addonDownloader.createMenu();
-
-    getLogger().info("");
-    getLogger().info("    ____       __  __               ________  ______");
-    getLogger().info("   / __ )___  / /_/ /____  _____   / ____/ / / /  _/");
-    getLogger().info("  / __  / _ \\/ __/ __/ _ \\/ ___/  / / __/ / / // /  ");
-    getLogger().info(" / /_/ /  __/ /_/ /_/  __/ /     / /_/ / /_/ _/ /   ");
-    getLogger().info("/_____/\\___/\\__/\\__/\\___/_/      \\____/\\____/___/");
-    getLogger().info("");
-
-    getLogger().log(Level.INFO, "\t\tVersion: {0}", getDescription().getVersion());
     if (getDescription().getVersion().contains("SNAPSHOT")) {
       getLogger().warning("You are using the development version");
       getLogger().warning("This is not ready for production");
@@ -94,6 +81,10 @@ public final class BetterGUI extends JavaPlugin {
         }
       });
     }
+
+    FastInvManager.register(this);
+    taskChainFactory = BukkitTaskChainFactory.create(this);
+    addonDownloader.createMenu();
 
     if (PlaceholderAPIHook.setupPlugin()) {
       getLogger().info("Hooked PlaceholderAPI");
