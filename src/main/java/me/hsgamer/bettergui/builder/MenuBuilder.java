@@ -15,9 +15,9 @@ public final class MenuBuilder {
   private static final Map<String, Function<String, Menu<?>>> menuTypes = new CaseInsensitiveStringMap<>();
 
   static {
-    register("dummy", DummyMenu::new);
-    register("simple", SimpleMenu::new);
-    register("args", ArgsMenu::new);
+    register(DummyMenu::new, "dummy");
+    register(SimpleMenu::new, "simple");
+    register(ArgsMenu::new, "args");
   }
 
   private MenuBuilder() {
@@ -27,11 +27,13 @@ public final class MenuBuilder {
   /**
    * Register new Menu type
    *
-   * @param type         the name of the type
    * @param menuFunction the "create menu" function
+   * @param type         the name of the type
    */
-  public static void register(String type, Function<String, Menu<?>> menuFunction) {
-    menuTypes.put(type, menuFunction);
+  public static void register(Function<String, Menu<?>> menuFunction, String... type) {
+    for (String s : type) {
+      menuTypes.put(s, menuFunction);
+    }
   }
 
   /**
@@ -39,17 +41,17 @@ public final class MenuBuilder {
    *
    * @param type  the name of the type
    * @param clazz the class
-   * @deprecated use {@link #register(String, Function)} instead
+   * @deprecated use {@link #register(Function, String...)} instead
    */
   @Deprecated
   public static void register(String type, Class<? extends Menu<?>> clazz) {
-    menuTypes.put(type, s -> {
+    register(s -> {
       try {
         return clazz.getDeclaredConstructor(String.class).newInstance(s);
       } catch (Exception e) {
         throw new RuntimeException("Invalid menu class");
       }
-    });
+    }, type);
   }
 
   public static Menu<?> getMenu(String name, FileConfiguration file) {

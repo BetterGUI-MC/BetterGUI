@@ -28,18 +28,18 @@ public final class CommandBuilder {
   private static final Map<Pattern, Function<String, Command>> commands = new HashMap<>();
 
   static {
-    register("console:", ConsoleCommand::new);
-    register("op:", OpCommand::new);
-    register("player:", PlayerCommand::new);
-    register("delay:", DelayCommand::new);
-    register("condition:", ConditionCommand::new);
-    register("(open|menu|open-?menu):", OpenMenuCommand::new);
-    register("back-?menu", BackCommand::new);
-    register("tell:", TellCommand::new);
-    register("broadcast:", BroadcastCommand::new);
-    register("close-?menu", CloseMenuCommand::new);
-    register("update-?menu", UpdateMenuCommand::new);
-    register("permission:", PermissionCommand::new);
+    register(ConsoleCommand::new, "console:");
+    register(OpCommand::new, "op:");
+    register(PlayerCommand::new, "player:");
+    register(DelayCommand::new, "delay:");
+    register(ConditionCommand::new, "condition:");
+    register(OpenMenuCommand::new, "(open|menu|open-?menu):");
+    register(BackCommand::new, "back-?menu");
+    register(TellCommand::new, "tell:");
+    register(BroadcastCommand::new, "broadcast:");
+    register(CloseMenuCommand::new, "close-?menu");
+    register(UpdateMenuCommand::new, "update-?menu");
+    register(PermissionCommand::new, "permission:");
   }
 
   private CommandBuilder() {
@@ -49,12 +49,14 @@ public final class CommandBuilder {
   /**
    * Register new command type
    *
-   * @param regex           the regex that detects the prefix of the string
    * @param commandFunction the "create command" function
+   * @param regex           the regex that detects the prefix of the string
    */
-  public static void register(String regex, Function<String, Command> commandFunction) {
-    Pattern pattern = Pattern.compile("^(?i)" + regex, Pattern.CASE_INSENSITIVE);
-    commands.put(pattern, commandFunction);
+  public static void register(Function<String, Command> commandFunction, String... regex) {
+    for (String s : regex) {
+      Pattern pattern = Pattern.compile("^(?i)" + s, Pattern.CASE_INSENSITIVE);
+      commands.put(pattern, commandFunction);
+    }
   }
 
   /**
@@ -62,19 +64,18 @@ public final class CommandBuilder {
    *
    * @param regex the regex that detects the prefix of the string
    * @param clazz the class
-   * @deprecated use {@link #register(String, Function)} instead
+   * @deprecated use {@link #register(Function, String...)} instead
    */
   @Deprecated
   public static void register(String regex, Class<? extends Command> clazz) {
-    Pattern pattern = Pattern.compile("^(?i)" + regex, Pattern.CASE_INSENSITIVE);
-    commands.put(pattern, s -> {
+    register(s -> {
       try {
         return clazz.getDeclaredConstructor(String.class)
             .newInstance(s);
       } catch (Exception e) {
         throw new RuntimeException("Invalid command class");
       }
-    });
+    }, regex);
   }
 
   public static List<Command> getCommands(LocalVariableManager<?> localVariableManager,

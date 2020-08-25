@@ -23,10 +23,10 @@ public final class RequirementBuilder {
   private static final Map<String, Supplier<Requirement<?, ?>>> requirementTypes = new CaseInsensitiveStringMap<>();
 
   static {
-    register("condition", ConditionRequirement::new);
-    register("level", ExpLevelRequirement::new);
-    register("permission", PermissionRequirement::new);
-    register("cooldown", CooldownRequirement::new);
+    register(ConditionRequirement::new, "condition");
+    register(ExpLevelRequirement::new, "level");
+    register(PermissionRequirement::new, "permission");
+    register(CooldownRequirement::new, "cooldown");
   }
 
   private RequirementBuilder() {
@@ -36,17 +36,19 @@ public final class RequirementBuilder {
   /**
    * Register new requirement type
    *
-   * @param type                the name of the type
    * @param requirementSupplier the requirement supplier
+   * @param type                the name of the type
    */
-  public static void register(String type, Supplier<Requirement<?, ?>> requirementSupplier) {
-    if (type.toLowerCase().startsWith("not-")) {
-      getInstance().getLogger()
-          .warning(() -> "Invalid requirement type '" + type
-              + "': Should not start with 'not-'. Ignored...");
-      return;
+  public static void register(Supplier<Requirement<?, ?>> requirementSupplier, String... type) {
+    for (String s : type) {
+      if (s.toLowerCase().startsWith("not-")) {
+        getInstance().getLogger()
+            .warning(() -> "Invalid requirement type '" + s
+                + "': Should not start with 'not-'. Ignored...");
+        return;
+      }
+      requirementTypes.put(s, requirementSupplier);
     }
-    requirementTypes.put(type, requirementSupplier);
   }
 
   /**
@@ -54,17 +56,17 @@ public final class RequirementBuilder {
    *
    * @param type  the name of the type
    * @param clazz the class
-   * @deprecated use {@link #register(String, Supplier)} instead
+   * @deprecated use {@link #register(Supplier, String...)} instead
    */
   @Deprecated
   public static void register(String type, Class<? extends Requirement<?, ?>> clazz) {
-    register(type, () -> {
+    register(() -> {
       try {
         return clazz.getDeclaredConstructor().newInstance();
       } catch (Exception e) {
         throw new RuntimeException("Invalid requirement class");
       }
-    });
+    }, type);
   }
 
   public static Optional<Requirement<?, ?>> getRequirement(String type,
