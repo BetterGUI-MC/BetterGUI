@@ -15,10 +15,13 @@ import me.hsgamer.bettergui.object.command.CloseMenuCommand;
 import me.hsgamer.bettergui.object.command.ConditionCommand;
 import me.hsgamer.bettergui.object.command.ConsoleCommand;
 import me.hsgamer.bettergui.object.command.DelayCommand;
+import me.hsgamer.bettergui.object.command.MusicCommand;
 import me.hsgamer.bettergui.object.command.OpCommand;
 import me.hsgamer.bettergui.object.command.OpenMenuCommand;
 import me.hsgamer.bettergui.object.command.PermissionCommand;
 import me.hsgamer.bettergui.object.command.PlayerCommand;
+import me.hsgamer.bettergui.object.command.RawSoundCommand;
+import me.hsgamer.bettergui.object.command.SoundCommand;
 import me.hsgamer.bettergui.object.command.TellCommand;
 import me.hsgamer.bettergui.object.command.UpdateMenuCommand;
 import me.hsgamer.bettergui.object.variable.LocalVariableManager;
@@ -40,6 +43,9 @@ public final class CommandBuilder {
     register(CloseMenuCommand::new, "close-?menu");
     register(UpdateMenuCommand::new, "update-?menu");
     register(PermissionCommand::new, "permission:");
+    register(SoundCommand::new, "sound:");
+    register(RawSoundCommand::new, "raw-sound:");
+    register(MusicCommand::new, "music:");
   }
 
   private CommandBuilder() {
