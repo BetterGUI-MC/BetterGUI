@@ -16,7 +16,7 @@ public class RawMaterial extends ItemProperty<String, Optional<Material>> {
   @Override
   public Optional<Material> getParsed(Player player) {
     try {
-      return Optional.of(Material.valueOf(getValue()));
+      return Optional.of(Material.valueOf(parseFromString(getValue(), player)));
     } catch (Exception e) {
       return Optional.empty();
     }
