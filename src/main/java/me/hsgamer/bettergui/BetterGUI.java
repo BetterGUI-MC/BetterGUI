@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 import me.hsgamer.bettergui.command.AddonDownloaderCommand;
 import me.hsgamer.bettergui.command.GetAddonsCommand;
 import me.hsgamer.bettergui.command.MainCommand;
@@ -23,9 +24,15 @@ import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.CommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
+import me.hsgamer.bettergui.manager.VariableManager;
+import me.hsgamer.bettergui.util.BukkitUtils;
+import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.util.ExpressionUtils;
+import me.hsgamer.bettergui.util.Validate;
 import me.hsgamer.bettergui.util.VersionChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class BetterGUI extends JavaPlugin {
@@ -81,6 +88,8 @@ public final class BetterGUI extends JavaPlugin {
       });
     }
 
+    registerDefaultVariables();
+
     FastInvManager.register(this);
     taskChainFactory = BukkitTaskChainFactory.create(this);
     addonDownloader.createMenu();
@@ -103,12 +112,139 @@ public final class BetterGUI extends JavaPlugin {
     });
   }
 
-  public void loadCommands() {
+  private void loadCommands() {
     commandManager.register(new OpenCommand());
     commandManager.register(new ReloadCommand());
     commandManager.register(new GetAddonsCommand());
     commandManager.register(new MainCommand(getName().toLowerCase()));
     commandManager.register(new AddonDownloaderCommand());
+  }
+
+  private void registerDefaultVariables() {
+    VariableManager.register("player", (executor, identifier) -> executor.getName());
+    VariableManager.register("online",
+        (executor, identifier) -> String.valueOf(Bukkit.getOnlinePlayers().size()));
+    VariableManager
+        .register("max_players", (executor, identifier) -> String.valueOf(Bukkit.getMaxPlayers()));
+    VariableManager.register("world", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return executor.getPlayer().getWorld().getName();
+      }
+      return "";
+    });
+    VariableManager.register("x", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getLocation().getX());
+      }
+      return "";
+    });
+    VariableManager.register("y", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getLocation().getY());
+      }
+      return "";
+    });
+    VariableManager.register("z", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getLocation().getZ());
+      }
+      return "";
+    });
+    VariableManager.register("bed_", ((executor, identifier) -> {
+      if (executor.getBedSpawnLocation() == null) {
+        return null;
+      } else if (identifier.equalsIgnoreCase("world")) {
+        return executor.getBedSpawnLocation().getWorld().getName();
+      } else if (identifier.equalsIgnoreCase("x")) {
+        return String.valueOf(executor.getBedSpawnLocation().getX());
+      } else if (identifier.equalsIgnoreCase("y")) {
+        return String.valueOf(executor.getBedSpawnLocation().getY());
+      } else if (identifier.equalsIgnoreCase("z")) {
+        return String.valueOf(executor.getBedSpawnLocation().getZ());
+      } else {
+        return null;
+      }
+    }));
+    VariableManager.register("exp", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getTotalExperience());
+      }
+      return "";
+    });
+    VariableManager.register("level", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getLevel());
+      }
+      return "";
+    });
+    VariableManager.register("exp_to_level", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getExpToLevel());
+      }
+      return "";
+    });
+    VariableManager.register("food_level", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getFoodLevel());
+      }
+      return "";
+    });
+    VariableManager.register("ip", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return executor.getPlayer().getAddress().getAddress().getHostAddress();
+      }
+      return "";
+    });
+    VariableManager.register("biome", (executor, identifier) -> {
+      if (executor.isOnline()) {
+        return String.valueOf(executor.getPlayer().getLocation().getBlock().getBiome());
+      }
+      return "";
+    });
+    VariableManager.register("ping", ((executor, identifier) -> {
+      if (executor.isOnline()) {
+        return BukkitUtils.getPing(executor.getPlayer());
+      }
+      return "";
+    }));
+    VariableManager.register("rainbow", (executor, identifier) -> {
+      ChatColor[] values = ChatColor.values();
+      ChatColor color;
+      do {
+        color = values[ThreadLocalRandom.current().nextInt(values.length - 1)];
+      } while (color.equals(ChatColor.BOLD)
+          || color.equals(ChatColor.ITALIC)
+          || color.equals(ChatColor.STRIKETHROUGH)
+          || color.equals(ChatColor.RESET)
+          || color.equals(ChatColor.MAGIC)
+          || color.equals(ChatColor.UNDERLINE));
+      return CommonUtils.colorize("&" + color.getChar());
+    });
+    VariableManager.register("random_", (executor, identifier) -> {
+      identifier = identifier.trim();
+      if (identifier.contains(":")) {
+        String[] split = identifier.split(":", 2);
+        String s1 = split[0].trim();
+        String s2 = split[1].trim();
+        if (Validate.isValidInteger(s1) && Validate.isValidInteger(s2)) {
+          int i1 = Integer.parseInt(s1);
+          int i2 = Integer.parseInt(s2);
+          int max = Math.max(i1, i2);
+          int min = Math.min(i1, i2);
+          return String.valueOf(ThreadLocalRandom.current().nextInt(min, max + 1));
+        }
+      } else if (Validate.isValidInteger(identifier)) {
+        return String.valueOf(ThreadLocalRandom.current().nextInt(Integer.parseInt(identifier)));
+      }
+      return null;
+    });
+    VariableManager.register("condition_", (executor, identifier) -> {
+      if (ExpressionUtils.isValidExpression(identifier)) {
+        return ExpressionUtils.getResult(identifier).toString();
+      }
+      return null;
+    });
+    VariableManager.register("uuid", (executor, identifier) -> executor.getUniqueId().toString());
   }
 
   public void loadMenuConfig() {
