@@ -70,7 +70,8 @@ public class DummyMenu extends Menu<FastInv> {
         }
       } else if (!icons.containsKey(key)) {
         icons.put(key,
-            IconBuilder.getIcon(this, file.getConfigurationSection(key), DummyIcon.class));
+            (DummyIcon) IconBuilder
+                .getIcon(this, file.getConfigurationSection(key), DummyIcon::new));
       } else {
         getInstance().getLogger().log(Level.WARNING, "Duplicated icon {0}", key);
       }

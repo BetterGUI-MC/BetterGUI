@@ -7,11 +7,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.config.impl.MainConfig;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
@@ -26,14 +25,14 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public final class IconBuilder {
 
-  private static final Map<String, Class<? extends Icon>> iconTypes = new CaseInsensitiveStringMap<>();
+  private static final Map<String, BiFunction<String, Menu<?>, Icon>> iconTypes = new CaseInsensitiveStringMap<>();
 
   static {
-    register("dummy", DummyIcon.class);
-    register("simple", SimpleIcon.class);
-    register("animated", AnimatedIcon.class);
-    register("list", ListIcon.class);
-    register("raw", RawIcon.class);
+    register(DummyIcon::new, "dummy");
+    register(SimpleIcon::new, "simple");
+    register(AnimatedIcon::new, "animated");
+    register(ListIcon::new, "list");
+    register(RawIcon::new, "raw");
   }
 
   private IconBuilder() {
@@ -43,11 +42,32 @@ public final class IconBuilder {
   /**
    * Register new Icon type
    *
+   * @param iconBiFunction the "create icon" function
+   * @param type           the name of the type
+   */
+  public static void register(BiFunction<String, Menu<?>, Icon> iconBiFunction, String... type) {
+    for (String s : type) {
+      iconTypes.put(s, iconBiFunction);
+    }
+  }
+
+  /**
+   * Register new Icon type
+   *
    * @param type  name of the type
    * @param clazz the class
+   * @deprecated use {@link #register(BiFunction, String...)} instead
    */
+  @Deprecated
   public static void register(String type, Class<? extends Icon> clazz) {
-    iconTypes.put(type, clazz);
+    register((s, menu) -> {
+      try {
+        return clazz.getDeclaredConstructor(String.class, Menu.class)
+            .newInstance(s, menu);
+      } catch (Exception e) {
+        throw new RuntimeException("Invalid icon class");
+      }
+    }, type);
   }
 
   public static Icon getIcon(Menu<?> menu, ConfigurationSection section) {
@@ -59,22 +79,14 @@ public final class IconBuilder {
       }
     }
     return getIcon(menu, section, iconTypes
-        .getOrDefault(MainConfig.DEFAULT_ICON_TYPE.getValue(), SimpleIcon.class));
+        .getOrDefault(MainConfig.DEFAULT_ICON_TYPE.getValue(), SimpleIcon::new));
   }
 
-  public static <T extends Icon> T getIcon(Menu<?> menu, ConfigurationSection section,
-      Class<T> tClass) {
-    try {
-      T icon = tClass.getDeclaredConstructor(String.class, Menu.class)
-          .newInstance(section.getName(), menu);
-      icon.setFromSection(section);
-      return icon;
-    } catch (Exception ex) {
-      BetterGUI.getInstance().getLogger().log(Level.WARNING, ex, () ->
-          "Something wrong when creating the icon '" + section.getName() + "' in the menu '" + menu
-              .getName() + "'");
-    }
-    return null;
+  public static Icon getIcon(Menu<?> menu, ConfigurationSection section,
+      BiFunction<String, Menu<?>, Icon> iconBiFunction) {
+    Icon icon = iconBiFunction.apply(section.getName(), menu);
+    icon.setFromSection(section);
+    return icon;
   }
 
   public static List<Integer> getSlots(ConfigurationSection section) {
