@@ -79,6 +79,10 @@ public class AddonDownloader {
           addonInfo.setSourceLink(String.valueOf(value.get(Info.SOURCE_LINK)));
         }
 
+        if (value.containsKey(Info.WIKI)) {
+          addonInfo.setWiki(String.valueOf(value.get(Info.SOURCE_LINK)));
+        }
+
         addonInfoList.add(addonInfo);
       });
     });

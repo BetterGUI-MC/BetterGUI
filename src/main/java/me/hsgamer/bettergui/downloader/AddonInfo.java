@@ -33,6 +33,7 @@ public class AddonInfo {
   private final String directLink;
   private String description = "";
   private String sourceLink = "";
+  private String wiki = "";
 
   private boolean isDownloading = false;
 
@@ -52,6 +53,10 @@ public class AddonInfo {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public void setWiki(String wiki) {
+    this.wiki = wiki;
   }
 
   public void download() throws IOException {
@@ -94,6 +99,9 @@ public class AddonInfo {
     }
     lores.add("");
     lores.add("&bLeft click &fto download");
+    if (!wiki.isEmpty()) {
+      lores.add("&bMiddle click &fto see the wiki");
+    }
     if (!sourceLink.isEmpty()) {
       lores.add("&bRight click &fto get the source code");
     }
@@ -140,6 +148,8 @@ public class AddonInfo {
         });
       } else if (clickType.isRightClick() && !sourceLink.isEmpty()) {
         MessageUtils.sendMessage(humanEntity, "&bLink: &f" + sourceLink);
+      } else if (clickType.equals(ClickType.MIDDLE) && !wiki.isEmpty()) {
+        MessageUtils.sendMessage(humanEntity, "&bLink: &f" + wiki);
       }
     };
 
@@ -153,6 +163,7 @@ public class AddonInfo {
     public static final String AUTHORS = "authors";
     public static final String SOURCE_LINK = "source-code";
     public static final String DIRECT_LINK = "direct-link";
+    public static final String WIKI = "wiki";
 
     private Info() {
 
