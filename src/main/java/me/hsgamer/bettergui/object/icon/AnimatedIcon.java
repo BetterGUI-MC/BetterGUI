@@ -13,7 +13,7 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.ParentIcon;
 import me.hsgamer.bettergui.object.property.icon.impl.ViewRequirement;
-import me.hsgamer.bettergui.util.ExpressionUtils;
+import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

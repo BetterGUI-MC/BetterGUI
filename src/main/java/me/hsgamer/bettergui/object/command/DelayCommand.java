@@ -2,8 +2,8 @@ package me.hsgamer.bettergui.object.command;
 
 import co.aikar.taskchain.TaskChain;
 import me.hsgamer.bettergui.object.Command;
-import me.hsgamer.bettergui.util.ExpressionUtils;
 import me.hsgamer.bettergui.util.Validate;
+import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

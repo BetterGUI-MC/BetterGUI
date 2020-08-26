@@ -4,7 +4,7 @@ import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.property.MenuProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.ExpressionUtils;
+import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bukkit.entity.Player;
 
 public class MenuTicks extends MenuProperty<Object, Long> {

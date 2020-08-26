@@ -4,7 +4,7 @@ import java.util.List;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.ExpressionUtils;
+import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bukkit.entity.Player;
 
 public class ConditionRequirement extends Requirement<Object, Boolean> {

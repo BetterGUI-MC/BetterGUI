@@ -11,7 +11,7 @@ import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.object.variable.LocalVariable;
 import me.hsgamer.bettergui.object.variable.LocalVariableManager;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.ExpressionUtils;
+import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 

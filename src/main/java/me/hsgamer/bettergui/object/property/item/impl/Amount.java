@@ -4,7 +4,7 @@ import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.ExpressionUtils;
+import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

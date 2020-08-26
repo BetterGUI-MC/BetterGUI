@@ -43,7 +43,6 @@
             </goals>
             <configuration>
               <createDependencyReducedPom>true</createDependencyReducedPom>
-              <minimizeJar>true</minimizeJar>
               <relocations>
                 <relocation>
                   <pattern>fr.mrmicky.fastinv</pattern>
@@ -54,8 +53,8 @@
                   <shadedPattern>me.hsgamer.bettergui.lib.taskchain</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>com.udojava.evalex</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.lib.evalex</shadedPattern>
+                  <pattern>me.hsgamer.hscore</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.core</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>com.cryptomorin.xseries</pattern>
@@ -150,9 +149,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.udojava</groupId>
-      <artifactId>EvalEx</artifactId>
-      <version>2.5</version>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-expression</artifactId>
+      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>com.github.cryptomorin</groupId>
