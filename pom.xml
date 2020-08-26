@@ -72,6 +72,18 @@
                   <shadedPattern>me.hsgamer.bettergui.util.map</shadedPattern>
                 </relocation>
 
+                <!-- Updater -->
+                <relocation>
+                  <pattern>me.hsgamer.hscore.bukkit.updater</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.util.updater</shadedPattern>
+                </relocation>
+
+                <!-- Web -->
+                <relocation>
+                  <pattern>me.hsgamer.hscore.web</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.util.web</shadedPattern>
+                </relocation>
+
                 <!-- XSeries -->
                 <relocation>
                   <pattern>com.cryptomorin.xseries</pattern>
@@ -176,6 +188,28 @@
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-collections</artifactId>
       <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-updater</artifactId>
+      <version>1.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.googlecode.json-simple</groupId>
+          <artifactId>json-simple</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-json</artifactId>
+      <version>1.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.googlecode.json-simple</groupId>
+          <artifactId>json-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.github.cryptomorin</groupId>

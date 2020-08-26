@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.WebUtils;
+import me.hsgamer.hscore.web.WebUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;

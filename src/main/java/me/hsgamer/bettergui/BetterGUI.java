@@ -29,7 +29,7 @@ import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.util.BukkitUtils;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.Validate;
-import me.hsgamer.bettergui.util.VersionChecker;
+import me.hsgamer.hscore.bukkit.updater.VersionChecker;
 import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;

@@ -10,7 +10,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.downloader.AddonInfo.Info;
 import me.hsgamer.bettergui.object.ClickableItem;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.WebUtils;
+import me.hsgamer.hscore.web.WebUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -53,11 +53,11 @@ public class AddonDownloader {
         return null;
       }
     }).thenAccept(jsonObject -> {
-      if (jsonObject == null) {
+      if (!(jsonObject instanceof JSONObject)) {
         return;
       }
 
-      jsonObject.forEach((key, raw) -> {
+      ((JSONObject) jsonObject).forEach((key, raw) -> {
         JSONObject value = (JSONObject) raw;
 
         String name = String.valueOf(key);
