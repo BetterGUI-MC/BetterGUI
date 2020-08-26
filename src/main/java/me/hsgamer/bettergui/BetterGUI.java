@@ -39,6 +39,7 @@ import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class BetterGUI extends JavaPlugin {
@@ -345,6 +346,7 @@ public final class BetterGUI extends JavaPlugin {
     menuManager.clear();
     addonManager.disableAddons();
     addonDownloader.cancelTask();
+    HandlerList.unregisterAll(this);
   }
 
   public CommandManager getCommandManager() {
