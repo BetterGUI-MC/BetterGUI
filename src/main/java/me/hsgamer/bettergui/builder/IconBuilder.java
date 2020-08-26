@@ -19,8 +19,8 @@ import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.object.icon.ListIcon;
 import me.hsgamer.bettergui.object.icon.RawIcon;
 import me.hsgamer.bettergui.object.icon.SimpleIcon;
-import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
 import me.hsgamer.bettergui.util.Validate;
+import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 
 public final class IconBuilder {

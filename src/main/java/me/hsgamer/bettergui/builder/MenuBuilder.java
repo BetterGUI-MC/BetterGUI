@@ -7,7 +7,7 @@ import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.menu.ArgsMenu;
 import me.hsgamer.bettergui.object.menu.DummyMenu;
 import me.hsgamer.bettergui.object.menu.SimpleMenu;
-import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public final class MenuBuilder {

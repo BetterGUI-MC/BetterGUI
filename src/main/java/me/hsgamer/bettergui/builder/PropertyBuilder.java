@@ -30,8 +30,8 @@ import me.hsgamer.bettergui.object.property.menu.MenuRows;
 import me.hsgamer.bettergui.object.property.menu.MenuTicks;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
 import me.hsgamer.bettergui.object.property.menu.MenuVariable;
-import me.hsgamer.bettergui.util.CaseInsensitiveStringLinkedMap;
-import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.map.CaseInsensitiveStringLinkedMap;
+import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 
 public final class PropertyBuilder {
