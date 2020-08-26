@@ -44,22 +44,35 @@
             <configuration>
               <createDependencyReducedPom>true</createDependencyReducedPom>
               <relocations>
+                <!-- FastInv -->
                 <relocation>
                   <pattern>fr.mrmicky.fastinv</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.fastinv</shadedPattern>
                 </relocation>
+
+                <!-- TaskChain -->
                 <relocation>
                   <pattern>co.aikar.taskchain</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.taskchain</shadedPattern>
                 </relocation>
+
+                <!-- Expression -->
                 <relocation>
-                  <pattern>me.hsgamer.hscore</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.core</shadedPattern>
+                  <pattern>me.hsgamer.hscore.expression</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.util.expression</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>com.udojava.evalex</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.evalex</shadedPattern>
+                </relocation>
+
+                <!-- XSeries -->
                 <relocation>
                   <pattern>com.cryptomorin.xseries</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.xseries</shadedPattern>
                 </relocation>
+
+                <!-- BStats -->
                 <relocation>
                   <pattern>org.bstats</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.bstats</shadedPattern>
@@ -151,7 +164,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-expression</artifactId>
-      <version>1.2</version>
+      <version>1.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.github.cryptomorin</groupId>
