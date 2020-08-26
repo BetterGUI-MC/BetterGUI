@@ -22,6 +22,7 @@ import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.downloader.AddonDownloader;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
+import me.hsgamer.bettergui.listener.CommandListener;
 import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.CommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
@@ -108,6 +109,11 @@ public final class BetterGUI extends JavaPlugin {
       PropertyBuilder.registerItemProperty(NBT::new, "nbt-data", "nbt");
       PropertyBuilder.registerItemProperty(Unbreakable::new, "unbreakable");
       PropertyBuilder.registerItemProperty(HideAttributes::new, "hide-attributes");
+    }
+
+    if (MainConfig.ENABLE_ALTERNATIVE_COMMAND_MANAGER.getValue().equals(Boolean.TRUE)) {
+      getLogger().info("Enabled alternative command manager");
+      getServer().getPluginManager().registerEvents(new CommandListener(), this);
     }
 
     addonManager.loadAddons();

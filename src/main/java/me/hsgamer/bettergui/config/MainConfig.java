@@ -1,8 +1,12 @@
 package me.hsgamer.bettergui.config;
 
+import java.util.Collections;
+import java.util.List;
+import me.hsgamer.hscore.bukkit.config.ConfigPath;
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import me.hsgamer.hscore.bukkit.config.path.BooleanConfigPath;
 import me.hsgamer.hscore.bukkit.config.path.StringConfigPath;
+import me.hsgamer.hscore.common.CommonUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class MainConfig extends PluginConfig {
@@ -18,6 +22,14 @@ public final class MainConfig extends PluginConfig {
       "replace-all-variables-each-check", true);
   public static final BooleanConfigPath FORCED_UPDATE_INVENTORY = new BooleanConfigPath(
       "forced-update-inventory", false);
+  public static final BooleanConfigPath ENABLE_ALTERNATIVE_COMMAND_MANAGER = new BooleanConfigPath(
+      "alternative-command-manager.enable", false);
+  public static final BooleanConfigPath ALTERNATIVE_COMMAND_MANAGER_CASE_INSENSITIVE = new BooleanConfigPath(
+      "alternative-command-manager.case-insensitive", true);
+  public static final ConfigPath<List<String>> ALTERNATIVE_COMMAND_MANAGER_IGNORED_COMMANDS = new ConfigPath<>(
+      "alternative-command-manager.ignored-commands",
+      Collections.singletonList("warp test"),
+      o -> CommonUtils.createStringListFromObject(o, true));
 
   public MainConfig(JavaPlugin plugin) {
     super(plugin, "config.yml");
@@ -33,5 +45,8 @@ public final class MainConfig extends PluginConfig {
     MODERN_CLICK_TYPE.setConfig(this);
     REPLACE_ALL_VARIABLES.setConfig(this);
     FORCED_UPDATE_INVENTORY.setConfig(this);
+    ENABLE_ALTERNATIVE_COMMAND_MANAGER.setConfig(this);
+    ALTERNATIVE_COMMAND_MANAGER_CASE_INSENSITIVE.setConfig(this);
+    ALTERNATIVE_COMMAND_MANAGER_IGNORED_COMMANDS.setConfig(this);
   }
 }
