@@ -90,6 +90,12 @@
                   <shadedPattern>me.hsgamer.bettergui.util.config</shadedPattern>
                 </relocation>
 
+                <!-- Addon -->
+                <relocation>
+                  <pattern>me.hsgamer.hscore.bukkit.addon</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.util.addon</shadedPattern>
+                </relocation>
+
                 <!-- XSeries -->
                 <relocation>
                   <pattern>com.cryptomorin.xseries</pattern>
@@ -208,18 +214,12 @@
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
-      <artifactId>HSCore-json</artifactId>
+      <artifactId>HSCore-bukkit-config</artifactId>
       <version>1.2</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.googlecode.json-simple</groupId>
-          <artifactId>json-simple</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
-      <artifactId>HSCore-bukkit-config</artifactId>
+      <artifactId>HSCore-bukkit-addon</artifactId>
       <version>1.2</version>
     </dependency>
     <dependency>
