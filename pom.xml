@@ -90,6 +90,12 @@
                   <shadedPattern>me.hsgamer.bettergui.util.config</shadedPattern>
                 </relocation>
 
+                <!-- Config -->
+                <relocation>
+                  <pattern>me.hsgamer.hscore.bukkit.command</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.util.command</shadedPattern>
+                </relocation>
+
                 <!-- Addon -->
                 <relocation>
                   <pattern>me.hsgamer.hscore.bukkit.addon</pattern>
@@ -221,6 +227,11 @@
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-addon</artifactId>
       <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-command</artifactId>
+      <version>1.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.github.cryptomorin</groupId>
