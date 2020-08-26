@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

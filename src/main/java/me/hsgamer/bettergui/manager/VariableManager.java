@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import me.hsgamer.bettergui.config.impl.MainConfig;
+import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.object.variable.GlobalVariable;
 import org.bukkit.OfflinePlayer;

@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.builder.IconBuilder;
 import me.hsgamer.bettergui.builder.PropertyBuilder;
-import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.icon.DummyIcon;
 import me.hsgamer.bettergui.object.property.menu.MenuInventoryType;

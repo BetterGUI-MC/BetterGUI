@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import me.hsgamer.bettergui.config.impl.MainConfig;
+import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.icon.AnimatedIcon;

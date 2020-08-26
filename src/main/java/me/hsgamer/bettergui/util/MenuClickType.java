@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.util;
 
-import me.hsgamer.bettergui.config.impl.MainConfig;
+import me.hsgamer.bettergui.config.MainConfig;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 

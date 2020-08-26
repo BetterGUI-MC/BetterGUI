@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.object.variable.LocalVariable;
 import me.hsgamer.bettergui.object.variable.LocalVariableManager;

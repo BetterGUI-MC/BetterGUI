@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.object.property.item.impl;
 
-import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.util.CommonUtils;

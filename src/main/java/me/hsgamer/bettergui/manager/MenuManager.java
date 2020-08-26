@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.builder.MenuBuilder;
-import me.hsgamer.bettergui.config.PluginConfig;
+import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import me.hsgamer.bettergui.object.Menu;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

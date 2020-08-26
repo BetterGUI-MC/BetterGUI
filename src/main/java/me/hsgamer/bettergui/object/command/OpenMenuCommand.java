@@ -4,7 +4,7 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import co.aikar.taskchain.TaskChain;
 import java.util.Arrays;
-import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;

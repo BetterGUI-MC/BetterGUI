@@ -84,6 +84,12 @@
                   <shadedPattern>me.hsgamer.bettergui.util.web</shadedPattern>
                 </relocation>
 
+                <!-- Config -->
+                <relocation>
+                  <pattern>me.hsgamer.hscore.bukkit.config</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.util.config</shadedPattern>
+                </relocation>
+
                 <!-- XSeries -->
                 <relocation>
                   <pattern>com.cryptomorin.xseries</pattern>
@@ -210,6 +216,11 @@
           <artifactId>json-simple</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-config</artifactId>
+      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>com.github.cryptomorin</groupId>

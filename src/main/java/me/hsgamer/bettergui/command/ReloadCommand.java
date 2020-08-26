@@ -4,7 +4,7 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 import java.util.Arrays;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.util.CommonUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;

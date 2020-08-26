@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.property.menu.MenuAction;
 import me.hsgamer.bettergui.object.variable.LocalVariable;
 import me.hsgamer.bettergui.object.variable.LocalVariableManager;

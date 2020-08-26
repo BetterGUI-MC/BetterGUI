@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.MenuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

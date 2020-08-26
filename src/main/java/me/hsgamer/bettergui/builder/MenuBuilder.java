@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.builder;
 
 import java.util.Map;
 import java.util.function.Function;
-import me.hsgamer.bettergui.config.impl.MainConfig;
+import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.menu.ArgsMenu;
 import me.hsgamer.bettergui.object.menu.DummyMenu;

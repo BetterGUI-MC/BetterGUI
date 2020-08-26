@@ -8,7 +8,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.config.PluginConfig;
+import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import me.hsgamer.bettergui.util.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

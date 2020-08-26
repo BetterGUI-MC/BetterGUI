@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.object.property.menu;
 
-import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.property.MenuProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
