@@ -5,7 +5,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.CommandBuilder;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.property.MenuProperty;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.common.CommonUtils;
 import org.bukkit.entity.Player;
 
 public class MenuAction extends MenuProperty<Object, TaskChain<?>> {

@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Menu;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -35,7 +35,7 @@ public final class CommandManager extends me.hsgamer.hscore.bukkit.command.Comma
           menu.createInventory((Player) commandSender, strings,
               commandSender.hasPermission(Permissions.OPEN_MENU_BYPASS));
         } else {
-          CommonUtils.sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
+          MessageUtils.sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
         }
         return true;
       }

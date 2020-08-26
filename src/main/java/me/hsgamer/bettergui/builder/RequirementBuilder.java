@@ -14,7 +14,7 @@ import me.hsgamer.bettergui.object.requirement.ExpLevelRequirement;
 import me.hsgamer.bettergui.object.requirement.PermissionRequirement;
 import me.hsgamer.bettergui.object.requirementset.RequirementSet;
 import me.hsgamer.bettergui.object.variable.LocalVariableManager;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.common.CommonUtils;
 import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 

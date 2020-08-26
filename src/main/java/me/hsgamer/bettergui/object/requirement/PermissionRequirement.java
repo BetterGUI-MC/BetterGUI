@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.object.requirement;
 
 import java.util.List;
 import me.hsgamer.bettergui.object.Requirement;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.common.CommonUtils;
 import org.bukkit.entity.Player;
 
 public class PermissionRequirement extends Requirement<Object, List<String>> {

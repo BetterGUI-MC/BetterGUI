@@ -13,7 +13,7 @@ import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.IconProperty;
 import me.hsgamer.bettergui.object.requirementset.CheckedRequirementSet;
 import me.hsgamer.bettergui.object.requirementset.RequirementSet;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.common.CommonUtils;
 import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

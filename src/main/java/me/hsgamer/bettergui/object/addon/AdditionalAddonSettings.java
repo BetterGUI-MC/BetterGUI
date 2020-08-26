@@ -1,8 +1,8 @@
 package me.hsgamer.bettergui.object.addon;
 
 import java.util.List;
-import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.hscore.bukkit.addon.object.AddonPath;
+import me.hsgamer.hscore.common.CommonUtils;
 
 public class AdditionalAddonSettings {
 

@@ -9,7 +9,7 @@ import java.util.Optional;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +38,7 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
         if (optional.isPresent()) {
           level = optional.get().intValue();
         } else {
-          CommonUtils.sendMessage(player,
+          MessageUtils.sendMessage(player,
               MessageConfig.INVALID_NUMBER.getValue().replace("{input}", rawLevel));
           continue;
         }
@@ -48,7 +48,7 @@ public class Enchantment extends ItemProperty<List<String>, Map<XEnchantment, In
       if (enchantment.isPresent()) {
         enchantments.put(enchantment.get(), level);
       } else {
-        CommonUtils.sendMessage(player,
+        MessageUtils.sendMessage(player,
             MessageConfig.INVALID_ENCHANTMENT.getValue().replace("{input}", string));
       }
     }

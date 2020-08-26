@@ -18,7 +18,7 @@ import me.hsgamer.bettergui.object.property.menu.MenuInventoryType;
 import me.hsgamer.bettergui.object.property.menu.MenuRows;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
 import me.hsgamer.bettergui.object.property.menu.MenuVariable;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -90,7 +90,7 @@ public class DummyMenu extends Menu<FastInv> {
       inventoryMap.put(player.getUniqueId(), inventory);
       return true;
     } else {
-      CommonUtils.sendMessage(player, MessageConfig.NO_PERMISSION.getValue());
+      MessageUtils.sendMessage(player, MessageConfig.NO_PERMISSION.getValue());
       return false;
     }
   }

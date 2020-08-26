@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.ClickableItem;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.web.WebUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -97,14 +97,14 @@ public class AddonInfo {
     if (!sourceLink.isEmpty()) {
       lores.add("&bRight click &fto get the source code");
     }
-    lores.replaceAll(CommonUtils::colorize);
+    lores.replaceAll(MessageUtils::colorize);
 
     ItemStack itemStack = xMaterial.parseItem();
     if (itemStack == null) {
       itemStack = new ItemStack(Material.STONE);
     }
     ItemMeta itemMeta = itemStack.getItemMeta();
-    itemMeta.setDisplayName(CommonUtils.colorize(displayName));
+    itemMeta.setDisplayName(MessageUtils.colorize(displayName));
     itemMeta.setLore(lores);
     itemStack.setItemMeta(itemMeta);
 
@@ -115,31 +115,31 @@ public class AddonInfo {
         if (getInstance().getAddonManager().isAddonLoaded(name)
             && getInstance().getAddonManager().getAddon(name)
             .getDescription().getVersion().equals(version)) {
-          CommonUtils.sendMessage(humanEntity, "&cIt's already up-to-date");
+          MessageUtils.sendMessage(humanEntity, "&cIt's already up-to-date");
           return;
         }
 
-        CommonUtils.sendMessage(humanEntity, "&eDownloading " + name);
+        MessageUtils.sendMessage(humanEntity, "&eDownloading " + name);
         CompletableFuture.supplyAsync(() -> {
           try {
             download();
             return true;
           } catch (DownloadingException e) {
-            CommonUtils.sendMessage(humanEntity, "&cIt's still downloading");
+            MessageUtils.sendMessage(humanEntity, "&cIt's still downloading");
           } catch (IOException e) {
             getInstance().getLogger()
                 .log(Level.WARNING, e, () -> "Unexpected issue when downloading " + name);
-            CommonUtils.sendMessage(humanEntity,
+            MessageUtils.sendMessage(humanEntity,
                 "&cAn unexpected issue occurs when downloading. Check the console");
           }
           return false;
         }).thenAccept(complete -> {
           if (complete.equals(Boolean.TRUE)) {
-            CommonUtils.sendMessage(humanEntity, MessageConfig.SUCCESS.getValue());
+            MessageUtils.sendMessage(humanEntity, MessageConfig.SUCCESS.getValue());
           }
         });
       } else if (clickType.isRightClick() && !sourceLink.isEmpty()) {
-        CommonUtils.sendMessage(humanEntity, "&bLink: &f" + sourceLink);
+        MessageUtils.sendMessage(humanEntity, "&bLink: &f" + sourceLink);
       }
     };
 

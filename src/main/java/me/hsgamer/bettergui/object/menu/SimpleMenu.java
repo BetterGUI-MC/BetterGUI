@@ -29,7 +29,8 @@ import me.hsgamer.bettergui.object.property.menu.MenuTicks;
 import me.hsgamer.bettergui.object.property.menu.MenuTitle;
 import me.hsgamer.bettergui.object.property.menu.MenuVariable;
 import me.hsgamer.bettergui.object.variable.LocalVariable;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.common.CommonUtils;
 import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -186,8 +187,7 @@ public class SimpleMenu extends Menu<SimpleInventory> {
 
       inventory.open();
     } else {
-      CommonUtils
-          .sendMessage(player, MessageConfig.NO_PERMISSION.getValue());
+      MessageUtils.sendMessage(player, MessageConfig.NO_PERMISSION.getValue());
       return false;
     }
     return true;

@@ -1,7 +1,7 @@
 package me.hsgamer.bettergui.command;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
-import static me.hsgamer.bettergui.util.CommonUtils.sendMessage;
+import static me.hsgamer.hscore.bukkit.utils.MessageUtils.sendMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;

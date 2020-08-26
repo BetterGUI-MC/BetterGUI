@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.object.property.item.impl;
 
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,7 +16,7 @@ public class Name extends ItemProperty<String, String> {
   @Override
   public void setValue(Object value) {
     super.setValue(value);
-    super.value = CommonUtils.colorize(getValue());
+    super.value = MessageUtils.colorize(getValue());
   }
 
   @Override

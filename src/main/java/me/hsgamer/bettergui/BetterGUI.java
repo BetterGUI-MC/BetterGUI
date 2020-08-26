@@ -25,10 +25,10 @@ import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.CommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.VariableManager;
-import me.hsgamer.bettergui.util.BukkitUtils;
-import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import me.hsgamer.hscore.bukkit.updater.VersionChecker;
+import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bstats.bukkit.Metrics;
@@ -68,6 +68,7 @@ public final class BetterGUI extends JavaPlugin {
   @Override
   public void onLoad() {
     instance = this;
+    MessageUtils.setPrefix(MessageConfig.PREFIX::getValue);
   }
 
   @Override
@@ -227,7 +228,7 @@ public final class BetterGUI extends JavaPlugin {
     // Ping
     VariableManager.register("ping", ((executor, identifier) -> {
       if (executor.isOnline()) {
-        return BukkitUtils.getPing(executor.getPlayer());
+        return String.valueOf(BukkitUtils.getPing(executor.getPlayer()));
       }
       return "";
     }));
@@ -244,7 +245,7 @@ public final class BetterGUI extends JavaPlugin {
           || color.equals(ChatColor.RESET)
           || color.equals(ChatColor.MAGIC)
           || color.equals(ChatColor.UNDERLINE));
-      return CommonUtils.colorize("&" + color.getChar());
+      return MessageUtils.colorize("&" + color.getChar());
     });
 
     // Random

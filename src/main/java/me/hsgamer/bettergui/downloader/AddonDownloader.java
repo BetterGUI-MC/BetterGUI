@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.downloader.AddonInfo.Info;
 import me.hsgamer.bettergui.object.ClickableItem;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.web.WebUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -89,7 +89,7 @@ public class AddonDownloader {
     private final BukkitTask updateTask;
 
     public AddonMenu() {
-      super(54, CommonUtils.colorize("&4&lAddon Downloader"));
+      super(54, MessageUtils.colorize("&4&lAddon Downloader"));
       generateItems();
       updateTask = new BukkitRunnable() {
         @Override

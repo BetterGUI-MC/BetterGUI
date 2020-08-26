@@ -8,7 +8,7 @@ import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Command;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.Menu;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.entity.Player;
 
 public class OpenMenuCommand extends Command {
@@ -52,7 +52,7 @@ public class OpenMenuCommand extends Command {
           () -> getInstance().getServer().getScheduler()
               .scheduleSyncDelayedTask(getInstance(), runnable));
     } else {
-      CommonUtils.sendMessage(player, MessageConfig.MENU_NOT_FOUND.getValue());
+      MessageUtils.sendMessage(player, MessageConfig.MENU_NOT_FOUND.getValue());
     }
   }
 }

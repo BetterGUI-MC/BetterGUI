@@ -9,7 +9,7 @@ import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.property.menu.MenuAction;
 import me.hsgamer.bettergui.object.variable.LocalVariable;
 import me.hsgamer.bettergui.object.variable.LocalVariableManager;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.common.CommonUtils;
 import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;

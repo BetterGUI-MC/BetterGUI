@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.object.property.menu;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Menu;
 import me.hsgamer.bettergui.object.property.MenuProperty;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bukkit.entity.Player;
 
@@ -19,7 +19,7 @@ public class MenuTicks extends MenuProperty<Object, Long> {
     if (ExpressionUtils.isValidExpression(parsed)) {
       return ExpressionUtils.getResult(parsed).longValue();
     } else {
-      CommonUtils
+      MessageUtils
           .sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed));
       return 0L;
     }

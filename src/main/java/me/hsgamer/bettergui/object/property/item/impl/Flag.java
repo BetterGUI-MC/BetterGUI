@@ -6,7 +6,7 @@ import java.util.Set;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +25,7 @@ public class Flag extends ItemProperty<List<String>, Set<ItemFlag>> {
       try {
         flags.add(ItemFlag.valueOf(s.trim().toUpperCase().replace(" ", "_")));
       } catch (IllegalArgumentException e) {
-        CommonUtils
+        MessageUtils
             .sendMessage(player, MessageConfig.INVALID_FLAG.getValue().replace("{input}", s));
       }
     });

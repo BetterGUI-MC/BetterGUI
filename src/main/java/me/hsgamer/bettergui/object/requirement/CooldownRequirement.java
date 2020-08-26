@@ -10,7 +10,7 @@ import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Requirement;
 import me.hsgamer.bettergui.object.variable.LocalVariable;
 import me.hsgamer.bettergui.object.variable.LocalVariableManager;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -66,7 +66,7 @@ public class CooldownRequirement extends Requirement<Object, Duration> implement
     if (ExpressionUtils.isValidExpression(parsed)) {
       return Duration.ofMillis((long) ExpressionUtils.getResult(parsed).doubleValue() * 1000);
     } else {
-      CommonUtils
+      MessageUtils
           .sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed));
       return Duration.ZERO;
     }
