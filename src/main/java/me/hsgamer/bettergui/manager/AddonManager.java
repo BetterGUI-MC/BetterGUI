@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.object.addon.AdditionalAddonSettings;
 import me.hsgamer.hscore.bukkit.addon.object.Addon;
+import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.common.Validate;
 
 public final class AddonManager extends me.hsgamer.hscore.bukkit.addon.AddonManager {
@@ -97,7 +98,7 @@ public final class AddonManager extends me.hsgamer.hscore.bukkit.addon.AddonMana
       return true;
     }
 
-    List<String> missing = Validate.getMissingDepends(requiredPlugins);
+    List<String> missing = BukkitUtils.getMissingDepends(requiredPlugins);
     if (!missing.isEmpty()) {
       getPlugin().getLogger().warning(
           () -> "Missing plugin dependency for " + addon.getDescription().getName() + ": " + Arrays
