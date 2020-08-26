@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+import me.hsgamer.bettergui.builder.PropertyBuilder;
 import me.hsgamer.bettergui.command.AddonDownloaderCommand;
 import me.hsgamer.bettergui.command.GetAddonsCommand;
 import me.hsgamer.bettergui.command.MainCommand;
@@ -25,6 +26,9 @@ import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.CommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.VariableManager;
+import me.hsgamer.bettergui.object.property.item.impl.HideAttributes;
+import me.hsgamer.bettergui.object.property.item.impl.NBT;
+import me.hsgamer.bettergui.object.property.item.impl.Unbreakable;
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import me.hsgamer.hscore.bukkit.updater.VersionChecker;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
@@ -98,6 +102,12 @@ public final class BetterGUI extends JavaPlugin {
 
     if (PlaceholderAPIHook.setupPlugin()) {
       getLogger().info("Hooked PlaceholderAPI");
+    }
+
+    if (Bukkit.getPluginManager().isPluginEnabled("NBTAPI")) {
+      PropertyBuilder.registerItemProperty(NBT::new, "nbt-data", "nbt");
+      PropertyBuilder.registerItemProperty(Unbreakable::new, "unbreakable");
+      PropertyBuilder.registerItemProperty(HideAttributes::new, "hide-attributes");
     }
 
     addonManager.loadAddons();
