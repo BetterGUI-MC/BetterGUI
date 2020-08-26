@@ -17,7 +17,7 @@ import me.hsgamer.bettergui.object.requirementset.RequirementSet;
 import me.hsgamer.bettergui.object.variable.LocalVariable;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.MenuClickType;
-import me.hsgamer.bettergui.util.Validate;
+import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

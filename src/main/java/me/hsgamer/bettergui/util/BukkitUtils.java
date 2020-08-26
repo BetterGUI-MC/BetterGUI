@@ -26,13 +26,4 @@ public final class BukkitUtils {
       return "ERROR GETTING PING";
     }
   }
-
-  /**
-   * Check if the server is Spigot
-   *
-   * @return whether the server is Spigot
-   */
-  public static boolean isSpigot() {
-    return Validate.isClassLoaded("org.bukkit.entity.Player$Spigot");
-  }
 }

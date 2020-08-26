@@ -10,7 +10,7 @@ import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.object.Icon;
 import me.hsgamer.bettergui.object.property.item.ItemProperty;
 import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.Validate;
+import me.hsgamer.hscore.common.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;

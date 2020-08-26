@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.object.addon.AdditionalAddonSettings;
-import me.hsgamer.bettergui.util.Validate;
 import me.hsgamer.hscore.bukkit.addon.object.Addon;
+import me.hsgamer.hscore.common.Validate;
 
 public final class AddonManager extends me.hsgamer.hscore.bukkit.addon.AddonManager {
 

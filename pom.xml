@@ -102,6 +102,18 @@
                   <shadedPattern>me.hsgamer.bettergui.util.addon</shadedPattern>
                 </relocation>
 
+                <!-- Bukkit Utils -->
+                <relocation>
+                  <pattern>me.hsgamer.hscore.bukkit.utils</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.util</shadedPattern>
+                </relocation>
+
+                <!-- Common Utils -->
+                <relocation>
+                  <pattern>me.hsgamer.hscore.common</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.util.common</shadedPattern>
+                </relocation>
+
                 <!-- XSeries -->
                 <relocation>
                   <pattern>com.cryptomorin.xseries</pattern>
@@ -232,6 +244,16 @@
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-command</artifactId>
       <version>1.3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-common</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-utils</artifactId>
+      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>com.github.cryptomorin</groupId>

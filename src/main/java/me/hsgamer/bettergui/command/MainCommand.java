@@ -9,7 +9,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.CommandManager;
-import me.hsgamer.bettergui.util.Validate;
+import me.hsgamer.hscore.common.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;

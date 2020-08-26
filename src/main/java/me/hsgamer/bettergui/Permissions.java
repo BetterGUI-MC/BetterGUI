@@ -1,14 +1,14 @@
 package me.hsgamer.bettergui;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
+import static me.hsgamer.hscore.bukkit.utils.PermissionUtils.createPermission;
 
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 public final class Permissions {
 
-  private static final String PREFIX = getInstance().getName()
-      .toLowerCase();
+  public static final String PREFIX = getInstance().getName().toLowerCase();
 
   public static final Permission OPEN_MENU = createPermission(PREFIX + ".openmenu", null,
       PermissionDefault.OP);
@@ -26,18 +26,5 @@ public final class Permissions {
 
   private Permissions() {
 
-  }
-
-  public static Permission createPermission(String name, String description,
-      PermissionDefault permissionDefault) {
-    Permission permission = new Permission(name);
-    if (description != null) {
-      permission.setDescription(description);
-    }
-    if (permissionDefault != null) {
-      permission.setDefault(permissionDefault);
-    }
-    getInstance().getServer().getPluginManager().addPermission(permission);
-    return permission;
   }
 }
