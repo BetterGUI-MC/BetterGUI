@@ -80,32 +80,32 @@ public class AddonInfo {
   public ClickableItem getIcon() {
     XMaterial xMaterial;
     String displayName = "&f" + name + " &c- &4" + version;
-    List<String> lores = new ArrayList<>();
-    lores.add("&f" + description);
-    lores.add("&fAuthors: &e" + Arrays.toString(authors.toArray()));
-    lores.add("");
+    List<String> lore = new ArrayList<>();
+    lore.add("&f" + description);
+    lore.add("&fAuthors: &e" + Arrays.toString(authors.toArray()));
+    lore.add("");
     if (getInstance().getAddonManager().isAddonLoaded(name)) {
       if (getInstance().getAddonManager().getAddon(name).getDescription().getVersion()
           .equals(version)) {
         xMaterial = XMaterial.GREEN_WOOL;
-        lores.add("&6Status: &aUP-TO-DATE");
+        lore.add("&6Status: &aUP-TO-DATE");
       } else {
         xMaterial = XMaterial.ORANGE_WOOL;
-        lores.add("&6Status: &eOUTDATED");
+        lore.add("&6Status: &eOUTDATED");
       }
     } else {
       xMaterial = XMaterial.LIGHT_BLUE_WOOL;
-      lores.add("&6Status: &bAVAILABLE");
+      lore.add("&6Status: &bAVAILABLE");
     }
-    lores.add("");
-    lores.add("&bLeft click &fto download");
+    lore.add("");
+    lore.add("&bLeft click &fto download");
     if (!wiki.isEmpty()) {
-      lores.add("&bMiddle click &fto see the wiki");
+      lore.add("&bMiddle click &fto see the wiki");
     }
     if (!sourceLink.isEmpty()) {
-      lores.add("&bRight click &fto get the source code");
+      lore.add("&bRight click &fto get the source code");
     }
-    lores.replaceAll(MessageUtils::colorize);
+    lore.replaceAll(MessageUtils::colorize);
 
     ItemStack itemStack = xMaterial.parseItem();
     if (itemStack == null) {
@@ -113,7 +113,7 @@ public class AddonInfo {
     }
     ItemMeta itemMeta = itemStack.getItemMeta();
     itemMeta.setDisplayName(MessageUtils.colorize(displayName));
-    itemMeta.setLore(lores);
+    itemMeta.setLore(lore);
     itemStack.setItemMeta(itemMeta);
 
     Consumer<InventoryClickEvent> consumer = inventoryClickEvent -> {
