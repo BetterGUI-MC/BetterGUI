@@ -21,6 +21,7 @@ import me.hsgamer.bettergui.command.ReloadCommand;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.downloader.AddonDownloader;
+import me.hsgamer.bettergui.downloader.AddonInfo;
 import me.hsgamer.bettergui.downloader.AddonInfo.Status;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.listener.CommandListener;
@@ -101,7 +102,6 @@ public final class BetterGUI extends JavaPlugin {
 
     FastInvManager.register(this);
     taskChainFactory = BukkitTaskChainFactory.create(this);
-    addonDownloader.createMenu();
 
     if (PlaceholderAPIHook.setupPlugin()) {
       getLogger().info("Hooked PlaceholderAPI");
@@ -126,6 +126,7 @@ public final class BetterGUI extends JavaPlugin {
       loadMenuConfig();
       addonManager.callPostEnable();
       commandManager.syncCommand();
+      addonDownloader.createMenu();
       checkAddonUpdate();
       if (MainConfig.METRICS.getValue().equals(Boolean.TRUE)) {
         enableMetrics();
@@ -137,12 +138,13 @@ public final class BetterGUI extends JavaPlugin {
    * Check addon updates
    */
   private void checkAddonUpdate() {
-    addonDownloader.getAddonInfoList().stream()
-        .filter(addonInfo -> addonInfo.getStatus() == Status.OUTDATED)
-        .forEach(addonInfo -> getLogger().warning(
+    for (AddonInfo addonInfo : addonDownloader.getAddonInfoList()) {
+      if (addonInfo.getStatus() == Status.OUTDATED) {
+        getLogger().warning(
             () -> "There is an update for " + addonInfo.getName() + ". New version is " + addonInfo
-                .getVersion())
-        );
+                .getVersion());
+      }
+    }
   }
 
   /**

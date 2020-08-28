@@ -69,7 +69,9 @@ public class AddonDownloader {
    * @param player the player
    */
   public void openMenu(Player player) {
-    addonMenu.open(player);
+    if (addonMenu != null) {
+      addonMenu.open(player);
+    }
   }
 
   /**
