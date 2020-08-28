@@ -34,6 +34,7 @@ public class AddonInfo {
   private final String version;
   private final List<String> authors = new ArrayList<>();
   private final String directLink;
+  private Status status;
   private String description = "";
   private String sourceLink = "";
   private String wiki = "";
@@ -62,17 +63,6 @@ public class AddonInfo {
    */
   public String getVersion() {
     return version;
-  }
-
-  /**
-   * Check if it has a new update
-   *
-   * @return true if it has
-   */
-  public boolean hasNewUpdate() {
-    return getInstance().getAddonManager().isAddonLoaded(name) && getInstance().getAddonManager()
-        .getAddon(name).getDescription().getVersion()
-        .equals(version);
   }
 
   /**
@@ -136,6 +126,27 @@ public class AddonInfo {
   }
 
   /**
+   * Get the status
+   *
+   * @return the status
+   */
+  public Status getStatus() {
+    if (status == null) {
+      if (getInstance().getAddonManager().isAddonLoaded(name)) {
+        if (getInstance().getAddonManager().getAddon(name).getDescription().getVersion()
+            .equals(version)) {
+          status = Status.LATEST;
+        } else {
+          status = Status.OUTDATED;
+        }
+      } else {
+        status = Status.AVAILABLE;
+      }
+    }
+    return status;
+  }
+
+  /**
    * Create the icon for the downloader menu
    *
    * @return the clickable item
@@ -147,18 +158,19 @@ public class AddonInfo {
     lore.add("&f" + description);
     lore.add("&fAuthors: &e" + Arrays.toString(authors.toArray()));
     lore.add("");
-    if (getInstance().getAddonManager().isAddonLoaded(name)) {
-      if (getInstance().getAddonManager().getAddon(name).getDescription().getVersion()
-          .equals(version)) {
+    switch (getStatus()) {
+      case LATEST:
         xMaterial = XMaterial.GREEN_WOOL;
-        lore.add("&6Status: &aUP-TO-DATE");
-      } else {
+        lore.add("&6Status: &aLATEST");
+        break;
+      case OUTDATED:
         xMaterial = XMaterial.ORANGE_WOOL;
         lore.add("&6Status: &eOUTDATED");
-      }
-    } else {
-      xMaterial = XMaterial.LIGHT_BLUE_WOOL;
-      lore.add("&6Status: &bAVAILABLE");
+        break;
+      default:
+        xMaterial = XMaterial.LIGHT_BLUE_WOOL;
+        lore.add("&6Status: &bAVAILABLE");
+        break;
     }
     lore.add("");
     lore.add("&bLeft click &fto download");
@@ -219,6 +231,12 @@ public class AddonInfo {
     return new ClickableItem(itemStack, consumer);
   }
 
+  public enum Status {
+    AVAILABLE,
+    OUTDATED,
+    LATEST
+  }
+
   public static class Info {
 
     public static final String VERSION = "version";
@@ -232,5 +250,4 @@ public class AddonInfo {
 
     }
   }
-
 }
