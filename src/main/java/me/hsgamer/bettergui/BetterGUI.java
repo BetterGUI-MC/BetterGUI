@@ -133,6 +133,9 @@ public final class BetterGUI extends JavaPlugin {
     });
   }
 
+  /**
+   * Check addon updates
+   */
   private void checkAddonUpdate() {
     addonDownloader.getAddonInfoList().stream()
         .filter(AddonInfo::hasNewUpdate)
@@ -142,6 +145,9 @@ public final class BetterGUI extends JavaPlugin {
         );
   }
 
+  /**
+   * Load default commands
+   */
   private void loadCommands() {
     commandManager.register(new OpenCommand());
     commandManager.register(new ReloadCommand());
@@ -150,6 +156,9 @@ public final class BetterGUI extends JavaPlugin {
     commandManager.register(new AddonDownloaderCommand());
   }
 
+  /**
+   * Register default variables
+   */
   private void registerDefaultVariables() {
     // Player Name
     VariableManager.register("player", (executor, identifier) -> executor.getName());
@@ -317,6 +326,9 @@ public final class BetterGUI extends JavaPlugin {
     }
   }
 
+  /**
+   * Load the menu config
+   */
   public void loadMenuConfig() {
     File menusFolder = new File(getDataFolder(), "menu");
     if (!menusFolder.exists()) {
@@ -328,6 +340,12 @@ public final class BetterGUI extends JavaPlugin {
     }
   }
 
+  /**
+   * Get the menu config
+   *
+   * @param file the folder
+   * @return the menu config
+   */
   private List<PluginConfig> getMenuConfig(File file) {
     List<PluginConfig> list = new ArrayList<>();
     if (file.isDirectory()) {
@@ -340,6 +358,9 @@ public final class BetterGUI extends JavaPlugin {
     return list;
   }
 
+  /**
+   * Enable metrics (bstats)
+   */
   private void enableMetrics() {
     Metrics metrics = new Metrics(this, 6609);
     metrics.addCustomChart(new Metrics.DrilldownPie("addon", () -> {
@@ -360,22 +381,47 @@ public final class BetterGUI extends JavaPlugin {
     HandlerList.unregisterAll(this);
   }
 
+  /**
+   * Get the command manger
+   *
+   * @return the command manger
+   */
   public CommandManager getCommandManager() {
     return commandManager;
   }
 
+  /**
+   * Get the menu manager
+   *
+   * @return the menu manager
+   */
   public MenuManager getMenuManager() {
     return menuManager;
   }
 
+  /**
+   * Get the main config
+   *
+   * @return the main config
+   */
   public MainConfig getMainConfig() {
     return mainConfig;
   }
 
+  /**
+   * Get the message config
+   *
+   * @return the message config
+   */
   public MessageConfig getMessageConfig() {
     return messageConfig;
   }
 
+  /**
+   * Get the addon downloader
+   *
+   * @return the addon downloader
+   */
   public AddonDownloader getAddonDownloader() {
     return addonDownloader;
   }

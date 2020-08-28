@@ -12,6 +12,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+/**
+ * The menu
+ *
+ * @param <T> the inventory
+ */
 public abstract class Menu<T> implements LocalVariableManager<Menu<?>> {
 
   private final String name;

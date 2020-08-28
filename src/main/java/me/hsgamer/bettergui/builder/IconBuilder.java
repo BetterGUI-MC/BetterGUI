@@ -23,6 +23,9 @@ import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * The Icon Builder
+ */
 public final class IconBuilder {
 
   private static final Map<String, BiFunction<String, Menu<?>, Icon>> iconTypes = new CaseInsensitiveStringMap<>();
@@ -36,7 +39,7 @@ public final class IconBuilder {
   }
 
   private IconBuilder() {
-
+    // EMPTY
   }
 
   /**
@@ -70,6 +73,13 @@ public final class IconBuilder {
     }, type);
   }
 
+  /**
+   * Get the icon
+   *
+   * @param menu    the menu the icon is in
+   * @param section the icon section
+   * @return the icon
+   */
   public static Icon getIcon(Menu<?> menu, ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
     if (keys.containsKey("type")) {
@@ -82,6 +92,14 @@ public final class IconBuilder {
         .getOrDefault(MainConfig.DEFAULT_ICON_TYPE.getValue(), SimpleIcon::new));
   }
 
+  /**
+   * Get the icon
+   *
+   * @param menu           the menu the icon is in
+   * @param section        the icon section
+   * @param iconBiFunction the "create icon" function
+   * @return the icon
+   */
   public static Icon getIcon(Menu<?> menu, ConfigurationSection section,
       BiFunction<String, Menu<?>, Icon> iconBiFunction) {
     Icon icon = iconBiFunction.apply(section.getName(), menu);
@@ -89,6 +107,12 @@ public final class IconBuilder {
     return icon;
   }
 
+  /**
+   * Get the slots for the icon
+   *
+   * @param section the icon section
+   * @return the slots
+   */
   public static List<Integer> getSlots(ConfigurationSection section) {
     List<Integer> slots = new ArrayList<>();
     Map<String, Object> map = new CaseInsensitiveStringMap<>(section.getValues(false));
@@ -113,6 +137,12 @@ public final class IconBuilder {
     return slots;
   }
 
+  /**
+   * Create a new stream of slots
+   *
+   * @param input the input string
+   * @return the stream of slots
+   */
   public static Stream<Integer> generateSlots(String input) {
     if (Validate.isValidInteger(input)) {
       return Stream.of(Integer.parseInt(input));

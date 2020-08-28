@@ -26,6 +26,9 @@ import me.hsgamer.bettergui.object.command.TellCommand;
 import me.hsgamer.bettergui.object.command.UpdateMenuCommand;
 import me.hsgamer.bettergui.object.variable.LocalVariableManager;
 
+/**
+ * The Command/Action Builder
+ */
 public final class CommandBuilder {
 
   private static final Map<Pattern, Function<String, Command>> commands = new HashMap<>();
@@ -49,7 +52,7 @@ public final class CommandBuilder {
   }
 
   private CommandBuilder() {
-
+    // EMPTY
   }
 
   /**
@@ -84,6 +87,13 @@ public final class CommandBuilder {
     }, regex);
   }
 
+  /**
+   * Get the list of Command Objects
+   *
+   * @param localVariableManager the local variable manager that involves the command
+   * @param input                the list of command string
+   * @return the list of Command Objects
+   */
   public static List<Command> getCommands(LocalVariableManager<?> localVariableManager,
       List<String> input) {
     input.replaceAll(String::trim);

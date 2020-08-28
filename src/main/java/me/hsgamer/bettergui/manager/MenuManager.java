@@ -15,6 +15,9 @@ import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+/**
+ * The Menu Manager
+ */
 public final class MenuManager {
 
   private final Map<String, Menu<?>> menuMap = new HashMap<>();
@@ -40,6 +43,11 @@ public final class MenuManager {
     return list;
   }
 
+  /**
+   * Register the menu
+   *
+   * @param file the menu file
+   */
   public void registerMenu(PluginConfig file) {
     String name = file.getFileName();
     FileConfiguration config = file.getConfig();
@@ -51,6 +59,9 @@ public final class MenuManager {
     }
   }
 
+  /**
+   * Clear all menus
+   */
   public void clear() {
     menuMap.values().forEach(Menu::closeAll);
     menuMap.clear();

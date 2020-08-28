@@ -12,23 +12,42 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+/**
+ * The Icon for the menu
+ */
 public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
 
   private final String name;
   private final Menu<?> menu;
   private final Map<String, LocalVariable> variables = new HashMap<>();
 
+  /**
+   * Create new icon
+   *
+   * @param name the name of the icon
+   * @param menu the menu the icon is in
+   */
   public Icon(String name, Menu<?> menu) {
     this.name = name;
     this.menu = menu;
   }
 
+  /**
+   * Clone the icon
+   *
+   * @param original the original icon
+   */
   public Icon(Icon original) {
     this.variables.putAll(original.variables);
     this.name = original.name;
     this.menu = original.menu;
   }
 
+  /**
+   * Get the name of the icon
+   *
+   * @return the name
+   */
   public String getName() {
     return name;
   }
@@ -92,6 +111,11 @@ public abstract class Icon implements Cloneable, LocalVariableManager<Icon> {
     return menu;
   }
 
+  /**
+   * Clone the icon
+   *
+   * @return the cloned icon
+   */
   public Icon cloneIcon() {
     try {
       return getClass().getDeclaredConstructor(Icon.class).newInstance(this);

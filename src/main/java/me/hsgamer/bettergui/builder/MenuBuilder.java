@@ -10,6 +10,9 @@ import me.hsgamer.bettergui.object.menu.SimpleMenu;
 import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.file.FileConfiguration;
 
+/**
+ * The Menu Builder
+ */
 public final class MenuBuilder {
 
   private static final Map<String, Function<String, Menu<?>>> menuTypes = new CaseInsensitiveStringMap<>();
@@ -21,7 +24,7 @@ public final class MenuBuilder {
   }
 
   private MenuBuilder() {
-
+    // EMPTY
   }
 
   /**
@@ -54,6 +57,13 @@ public final class MenuBuilder {
     }, type);
   }
 
+  /**
+   * Get the menu
+   *
+   * @param name the name of the menu
+   * @param file the menu file
+   * @return the menu
+   */
   public static Menu<?> getMenu(String name, FileConfiguration file) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(file.getValues(true));
     if (keys.containsKey("menu-settings.menu-type")) {
@@ -65,6 +75,14 @@ public final class MenuBuilder {
     return getMenu(name, file, menuTypes.get(MainConfig.DEFAULT_MENU_TYPE.getValue()));
   }
 
+  /**
+   * Get the menu
+   *
+   * @param name         the name of the menu
+   * @param file         the menu file
+   * @param menuFunction the "create menu" function
+   * @return the menu
+   */
   public static Menu<?> getMenu(String name, FileConfiguration file,
       Function<String, Menu<?>> menuFunction) {
     Menu<?> menu = menuFunction.apply(name);

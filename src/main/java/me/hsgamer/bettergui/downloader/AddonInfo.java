@@ -25,6 +25,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+/**
+ * The info of the addon
+ */
 public class AddonInfo {
 
   private final String name;
@@ -43,36 +46,77 @@ public class AddonInfo {
     this.directLink = directLink;
   }
 
+  /**
+   * Get the name
+   *
+   * @return the name
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * Get the version
+   *
+   * @return the version
+   */
   public String getVersion() {
     return version;
   }
 
+  /**
+   * Check if it has a new update
+   *
+   * @return true if it has
+   */
   public boolean hasNewUpdate() {
     return getInstance().getAddonManager().isAddonLoaded(name) && getInstance().getAddonManager()
         .getAddon(name).getDescription().getVersion()
         .equals(version);
   }
 
+  /**
+   * Add authors
+   *
+   * @param author the author
+   */
   public void addAuthor(String author) {
     this.authors.add(author);
   }
 
+  /**
+   * Set the source code link
+   *
+   * @param sourceLink the source link
+   */
   public void setSourceLink(String sourceLink) {
     this.sourceLink = sourceLink;
   }
 
+  /**
+   * Set the description
+   *
+   * @param description the description
+   */
   public void setDescription(String description) {
     this.description = description;
   }
 
+  /**
+   * Set the wiki link
+   *
+   * @param wiki the wiki link
+   */
   public void setWiki(String wiki) {
     this.wiki = wiki;
   }
 
+  /**
+   * Download the addon
+   *
+   * @throws IOException          when an I/O error occurred
+   * @throws DownloadingException if the addon is being downloaded
+   */
   public void download() throws IOException {
     if (isDownloading) {
       throw new DownloadingException();
@@ -91,6 +135,11 @@ public class AddonInfo {
     }
   }
 
+  /**
+   * Create the icon for the downloader menu
+   *
+   * @return the clickable item
+   */
   public ClickableItem getIcon() {
     XMaterial xMaterial;
     String displayName = "&f" + name + " &c- &4" + version;

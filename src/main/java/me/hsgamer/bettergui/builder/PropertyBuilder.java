@@ -194,6 +194,13 @@ public final class PropertyBuilder {
     });
   }
 
+  /**
+   * Load item properties from the icon section
+   *
+   * @param icon    the icon
+   * @param section the icon section
+   * @return the list of item properties
+   */
   public static Map<String, ItemProperty<?, ?>> loadItemPropertiesFromSection(Icon icon,
       ConfigurationSection section) {
     Map<String, ItemProperty<?, ?>> properties = new CaseInsensitiveStringLinkedMap<>();
@@ -205,6 +212,13 @@ public final class PropertyBuilder {
     return properties;
   }
 
+  /**
+   * Load icon properties from the icon section
+   *
+   * @param icon    the icon
+   * @param section the icon section
+   * @return the list of icon properties
+   */
   public static Map<String, IconProperty<?>> loadIconPropertiesFromSection(Icon icon,
       ConfigurationSection section) {
     Map<String, IconProperty<?>> properties = new CaseInsensitiveStringLinkedMap<>();
@@ -216,6 +230,13 @@ public final class PropertyBuilder {
     return properties;
   }
 
+  /**
+   * Load menu properties from the menu-settings section
+   *
+   * @param menu    the menu
+   * @param section the menu-settings section
+   * @return the list of menu properties
+   */
   public static Map<String, MenuProperty<?, ?>> loadMenuPropertiesFromSection(Menu<?> menu,
       ConfigurationSection section) {
     Map<String, MenuProperty<?, ?>> properties = new CaseInsensitiveStringLinkedMap<>();
@@ -227,6 +248,12 @@ public final class PropertyBuilder {
     return properties;
   }
 
+  /**
+   * Load other properties from the section
+   *
+   * @param section the section
+   * @return the list of properties
+   */
   public static Map<String, Property<?>> loadOtherPropertiesFromSection(
       ConfigurationSection section) {
     Map<String, Property<?>> properties = new CaseInsensitiveStringLinkedMap<>();

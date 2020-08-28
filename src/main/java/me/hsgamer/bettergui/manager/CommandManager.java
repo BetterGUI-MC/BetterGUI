@@ -62,6 +62,11 @@ public final class CommandManager extends me.hsgamer.hscore.bukkit.command.Comma
     registeredMenuCommand.clear();
   }
 
+  /**
+   * Get registered menu commands
+   *
+   * @return the commands
+   */
   public Map<String, Command> getRegisteredMenuCommand() {
     return registeredMenuCommand;
   }

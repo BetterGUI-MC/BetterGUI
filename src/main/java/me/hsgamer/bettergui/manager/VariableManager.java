@@ -12,13 +12,16 @@ import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.object.variable.GlobalVariable;
 import org.bukkit.OfflinePlayer;
 
+/**
+ * The Variable Manager
+ */
 public final class VariableManager {
 
   private static final Pattern PATTERN = Pattern.compile("[{]([^{}]+)[}]");
   private static final Map<String, GlobalVariable> variables = new HashMap<>();
 
   private VariableManager() {
-
+    // EMPTY
   }
 
   /**
@@ -100,6 +103,13 @@ public final class VariableManager {
     return message;
   }
 
+  /**
+   * Check if the string contains valid variables from the match string
+   *
+   * @param string      the string
+   * @param matchString the list of the string from the variable name
+   * @return true if it does
+   */
   public static boolean isMatch(String string, Collection<String> matchString) {
     Matcher matcher = PATTERN.matcher(string);
     List<String> found = new ArrayList<>();

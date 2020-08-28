@@ -19,6 +19,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+/**
+ * The addon downloader
+ */
 @SuppressWarnings("unchecked")
 public class AddonDownloader {
 
@@ -27,27 +30,51 @@ public class AddonDownloader {
   private final BetterGUI instance;
   private AddonMenu addonMenu;
 
+  /**
+   * Create an instance
+   *
+   * @param instance the plugin
+   */
   public AddonDownloader(BetterGUI instance) {
     addAddonInfos();
     this.instance = instance;
   }
 
+  /**
+   * Get the list of addon info
+   *
+   * @return the list of addon info
+   */
   public List<AddonInfo> getAddonInfoList() {
     return Collections.unmodifiableList(addonInfoList);
   }
 
+  /**
+   * Generate the menu
+   */
   public void createMenu() {
     addonMenu = new AddonMenu();
   }
 
+  /**
+   * Cancel the check task
+   */
   public void cancelTask() {
     addonMenu.cancelTask();
   }
 
+  /**
+   * Open the downloader menu
+   *
+   * @param player the player
+   */
   public void openMenu(Player player) {
     addonMenu.open(player);
   }
 
+  /**
+   * Generate addon infos
+   */
   private void addAddonInfos() {
     CompletableFuture.supplyAsync(() -> {
       try {

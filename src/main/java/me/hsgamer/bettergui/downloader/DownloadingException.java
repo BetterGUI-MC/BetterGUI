@@ -1,5 +1,8 @@
 package me.hsgamer.bettergui.downloader;
 
-class DownloadingException extends RuntimeException {
+/**
+ * An exception indicates that the addon is being downloaded
+ */
+public class DownloadingException extends RuntimeException {
 
 }

@@ -18,6 +18,9 @@ import me.hsgamer.hscore.common.CommonUtils;
 import me.hsgamer.hscore.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * The Requirement Builder
+ */
 public final class RequirementBuilder {
 
   private static final Map<String, Supplier<Requirement<?, ?>>> requirementTypes = new CaseInsensitiveStringMap<>();
@@ -30,7 +33,7 @@ public final class RequirementBuilder {
   }
 
   private RequirementBuilder() {
-
+    // EMPTY
   }
 
   /**
@@ -69,6 +72,13 @@ public final class RequirementBuilder {
     }, type);
   }
 
+  /**
+   * Get the requirement
+   *
+   * @param type                 the type of the requirement
+   * @param localVariableManager the local variable manager that involves the command
+   * @return the requirement
+   */
   public static Optional<Requirement<?, ?>> getRequirement(String type,
       LocalVariableManager<?> localVariableManager) {
     // Check Inverted mode
@@ -88,6 +98,13 @@ public final class RequirementBuilder {
     return Optional.of(requirement);
   }
 
+  /**
+   * Load requirements from the section
+   *
+   * @param section              the section
+   * @param localVariableManager the local variable manager that involves the command
+   * @return the list of the requirements
+   */
   public static List<Requirement<?, ?>> loadRequirementsFromSection(ConfigurationSection section,
       LocalVariableManager<?> localVariableManager) {
     List<Requirement<?, ?>> requirements = new ArrayList<>();
@@ -118,6 +135,13 @@ public final class RequirementBuilder {
     return requirements;
   }
 
+  /**
+   * Get the requirement set
+   *
+   * @param section              the section
+   * @param localVariableManager the local variable manager that involves the command
+   * @return the list of the requirement sets
+   */
   public static List<RequirementSet> getRequirementSet(ConfigurationSection section,
       LocalVariableManager<?> localVariableManager) {
     List<RequirementSet> list = new ArrayList<>();

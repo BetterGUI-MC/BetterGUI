@@ -4,6 +4,9 @@ import me.hsgamer.bettergui.config.MainConfig;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+/**
+ * Advanced ClickType
+ */
 public enum MenuClickType {
 
   /**
