@@ -121,6 +121,7 @@ public final class MenuManager {
    * Get the menu
    *
    * @param name the menu name
+   * @return the menu
    */
   public Menu<?> getMenu(String name) {
     return menuMap.get(name);
