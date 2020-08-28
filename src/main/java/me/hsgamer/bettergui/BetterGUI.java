@@ -21,6 +21,7 @@ import me.hsgamer.bettergui.command.ReloadCommand;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.downloader.AddonDownloader;
+import me.hsgamer.bettergui.downloader.AddonInfo;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.listener.CommandListener;
 import me.hsgamer.bettergui.manager.AddonManager;
@@ -125,10 +126,20 @@ public final class BetterGUI extends JavaPlugin {
       loadMenuConfig();
       addonManager.callPostEnable();
       commandManager.syncCommand();
+      checkAddonUpdate();
       if (MainConfig.METRICS.getValue().equals(Boolean.TRUE)) {
         enableMetrics();
       }
     });
+  }
+
+  private void checkAddonUpdate() {
+    addonDownloader.getAddonInfoList().stream()
+        .filter(AddonInfo::hasNewUpdate)
+        .forEach(addonInfo -> getLogger().warning(
+            () -> "There is an update for " + addonInfo.getName() + ". New version is " + addonInfo
+                .getVersion())
+        );
   }
 
   private void loadCommands() {

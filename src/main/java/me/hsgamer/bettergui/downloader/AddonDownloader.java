@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.downloader;
 import fr.mrmicky.fastinv.FastInv;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
@@ -29,6 +30,10 @@ public class AddonDownloader {
   public AddonDownloader(BetterGUI instance) {
     addAddonInfos();
     this.instance = instance;
+  }
+
+  public List<AddonInfo> getAddonInfoList() {
+    return Collections.unmodifiableList(addonInfoList);
   }
 
   public void createMenu() {

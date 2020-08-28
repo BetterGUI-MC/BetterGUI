@@ -43,6 +43,20 @@ public class AddonInfo {
     this.directLink = directLink;
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  public boolean hasNewUpdate() {
+    return getInstance().getAddonManager().isAddonLoaded(name) && getInstance().getAddonManager()
+        .getAddon(name).getDescription().getVersion()
+        .equals(version);
+  }
+
   public void addAuthor(String author) {
     this.authors.add(author);
   }
