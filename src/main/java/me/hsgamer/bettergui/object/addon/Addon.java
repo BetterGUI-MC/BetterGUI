@@ -11,13 +11,18 @@ import org.bukkit.event.Listener;
  */
 public abstract class Addon extends me.hsgamer.hscore.bukkit.addon.object.Addon {
 
+  @Override
+  public BetterGUI getPlugin() {
+    return BetterGUI.getInstance();
+  }
+
   /**
    * Register the command
    *
    * @param command the Command object
    */
   public final void registerCommand(Command command) {
-    BetterGUI.getInstance().getCommandManager().register(command);
+    getPlugin().getCommandManager().register(command);
   }
 
   /**
@@ -26,7 +31,7 @@ public abstract class Addon extends me.hsgamer.hscore.bukkit.addon.object.Addon 
    * @param command the Command object
    */
   public final void unregisterCommand(Command command) {
-    BetterGUI.getInstance().getCommandManager().unregister(command);
+    getPlugin().getCommandManager().unregister(command);
   }
 
   /**
