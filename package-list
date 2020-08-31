@@ -2,9 +2,9 @@ me.hsgamer.bettergui
 me.hsgamer.bettergui.builder
 me.hsgamer.bettergui.command
 me.hsgamer.bettergui.config
-me.hsgamer.bettergui.config.impl
 me.hsgamer.bettergui.downloader
 me.hsgamer.bettergui.hook
+me.hsgamer.bettergui.listener
 me.hsgamer.bettergui.manager
 me.hsgamer.bettergui.object
 me.hsgamer.bettergui.object.addon
@@ -18,6 +18,6 @@ me.hsgamer.bettergui.object.property.item
 me.hsgamer.bettergui.object.property.item.impl
 me.hsgamer.bettergui.object.property.menu
 me.hsgamer.bettergui.object.requirement
+me.hsgamer.bettergui.object.requirementset
+me.hsgamer.bettergui.object.variable
 me.hsgamer.bettergui.util
-me.hsgamer.bettergui.util.expression
-me.hsgamer.bettergui.util.expression.string
