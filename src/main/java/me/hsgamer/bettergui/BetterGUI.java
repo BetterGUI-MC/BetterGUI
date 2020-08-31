@@ -57,18 +57,39 @@ public final class BetterGUI extends JavaPlugin {
   private final MainConfig mainConfig = new MainConfig(this);
   private final MessageConfig messageConfig = new MessageConfig(this);
 
+  /**
+   * Create new task chain
+   *
+   * @param <T> the type of value
+   * @return the task chain
+   */
   public static <T> TaskChain<T> newChain() {
     return taskChainFactory.newChain();
   }
 
+  /**
+   * Get the task chain factory
+   *
+   * @return the task chain factory
+   */
   public static TaskChainFactory getTaskChainFactory() {
     return taskChainFactory;
   }
 
+  /**
+   * Get the instance of the plugin
+   *
+   * @return the instance
+   */
   public static BetterGUI getInstance() {
     return instance;
   }
 
+  /**
+   * Get the addon manager
+   *
+   * @return the addon manager
+   */
   public AddonManager getAddonManager() {
     return addonManager;
   }
@@ -361,7 +382,7 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   /**
-   * Enable metrics (bstats)
+   * Enable metrics (BStats)
    */
   private void enableMetrics() {
     Metrics metrics = new Metrics(this, 6609);
