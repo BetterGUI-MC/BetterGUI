@@ -40,24 +40,6 @@ public final class MenuBuilder {
   }
 
   /**
-   * Register new Menu type
-   *
-   * @param type  the name of the type
-   * @param clazz the class
-   * @deprecated use {@link #register(Function, String...)} instead
-   */
-  @Deprecated
-  public static void register(String type, Class<? extends Menu<?>> clazz) {
-    register(s -> {
-      try {
-        return clazz.getDeclaredConstructor(String.class).newInstance(s);
-      } catch (Exception e) {
-        throw new RuntimeException("Invalid menu class");
-      }
-    }, type);
-  }
-
-  /**
    * Get the menu
    *
    * @param name the name of the menu

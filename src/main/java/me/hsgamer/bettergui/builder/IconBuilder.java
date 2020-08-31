@@ -55,25 +55,6 @@ public final class IconBuilder {
   }
 
   /**
-   * Register new Icon type
-   *
-   * @param type  name of the type
-   * @param clazz the class
-   * @deprecated use {@link #register(BiFunction, String...)} instead
-   */
-  @Deprecated
-  public static void register(String type, Class<? extends Icon> clazz) {
-    register((s, menu) -> {
-      try {
-        return clazz.getDeclaredConstructor(String.class, Menu.class)
-            .newInstance(s, menu);
-      } catch (Exception e) {
-        throw new RuntimeException("Invalid icon class");
-      }
-    }, type);
-  }
-
-  /**
    * Get the icon
    *
    * @param menu    the menu the icon is in

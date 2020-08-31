@@ -69,25 +69,6 @@ public final class CommandBuilder {
   }
 
   /**
-   * Register new command type
-   *
-   * @param regex the regex that detects the prefix of the string
-   * @param clazz the class
-   * @deprecated use {@link #register(Function, String...)} instead
-   */
-  @Deprecated
-  public static void register(String regex, Class<? extends Command> clazz) {
-    register(s -> {
-      try {
-        return clazz.getDeclaredConstructor(String.class)
-            .newInstance(s);
-      } catch (Exception e) {
-        throw new RuntimeException("Invalid command class");
-      }
-    }, regex);
-  }
-
-  /**
    * Get the list of Command Objects
    *
    * @param localVariableManager the local variable manager that involves the command

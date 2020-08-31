@@ -23,6 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public final class RequirementBuilder {
 
+  private static final String NOT_PREFIX = "not-";
   private static final Map<String, Supplier<Requirement<?, ?>>> requirementTypes = new CaseInsensitiveStringMap<>();
 
   static {
@@ -44,32 +45,14 @@ public final class RequirementBuilder {
    */
   public static void register(Supplier<Requirement<?, ?>> requirementSupplier, String... type) {
     for (String s : type) {
-      if (s.toLowerCase().startsWith("not-")) {
+      if (s.toLowerCase().startsWith(NOT_PREFIX)) {
         getInstance().getLogger()
             .warning(() -> "Invalid requirement type '" + s
-                + "': Should not start with 'not-'. Ignored...");
+                + "': Should not start with '" + NOT_PREFIX + "'. Ignored...");
         return;
       }
       requirementTypes.put(s, requirementSupplier);
     }
-  }
-
-  /**
-   * Register new requirement type
-   *
-   * @param type  the name of the type
-   * @param clazz the class
-   * @deprecated use {@link #register(Supplier, String...)} instead
-   */
-  @Deprecated
-  public static void register(String type, Class<? extends Requirement<?, ?>> clazz) {
-    register(() -> {
-      try {
-        return clazz.getDeclaredConstructor().newInstance();
-      } catch (Exception e) {
-        throw new RuntimeException("Invalid requirement class");
-      }
-    }, type);
   }
 
   /**
@@ -83,8 +66,8 @@ public final class RequirementBuilder {
       LocalVariableManager<?> localVariableManager) {
     // Check Inverted mode
     boolean inverted = false;
-    if (type.toLowerCase().startsWith("not-")) {
-      type = type.substring(4);
+    if (type.toLowerCase().startsWith(NOT_PREFIX)) {
+      type = type.substring(NOT_PREFIX.length());
       inverted = true;
     }
 
