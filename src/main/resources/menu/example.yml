@@ -363,6 +363,15 @@ per-player-skull:
   id: player_head
   skull: "{player}"
 
+potion:
+  position-x: 6
+  position-y: 4
+  name: "&bPotion"
+  id: potion
+  potion:
+    - "SPEED"
+    - "WEAKNESS, 30, 1"
+
 multi-slot:
   slot: 0-8,45,46,47-52
   type: animated
