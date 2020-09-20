@@ -62,6 +62,8 @@ public enum MenuClickType {
    */
   UNKNOWN(ClickType.UNKNOWN),
 
+  SWAP_OFFHAND("SWAP_OFFHAND"),
+
   /**
    * NUMBER_KEY with hotbar slot 1
    */
@@ -98,15 +100,23 @@ public enum MenuClickType {
    * UMBER_KEY with hotbar slot 9
    */
   NUMBER_KEY_9(ClickType.NUMBER_KEY, 8);
-  private final ClickType clickType;
+  private final String clickType;
   private final int hotbarSlot;
 
   MenuClickType(ClickType clickType, int hotbarSlot) {
+    this(clickType.name(), hotbarSlot);
+  }
+
+  MenuClickType(ClickType clickType) {
+    this(clickType, -1);
+  }
+
+  MenuClickType(String clickType, int hotbarSlot) {
     this.clickType = clickType;
     this.hotbarSlot = hotbarSlot;
   }
 
-  MenuClickType(ClickType clickType) {
+  MenuClickType(String clickType) {
     this(clickType, -1);
   }
 
@@ -119,7 +129,7 @@ public enum MenuClickType {
     return valueOf("NUMBER_KEY_" + (event.getHotbarButton() + 1));
   }
 
-  public ClickType getBukkitClickType() {
+  public String getBukkitClickType() {
     return clickType;
   }
 
