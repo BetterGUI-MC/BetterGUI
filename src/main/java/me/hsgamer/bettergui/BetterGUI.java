@@ -102,6 +102,7 @@ public final class BetterGUI extends JavaPlugin {
 
   @Override
   public void onEnable() {
+    Permissions.init();
     if (getDescription().getVersion().contains("SNAPSHOT")) {
       getLogger().warning("You are using the development version");
       getLogger().warning("This is not ready for production");
