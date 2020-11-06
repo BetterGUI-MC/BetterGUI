@@ -297,7 +297,7 @@
     <dependency>
       <groupId>com.github.cryptomorin</groupId>
       <artifactId>XSeries</artifactId>
-      <version>7.5.4</version>
+      <version>7.5.5</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
