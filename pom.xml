@@ -233,6 +233,21 @@
       <artifactId>HSCore-expression</artifactId>
       <version>2.0</version>
     </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-builder</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-gui</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-command</artifactId>
+      <version>2.0</version>
+    </dependency>
   </dependencies>
 
   <distributionManagement>

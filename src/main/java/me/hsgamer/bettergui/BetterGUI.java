@@ -3,8 +3,14 @@ package me.hsgamer.bettergui;
 import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
+import me.hsgamer.bettergui.builder.ActionBuilder;
+import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.listener.AlternativeCommandListener;
+import me.hsgamer.bettergui.manager.MenuManager;
+import me.hsgamer.bettergui.manager.PluginCommandManager;
+import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.checker.spigotmc.SimpleVersionChecker;
@@ -30,6 +36,11 @@ public final class BetterGUI extends JavaPlugin {
 
   private final MainConfig mainConfig = new MainConfig(this);
   private final MessageConfig messageConfig = new MessageConfig(this);
+
+  private final MenuBuilder menuBuilder = new MenuBuilder();
+  private final MenuManager menuManager = new MenuManager(menuBuilder);
+  private final ActionBuilder actionBuilder = new ActionBuilder();
+  private final PluginCommandManager commandManager = new PluginCommandManager(this);
 
   /**
    * Create a new task chain
@@ -91,11 +102,12 @@ public final class BetterGUI extends JavaPlugin {
 
   @Override
   public void onEnable() {
+    GUIListener.init(this);
     taskChainFactory = BukkitTaskChainFactory.create(this);
 
     if (Boolean.TRUE.equals(MainConfig.ENABLE_ALTERNATIVE_COMMAND_MANAGER.getValue())) {
       getLogger().info("Enabled alternative command manager");
-//      getServer().getPluginManager().registerEvents(new CommandListener(), this);
+      getServer().getPluginManager().registerEvents(new AlternativeCommandListener(), this);
     }
   }
 
@@ -217,6 +229,10 @@ public final class BetterGUI extends JavaPlugin {
   @Override
   public void onDisable() {
     HandlerList.unregisterAll(this);
+    menuManager.clear();
+    actionBuilder.unregisterAll();
+    menuBuilder.unregisterAll();
+    VariableManager.clearExternalReplacers();
   }
 
   /**
@@ -235,5 +251,41 @@ public final class BetterGUI extends JavaPlugin {
    */
   public MessageConfig getMessageConfig() {
     return messageConfig;
+  }
+
+  /**
+   * Get the menu builder
+   *
+   * @return the menu builder
+   */
+  public MenuBuilder getMenuBuilder() {
+    return menuBuilder;
+  }
+
+  /**
+   * Get the menu manager
+   *
+   * @return the menu manager
+   */
+  public MenuManager getMenuManager() {
+    return menuManager;
+  }
+
+  /**
+   * Get the action builder
+   *
+   * @return the action builder
+   */
+  public ActionBuilder getActionBuilder() {
+    return actionBuilder;
+  }
+
+  /**
+   * Get the command manager
+   *
+   * @return the command manager
+   */
+  public PluginCommandManager getCommandManager() {
+    return commandManager;
   }
 }
