@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.config;
 
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
+import me.hsgamer.hscore.config.PathLoader;
 import me.hsgamer.hscore.config.path.StringConfigPath;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,23 +24,7 @@ public final class MessageConfig extends PluginConfig {
   public MessageConfig(JavaPlugin plugin) {
     super(plugin, "messages.yml");
     getConfig().options().copyDefaults(true);
-    setDefaultPath();
+    PathLoader.loadPath(this);
     saveConfig();
-  }
-
-  private void setDefaultPath() {
-    PREFIX.setConfig(this);
-    NO_PERMISSION.setConfig(this);
-    PLAYER_ONLY.setConfig(this);
-    PLAYER_NOT_FOUND.setConfig(this);
-    SUCCESS.setConfig(this);
-    MENU_REQUIRED.setConfig(this);
-    MENU_NOT_FOUND.setConfig(this);
-    HAVE_MET_REQUIREMENT_PLACEHOLDER.setConfig(this);
-    INVALID_NUMBER.setConfig(this);
-    INVALID_CONDITION.setConfig(this);
-    INVALID_FLAG.setConfig(this);
-    INVALID_ENCHANTMENT.setConfig(this);
-    EMPTY_ARG_VALUE.setConfig(this);
   }
 }

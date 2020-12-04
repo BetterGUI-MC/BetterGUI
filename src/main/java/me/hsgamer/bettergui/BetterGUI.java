@@ -67,6 +67,7 @@ public final class BetterGUI extends JavaPlugin {
   public void onLoad() {
     instance = this;
     MessageUtils.setPrefix(MessageConfig.PREFIX::getValue);
+    VariableManager.setReplaceAll(MainConfig.REPLACE_ALL_VARIABLES::getValue);
 
     registerDefaultVariables();
 

@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.config;
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.BaseConfigPath;
+import me.hsgamer.hscore.config.PathLoader;
 import me.hsgamer.hscore.config.path.BooleanConfigPath;
 import me.hsgamer.hscore.config.path.StringConfigPath;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,19 +26,7 @@ public final class MainConfig extends PluginConfig {
   public MainConfig(JavaPlugin plugin) {
     super(plugin, "config.yml");
     getConfig().options().copyDefaults(true);
-    setDefaultPath();
+    PathLoader.loadPath(this);
     saveConfig();
-  }
-
-  private void setDefaultPath() {
-    DEFAULT_ICON_TYPE.setConfig(this);
-    DEFAULT_MENU_TYPE.setConfig(this);
-    METRICS.setConfig(this);
-    MODERN_CLICK_TYPE.setConfig(this);
-    REPLACE_ALL_VARIABLES.setConfig(this);
-    FORCED_UPDATE_INVENTORY.setConfig(this);
-    ENABLE_ALTERNATIVE_COMMAND_MANAGER.setConfig(this);
-    ALTERNATIVE_COMMAND_MANAGER_CASE_INSENSITIVE.setConfig(this);
-    ALTERNATIVE_COMMAND_MANAGER_IGNORED_COMMANDS.setConfig(this);
   }
 }
