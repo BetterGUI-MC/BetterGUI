@@ -5,11 +5,14 @@ import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
+import me.hsgamer.bettergui.command.MainCommand;
+import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginCommandManager;
+import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
@@ -109,6 +112,26 @@ public final class BetterGUI extends JavaPlugin {
       getLogger().info("Enabled alternative command manager");
       getServer().getPluginManager().registerEvents(new AlternativeCommandListener(), this);
     }
+
+    Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+      loadCommands();
+//      addonManager.enableAddons();
+//      loadMenuConfig();
+//      addonManager.callPostEnable();
+      CommandManager.syncCommand();
+//      addonDownloader.createMenu();
+      if (Boolean.TRUE.equals(MainConfig.METRICS.getValue())) {
+        enableMetrics();
+      }
+    });
+  }
+
+  /**
+   * Load default commands
+   */
+  private void loadCommands() {
+    commandManager.register(new OpenCommand());
+    commandManager.register(new MainCommand(getName().toLowerCase()));
   }
 
   /**
@@ -229,9 +252,11 @@ public final class BetterGUI extends JavaPlugin {
   @Override
   public void onDisable() {
     HandlerList.unregisterAll(this);
+    commandManager.clearMenuCommand();
     menuManager.clear();
     actionBuilder.unregisterAll();
     menuBuilder.unregisterAll();
+    commandManager.unregisterAll();
     VariableManager.clearExternalReplacers();
   }
 

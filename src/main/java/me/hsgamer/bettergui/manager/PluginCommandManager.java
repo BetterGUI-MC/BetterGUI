@@ -57,8 +57,17 @@ public class PluginCommandManager extends CommandManager {
     registeredMenuCommand.put(name, command);
   }
 
+  /**
+   * Clear all menu commands
+   */
   public void clearMenuCommand() {
-    registeredMenuCommand.values().forEach(this::unregister);
+    registeredMenuCommand.values().forEach(command -> {
+      try {
+        unregisterFromKnownCommands(command);
+      } catch (IllegalAccessException e) {
+        this.plugin.getLogger().log(Level.WARNING, "Something wrong when unregister the command", e);
+      }
+    });
     registeredMenuCommand.clear();
   }
 
