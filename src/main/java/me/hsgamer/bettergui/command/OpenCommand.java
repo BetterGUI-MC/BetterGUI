@@ -43,8 +43,7 @@ public final class OpenCommand extends BukkitCommand {
 
     if (strings.length == 1) {
       if (commandSender instanceof Player) {
-        menuManager
-          .openMenu(strings[0], (Player) commandSender, new String[0], false);
+        menuManager.openMenu(strings[0], (Player) commandSender, new String[0], false);
         return true;
       } else {
         sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
