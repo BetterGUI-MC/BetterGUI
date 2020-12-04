@@ -14,6 +14,7 @@ import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginCommandManager;
 import me.hsgamer.hscore.bukkit.command.CommandManager;
+import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
@@ -30,9 +31,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class BetterGUI extends JavaPlugin {
@@ -133,7 +134,7 @@ public final class BetterGUI extends JavaPlugin {
     Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
       loadCommands();
 //      addonManager.enableAddons();
-//      loadMenuConfig();
+      loadMenuConfig();
 //      addonManager.callPostEnable();
       CommandManager.syncCommand();
 //      addonDownloader.createMenu();
@@ -141,6 +142,38 @@ public final class BetterGUI extends JavaPlugin {
         enableMetrics();
       }
     });
+  }
+
+  /**
+   * Load the menu config
+   */
+  public void loadMenuConfig() {
+    File menusFolder = new File(getDataFolder(), "menu");
+    if (!menusFolder.exists() && menusFolder.mkdirs()) {
+      saveResource("menu" + File.separator + "example.yml", false);
+    }
+    for (PluginConfig pluginConfig : getMenuConfig(menusFolder)) {
+      menuManager.registerMenu(pluginConfig);
+    }
+  }
+
+  /**
+   * Get the menu config
+   *
+   * @param file the folder
+   *
+   * @return the menu config
+   */
+  private List<PluginConfig> getMenuConfig(File file) {
+    List<PluginConfig> list = new ArrayList<>();
+    if (file.isDirectory()) {
+      for (File subFile : Objects.requireNonNull(file.listFiles())) {
+        list.addAll(getMenuConfig(subFile));
+      }
+    } else if (file.isFile() && file.getName().endsWith(".yml")) {
+      list.add(new PluginConfig(file));
+    }
+    return list;
   }
 
   /**
