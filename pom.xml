@@ -272,7 +272,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-config</artifactId>
-      <version>1.5</version>
+      <version>2.0</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
