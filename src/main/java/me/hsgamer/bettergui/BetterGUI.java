@@ -9,6 +9,7 @@ import me.hsgamer.bettergui.command.MainCommand;
 import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginCommandManager;
@@ -19,6 +20,7 @@ import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.checker.spigotmc.SimpleVersionChecker;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.expression.ExpressionUtils;
+import me.hsgamer.hscore.variable.ExternalStringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -30,6 +32,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class BetterGUI extends JavaPlugin {
@@ -107,6 +110,20 @@ public final class BetterGUI extends JavaPlugin {
   public void onEnable() {
     GUIListener.init(this);
     taskChainFactory = BukkitTaskChainFactory.create(this);
+
+    if (PlaceholderAPIHook.setupPlugin()) {
+      VariableManager.addExternalReplacer(new ExternalStringReplacer() {
+        @Override
+        public String replace(String original, UUID uuid) {
+          return PlaceholderAPIHook.setPlaceholders(original, Bukkit.getOfflinePlayer(uuid));
+        }
+
+        @Override
+        public boolean canBeReplaced(String original) {
+          return PlaceholderAPIHook.hasPlaceholders(original);
+        }
+      });
+    }
 
     if (Boolean.TRUE.equals(MainConfig.ENABLE_ALTERNATIVE_COMMAND_MANAGER.getValue())) {
       getLogger().info("Enabled alternative command manager");

@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.UUID;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
@@ -51,7 +50,7 @@ public class OpenMenuAction extends BaseAction {
       }
       taskChain.sync(() -> getInstance().getServer().getScheduler().scheduleSyncDelayedTask(getInstance(), runnable));
     } else {
-      MessageUtils.sendMessage(player, Objects.requireNonNull(MessageConfig.MENU_NOT_FOUND.getValue()));
+      MessageUtils.sendMessage(player, MessageConfig.MENU_NOT_FOUND.getValue());
     }
   }
 }
