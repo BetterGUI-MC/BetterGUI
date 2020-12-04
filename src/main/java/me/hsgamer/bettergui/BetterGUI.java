@@ -53,11 +53,6 @@ public final class BetterGUI extends JavaPlugin {
     public void onLoad() {
         instance = this;
         MessageUtils.setPrefix(MessageConfig.PREFIX::getValue);
-    }
-
-    @Override
-    public void onEnable() {
-        taskChainFactory = BukkitTaskChainFactory.create(this);
 
         if (getDescription().getVersion().contains("SNAPSHOT")) {
             getLogger().warning("You are using the development version");
@@ -75,6 +70,11 @@ public final class BetterGUI extends JavaPlugin {
                 }
             });
         }
+    }
+
+    @Override
+    public void onEnable() {
+        taskChainFactory = BukkitTaskChainFactory.create(this);
 
         if (Boolean.TRUE.equals(MainConfig.ENABLE_ALTERNATIVE_COMMAND_MANAGER.getValue())) {
             getLogger().info("Enabled alternative command manager");
