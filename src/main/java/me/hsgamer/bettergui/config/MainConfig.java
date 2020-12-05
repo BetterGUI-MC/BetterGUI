@@ -16,7 +16,7 @@ import java.util.List;
 public final class MainConfig extends PluginConfig {
 
   public static final StringConfigPath DEFAULT_MENU_TYPE = new StringConfigPath("default-menu-type", "simple");
-  public static final StringConfigPath DEFAULT_ICON_TYPE = new StringConfigPath("default-icon-type", "simple");
+  public static final StringConfigPath DEFAULT_BUTTON_TYPE = new StringConfigPath("default-button-type", "simple");
   public static final BooleanConfigPath METRICS = new BooleanConfigPath("metrics", true);
   public static final BooleanConfigPath MODERN_CLICK_TYPE = new BooleanConfigPath("use-modern-click-type", false);
   public static final BooleanConfigPath REPLACE_ALL_VARIABLES = new BooleanConfigPath("replace-all-variables-each-check", true);

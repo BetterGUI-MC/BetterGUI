@@ -14,10 +14,10 @@ import java.util.Optional;
  */
 public class MenuBuilder extends Builder<String, Menu> {
   public MenuBuilder() {
-    registerDefaultMenu();
+    registerDefaultMenus();
   }
 
-  private void registerDefaultMenu() {
+  private void registerDefaultMenus() {
 
   }
 
