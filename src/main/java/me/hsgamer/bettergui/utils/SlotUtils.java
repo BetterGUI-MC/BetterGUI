@@ -29,20 +29,20 @@ public class SlotUtils {
     List<Integer> slots = new ArrayList<>();
     Map<String, Object> map = new CaseInsensitiveStringHashMap<>(section.getValues(false));
 
-    if (map.containsKey(SlotSetting.X) || map.containsKey(SlotSetting.Y)) {
+    if (map.containsKey(Setting.X) || map.containsKey(Setting.Y)) {
       int x = 1;
       int y = 1;
-      if (map.containsKey(SlotSetting.X)) {
-        x = Integer.parseInt(String.valueOf(map.get(SlotSetting.X)));
+      if (map.containsKey(Setting.X)) {
+        x = Integer.parseInt(String.valueOf(map.get(Setting.X)));
       }
-      if (map.containsKey(SlotSetting.Y)) {
-        y = Integer.parseInt(String.valueOf(map.get(SlotSetting.Y)));
+      if (map.containsKey(Setting.Y)) {
+        y = Integer.parseInt(String.valueOf(map.get(Setting.Y)));
       }
       slots.add((y - 1) * 9 + x - 1);
     }
-    if (map.containsKey(SlotSetting.SLOT)) {
+    if (map.containsKey(Setting.SLOT)) {
       slots.addAll(Arrays
-        .stream(String.valueOf(map.get(SlotSetting.SLOT)).split(","))
+        .stream(String.valueOf(map.get(Setting.SLOT)).split(","))
         .map(String::trim)
         .flatMap(SlotUtils::generateSlots).collect(Collectors.toList()));
     }
@@ -76,13 +76,13 @@ public class SlotUtils {
     return Stream.empty();
   }
 
-  public static class SlotSetting {
+  public static class Setting {
 
     static final String X = "position-x";
     static final String Y = "position-y";
     static final String SLOT = "slot";
 
-    private SlotSetting() {
+    private Setting() {
       // EMPTY
     }
   }
