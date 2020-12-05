@@ -51,16 +51,9 @@ public class ActionBuilder extends Builder<String, Action> {
         String name = split[0];
         String value = split.length > 1 ? split[1] : "";
 
-        return build(name.trim(), value.trim())
-          .map(action -> {
-            action.setMenu(menu);
-            return action;
-          })
-          .orElseGet(() -> {
-            Action action = new PlayerAction(string.trim());
-            action.setMenu(menu);
-            return action;
-          });
+        Action action = build(name.trim(), value.trim()).orElseGet(() -> new PlayerAction(string.trim()));
+        action.setMenu(menu);
+        return action;
       })
       .collect(Collectors.toList());
   }
