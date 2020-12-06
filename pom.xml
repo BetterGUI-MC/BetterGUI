@@ -75,6 +75,24 @@
                   <pattern>me.hsgamer.hscore</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.core</shadedPattern>
                 </relocation>
+
+                <!-- EvalEx -->
+                <relocation>
+                  <pattern>com.udojava.evalex</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.evalex</shadedPattern>
+                </relocation>
+
+                <!-- SimpleYAMl -->
+                <relocation>
+                  <pattern>org.simpleyaml</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.simpleyaml</shadedPattern>
+                </relocation>
+
+                <!-- SimpleBukkitYAMl -->
+                <relocation>
+                  <pattern>me.hsgamer.simplebukkityaml</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.simplebukkityaml</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>

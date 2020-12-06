@@ -56,7 +56,7 @@ public final class MenuManager {
     if (menuMap.containsKey(name)) {
       plugin.getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
     } else {
-      menuMap.put(name, MenuBuilder.INSTANCE.getMenu(name, config));
+      Optional.ofNullable(MenuBuilder.INSTANCE.getMenu(name, config)).ifPresent(menu -> menuMap.put(name, menu));
     }
   }
 
