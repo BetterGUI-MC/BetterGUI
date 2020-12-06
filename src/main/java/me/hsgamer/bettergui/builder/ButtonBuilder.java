@@ -7,8 +7,10 @@ import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import org.simpleyaml.configuration.ConfigurationSection;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The button builder
@@ -47,5 +49,20 @@ public class ButtonBuilder extends Builder<Menu, WrappedButton> {
       button.setFromSection(section);
     }
     return button;
+  }
+
+  /**
+   * Get the child buttons from the parent button
+   *
+   * @param parentButton the parent button
+   * @param section      the child section
+   *
+   * @return the child buttons
+   */
+  public List<WrappedButton> getChildButtons(WrappedButton parentButton, ConfigurationSection section) {
+    return section.getKeys(false)
+      .stream()
+      .map(key -> getButton(parentButton.getMenu(), parentButton.getName() + "_child_" + key, section.getConfigurationSection(key)))
+      .collect(Collectors.toList());
   }
 }
