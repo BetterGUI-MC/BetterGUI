@@ -10,8 +10,17 @@ import org.simpleyaml.configuration.ConfigurationSection;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * The button builder
+ */
 public class ButtonBuilder extends Builder<Menu, WrappedButton> {
-  public ButtonBuilder() {
+
+  /**
+   * The instance of the button builder
+   */
+  public static final ButtonBuilder INSTANCE = new ButtonBuilder();
+
+  private ButtonBuilder() {
     registerDefaultButtons();
   }
 

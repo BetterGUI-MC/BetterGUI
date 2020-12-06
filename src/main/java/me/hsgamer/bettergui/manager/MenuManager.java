@@ -1,11 +1,11 @@
 package me.hsgamer.bettergui.manager;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.simpleyaml.configuration.file.FileConfiguration;
 
 import java.util.*;
@@ -17,10 +17,10 @@ import java.util.logging.Level;
 public final class MenuManager {
 
   private final Map<String, Menu> menuMap = new HashMap<>();
-  private final MenuBuilder menuBuilder;
+  private final JavaPlugin plugin;
 
-  public MenuManager(MenuBuilder menuBuilder) {
-    this.menuBuilder = menuBuilder;
+  public MenuManager(JavaPlugin plugin) {
+    this.plugin = plugin;
   }
 
   /**
@@ -54,9 +54,9 @@ public final class MenuManager {
     String name = file.getFileName();
     FileConfiguration config = file.getConfig();
     if (menuMap.containsKey(name)) {
-      BetterGUI.getInstance().getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
+      plugin.getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
     } else {
-      menuMap.put(name, menuBuilder.getMenu(name, config));
+      menuMap.put(name, MenuBuilder.INSTANCE.getMenu(name, config));
     }
   }
 

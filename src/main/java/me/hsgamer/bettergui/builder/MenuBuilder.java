@@ -13,7 +13,13 @@ import java.util.Optional;
  * The menu builder
  */
 public class MenuBuilder extends Builder<String, Menu> {
-  public MenuBuilder() {
+
+  /**
+   * The instance of the menu builder
+   */
+  public static final MenuBuilder INSTANCE = new MenuBuilder();
+
+  private MenuBuilder() {
     registerDefaultMenus();
   }
 

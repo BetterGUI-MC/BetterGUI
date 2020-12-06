@@ -6,6 +6,7 @@ import co.aikar.taskchain.TaskChainFactory;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
+import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.command.GetAddonsCommand;
 import me.hsgamer.bettergui.command.MainCommand;
 import me.hsgamer.bettergui.command.OpenCommand;
@@ -40,11 +41,7 @@ public final class BetterGUI extends JavaPlugin {
   private final MainConfig mainConfig = new MainConfig(this);
   private final MessageConfig messageConfig = new MessageConfig(this);
 
-  private final MenuBuilder menuBuilder = new MenuBuilder();
-  private final ActionBuilder actionBuilder = new ActionBuilder();
-  private final ButtonBuilder buttonBuilder = new ButtonBuilder();
-
-  private final MenuManager menuManager = new MenuManager(menuBuilder);
+  private final MenuManager menuManager = new MenuManager(this);
   private final PluginCommandManager commandManager = new PluginCommandManager(this);
   private final BetterGUIAddonManager addonManager = new BetterGUIAddonManager(this);
 
@@ -204,9 +201,11 @@ public final class BetterGUI extends JavaPlugin {
     HandlerList.unregisterAll(this);
     commandManager.clearMenuCommand();
     menuManager.clear();
+    RequirementBuilder.INSTANCE.unregisterAll();
+    ButtonBuilder.INSTANCE.unregisterAll();
+    ActionBuilder.INSTANCE.unregisterAll();
+    MenuBuilder.INSTANCE.unregisterAll();
     addonManager.disableAddons();
-    actionBuilder.unregisterAll();
-    menuBuilder.unregisterAll();
     commandManager.unregisterAll();
     PluginVariableManager.unregisterAll();
     VariableManager.clearExternalReplacers();
@@ -231,30 +230,12 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   /**
-   * Get the menu builder
-   *
-   * @return the menu builder
-   */
-  public MenuBuilder getMenuBuilder() {
-    return menuBuilder;
-  }
-
-  /**
    * Get the menu manager
    *
    * @return the menu manager
    */
   public MenuManager getMenuManager() {
     return menuManager;
-  }
-
-  /**
-   * Get the action builder
-   *
-   * @return the action builder
-   */
-  public ActionBuilder getActionBuilder() {
-    return actionBuilder;
   }
 
   /**
@@ -273,14 +254,5 @@ public final class BetterGUI extends JavaPlugin {
    */
   public BetterGUIAddonManager getAddonManager() {
     return addonManager;
-  }
-
-  /**
-   * Get the button builder
-   *
-   * @return the button builder
-   */
-  public ButtonBuilder getButtonBuilder() {
-    return buttonBuilder;
   }
 }

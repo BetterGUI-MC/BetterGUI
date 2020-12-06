@@ -13,7 +13,13 @@ import java.util.stream.Collectors;
  * The action builder
  */
 public class ActionBuilder extends Builder<String, Action> {
-  public ActionBuilder() {
+
+  /**
+   * The instance of the action builder
+   */
+  public static final ActionBuilder INSTANCE = new ActionBuilder();
+
+  private ActionBuilder() {
     registerDefaultActions();
   }
 
