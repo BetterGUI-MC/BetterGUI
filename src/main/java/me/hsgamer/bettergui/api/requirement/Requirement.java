@@ -46,18 +46,4 @@ public interface Requirement extends MenuElement {
    * @param menu the menu
    */
   void setMenu(Menu menu);
-
-  /**
-   * Whether the requirement is in inverted mode
-   *
-   * @return true if it is
-   */
-  boolean isInverted();
-
-  /**
-   * Set the inverted mode
-   *
-   * @param inverted whether it's in inverted mode
-   */
-  void setInverted(boolean inverted);
 }

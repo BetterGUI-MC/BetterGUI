@@ -13,7 +13,6 @@ public abstract class BaseRequirement<V> implements Requirement {
 
   private final String name;
   protected Object value;
-  private boolean inverted;
   private Menu menu;
 
   public BaseRequirement(String name) {
@@ -47,15 +46,5 @@ public abstract class BaseRequirement<V> implements Requirement {
   @Override
   public String getName() {
     return name;
-  }
-
-  @Override
-  public boolean isInverted() {
-    return inverted;
-  }
-
-  @Override
-  public void setInverted(boolean inverted) {
-    this.inverted = inverted;
   }
 }
