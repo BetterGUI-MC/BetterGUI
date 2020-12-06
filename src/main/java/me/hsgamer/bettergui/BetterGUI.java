@@ -201,11 +201,11 @@ public final class BetterGUI extends JavaPlugin {
     HandlerList.unregisterAll(this);
     commandManager.clearMenuCommand();
     menuManager.clear();
+    addonManager.disableAddons();
     RequirementBuilder.INSTANCE.unregisterAll();
     ButtonBuilder.INSTANCE.unregisterAll();
     ActionBuilder.INSTANCE.unregisterAll();
     MenuBuilder.INSTANCE.unregisterAll();
-    addonManager.disableAddons();
     commandManager.unregisterAll();
     PluginVariableManager.unregisterAll();
     VariableManager.clearExternalReplacers();
