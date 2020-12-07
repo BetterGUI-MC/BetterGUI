@@ -4,6 +4,8 @@ import me.hsgamer.bettergui.api.menu.MenuElement;
 import me.hsgamer.hscore.bukkit.gui.Button;
 import org.simpleyaml.configuration.ConfigurationSection;
 
+import java.util.UUID;
+
 /**
  * The wrapped button to use in Menus
  */
@@ -29,4 +31,11 @@ public interface WrappedButton extends Button, MenuElement {
    * @param name the name
    */
   void setName(String name);
+
+  /**
+   * Refresh the button for the unique id
+   *
+   * @param uuid the unique id
+   */
+  void refresh(UUID uuid);
 }
