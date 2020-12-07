@@ -72,6 +72,10 @@
 
                 <!-- HSCore -->
                 <relocation>
+                  <pattern>me.hsgamer.hscore.bukkit.item.modifier</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.modifier</shadedPattern>
+                </relocation>
+                <relocation>
                   <pattern>me.hsgamer.hscore</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.core</shadedPattern>
                 </relocation>
@@ -269,6 +273,11 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-addon</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-item</artifactId>
       <version>2.0</version>
     </dependency>
   </dependencies>
