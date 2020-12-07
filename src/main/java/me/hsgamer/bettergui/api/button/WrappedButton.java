@@ -14,7 +14,7 @@ public interface WrappedButton extends Button, MenuElement {
   /**
    * Called when setting options
    *
-   * @param section the section of that icon in the config
+   * @param section the section of that button in the config
    */
   void setFromSection(ConfigurationSection section);
 

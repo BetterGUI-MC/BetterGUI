@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.button.EmptyButton;
 import me.hsgamer.bettergui.button.MenuButton;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.hscore.builder.Builder;
@@ -29,6 +30,7 @@ public class ButtonBuilder extends Builder<Menu, WrappedButton> {
 
   private void registerDefaultButtons() {
     register(MenuButton::new, "simple");
+    register(EmptyButton::new, "empty");
   }
 
   /**
