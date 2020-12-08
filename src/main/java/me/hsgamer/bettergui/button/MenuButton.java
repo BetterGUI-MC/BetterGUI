@@ -12,9 +12,11 @@ import me.hsgamer.bettergui.utils.CommonStringReplacers;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.item.ItemBuilder;
+import me.hsgamer.hscore.bukkit.item.modifier.MaterialModifier;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.simpleyaml.configuration.ConfigurationSection;
@@ -24,6 +26,7 @@ import java.util.*;
 public class MenuButton implements WrappedButton {
   private final Menu menu;
   private final ItemBuilder itemBuilder = new ItemBuilder()
+    .addItemModifier(new MaterialModifier().setMaterial(Material.STONE)) // Hacky fix the getItemMeta exception
     .addStringReplacer("variable", CommonStringReplacers.VARIABLE)
     .addStringReplacer("colorize", CommonStringReplacers.COLORIZE)
     .addStringReplacer("expression", CommonStringReplacers.EXPRESSION);

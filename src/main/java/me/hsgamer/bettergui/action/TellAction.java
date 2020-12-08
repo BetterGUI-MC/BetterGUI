@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.action;
 
 import co.aikar.taskchain.TaskChain;
 import me.hsgamer.bettergui.api.action.BaseAction;
+import me.hsgamer.bettergui.utils.CommonStringReplacers;
 import org.bukkit.Bukkit;
 
 import java.util.Optional;
@@ -19,7 +20,7 @@ public class TellAction extends BaseAction {
 
   @Override
   public void addToTaskChain(UUID uuid, TaskChain<?> taskChain) {
-    String replacedString = getReplacedString(uuid);
+    String replacedString = CommonStringReplacers.COLORIZE.replace(getReplacedString(uuid));
     Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> taskChain.sync(() -> player.sendMessage(replacedString)));
   }
 }

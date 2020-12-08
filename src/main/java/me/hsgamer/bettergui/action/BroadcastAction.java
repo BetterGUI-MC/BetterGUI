@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.action;
 
 import co.aikar.taskchain.TaskChain;
 import me.hsgamer.bettergui.api.action.BaseAction;
+import me.hsgamer.bettergui.utils.CommonStringReplacers;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.Bukkit;
 
@@ -19,6 +20,6 @@ public class BroadcastAction extends BaseAction {
 
   @Override
   public void addToTaskChain(UUID uuid, TaskChain<?> taskChain) {
-    taskChain.sync(() -> Bukkit.broadcastMessage(getReplacedString(uuid)));
+    taskChain.sync(() -> Bukkit.broadcastMessage(CommonStringReplacers.COLORIZE.replace(getReplacedString(uuid))));
   }
 }
