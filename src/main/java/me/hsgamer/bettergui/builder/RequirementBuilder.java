@@ -2,6 +2,10 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
+import me.hsgamer.bettergui.requirement.ConditionRequirement;
+import me.hsgamer.bettergui.requirement.CooldownRequirement;
+import me.hsgamer.bettergui.requirement.LevelRequirement;
+import me.hsgamer.bettergui.requirement.PermissionRequirement;
 import me.hsgamer.bettergui.requirementset.RequirementSet;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
@@ -28,7 +32,10 @@ public class RequirementBuilder extends Builder<String, Requirement> {
   }
 
   private void registerDefaultRequirements() {
-
+    register(ConditionRequirement::new, "condition");
+    register(LevelRequirement::new, "level");
+    register(PermissionRequirement::new, "permission");
+    register(CooldownRequirement::new, "cooldown");
   }
 
   /**
