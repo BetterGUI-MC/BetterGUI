@@ -88,13 +88,13 @@ public class SimpleMenu extends Menu {
       }
       if (!closeRequirement.check(uuid)) {
         closeRequirement.sendFailActions(uuid);
-        return true;
+        return false;
       }
       closeRequirement.getCheckedRequirement(uuid).ifPresent(iconRequirementSet -> {
         iconRequirementSet.take(uuid);
         iconRequirementSet.sendSuccessActions(uuid);
       });
-      return false;
+      return true;
     });
   }
 
