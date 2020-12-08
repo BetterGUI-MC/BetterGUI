@@ -113,6 +113,7 @@ public class MenuButton implements WrappedButton {
 
   @Override
   public void stop() {
-    // EMPTY
+    actionMap.values().forEach(List::clear);
+    actionMap.clear();
   }
 }
