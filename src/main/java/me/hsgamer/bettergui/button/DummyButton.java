@@ -48,7 +48,7 @@ public class DummyButton implements WrappedButton {
 
   @Override
   public void refresh(UUID uuid) {
-
+    // EMPTY
   }
 
   @Override
@@ -58,7 +58,7 @@ public class DummyButton implements WrappedButton {
 
   @Override
   public ItemStack getItemStack(UUID uuid) {
-    return null;
+    return itemBuilder.build(uuid);
   }
 
   @Override
