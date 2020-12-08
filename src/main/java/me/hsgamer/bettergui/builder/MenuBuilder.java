@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.config.MainConfig;
+import me.hsgamer.bettergui.menu.SimpleMenu;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import org.simpleyaml.configuration.file.FileConfiguration;
@@ -24,7 +25,7 @@ public class MenuBuilder extends Builder<String, Menu> {
   }
 
   private void registerDefaultMenus() {
-
+    register(SimpleMenu::new, "simple");
   }
 
   /**
