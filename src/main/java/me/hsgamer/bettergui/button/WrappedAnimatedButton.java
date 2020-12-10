@@ -28,12 +28,12 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
   @Override
   protected Button createButton(ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
-    int update = Optional.ofNullable(keys.get("update"))
+    long update = Optional.ofNullable(keys.get("update"))
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
       .filter(bigDecimal -> bigDecimal.compareTo(BigDecimal.ZERO) > 0)
-      .map(BigDecimal::intValue)
-      .orElse(0);
+      .map(BigDecimal::longValue)
+      .orElse(0L);
     boolean async = Optional.ofNullable(keys.get("async"))
       .map(String::valueOf)
       .map(Boolean::parseBoolean)
