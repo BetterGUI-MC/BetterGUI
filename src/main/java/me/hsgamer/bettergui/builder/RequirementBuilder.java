@@ -2,11 +2,11 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
-import me.hsgamer.bettergui.requirement.ConditionRequirement;
-import me.hsgamer.bettergui.requirement.CooldownRequirement;
-import me.hsgamer.bettergui.requirement.LevelRequirement;
-import me.hsgamer.bettergui.requirement.PermissionRequirement;
-import me.hsgamer.bettergui.requirementset.RequirementSet;
+import me.hsgamer.bettergui.requirement.type.ConditionRequirement;
+import me.hsgamer.bettergui.requirement.type.CooldownRequirement;
+import me.hsgamer.bettergui.requirement.type.LevelRequirement;
+import me.hsgamer.bettergui.requirement.type.PermissionRequirement;
+import me.hsgamer.bettergui.requirement.RequirementSet;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import org.simpleyaml.configuration.ConfigurationSection;

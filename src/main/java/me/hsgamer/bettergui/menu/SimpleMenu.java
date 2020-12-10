@@ -8,7 +8,7 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.bettergui.requirementset.RequirementSetting;
+import me.hsgamer.bettergui.requirement.RequirementSetting;
 import me.hsgamer.bettergui.utils.CommonStringReplacers;
 import me.hsgamer.bettergui.utils.SlotUtils;
 import me.hsgamer.hscore.bukkit.gui.GUIDisplay;

@@ -1,4 +1,4 @@
-package me.hsgamer.bettergui.requirement;
+package me.hsgamer.bettergui.requirement.type;
 
 import me.hsgamer.bettergui.api.requirement.BaseRequirement;
 import me.hsgamer.hscore.common.CollectionUtils;

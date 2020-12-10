@@ -1,4 +1,4 @@
-package me.hsgamer.bettergui.requirementset;
+package me.hsgamer.bettergui.requirement;
 
 import java.util.HashMap;
 import java.util.Map;

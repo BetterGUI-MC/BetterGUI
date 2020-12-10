@@ -1,4 +1,4 @@
-package me.hsgamer.bettergui.requirementset;
+package me.hsgamer.bettergui.requirement;
 
 import co.aikar.taskchain.TaskChain;
 import me.hsgamer.bettergui.BetterGUI;
