@@ -34,6 +34,7 @@ public class ButtonBuilder extends Builder<Menu, WrappedButton> {
     register(WrappedAnimatedButton::new, "animated", "animate", "anim");
     register(WrappedListButton::new, "list");
     register(WrappedAirButton::new, "air");
+    register(WrappedPredicateButton::new, "predicate", "requirement");
   }
 
   /**

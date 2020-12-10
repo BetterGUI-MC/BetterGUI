@@ -13,7 +13,7 @@ import java.util.UUID;
  */
 public abstract class BaseWrappedButton implements WrappedButton {
   private final Menu menu;
-  private Button button;
+  protected Button button;
   private String name = "";
 
   /**

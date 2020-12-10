@@ -14,6 +14,7 @@ import me.hsgamer.bettergui.utils.SlotUtils;
 import me.hsgamer.hscore.bukkit.gui.GUIDisplay;
 import me.hsgamer.hscore.bukkit.gui.GUIHolder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
 import org.bukkit.Bukkit;
@@ -36,8 +37,8 @@ public class SimpleMenu extends Menu {
   private final GUIHolder guiHolder;
   private final List<Action> openActions = new LinkedList<>();
   private final List<Action> closeActions = new LinkedList<>();
-  private final RequirementSetting viewRequirement = new RequirementSetting(this, getName());
-  private final RequirementSetting closeRequirement = new RequirementSetting(this, getName());
+  private final RequirementSetting viewRequirement = new RequirementSetting(this, getName() + "_view");
+  private final RequirementSetting closeRequirement = new RequirementSetting(this, getName() + "_close");
   private final List<UUID> forceClose = Collections.synchronizedList(new ArrayList<>());
   private final Map<UUID, BukkitTask> updateTasks = new ConcurrentHashMap<>();
   private long ticks = 0;
@@ -89,9 +90,9 @@ public class SimpleMenu extends Menu {
         closeRequirement.sendFailActions(uuid);
         return false;
       }
-      closeRequirement.getCheckedRequirement(uuid).ifPresent(iconRequirementSet -> {
-        iconRequirementSet.take(uuid);
-        iconRequirementSet.sendSuccessActions(uuid);
+      closeRequirement.getCheckedRequirement(uuid).ifPresent(requirementSet -> {
+        requirementSet.take(uuid);
+        requirementSet.sendSuccessActions(uuid);
       });
       return true;
     });
@@ -106,21 +107,22 @@ public class SimpleMenu extends Menu {
         continue;
       }
       ConfigurationSection section = (ConfigurationSection) value;
+      Map<String, Object> values = new CaseInsensitiveStringHashMap<>(section.getValues(false));
 
       if (key.equalsIgnoreCase("menu-settings")) {
 
-        Optional.ofNullable(section.get("open-action")).ifPresent(o -> this.openActions.addAll(ActionBuilder.INSTANCE.getActions(this, o)));
+        Optional.ofNullable(values.get("open-action")).ifPresent(o -> this.openActions.addAll(ActionBuilder.INSTANCE.getActions(this, o)));
 
-        Optional.ofNullable(section.get("close-action")).ifPresent(o -> this.closeActions.addAll(ActionBuilder.INSTANCE.getActions(this, o)));
+        Optional.ofNullable(values.get("close-action")).ifPresent(o -> this.closeActions.addAll(ActionBuilder.INSTANCE.getActions(this, o)));
 
-        Optional.ofNullable(section.get("inventory-type")).ifPresent(o -> {
+        Optional.ofNullable(values.get("inventory-type")).ifPresent(o -> {
           try {
             this.guiHolder.setInventoryType(InventoryType.valueOf(String.valueOf(o).toUpperCase(Locale.ROOT)));
           } catch (IllegalArgumentException e) {
             getInstance().getLogger().warning(() -> "The menu \"" + getName() + "\" contains an illegal inventory type");
           }
         });
-        Optional.ofNullable(section.get("inventory")).ifPresent(o -> {
+        Optional.ofNullable(values.get("inventory")).ifPresent(o -> {
           try {
             this.guiHolder.setInventoryType(InventoryType.valueOf(String.valueOf(o).toUpperCase(Locale.ROOT)));
           } catch (IllegalArgumentException e) {
@@ -128,29 +130,29 @@ public class SimpleMenu extends Menu {
           }
         });
 
-        Optional.ofNullable(section.get("rows"))
+        Optional.ofNullable(values.get("rows"))
           .map(String::valueOf)
           .flatMap(Validate::getNumber)
           .map(BigDecimal::intValue)
           .map(i -> i * 9)
           .ifPresent(this.guiHolder::setSize);
 
-        this.ticks = Optional.ofNullable(section.get("auto-refresh")).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::longValue).orElse(this.ticks);
-        this.ticks = Optional.ofNullable(section.get("ticks")).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::longValue).orElse(this.ticks);
+        this.ticks = Optional.ofNullable(values.get("auto-refresh")).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::longValue).orElse(this.ticks);
+        this.ticks = Optional.ofNullable(values.get("ticks")).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::longValue).orElse(this.ticks);
 
-        Optional.ofNullable(section.get("view-requirement"))
+        Optional.ofNullable(values.get("view-requirement"))
           .filter(o -> o instanceof ConfigurationSection)
           .map(o -> (ConfigurationSection) o)
           .ifPresent(this.viewRequirement::loadFromSection);
 
-        Optional.ofNullable(section.get("close-requirement"))
+        Optional.ofNullable(values.get("close-requirement"))
           .filter(o -> o instanceof ConfigurationSection)
           .map(o -> (ConfigurationSection) o)
           .ifPresent(this.closeRequirement::loadFromSection);
 
-        this.permission = Optional.ofNullable(section.get("permission")).map(String::valueOf).map(Permission::new).orElse(this.permission);
+        this.permission = Optional.ofNullable(values.get("permission")).map(String::valueOf).map(Permission::new).orElse(this.permission);
 
-        Optional.ofNullable(section.get("command"))
+        Optional.ofNullable(values.get("command"))
           .map(o -> CollectionUtils.createStringListFromObject(o, true))
           .ifPresent(list -> {
             for (String s : list) {
@@ -162,14 +164,14 @@ public class SimpleMenu extends Menu {
             }
           });
 
-        Optional.ofNullable(section.get("name")).map(String::valueOf).ifPresent(s -> guiHolder.setTitleFunction(uuid -> {
+        Optional.ofNullable(values.get("name")).map(String::valueOf).ifPresent(s -> guiHolder.setTitleFunction(uuid -> {
           String title = s;
           title = CommonStringReplacers.VARIABLE.replace(title, uuid);
           title = CommonStringReplacers.EXPRESSION.replace(title, uuid);
           title = CommonStringReplacers.COLORIZE.replace(title, uuid);
           return title;
         }));
-        Optional.ofNullable(section.get("title")).map(String::valueOf).ifPresent(s -> guiHolder.setTitleFunction(uuid -> {
+        Optional.ofNullable(values.get("title")).map(String::valueOf).ifPresent(s -> guiHolder.setTitleFunction(uuid -> {
           String title = s;
           title = CommonStringReplacers.VARIABLE.replace(title, uuid);
           title = CommonStringReplacers.EXPRESSION.replace(title, uuid);
@@ -183,7 +185,7 @@ public class SimpleMenu extends Menu {
       } else {
         WrappedButton button = ButtonBuilder.INSTANCE.getButton(this, "menu_" + getName() + "_button_" + key, section);
         button.init();
-        SlotUtils.getSlots(section).forEach(slot -> guiHolder.setButton(slot, button));
+        SlotUtils.getSlots(values).forEach(slot -> guiHolder.setButton(slot, button));
       }
     }
 
@@ -209,9 +211,9 @@ public class SimpleMenu extends Menu {
         viewRequirement.sendFailActions(uuid);
         return false;
       }
-      viewRequirement.getCheckedRequirement(uuid).ifPresent(iconRequirementSet -> {
-        iconRequirementSet.take(uuid);
-        iconRequirementSet.sendSuccessActions(uuid);
+      viewRequirement.getCheckedRequirement(uuid).ifPresent(requirementSet -> {
+        requirementSet.take(uuid);
+        requirementSet.sendSuccessActions(uuid);
       });
     }
 

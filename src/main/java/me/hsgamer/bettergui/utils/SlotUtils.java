@@ -1,8 +1,6 @@
 package me.hsgamer.bettergui.utils;
 
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.common.Validate;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -21,13 +19,12 @@ public class SlotUtils {
   /**
    * Get the slots
    *
-   * @param section the section
+   * @param map the value map
    *
    * @return the slots
    */
-  public static List<Integer> getSlots(ConfigurationSection section) {
+  public static List<Integer> getSlots(Map<String, Object> map) {
     List<Integer> slots = new ArrayList<>();
-    Map<String, Object> map = new CaseInsensitiveStringHashMap<>(section.getValues(false));
 
     if (map.containsKey(Setting.X) || map.containsKey(Setting.Y)) {
       int x = 1;

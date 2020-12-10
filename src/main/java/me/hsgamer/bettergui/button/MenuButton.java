@@ -45,13 +45,7 @@ public class MenuButton implements WrappedButton {
     if (o instanceof ConfigurationSection) {
       Map<String, Object> keys = new CaseInsensitiveStringMap<>(((ConfigurationSection) o).getValues(false));
       List<Action> defaultActions = Optional.ofNullable(keys.get("default")).map(value -> ActionBuilder.INSTANCE.getActions(menu, value)).orElse(Collections.emptyList());
-      clickTypeMap.forEach((clickTypeName, clickType) -> {
-        if (keys.containsKey(clickTypeName)) {
-          actionMap.put(clickType, ActionBuilder.INSTANCE.getActions(menu, keys.get(clickTypeName)));
-        } else {
-          actionMap.put(clickType, defaultActions);
-        }
-      });
+      clickTypeMap.forEach((clickTypeName, clickType) -> actionMap.put(clickType, Optional.ofNullable(keys.get(clickTypeName)).map(obj -> ActionBuilder.INSTANCE.getActions(menu, obj)).orElse(defaultActions)));
     } else {
       clickTypeMap.values().forEach(advancedClickType -> actionMap.put(advancedClickType, ActionBuilder.INSTANCE.getActions(menu, o)));
     }
