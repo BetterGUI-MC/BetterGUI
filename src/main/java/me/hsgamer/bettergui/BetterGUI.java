@@ -211,6 +211,7 @@ public final class BetterGUI extends JavaPlugin {
     commandManager.unregisterAll();
     PluginVariableManager.unregisterAll();
     VariableManager.clearExternalReplacers();
+    Bukkit.getScheduler().cancelTasks(this);
   }
 
   /**
