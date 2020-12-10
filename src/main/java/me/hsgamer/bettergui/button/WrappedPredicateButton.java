@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WrappedPredicateButton extends BaseWrappedButton {
-  private final RequirementSetting viewRequirement = new RequirementSetting(getMenu(), getName() + "_view");
+  private RequirementSetting viewRequirement;
   private final Map<AdvancedClickType, RequirementSetting> clickRequirements = new ConcurrentHashMap<>();
   private final List<UUID> checked = Collections.synchronizedList(new ArrayList<>());
   private WrappedButton wrappedButton = new EmptyButton(getMenu());
@@ -37,11 +37,13 @@ public class WrappedPredicateButton extends BaseWrappedButton {
   private void setClickRequirements(ConfigurationSection section) {
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
+
     RequirementSetting defaultSetting = new RequirementSetting(getMenu(), getName() + "_click_default");
     Optional.ofNullable(keys.get("default"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> (ConfigurationSection) o)
       .ifPresent(defaultSetting::loadFromSection);
+
     this.checkOnlyOnCreation = Optional.ofNullable(keys.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.checkOnlyOnCreation);
     clickTypeMap.forEach((clickTypeName, clickType) ->
       clickRequirements.put(clickType, Optional.ofNullable(keys.get(clickTypeName))
@@ -69,6 +71,8 @@ public class WrappedPredicateButton extends BaseWrappedButton {
       .map(o -> (ConfigurationSection) o)
       .map(subsection -> ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_fallback", subsection))
       .orElse(this.fallbackWrappedButton);
+
+    this.viewRequirement = new RequirementSetting(getMenu(), getName() + "_view");
     Optional.ofNullable(keys.get("view-requirement"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> (ConfigurationSection) o)
