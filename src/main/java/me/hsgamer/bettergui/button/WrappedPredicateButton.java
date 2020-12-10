@@ -19,8 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class WrappedPredicateButton extends BaseWrappedButton {
   private final List<UUID> checked = Collections.synchronizedList(new ArrayList<>());
-  private WrappedButton wrappedButton = new EmptyButton(getMenu());
-  private WrappedButton fallbackWrappedButton = new EmptyButton(getMenu());
   private boolean checkOnlyOnCreation = false;
 
   /**
@@ -62,19 +60,18 @@ public class WrappedPredicateButton extends BaseWrappedButton {
   protected Button createButton(ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
 
-    this.wrappedButton = Optional.ofNullable(keys.get("button"))
-      .filter(o -> o instanceof ConfigurationSection)
-      .map(o -> (ConfigurationSection) o)
-      .map(subsection -> ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_button", subsection))
-      .orElse(this.wrappedButton);
-    this.fallbackWrappedButton = Optional.ofNullable(keys.get("fallback"))
+    PredicateButton predicateButton = new PredicateButton(
+      Optional.ofNullable(keys.get("button"))
+        .filter(o -> o instanceof ConfigurationSection)
+        .map(o -> (ConfigurationSection) o)
+        .map(subsection -> (Button) ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_button", subsection))
+        .orElse(Button.EMPTY)
+    );
+    Optional.ofNullable(keys.get("fallback"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> (ConfigurationSection) o)
       .map(subsection -> ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_fallback", subsection))
-      .orElse(this.fallbackWrappedButton);
-
-    PredicateButton predicateButton = new PredicateButton(this.wrappedButton);
-    predicateButton.setFallbackButton(this.fallbackWrappedButton);
+      .ifPresent(predicateButton::setFallbackButton);
 
     this.checkOnlyOnCreation = Optional.ofNullable(keys.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.checkOnlyOnCreation);
 
@@ -125,7 +122,16 @@ public class WrappedPredicateButton extends BaseWrappedButton {
   @Override
   public void refresh(UUID uuid) {
     checked.remove(uuid);
-    wrappedButton.refresh(uuid);
-    fallbackWrappedButton.refresh(uuid);
+    if (!(this.button instanceof PredicateButton)) {
+      return;
+    }
+    Button tempButton = ((PredicateButton) this.button).getButton();
+    if (tempButton instanceof WrappedButton) {
+      ((WrappedButton) tempButton).refresh(uuid);
+    }
+    tempButton = ((PredicateButton) this.button).getFallbackButton();
+    if (tempButton instanceof WrappedButton) {
+      ((WrappedButton) tempButton).refresh(uuid);
+    }
   }
 }

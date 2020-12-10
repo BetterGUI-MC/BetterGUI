@@ -12,14 +12,11 @@ import me.hsgamer.hscore.common.Validate;
 import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 public class WrappedAnimatedButton extends BaseWrappedButton {
-  private List<WrappedButton> wrappedButtonList;
-
   /**
    * Create a new button
    *
@@ -47,17 +44,14 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
     Optional.ofNullable(keys.get("child"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, (ConfigurationSection) o))
-      .ifPresent(frames -> {
-        wrappedButtonList = frames;
-        frames.forEach(animatedButton::addChildButtons);
-      });
+      .ifPresent(frames -> frames.forEach(animatedButton::addChildButtons));
     return animatedButton;
   }
 
   @Override
   public void refresh(UUID uuid) {
-    if (wrappedButtonList != null) {
-      wrappedButtonList.forEach(button -> button.refresh(uuid));
+    if (this.button instanceof AnimatedButton) {
+      ((AnimatedButton) this.button).getButtons().stream().filter(button -> button instanceof WrappedButton).forEach(button -> ((WrappedButton) button).refresh(uuid));
     }
   }
 }
