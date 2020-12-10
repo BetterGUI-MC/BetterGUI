@@ -33,7 +33,7 @@ public class ArgsMenu extends SimpleMenu {
     super(name);
 
     PluginVariableManager.register("menu_" + name + "_merged_args", (original, uuid) -> Optional.ofNullable(argsPerPlayer.get(uuid)).map(args -> String.join(" ", args)).orElse(""));
-    PluginVariableManager.register("menu_" + name + "arg_", (original, uuid) -> {
+    PluginVariableManager.register("menu_" + name + "_arg_", (original, uuid) -> {
       int index = argToIndexMap.getOrDefault(original, -1);
       if (argsPerPlayer.containsKey(uuid)) {
         String[] playerArgs = argsPerPlayer.get(uuid);
