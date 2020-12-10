@@ -5,5 +5,4 @@ authors: [HSGamer]
 api-version: "1.13"
 softdepend:
   - PlaceholderAPI
-  - NBTAPI
 description: ${project.description}

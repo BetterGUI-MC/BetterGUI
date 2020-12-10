@@ -1,13 +1,5 @@
 package me.hsgamer.bettergui.command;
 
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
-import static me.hsgamer.hscore.bukkit.utils.MessageUtils.sendMessage;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.MenuManager;
@@ -17,14 +9,21 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static me.hsgamer.bettergui.BetterGUI.getInstance;
+import static me.hsgamer.hscore.bukkit.utils.MessageUtils.sendMessage;
+
 public final class OpenCommand extends BukkitCommand {
 
   private final MenuManager menuManager = getInstance().getMenuManager();
 
   public OpenCommand() {
-    super("openmenu", "Open the specific menu",
-        "/openmenu <menu_name> [player] [args...]",
-        Collections.singletonList("om"));
+    super("openmenu", "Open the specific menu", "/openmenu <menu_name> [player] [args...]", Collections.singletonList("om"));
   }
 
   @Override
@@ -44,8 +43,7 @@ public final class OpenCommand extends BukkitCommand {
 
     if (strings.length == 1) {
       if (commandSender instanceof Player) {
-        menuManager
-            .openMenu(strings[0], (Player) commandSender, new String[0], false);
+        menuManager.openMenu(strings[0], (Player) commandSender, new String[0], false);
         return true;
       } else {
         sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
@@ -59,8 +57,7 @@ public final class OpenCommand extends BukkitCommand {
       return false;
     }
 
-    String[] args =
-        strings.length > 2 ? Arrays.copyOfRange(strings, 2, strings.length) : new String[0];
+    String[] args = strings.length > 2 ? Arrays.copyOfRange(strings, 2, strings.length) : new String[0];
 
     menuManager.openMenu(strings[0], player, args, true);
     return true;
@@ -72,8 +69,7 @@ public final class OpenCommand extends BukkitCommand {
     if (args.length == 1) {
       list.addAll(getInstance().getMenuManager().getMenuNames());
     } else if (args.length == 2) {
-      list.addAll(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName)
-          .collect(Collectors.toList()));
+      list.addAll(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList()));
     }
     return list;
   }

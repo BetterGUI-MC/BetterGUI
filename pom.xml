@@ -6,7 +6,7 @@
 
   <groupId>me.HSGamer</groupId>
   <artifactId>BetterGUI</artifactId>
-  <version>4.2-SNAPSHOT</version>
+  <version>5.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>BetterGUI</name>
@@ -52,74 +52,10 @@
                 </filter>
               </filters>
               <relocations>
-                <!-- FastInv -->
-                <relocation>
-                  <pattern>fr.mrmicky.fastinv</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.lib.fastinv</shadedPattern>
-                </relocation>
-
                 <!-- TaskChain -->
                 <relocation>
                   <pattern>co.aikar.taskchain</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.taskchain</shadedPattern>
-                </relocation>
-
-                <!-- Expression -->
-                <relocation>
-                  <pattern>me.hsgamer.hscore.expression</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.util.expression</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>com.udojava.evalex</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.lib.evalex</shadedPattern>
-                </relocation>
-
-                <!-- Collections -->
-                <relocation>
-                  <pattern>me.hsgamer.hscore.map</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.util.map</shadedPattern>
-                </relocation>
-
-                <!-- Updater -->
-                <relocation>
-                  <pattern>me.hsgamer.hscore.bukkit.updater</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.util.updater</shadedPattern>
-                </relocation>
-
-                <!-- Web -->
-                <relocation>
-                  <pattern>me.hsgamer.hscore.web</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.util.web</shadedPattern>
-                </relocation>
-
-                <!-- Config -->
-                <relocation>
-                  <pattern>me.hsgamer.hscore.bukkit.config</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.util.config</shadedPattern>
-                </relocation>
-
-                <!-- Config -->
-                <relocation>
-                  <pattern>me.hsgamer.hscore.bukkit.command</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.util.command</shadedPattern>
-                </relocation>
-
-                <!-- Addon -->
-                <relocation>
-                  <pattern>me.hsgamer.hscore.bukkit.addon</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.util.addon</shadedPattern>
-                </relocation>
-
-                <!-- Bukkit Utils -->
-                <relocation>
-                  <pattern>me.hsgamer.hscore.bukkit.utils</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.util</shadedPattern>
-                </relocation>
-
-                <!-- Common Utils -->
-                <relocation>
-                  <pattern>me.hsgamer.hscore.common</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.util.common</shadedPattern>
                 </relocation>
 
                 <!-- XSeries -->
@@ -133,15 +69,38 @@
                   <pattern>org.bstats</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.bstats</shadedPattern>
                 </relocation>
+
+                <!-- HSCore -->
+                <relocation>
+                  <pattern>me.hsgamer.hscore.bukkit.item.modifier</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.modifier</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>me.hsgamer.hscore</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.core</shadedPattern>
+                </relocation>
+
+                <!-- EvalEx -->
+                <relocation>
+                  <pattern>com.udojava.evalex</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.evalex</shadedPattern>
+                </relocation>
+
+                <!-- SimpleYAMl -->
+                <relocation>
+                  <pattern>org.simpleyaml</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.simpleyaml</shadedPattern>
+                </relocation>
+
+                <!-- SimpleBukkitYAMl -->
+                <relocation>
+                  <pattern>me.hsgamer.simplebukkityaml</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.simplebukkityaml</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -183,7 +142,6 @@
       <resource>
         <directory>.</directory>
         <includes>
-          <include>THIRD-PARTY.txt</include>
           <include>LICENSE</include>
         </includes>
       </resource>
@@ -218,50 +176,48 @@
   </repositories>
 
   <dependencies>
+    <!-- PaperMC -->
     <dependency>
       <groupId>com.destroystokyo.paper</groupId>
       <artifactId>paper-api</artifactId>
       <version>1.12.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>net.md-5</groupId>
-      <artifactId>bungeecord-chat</artifactId>
-      <version>1.16-R0.3</version>
-      <type>jar</type>
-      <scope>provided</scope>
-    </dependency>
+
+    <!-- TaskChain -->
     <dependency>
       <groupId>co.aikar</groupId>
       <artifactId>taskchain-bukkit</artifactId>
       <version>3.7.2</version>
     </dependency>
-    <dependency>
-      <groupId>com.github.MrMicky-FR</groupId>
-      <artifactId>FastInv</artifactId>
-      <version>99ef96d91e</version>
-      <scope>compile</scope>
-    </dependency>
+
+    <!-- PlaceholderAPI -->
     <dependency>
       <groupId>me.clip</groupId>
       <artifactId>placeholderapi</artifactId>
       <version>2.10.9</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- XSeries -->
     <dependency>
-      <groupId>me.HSGamer</groupId>
-      <artifactId>HSCore-expression</artifactId>
-      <version>1.5</version>
+      <groupId>com.github.cryptomorin</groupId>
+      <artifactId>XSeries</artifactId>
+      <version>7.6.0.0.1</version>
     </dependency>
+
+    <!-- BStats -->
     <dependency>
-      <groupId>me.HSGamer</groupId>
-      <artifactId>HSCore-collections</artifactId>
-      <version>1.5</version>
+      <groupId>org.bstats</groupId>
+      <artifactId>bstats-bukkit</artifactId>
+      <version>1.7</version>
     </dependency>
+
+    <!-- HSCore -->
     <dependency>
       <groupId>me.HSGamer</groupId>
-      <artifactId>HSCore-bukkit-updater</artifactId>
-      <version>1.5</version>
+      <artifactId>HSCore-checker-spigotmc</artifactId>
+      <version>2.2</version>
       <exclusions>
         <exclusion>
           <groupId>com.googlecode.json-simple</groupId>
@@ -271,63 +227,63 @@
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-utils</artifactId>
+      <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-config</artifactId>
-      <version>1.5</version>
+      <version>2.2</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
-      <artifactId>HSCore-bukkit-addon</artifactId>
-      <version>1.5</version>
-    </dependency>
-    <dependency>
-      <groupId>me.HSGamer</groupId>
-      <artifactId>HSCore-bukkit-command</artifactId>
-      <version>1.5</version>
+      <artifactId>HSCore-config-path</artifactId>
+      <version>2.2</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-common</artifactId>
-      <version>1.5</version>
+      <version>2.2</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
-      <artifactId>HSCore-bukkit-utils</artifactId>
-      <version>1.5</version>
+      <artifactId>HSCore-variable</artifactId>
+      <version>2.2</version>
     </dependency>
     <dependency>
-      <groupId>com.github.cryptomorin</groupId>
-      <artifactId>XSeries</artifactId>
-      <version>7.5.5</version>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-expression</artifactId>
+      <version>2.2</version>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.7.0</version>
-      <scope>test</scope>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-builder</artifactId>
+      <version>2.2</version>
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>3.6.0</version>
-      <scope>test</scope>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-gui</artifactId>
+      <version>2.2</version>
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-junit-jupiter</artifactId>
-      <version>3.6.0</version>
-      <scope>test</scope>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-command</artifactId>
+      <version>2.2</version>
     </dependency>
     <dependency>
-      <groupId>org.bstats</groupId>
-      <artifactId>bstats-bukkit</artifactId>
-      <version>1.7</version>
-      <scope>compile</scope>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-addon</artifactId>
+      <version>2.2</version>
     </dependency>
     <dependency>
-      <groupId>de.tr7zw</groupId>
-      <artifactId>item-nbt-api-plugin</artifactId>
-      <version>2.6.0</version>
-      <scope>provided</scope>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-item</artifactId>
+      <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>me.HSGamer</groupId>
+      <artifactId>HSCore-bukkit-clicktype</artifactId>
+      <version>2.2</version>
     </dependency>
   </dependencies>
 

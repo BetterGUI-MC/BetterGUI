@@ -3,64 +3,52 @@ package me.hsgamer.bettergui;
 import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
-import com.cryptomorin.xseries.XMaterial;
-import fr.mrmicky.fastinv.FastInvManager;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-import me.hsgamer.bettergui.builder.PropertyBuilder;
-import me.hsgamer.bettergui.command.AddonDownloaderCommand;
-import me.hsgamer.bettergui.command.GetAddonsCommand;
-import me.hsgamer.bettergui.command.MainCommand;
-import me.hsgamer.bettergui.command.OpenCommand;
-import me.hsgamer.bettergui.command.ReloadCommand;
+import me.hsgamer.bettergui.builder.ActionBuilder;
+import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.builder.MenuBuilder;
+import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.command.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.bettergui.downloader.AddonDownloader;
-import me.hsgamer.bettergui.downloader.AddonInfo;
-import me.hsgamer.bettergui.downloader.AddonInfo.Status;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
-import me.hsgamer.bettergui.listener.CommandListener;
-import me.hsgamer.bettergui.manager.AddonManager;
-import me.hsgamer.bettergui.manager.CommandManager;
+import me.hsgamer.bettergui.listener.AlternativeCommandListener;
+import me.hsgamer.bettergui.listener.QuitListener;
+import me.hsgamer.bettergui.manager.BetterGUIAddonManager;
 import me.hsgamer.bettergui.manager.MenuManager;
-import me.hsgamer.bettergui.manager.VariableManager;
-import me.hsgamer.bettergui.object.property.item.impl.HideAttributes;
-import me.hsgamer.bettergui.object.property.item.impl.NBT;
-import me.hsgamer.bettergui.object.property.item.impl.Unbreakable;
+import me.hsgamer.bettergui.manager.PluginCommandManager;
+import me.hsgamer.bettergui.manager.PluginVariableManager;
+import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
-import me.hsgamer.hscore.bukkit.updater.VersionChecker;
-import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
+import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.hscore.common.Validate;
-import me.hsgamer.hscore.expression.ExpressionUtils;
+import me.hsgamer.hscore.checker.spigotmc.SimpleVersionChecker;
+import me.hsgamer.hscore.variable.ExternalStringReplacer;
+import me.hsgamer.hscore.variable.VariableManager;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.*;
 
 public final class BetterGUI extends JavaPlugin {
 
   private static BetterGUI instance;
-
   private static TaskChainFactory taskChainFactory;
-  private final AddonManager addonManager = new AddonManager(this);
-  private final CommandManager commandManager = new CommandManager(this);
-  private final MenuManager menuManager = new MenuManager();
-  private final AddonDownloader addonDownloader = new AddonDownloader(this);
 
   private final MainConfig mainConfig = new MainConfig(this);
   private final MessageConfig messageConfig = new MessageConfig(this);
 
+  private final MenuManager menuManager = new MenuManager(this);
+  private final PluginCommandManager commandManager = new PluginCommandManager(this);
+  private final BetterGUIAddonManager addonManager = new BetterGUIAddonManager(this);
+
   /**
-   * Create new task chain
+   * Create a new task chain
    *
-   * @param <T> the type of value
+   * @param <T> the type of the input
+   *
    * @return the task chain
    */
   public static <T> TaskChain<T> newChain() {
@@ -68,12 +56,15 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   /**
-   * Get the task chain factory
+   * Create a new shared task chain
    *
-   * @return the task chain factory
+   * @param <T>  the type of the input
+   * @param name the name of the task chain
+   *
+   * @return the task chain
    */
-  public static TaskChainFactory getTaskChainFactory() {
-    return taskChainFactory;
+  public static <T> TaskChain<T> newSharedChain(String name) {
+    return taskChainFactory.newSharedChain(name);
   }
 
   /**
@@ -85,30 +76,19 @@ public final class BetterGUI extends JavaPlugin {
     return instance;
   }
 
-  /**
-   * Get the addon manager
-   *
-   * @return the addon manager
-   */
-  public AddonManager getAddonManager() {
-    return addonManager;
-  }
-
   @Override
   public void onLoad() {
     instance = this;
     MessageUtils.setPrefix(MessageConfig.PREFIX::getValue);
-  }
+    VariableManager.setReplaceAll(MainConfig.REPLACE_ALL_VARIABLES::getValue);
+    PluginVariableManager.registerDefaultVariables();
 
-  @Override
-  public void onEnable() {
-    Permissions.init();
     if (getDescription().getVersion().contains("SNAPSHOT")) {
       getLogger().warning("You are using the development version");
       getLogger().warning("This is not ready for production");
       getLogger().warning("Use in your own risk");
     } else {
-      new VersionChecker(75620).getVersion().thenAccept(output -> {
+      new SimpleVersionChecker(75620).getVersion().thenAccept(output -> {
         if (output.startsWith("Error when getting version:")) {
           getLogger().warning(output);
         } else if (this.getDescription().getVersion().equalsIgnoreCase(output)) {
@@ -119,25 +99,31 @@ public final class BetterGUI extends JavaPlugin {
         }
       });
     }
+  }
 
-    registerDefaultVariables();
-
-    FastInvManager.register(this);
+  @Override
+  public void onEnable() {
+    GUIListener.init(this);
     taskChainFactory = BukkitTaskChainFactory.create(this);
 
     if (PlaceholderAPIHook.setupPlugin()) {
-      getLogger().info("Hooked PlaceholderAPI");
+      VariableManager.addExternalReplacer(new ExternalStringReplacer() {
+        @Override
+        public String replace(String original, UUID uuid) {
+          return PlaceholderAPIHook.setPlaceholders(original, Bukkit.getOfflinePlayer(uuid));
+        }
+
+        @Override
+        public boolean canBeReplaced(String original) {
+          return PlaceholderAPIHook.hasPlaceholders(original);
+        }
+      });
     }
 
-    if (Bukkit.getPluginManager().isPluginEnabled("NBTAPI")) {
-      PropertyBuilder.registerItemProperty(NBT::new, "nbt-data", "nbt");
-      PropertyBuilder.registerItemProperty(Unbreakable::new, "unbreakable");
-      PropertyBuilder.registerItemProperty(HideAttributes::new, "hide-attributes");
-    }
-
-    if (MainConfig.ENABLE_ALTERNATIVE_COMMAND_MANAGER.getValue().equals(Boolean.TRUE)) {
+    getServer().getPluginManager().registerEvents(new QuitListener(), this);
+    if (Boolean.TRUE.equals(MainConfig.ENABLE_ALTERNATIVE_COMMAND_MANAGER.getValue())) {
       getLogger().info("Enabled alternative command manager");
-      getServer().getPluginManager().registerEvents(new CommandListener(), this);
+      getServer().getPluginManager().registerEvents(new AlternativeCommandListener(), this);
     }
 
     addonManager.loadAddons();
@@ -147,207 +133,12 @@ public final class BetterGUI extends JavaPlugin {
       addonManager.enableAddons();
       loadMenuConfig();
       addonManager.callPostEnable();
-      commandManager.syncCommand();
-      addonDownloader.createMenu();
-      checkAddonUpdate();
-      if (MainConfig.METRICS.getValue().equals(Boolean.TRUE)) {
+      CommandManager.syncCommand();
+//      addonDownloader.createMenu();
+      if (Boolean.TRUE.equals(MainConfig.METRICS.getValue())) {
         enableMetrics();
       }
     });
-  }
-
-  /**
-   * Check addon updates
-   */
-  private void checkAddonUpdate() {
-    for (AddonInfo addonInfo : addonDownloader.getAddonInfoList()) {
-      if (addonInfo.getStatus() == Status.OUTDATED) {
-        getLogger().warning(
-            () -> "There is an update for " + addonInfo.getName() + ". New version is " + addonInfo
-                .getVersion());
-      }
-    }
-  }
-
-  /**
-   * Load default commands
-   */
-  private void loadCommands() {
-    commandManager.register(new OpenCommand());
-    commandManager.register(new ReloadCommand());
-    commandManager.register(new GetAddonsCommand());
-    commandManager.register(new MainCommand(getName().toLowerCase()));
-    commandManager.register(new AddonDownloaderCommand());
-  }
-
-  /**
-   * Register default variables
-   */
-  private void registerDefaultVariables() {
-    // Player Name
-    VariableManager.register("player", (executor, identifier) -> executor.getName());
-
-    // Online Player
-    VariableManager.register("online",
-        (executor, identifier) -> String.valueOf(Bukkit.getOnlinePlayers().size()));
-
-    // Max Players
-    VariableManager
-        .register("max_players", (executor, identifier) -> String.valueOf(Bukkit.getMaxPlayers()));
-
-    // Location
-    VariableManager.register("world", (executor, identifier) -> {
-      if (executor.isOnline()) {
-        return executor.getPlayer().getWorld().getName();
-      }
-      return "";
-    });
-    VariableManager.register("x", (executor, identifier) -> {
-      if (executor.isOnline()) {
-        return String.valueOf(executor.getPlayer().getLocation().getX());
-      }
-      return "";
-    });
-    VariableManager.register("y", (executor, identifier) -> {
-      if (executor.isOnline()) {
-        return String.valueOf(executor.getPlayer().getLocation().getY());
-      }
-      return "";
-    });
-    VariableManager.register("z", (executor, identifier) -> {
-      if (executor.isOnline()) {
-        return String.valueOf(executor.getPlayer().getLocation().getZ());
-      }
-      return "";
-    });
-
-    // Bed Location
-    VariableManager.register("bed_", ((executor, identifier) -> {
-      if (executor.getBedSpawnLocation() == null) {
-        return null;
-      } else if (identifier.equalsIgnoreCase("world")) {
-        return executor.getBedSpawnLocation().getWorld().getName();
-      } else if (identifier.equalsIgnoreCase("x")) {
-        return String.valueOf(executor.getBedSpawnLocation().getX());
-      } else if (identifier.equalsIgnoreCase("y")) {
-        return String.valueOf(executor.getBedSpawnLocation().getY());
-      } else if (identifier.equalsIgnoreCase("z")) {
-        return String.valueOf(executor.getBedSpawnLocation().getZ());
-      } else {
-        return null;
-      }
-    }));
-
-    // Exp
-    VariableManager.register("exp", (executor, identifier) -> {
-      if (executor.isOnline()) {
-        return String.valueOf(executor.getPlayer().getTotalExperience());
-      }
-      return "";
-    });
-
-    // Level
-    VariableManager.register("level", (executor, identifier) -> {
-      if (executor.isOnline()) {
-        return String.valueOf(executor.getPlayer().getLevel());
-      }
-      return "";
-    });
-
-    // Exp to level
-    VariableManager.register("exp_to_level", (executor, identifier) -> {
-      if (executor.isOnline()) {
-        return String.valueOf(executor.getPlayer().getExpToLevel());
-      }
-      return "";
-    });
-
-    // Food Level
-    VariableManager.register("food_level", (executor, identifier) -> {
-      if (executor.isOnline()) {
-        return String.valueOf(executor.getPlayer().getFoodLevel());
-      }
-      return "";
-    });
-
-    // IP
-    VariableManager.register("ip", (executor, identifier) -> {
-      if (executor.isOnline()) {
-        return executor.getPlayer().getAddress().getAddress().getHostAddress();
-      }
-      return "";
-    });
-
-    // Biome
-    VariableManager.register("biome", (executor, identifier) -> {
-      if (executor.isOnline()) {
-        return String.valueOf(executor.getPlayer().getLocation().getBlock().getBiome());
-      }
-      return "";
-    });
-
-    // Ping
-    VariableManager.register("ping", ((executor, identifier) -> {
-      if (executor.isOnline()) {
-        return String.valueOf(BukkitUtils.getPing(executor.getPlayer()));
-      }
-      return "";
-    }));
-
-    // Rainbow Color
-    VariableManager.register("rainbow", (executor, identifier) -> {
-      ChatColor[] values = ChatColor.values();
-      ChatColor color;
-      do {
-        color = values[ThreadLocalRandom.current().nextInt(values.length - 1)];
-      } while (color.equals(ChatColor.BOLD)
-          || color.equals(ChatColor.ITALIC)
-          || color.equals(ChatColor.STRIKETHROUGH)
-          || color.equals(ChatColor.RESET)
-          || color.equals(ChatColor.MAGIC)
-          || color.equals(ChatColor.UNDERLINE));
-      return MessageUtils.colorize("&" + color.getChar());
-    });
-
-    // Random
-    VariableManager.register("random_", (executor, identifier) -> {
-      identifier = identifier.trim();
-      if (identifier.contains(":")) {
-        String[] split = identifier.split(":", 2);
-        String s1 = split[0].trim();
-        String s2 = split[1].trim();
-        if (Validate.isValidInteger(s1) && Validate.isValidInteger(s2)) {
-          int i1 = Integer.parseInt(s1);
-          int i2 = Integer.parseInt(s2);
-          int max = Math.max(i1, i2);
-          int min = Math.min(i1, i2);
-          return String.valueOf(ThreadLocalRandom.current().nextInt(min, max + 1));
-        }
-      } else if (Validate.isValidInteger(identifier)) {
-        return String.valueOf(ThreadLocalRandom.current().nextInt(Integer.parseInt(identifier)));
-      }
-      return null;
-    });
-
-    // Condition
-    VariableManager.register("condition_", (executor, identifier) -> {
-      if (ExpressionUtils.isValidExpression(identifier)) {
-        return ExpressionUtils.getResult(identifier).toString();
-      }
-      return null;
-    });
-
-    // UUID
-    VariableManager.register("uuid", (executor, identifier) -> executor.getUniqueId().toString());
-
-    // Hex Color
-    if (XMaterial.supports(16)) {
-      VariableManager.register("hcolor_", (executor, identifier) -> String
-          .valueOf(net.md_5.bungee.api.ChatColor.of("#" + identifier)));
-      VariableManager.register("hrainbow", (offlinePlayer, s) ->
-          String.valueOf(net.md_5.bungee.api.ChatColor
-              .of("#" + String.format("%06x", ThreadLocalRandom.current().nextInt(0xFFFFFF + 1)))));
-    }
   }
 
   /**
@@ -355,8 +146,7 @@ public final class BetterGUI extends JavaPlugin {
    */
   public void loadMenuConfig() {
     File menusFolder = new File(getDataFolder(), "menu");
-    if (!menusFolder.exists()) {
-      menusFolder.mkdirs();
+    if (!menusFolder.exists() && menusFolder.mkdirs()) {
       saveResource("menu" + File.separator + "example.yml", false);
     }
     for (PluginConfig pluginConfig : getMenuConfig(menusFolder)) {
@@ -368,6 +158,7 @@ public final class BetterGUI extends JavaPlugin {
    * Get the menu config
    *
    * @param file the folder
+   *
    * @return the menu config
    */
   private List<PluginConfig> getMenuConfig(File file) {
@@ -377,9 +168,20 @@ public final class BetterGUI extends JavaPlugin {
         list.addAll(getMenuConfig(subFile));
       }
     } else if (file.isFile() && file.getName().endsWith(".yml")) {
-      list.add(new PluginConfig(this, file));
+      list.add(new PluginConfig(file));
     }
     return list;
+  }
+
+  /**
+   * Load default commands
+   */
+  private void loadCommands() {
+    commandManager.register(new OpenCommand());
+    commandManager.register(new MainCommand(getName().toLowerCase()));
+    commandManager.register(new GetAddonsCommand());
+    commandManager.register(new ReloadCommand());
+    commandManager.register(new GetVariablesCommand());
   }
 
   /**
@@ -390,7 +192,7 @@ public final class BetterGUI extends JavaPlugin {
     metrics.addCustomChart(new Metrics.DrilldownPie("addon", () -> {
       Map<String, Map<String, Integer>> map = new HashMap<>();
       Map<String, Integer> addons = addonManager.getAddonCount();
-      map.put(String.valueOf(addons.containsKey("Empty") ? 0 : addons.size()), addons);
+      map.put(String.valueOf(addons.size()), addons);
       return map;
     }));
     metrics.addCustomChart(new Metrics.AdvancedPie("addon_count", addonManager::getAddonCount));
@@ -398,29 +200,18 @@ public final class BetterGUI extends JavaPlugin {
 
   @Override
   public void onDisable() {
+    HandlerList.unregisterAll(this);
     commandManager.clearMenuCommand();
     menuManager.clear();
     addonManager.disableAddons();
-    addonDownloader.cancelTask();
-    HandlerList.unregisterAll(this);
-  }
-
-  /**
-   * Get the command manger
-   *
-   * @return the command manger
-   */
-  public CommandManager getCommandManager() {
-    return commandManager;
-  }
-
-  /**
-   * Get the menu manager
-   *
-   * @return the menu manager
-   */
-  public MenuManager getMenuManager() {
-    return menuManager;
+    RequirementBuilder.INSTANCE.unregisterAll();
+    ButtonBuilder.INSTANCE.unregisterAll();
+    ActionBuilder.INSTANCE.unregisterAll();
+    MenuBuilder.INSTANCE.unregisterAll();
+    commandManager.unregisterAll();
+    PluginVariableManager.unregisterAll();
+    VariableManager.clearExternalReplacers();
+    Bukkit.getScheduler().cancelTasks(this);
   }
 
   /**
@@ -442,11 +233,29 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   /**
-   * Get the addon downloader
+   * Get the menu manager
    *
-   * @return the addon downloader
+   * @return the menu manager
    */
-  public AddonDownloader getAddonDownloader() {
-    return addonDownloader;
+  public MenuManager getMenuManager() {
+    return menuManager;
+  }
+
+  /**
+   * Get the command manager
+   *
+   * @return the command manager
+   */
+  public PluginCommandManager getCommandManager() {
+    return commandManager;
+  }
+
+  /**
+   * Get the addon manager
+   *
+   * @return the addon manager
+   */
+  public BetterGUIAddonManager getAddonManager() {
+    return addonManager;
   }
 }

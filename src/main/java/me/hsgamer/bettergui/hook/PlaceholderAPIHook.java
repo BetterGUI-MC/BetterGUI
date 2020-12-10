@@ -50,6 +50,7 @@ public final class PlaceholderAPIHook {
    * Check if the message contains the placeholders
    *
    * @param message the message
+   *
    * @return true if it does
    */
   public static boolean hasPlaceholders(String message) {
@@ -61,6 +62,7 @@ public final class PlaceholderAPIHook {
    *
    * @param message  the message
    * @param executor the executor
+   *
    * @return the replaced message
    */
   public static String setPlaceholders(String message, OfflinePlayer executor) {
