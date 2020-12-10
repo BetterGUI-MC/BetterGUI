@@ -287,7 +287,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-common</artifactId>
-      <version>1.5</version>
+      <version>2.1</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
