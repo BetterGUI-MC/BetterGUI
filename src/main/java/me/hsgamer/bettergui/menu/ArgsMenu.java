@@ -5,18 +5,19 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
-import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
 import org.simpleyaml.configuration.file.FileConfiguration;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ArgsMenu extends SimpleMenu {
-  private final Map<UUID, String[]> argsPerPlayer = new HashMap<>();
+  private final Map<UUID, String[]> argsPerPlayer = new ConcurrentHashMap<>();
   private final Map<String, Integer> argToIndexMap = new CaseInsensitiveStringHashMap<>();
   private final List<Action> minArgsAction = new LinkedList<>();
   private int minArgs = 0;
@@ -31,8 +32,8 @@ public class ArgsMenu extends SimpleMenu {
   public ArgsMenu(String name) {
     super(name);
 
-    VariableManager.register(name + "_merged_args", (original, uuid) -> Optional.ofNullable(argsPerPlayer.get(uuid)).map(args -> String.join(" ", args)).orElse(""));
-    VariableManager.register(name + "arg_", (original, uuid) -> {
+    PluginVariableManager.register("menu_" + name + "_merged_args", (original, uuid) -> Optional.ofNullable(argsPerPlayer.get(uuid)).map(args -> String.join(" ", args)).orElse(""));
+    PluginVariableManager.register("menu_" + name + "arg_", (original, uuid) -> {
       int index = argToIndexMap.getOrDefault(original, -1);
       if (argsPerPlayer.containsKey(uuid)) {
         String[] playerArgs = argsPerPlayer.get(uuid);
@@ -88,6 +89,12 @@ public class ArgsMenu extends SimpleMenu {
       argsPerPlayer.put(player.getUniqueId(), fillEmptyArgs(args));
     }
     return super.createInventory(player, args, bypass);
+  }
+
+  @Override
+  public void closeAll() {
+    argsPerPlayer.clear();
+    argToIndexMap.clear();
   }
 
   private String[] fillEmptyArgs(String[] args) {
