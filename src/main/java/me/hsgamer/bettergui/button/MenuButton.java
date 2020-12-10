@@ -13,7 +13,6 @@ import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.item.ItemBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -43,7 +42,7 @@ public class MenuButton implements WrappedButton {
   private void setActions(Menu menu, Object o) {
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
     if (o instanceof ConfigurationSection) {
-      Map<String, Object> keys = new CaseInsensitiveStringMap<>(((ConfigurationSection) o).getValues(false));
+      Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(((ConfigurationSection) o).getValues(false));
       List<Action> defaultActions = Optional.ofNullable(keys.get("default")).map(value -> ActionBuilder.INSTANCE.getActions(menu, value)).orElse(Collections.emptyList());
       clickTypeMap.forEach((clickTypeName, clickType) -> actionMap.put(clickType, Optional.ofNullable(keys.get(clickTypeName)).map(obj -> ActionBuilder.INSTANCE.getActions(menu, obj)).orElse(defaultActions)));
     } else {
