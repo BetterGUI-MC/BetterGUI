@@ -29,7 +29,6 @@ import org.simpleyaml.configuration.file.FileConfiguration;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
@@ -118,14 +117,14 @@ public class SimpleMenu extends Menu {
           try {
             this.guiHolder.setInventoryType(InventoryType.valueOf(String.valueOf(o).toUpperCase(Locale.ROOT)));
           } catch (IllegalArgumentException e) {
-            getInstance().getLogger().log(Level.WARNING, () -> "The menu \"" + getName() + "\" contains an illegal inventory type");
+            getInstance().getLogger().warning(() -> "The menu \"" + getName() + "\" contains an illegal inventory type");
           }
         });
         Optional.ofNullable(section.get("inventory")).ifPresent(o -> {
           try {
             this.guiHolder.setInventoryType(InventoryType.valueOf(String.valueOf(o).toUpperCase(Locale.ROOT)));
           } catch (IllegalArgumentException e) {
-            getInstance().getLogger().log(Level.WARNING, () -> "The menu \"" + getName() + "\" contains an illegal inventory type");
+            getInstance().getLogger().warning(() -> "The menu \"" + getName() + "\" contains an illegal inventory type");
           }
         });
 
@@ -179,13 +178,12 @@ public class SimpleMenu extends Menu {
         }));
       } else if (key.equalsIgnoreCase("default-icon") || key.equalsIgnoreCase("default-button")) {
         WrappedButton button = ButtonBuilder.INSTANCE.getButton(this, "menu_" + getName() + "_button_" + key, section);
-        // TODO: Default Button
+        button.init();
+        guiHolder.setDefaultButton(button);
       } else {
         WrappedButton button = ButtonBuilder.INSTANCE.getButton(this, "menu_" + getName() + "_button_" + key, section);
-        SlotUtils.getSlots(section).forEach(slot -> {
-          guiHolder.removeButton(slot);
-          guiHolder.setButton(slot, button);
-        });
+        button.init();
+        SlotUtils.getSlots(section).forEach(slot -> guiHolder.setButton(slot, button));
       }
     }
 
