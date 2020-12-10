@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.button;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
+import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.bukkit.gui.Button;
@@ -11,10 +12,14 @@ import me.hsgamer.hscore.common.Validate;
 import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class WrappedAnimatedButton extends BaseWrappedButton {
+  private List<WrappedButton> wrappedButtonList;
+
   /**
    * Create a new button
    *
@@ -42,7 +47,17 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
     Optional.ofNullable(keys.get("child"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, (ConfigurationSection) o))
-      .ifPresent(frames -> frames.forEach(animatedButton::addChildButtons));
+      .ifPresent(frames -> {
+        wrappedButtonList = frames;
+        frames.forEach(animatedButton::addChildButtons);
+      });
     return animatedButton;
+  }
+
+  @Override
+  public void refresh(UUID uuid) {
+    if (wrappedButtonList != null) {
+      wrappedButtonList.forEach(button -> button.refresh(uuid));
+    }
   }
 }

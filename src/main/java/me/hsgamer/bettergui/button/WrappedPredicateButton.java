@@ -21,6 +21,8 @@ public class WrappedPredicateButton extends BaseWrappedButton {
   private final RequirementSetting viewRequirement = new RequirementSetting(getMenu(), getName() + "_view");
   private final Map<AdvancedClickType, RequirementSetting> clickRequirements = new ConcurrentHashMap<>();
   private final List<UUID> checked = Collections.synchronizedList(new ArrayList<>());
+  private WrappedButton wrappedButton = new EmptyButton(getMenu());
+  private WrappedButton fallbackWrappedButton = new EmptyButton(getMenu());
   private boolean checkOnlyOnCreation = false;
 
   /**
@@ -57,16 +59,16 @@ public class WrappedPredicateButton extends BaseWrappedButton {
   protected Button createButton(ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
 
-    Button button = Optional.ofNullable(keys.get("button"))
+    this.wrappedButton = Optional.ofNullable(keys.get("button"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> (ConfigurationSection) o)
-      .map(subsection -> (Button) ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_button", subsection))
-      .orElse(Button.EMPTY);
-    Button fallbackButton = Optional.ofNullable(keys.get("fallback"))
+      .map(subsection -> ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_button", subsection))
+      .orElse(this.wrappedButton);
+    this.fallbackWrappedButton = Optional.ofNullable(keys.get("fallback"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> (ConfigurationSection) o)
-      .map(subsection -> (Button) ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_fallback", subsection))
-      .orElse(Button.EMPTY);
+      .map(subsection -> ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_fallback", subsection))
+      .orElse(this.fallbackWrappedButton);
     Optional.ofNullable(keys.get("view-requirement"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> (ConfigurationSection) o)
@@ -76,8 +78,8 @@ public class WrappedPredicateButton extends BaseWrappedButton {
       .map(o -> (ConfigurationSection) o)
       .ifPresent(this::setClickRequirements);
 
-    PredicateButton predicateButton = new PredicateButton(button);
-    predicateButton.setFallbackButton(fallbackButton);
+    PredicateButton predicateButton = new PredicateButton(this.wrappedButton);
+    predicateButton.setFallbackButton(this.fallbackWrappedButton);
     predicateButton.setViewPredicate(uuid -> {
       if (checkOnlyOnCreation && checked.contains(uuid)) {
         return true;
@@ -112,8 +114,7 @@ public class WrappedPredicateButton extends BaseWrappedButton {
   @Override
   public void refresh(UUID uuid) {
     checked.remove(uuid);
-    if (button instanceof WrappedButton) {
-      ((WrappedButton) button).refresh(uuid);
-    }
+    wrappedButton.refresh(uuid);
+    fallbackWrappedButton.refresh(uuid);
   }
 }
