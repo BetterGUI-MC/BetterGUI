@@ -44,11 +44,6 @@ public class DummyButton implements WrappedButton {
   }
 
   @Override
-  public void refresh(UUID uuid) {
-    // EMPTY
-  }
-
-  @Override
   public Menu getMenu() {
     return menu;
   }

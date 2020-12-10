@@ -37,5 +37,7 @@ public interface WrappedButton extends Button, MenuElement {
    *
    * @param uuid the unique id
    */
-  void refresh(UUID uuid);
+  default void refresh(UUID uuid) {
+    // EMPTY
+  }
 }

@@ -99,11 +99,6 @@ public class MenuButton implements WrappedButton {
   }
 
   @Override
-  public void refresh(UUID uuid) {
-    // EMPTY
-  }
-
-  @Override
   public void init() {
     // EMPTY
   }

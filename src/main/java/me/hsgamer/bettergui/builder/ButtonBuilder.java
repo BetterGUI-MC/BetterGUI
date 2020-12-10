@@ -2,10 +2,7 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.button.DummyButton;
-import me.hsgamer.bettergui.button.EmptyButton;
-import me.hsgamer.bettergui.button.MenuButton;
-import me.hsgamer.bettergui.button.WrappedAnimatedButton;
+import me.hsgamer.bettergui.button.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
@@ -35,6 +32,8 @@ public class ButtonBuilder extends Builder<Menu, WrappedButton> {
     register(DummyButton::new, "dummy");
     register(EmptyButton::new, "empty", "raw");
     register(WrappedAnimatedButton::new, "animated", "animate", "anim");
+    register(WrappedListButton::new, "list");
+    register(WrappedAirButton::new, "air");
   }
 
   /**

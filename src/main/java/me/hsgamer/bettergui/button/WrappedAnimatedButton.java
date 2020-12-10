@@ -13,7 +13,6 @@ import org.simpleyaml.configuration.ConfigurationSection;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 public class WrappedAnimatedButton extends BaseWrappedButton {
   /**
@@ -45,10 +44,5 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
       .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, (ConfigurationSection) o))
       .ifPresent(frames -> frames.forEach(animatedButton::addChildButtons));
     return animatedButton;
-  }
-
-  @Override
-  public void refresh(UUID uuid) {
-    // EMPTY
   }
 }

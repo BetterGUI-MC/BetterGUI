@@ -5,8 +5,6 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.hscore.bukkit.gui.Button;
 import org.simpleyaml.configuration.ConfigurationSection;
 
-import java.util.UUID;
-
 public class EmptyButton extends BaseWrappedButton {
   /**
    * Create a new button
@@ -20,10 +18,5 @@ public class EmptyButton extends BaseWrappedButton {
   @Override
   protected Button createButton(ConfigurationSection section) {
     return Button.EMPTY;
-  }
-
-  @Override
-  public void refresh(UUID uuid) {
-    // EMPTY
   }
 }
