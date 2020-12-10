@@ -1,7 +1,7 @@
 name: ${project.name}
 version: "${project.version}"
 main: ${project.mainClass}
-authors: [HSGamer]
+authors: [ HSGamer ]
 api-version: "1.13"
 softdepend:
   - PlaceholderAPI
