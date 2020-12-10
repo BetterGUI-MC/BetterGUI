@@ -24,9 +24,15 @@ public class WrappedListButton extends BaseWrappedButton {
 
   @Override
   protected Button createButton(ConfigurationSection section) {
-    ListButton button = new ListButton(new LinkedList<>(ButtonBuilder.INSTANCE.getChildButtons(this, section)));
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
-    Optional.ofNullable(keys.get("keep-current-index")).map(String::valueOf).map(Boolean::parseBoolean).ifPresent(button::setKeepCurrentIndex);
-    return button;
+    boolean keepCurrentIndex = Optional.ofNullable(keys.get("keep-current-index")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
+    return Optional.ofNullable(keys.get("child"))
+      .filter(o -> o instanceof ConfigurationSection)
+      .map(o -> new LinkedList<Button>(ButtonBuilder.INSTANCE.getChildButtons(this, (ConfigurationSection) o)))
+      .map(list -> {
+        ListButton button = new ListButton(list);
+        button.setKeepCurrentIndex(keepCurrentIndex);
+        return button;
+      }).orElse(null);
   }
 }
