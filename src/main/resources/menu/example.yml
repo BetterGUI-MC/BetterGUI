@@ -8,7 +8,6 @@ menu-settings:
   rows: 6
   command: menu
   auto-refresh: 5
-  clone-icon: false
   open-action:
     - 'tell: &eYou opened the example menu'
   close-action:
@@ -142,21 +141,23 @@ test-multiple-command:
   POSITION-Y: 3
 
 permission:
-  COMMAND: 'tell: &a[v] You have the correct permission!'
-  NAME: '&8Permission test'
-  LORE:
-    - 'To use this item, you need the'
-    - 'permission "bettergui.test".'
-    - 'Otherwise, a configurable error'
-    - 'message will be displayed.'
-  ID: iron bars
   POSITION-X: 2
   POSITION-Y: 3
+  type: predicate
   CLICK-REQUIREMENT:
     default:
       permission:
         PERMISSION: bettergui.test
         fail-command: 'tell: &cYou don''t have the correct permission!'
+  button:
+    COMMAND: 'tell: &a[v] You have the correct permission!'
+    NAME: '&8Permission test'
+    LORE:
+      - 'To use this item, you need the'
+      - 'permission "bettergui.test".'
+      - 'Otherwise, a configurable error'
+      - 'message will be displayed.'
+    ID: iron bars
 
 condition:
   NAME: '&aCondition'
@@ -202,17 +203,19 @@ test-delay-command:
 
 # Simple Cooldown Example
 cooldown:
-  COMMAND: 'tell: &e You will need to wait 10 seconds to click again'
-  NAME: '&aCooldown'
-  LORE:
-    - 'This is a example of icon with cooldown'
+  type: predicate
+  button:
+    COMMAND: 'tell: &e You will need to wait 10 seconds to click again'
+    NAME: '&aCooldown'
+    LORE:
+      - 'This is a example of icon with cooldown'
+    ID: paper
   click-requirement:
     default:
       test-cooldown:
         cooldown: 10
       fail-command:
         - "tell: &cWait until the cooldown is finished"
-  ID: paper
   POSITION-X: 6
   POSITION-Y: 3
 
@@ -230,20 +233,22 @@ enchanted-sword-flag:
 
 # Advanced Cooldown Example
 advanced_cooldown:
-  id: paper
   POSITION-X: 8
   POSITION-Y: 3
-  name: '&cCooldown'
-  lore:
-    - '&eLEFT: &f{left_test_cooldown_h}h{left_test_cooldown_m}m{left_test_cooldown_s}s (&cTotal millis: {left_test_cooldown})'
-    - '&eRIGHT: &f{right_test_cooldown_h}h{right_test_cooldown_m}m{right_test_cooldown_s}s (&cTotal millis: {right_test_cooldown})'
-    - '&eMIDDLE: &f{middle_test_cooldown_h}h{middle_test_cooldown_m}m{middle_test_cooldown_s}s (&cTotal millis: {middle_test_cooldown})'
-    - '&eDEFAULT: &f{default_test_cooldown_h}h{default_test_cooldown_m}m{default_test_cooldown_s}s (&cTotal millis: {default_test_cooldown})'
-  command:
-    LEFT: 'tell: &cYou left-clicked'
-    RIGHT: 'tell: &cYou right-clicked'
-    MIDDLE: 'tell: &cYou middle-clicked'
-    DEFAULT: 'tell: &cYou clicked'
+  type: predicate
+  button:
+    id: paper
+    name: '&cCooldown'
+    lore:
+      - '&eLEFT: &f{menu_example.yml_button_advanced_cooldown_click_left_reqset_test_cooldown}'
+      - '&eRIGHT: &f{menu_example.yml_button_advanced_cooldown_click_right_reqset_test_cooldown}'
+      - '&eMIDDLE: &f{menu_example.yml_button_advanced_cooldown_click_middle_reqset_test_cooldown}'
+      - '&eDEFAULT: &f{menu_example.yml_button_advanced_cooldown_click_default_reqset_test_cooldown}'
+    command:
+      LEFT: 'tell: &cYou left-clicked'
+      RIGHT: 'tell: &cYou right-clicked'
+      MIDDLE: 'tell: &cYou middle-clicked'
+      DEFAULT: 'tell: &cYou clicked'
   click-requirement:
     left:
       test:
@@ -266,15 +271,19 @@ list-icon:
   position-y: 3
   child:
     world:
-      id: grass
-      name: "&aYou are in {world}"
+      type: predicate
+      button:
+        id: grass
+        name: "&aYou are in {world}"
       view-requirement:
         condition:
           # STREQ: Compare 2 strings if they are the same
           condition: STREQ("{world}", "world")
     nether:
-      id: netherrack
-      name: "&cYou are in {world}"
+      type: predicate
+      button:
+        id: netherrack
+        name: "&cYou are in {world}"
       view-requirement:
         condition:
           condition: STREQ("{world}", "world_nether")
@@ -285,12 +294,14 @@ list-icon:
         - "&cUnknown world"
 
 test-view-requirement:
+  type: predicate
   position-x: 1
   position-y: 4
-  id: exp_bottle
-  name: "&cA exp bottle"
-  lore:
-    - "You will see this icon when the level is higher than 5"
+  button:
+    id: exp_bottle
+    name: "&cA exp bottle"
+    lore:
+      - "You will see this icon when the level is higher than 5"
   view-requirement:
     level:
       level: 5
@@ -299,7 +310,7 @@ animated-icon:
   position-x: 2
   position-y: 4
   type: animated
-  update: 2
+  update: 5
   child:
     frame_icon1:
       name: "&cFrame 1"
@@ -320,14 +331,16 @@ animated-icon:
 requirement-set:
   position-x: 3
   position-y: 4
-  id: paper
-  name: "&eRequirement Set"
-  lore:
-    - "&aYou can use this icon if you meets one of the requirements: "
-    - "&f- In the overworld"
-    - "&f- In the nether and the level is higher than 10"
-    - "&f- Have the permission 'bettergui.testset'"
-  command: "tell: &aYou did it"
+  type: predicate
+  button:
+    id: paper
+    name: "&eRequirement Set"
+    lore:
+      - "&aYou can use this icon if you meets one of the requirements: "
+      - "&f- In the overworld"
+      - "&f- In the nether and the level is higher than 10"
+      - "&f- Have the permission 'bettergui.testset'"
+    command: "tell: &aYou did it"
   click-requirement:
     default:
       world:
@@ -375,6 +388,7 @@ potion:
 multi-slot:
   slot: 0-8,45,46,47-52
   type: animated
+  update: 10
   child:
     frame1:
       name: ' '
