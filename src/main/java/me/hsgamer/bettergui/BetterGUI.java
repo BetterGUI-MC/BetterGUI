@@ -7,10 +7,7 @@ import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
-import me.hsgamer.bettergui.command.GetAddonsCommand;
-import me.hsgamer.bettergui.command.MainCommand;
-import me.hsgamer.bettergui.command.OpenCommand;
-import me.hsgamer.bettergui.command.ReloadCommand;
+import me.hsgamer.bettergui.command.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
@@ -184,6 +181,7 @@ public final class BetterGUI extends JavaPlugin {
     commandManager.register(new MainCommand(getName().toLowerCase()));
     commandManager.register(new GetAddonsCommand());
     commandManager.register(new ReloadCommand());
+    commandManager.register(new GetVariablesCommand());
   }
 
   /**

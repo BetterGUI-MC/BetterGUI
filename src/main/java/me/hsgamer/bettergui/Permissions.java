@@ -14,6 +14,7 @@ public final class Permissions {
   public static final Permission RELOAD = createPermission(PREFIX + ".reload", null, PermissionDefault.OP);
   public static final Permission ADDONS = createPermission(PREFIX + ".addons", null, PermissionDefault.OP);
   public static final Permission HELP = createPermission(PREFIX + ".help", null, PermissionDefault.OP);
+  public static final Permission VARIABLE = createPermission(PREFIX + ".variable", null, PermissionDefault.OP);
   public static final Permission OPEN_MENU_BYPASS = createPermission(PREFIX + ".openmenu.bypass", null, PermissionDefault.OP);
   public static final Permission ADDON_DOWNLOADER = createPermission(PREFIX + ".addons.downloader", null, PermissionDefault.OP);
 
