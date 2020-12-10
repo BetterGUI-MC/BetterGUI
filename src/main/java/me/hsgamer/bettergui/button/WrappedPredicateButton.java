@@ -18,8 +18,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WrappedPredicateButton extends BaseWrappedButton {
-  private RequirementSetting viewRequirement;
-  private final Map<AdvancedClickType, RequirementSetting> clickRequirements = new ConcurrentHashMap<>();
   private final List<UUID> checked = Collections.synchronizedList(new ArrayList<>());
   private WrappedButton wrappedButton = new EmptyButton(getMenu());
   private WrappedButton fallbackWrappedButton = new EmptyButton(getMenu());
@@ -34,7 +32,9 @@ public class WrappedPredicateButton extends BaseWrappedButton {
     super(menu);
   }
 
-  private void setClickRequirements(ConfigurationSection section) {
+  private Map<AdvancedClickType, RequirementSetting> setClickRequirements(ConfigurationSection section) {
+    Map<AdvancedClickType, RequirementSetting> clickRequirements = new ConcurrentHashMap<>();
+
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section.getValues(false));
 
@@ -44,7 +44,6 @@ public class WrappedPredicateButton extends BaseWrappedButton {
       .map(o -> (ConfigurationSection) o)
       .ifPresent(defaultSetting::loadFromSection);
 
-    this.checkOnlyOnCreation = Optional.ofNullable(keys.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.checkOnlyOnCreation);
     clickTypeMap.forEach((clickTypeName, clickType) ->
       clickRequirements.put(clickType, Optional.ofNullable(keys.get(clickTypeName))
         .filter(o -> o instanceof ConfigurationSection)
@@ -55,6 +54,8 @@ public class WrappedPredicateButton extends BaseWrappedButton {
           return setting;
         }).orElse(defaultSetting))
     );
+
+    return clickRequirements;
   }
 
   @Override
@@ -72,45 +73,51 @@ public class WrappedPredicateButton extends BaseWrappedButton {
       .map(subsection -> ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_fallback", subsection))
       .orElse(this.fallbackWrappedButton);
 
-    this.viewRequirement = new RequirementSetting(getMenu(), getName() + "_view");
+    PredicateButton predicateButton = new PredicateButton(this.wrappedButton);
+    predicateButton.setFallbackButton(this.fallbackWrappedButton);
+
+    this.checkOnlyOnCreation = Optional.ofNullable(keys.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.checkOnlyOnCreation);
+
     Optional.ofNullable(keys.get("view-requirement"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> (ConfigurationSection) o)
-      .ifPresent(this.viewRequirement::loadFromSection);
+      .ifPresent(subsection -> {
+        RequirementSetting viewRequirement = new RequirementSetting(getMenu(), getName() + "_view");
+        viewRequirement.loadFromSection(subsection);
+        predicateButton.setViewPredicate(uuid -> {
+          if (checkOnlyOnCreation && checked.contains(uuid)) {
+            return true;
+          }
+          if (!viewRequirement.check(uuid)) {
+            viewRequirement.sendFailActions(uuid);
+            return false;
+          }
+          viewRequirement.getCheckedRequirement(uuid).ifPresent(requirementSet -> {
+            requirementSet.take(uuid);
+            requirementSet.sendSuccessActions(uuid);
+          });
+          checked.add(uuid);
+          return true;
+        });
+      });
     Optional.ofNullable(keys.get("click-requirement"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> (ConfigurationSection) o)
-      .ifPresent(this::setClickRequirements);
-
-    PredicateButton predicateButton = new PredicateButton(this.wrappedButton);
-    predicateButton.setFallbackButton(this.fallbackWrappedButton);
-    predicateButton.setViewPredicate(uuid -> {
-      if (checkOnlyOnCreation && checked.contains(uuid)) {
-        return true;
-      }
-      if (!viewRequirement.check(uuid)) {
-        viewRequirement.sendFailActions(uuid);
-        return false;
-      }
-      viewRequirement.getCheckedRequirement(uuid).ifPresent(requirementSet -> {
-        requirementSet.take(uuid);
-        requirementSet.sendSuccessActions(uuid);
+      .ifPresent(subsection -> {
+        Map<AdvancedClickType, RequirementSetting> clickRequirements = setClickRequirements(subsection);
+        predicateButton.setClickPredicate((uuid, event) -> {
+          RequirementSetting clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(event, Boolean.TRUE.equals(MainConfig.MODERN_CLICK_TYPE.getValue())));
+          if (!clickRequirement.check(uuid)) {
+            clickRequirement.sendFailActions(uuid);
+            return false;
+          }
+          clickRequirement.getCheckedRequirement(uuid).ifPresent(requirementSet -> {
+            requirementSet.take(uuid);
+            requirementSet.sendSuccessActions(uuid);
+          });
+          return true;
+        });
       });
-      checked.add(uuid);
-      return true;
-    });
-    predicateButton.setClickPredicate((uuid, event) -> {
-      RequirementSetting clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(event, Boolean.TRUE.equals(MainConfig.MODERN_CLICK_TYPE.getValue())));
-      if (!clickRequirement.check(uuid)) {
-        clickRequirement.sendFailActions(uuid);
-        return false;
-      }
-      clickRequirement.getCheckedRequirement(uuid).ifPresent(requirementSet -> {
-        requirementSet.take(uuid);
-        requirementSet.sendSuccessActions(uuid);
-      });
-      return true;
-    });
 
     return predicateButton;
   }
