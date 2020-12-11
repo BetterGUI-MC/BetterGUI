@@ -7,6 +7,7 @@ import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.requirement.RequirementSetting;
 import me.hsgamer.bettergui.utils.CommonStringReplacers;
@@ -218,7 +219,7 @@ public class SimpleMenu extends Menu {
     }
 
     // Create Inventory
-    guiHolder.createDisplay(uuid).init();
+    guiHolder.createDisplay(uuid).setForceUpdate(Boolean.TRUE.equals(MainConfig.FORCED_UPDATE_INVENTORY.getValue())).init();
     return true;
   }
 
