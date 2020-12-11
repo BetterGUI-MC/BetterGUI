@@ -8,18 +8,16 @@ import me.hsgamer.hscore.downloader.object.DownloadInfo;
 
 import java.util.UUID;
 
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
-
 public class AddonDownloader extends Downloader {
-  private GUIHolder guiHolder;
+  private final GUIHolder guiHolder;
 
   public AddonDownloader(BetterGUI instance) {
     super("https://raw.githubusercontent.com/BetterGUI-MC/Addon-List/master/addons.json", instance.getAddonManager().getAddonsDir());
+    this.guiHolder = new GUIHolder(instance);
     loadDownloadsInfo();
   }
 
   public void createMenu() {
-    guiHolder = new GUIHolder(getInstance());
     guiHolder.setSize(54);
     guiHolder.setTitle(MessageUtils.colorize("&4&lAddon Downloader"));
 
@@ -33,15 +31,11 @@ public class AddonDownloader extends Downloader {
   }
 
   public void stopMenu() {
-    if (guiHolder != null) {
-      guiHolder.stop();
-    }
+    guiHolder.stop();
     downloadInfoMap.clear();
   }
 
   public void openMenu(UUID uuid) {
-    if (guiHolder != null) {
-      guiHolder.createDisplay(uuid).init();
-    }
+    guiHolder.createDisplay(uuid).init();
   }
 }
