@@ -44,7 +44,7 @@ public final class BetterGUI extends JavaPlugin {
   private final MenuManager menuManager = new MenuManager(this);
   private final PluginCommandManager commandManager = new PluginCommandManager(this);
   private final BetterGUIAddonManager addonManager = new BetterGUIAddonManager(this);
-  private final AddonDownloader addonDownloader = new AddonDownloader();
+  private final AddonDownloader addonDownloader = new AddonDownloader(this);
 
   /**
    * Create a new task chain

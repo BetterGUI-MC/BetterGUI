@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.downloader;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.hscore.bukkit.gui.GUIHolder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.downloader.Downloader;
@@ -12,8 +13,8 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 public class AddonDownloader extends Downloader {
   private GUIHolder guiHolder;
 
-  public AddonDownloader() {
-    super("https://raw.githubusercontent.com/BetterGUI-MC/Addon-List/master/addons.json", getInstance().getAddonManager().getAddonsDir());
+  public AddonDownloader(BetterGUI instance) {
+    super("https://raw.githubusercontent.com/BetterGUI-MC/Addon-List/master/addons.json", instance.getAddonManager().getAddonsDir());
     loadDownloadsInfo();
   }
 
