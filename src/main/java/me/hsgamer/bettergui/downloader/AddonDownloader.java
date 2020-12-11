@@ -29,6 +29,7 @@ public class AddonDownloader extends Downloader {
       addonButton.init();
       guiHolder.setButton(i++, addonButton);
     }
+    guiHolder.init();
   }
 
   public void stopMenu() {
