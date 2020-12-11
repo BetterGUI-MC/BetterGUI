@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.command.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.downloader.AddonDownloader;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.bettergui.listener.QuitListener;
@@ -43,6 +44,7 @@ public final class BetterGUI extends JavaPlugin {
   private final MenuManager menuManager = new MenuManager(this);
   private final PluginCommandManager commandManager = new PluginCommandManager(this);
   private final BetterGUIAddonManager addonManager = new BetterGUIAddonManager(this);
+  private final AddonDownloader addonDownloader = new AddonDownloader();
 
   /**
    * Create a new task chain
@@ -134,7 +136,7 @@ public final class BetterGUI extends JavaPlugin {
       loadMenuConfig();
       addonManager.callPostEnable();
       CommandManager.syncCommand();
-//      addonDownloader.createMenu();
+      addonDownloader.createMenu();
       if (Boolean.TRUE.equals(MainConfig.METRICS.getValue())) {
         enableMetrics();
       }
@@ -182,6 +184,7 @@ public final class BetterGUI extends JavaPlugin {
     commandManager.register(new GetAddonsCommand());
     commandManager.register(new ReloadCommand());
     commandManager.register(new GetVariablesCommand());
+    commandManager.register(new AddonDownloaderCommand());
   }
 
   /**
@@ -204,6 +207,7 @@ public final class BetterGUI extends JavaPlugin {
     commandManager.clearMenuCommand();
     menuManager.clear();
     addonManager.disableAddons();
+    addonDownloader.stopMenu();
     RequirementBuilder.INSTANCE.unregisterAll();
     ButtonBuilder.INSTANCE.unregisterAll();
     ActionBuilder.INSTANCE.unregisterAll();
@@ -257,5 +261,14 @@ public final class BetterGUI extends JavaPlugin {
    */
   public BetterGUIAddonManager getAddonManager() {
     return addonManager;
+  }
+
+  /**
+   * Get the addon downloader
+   *
+   * @return the addon downloader
+   */
+  public AddonDownloader getAddonDownloader() {
+    return addonDownloader;
   }
 }
