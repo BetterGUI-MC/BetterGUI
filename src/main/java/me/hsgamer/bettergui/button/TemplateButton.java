@@ -32,7 +32,7 @@ public class TemplateButton extends BaseWrappedButton {
       .orElseGet(CaseInsensitiveStringHashMap::new);
     keys.entrySet()
       .stream()
-      .filter(entry -> entry.getKey().equalsIgnoreCase("type") || entry.getKey().equalsIgnoreCase("template"))
+      .filter(entry -> !entry.getKey().equalsIgnoreCase("type") && !entry.getKey().equalsIgnoreCase("template"))
       .forEach(entry -> templateMap.put(entry.getKey(), entry.getValue()));
 
     return ButtonBuilder.INSTANCE.getButton(getMenu(), getName(), section.getRoot().createSection(getName(), templateMap));
