@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.command.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.config.TemplateButtonConfig;
 import me.hsgamer.bettergui.downloader.AddonDownloader;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.listener.AlternativeCommandListener;
@@ -40,6 +41,7 @@ public final class BetterGUI extends JavaPlugin {
 
   private final MainConfig mainConfig = new MainConfig(this);
   private final MessageConfig messageConfig = new MessageConfig(this);
+  private final TemplateButtonConfig templateButtonConfig = new TemplateButtonConfig(this);
 
   private final MenuManager menuManager = new MenuManager(this);
   private final PluginCommandManager commandManager = new PluginCommandManager(this);
@@ -270,5 +272,14 @@ public final class BetterGUI extends JavaPlugin {
    */
   public AddonDownloader getAddonDownloader() {
     return addonDownloader;
+  }
+
+  /**
+   * Get the template button config
+   *
+   * @return the template button config
+   */
+  public TemplateButtonConfig getTemplateButtonConfig() {
+    return templateButtonConfig;
   }
 }

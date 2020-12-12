@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.config;
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import me.hsgamer.hscore.config.PathLoader;
 import me.hsgamer.hscore.config.path.StringConfigPath;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 public final class MessageConfig extends PluginConfig {
 
@@ -21,7 +21,7 @@ public final class MessageConfig extends PluginConfig {
   public static final StringConfigPath PLAYER_NOT_FOUND = new StringConfigPath("player-not-found", "&cThe player is not found. Maybe he is offline or didn't join your server");
   public static final StringConfigPath EMPTY_ARG_VALUE = new StringConfigPath("empty-arg-value", "/empty/");
 
-  public MessageConfig(JavaPlugin plugin) {
+  public MessageConfig(Plugin plugin) {
     super(plugin, "messages.yml");
     getConfig().options().copyDefaults(true);
     PathLoader.loadPath(this);
