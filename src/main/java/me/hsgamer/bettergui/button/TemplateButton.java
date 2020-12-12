@@ -24,23 +24,17 @@ public class TemplateButton extends BaseWrappedButton {
   @Override
   protected Button createButton(ConfigurationSection section) {
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
-    ConfigurationSection templateSection = (ConfigurationSection) Optional.ofNullable(keys.get("template"))
+    Map<String, Object> templateMap = Optional.ofNullable(keys.get("template"))
       .map(String::valueOf)
       .map(s -> BetterGUI.getInstance().getTemplateButtonConfig().get(s))
-      .filter(o -> o instanceof ConfigurationSection).orElse(null);
-    if (templateSection == null) {
-      return null;
-    }
+      .filter(o -> o instanceof ConfigurationSection)
+      .map(o -> ((ConfigurationSection) o).getValues(false))
+      .orElseGet(CaseInsensitiveStringHashMap::new);
+    keys.entrySet()
+      .stream()
+      .filter(entry -> entry.getKey().equalsIgnoreCase("type") || entry.getKey().equalsIgnoreCase("template"))
+      .forEach(entry -> templateMap.put(entry.getKey(), entry.getValue()));
 
-    Map<String, Object> templateMap = templateSection.getValues(false);
-    keys.forEach((key, value) -> {
-      if (key.equalsIgnoreCase("type") || key.equalsIgnoreCase("template")) {
-        return;
-      }
-      templateMap.put(key, value);
-    });
-
-    ConfigurationSection finalSection = section.getRoot().createSection(getName(), templateMap);
-    return ButtonBuilder.INSTANCE.getButton(getMenu(), getName(), finalSection);
+    return ButtonBuilder.INSTANCE.getButton(getMenu(), getName(), section.getRoot().createSection(getName(), templateMap));
   }
 }
