@@ -12,7 +12,6 @@ import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.Button;
 import me.hsgamer.hscore.bukkit.gui.button.AirButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import org.bukkit.Bukkit;
 import org.simpleyaml.configuration.ConfigurationSection;
 
@@ -34,7 +33,7 @@ public class WrappedAirButton extends BaseWrappedButton {
   private void setActions(Object o) {
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
     if (o instanceof ConfigurationSection) {
-      Map<String, Object> keys = new CaseInsensitiveStringMap<>(((ConfigurationSection) o).getValues(false));
+      Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(((ConfigurationSection) o).getValues(false));
       List<Action> defaultActions = Optional.ofNullable(keys.get("default")).map(value -> ActionBuilder.INSTANCE.getActions(getMenu(), value)).orElse(Collections.emptyList());
       clickTypeMap.forEach((clickTypeName, clickType) -> {
         if (keys.containsKey(clickTypeName)) {
