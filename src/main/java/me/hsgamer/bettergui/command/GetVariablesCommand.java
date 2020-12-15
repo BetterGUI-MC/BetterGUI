@@ -22,7 +22,7 @@ public class GetVariablesCommand extends BukkitCommand {
       return false;
     }
     sendMessage(sender, "&bRegistered Variables:");
-    VariableManager.getVariables().keySet().forEach(prefix -> sendMessage(sender, "&f- &e" + prefix));
+    VariableManager.getVariables().keySet().stream().sorted().forEach(prefix -> sendMessage(sender, "&f- &e" + prefix));
     return true;
   }
 }
