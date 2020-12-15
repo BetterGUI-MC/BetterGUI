@@ -12,6 +12,7 @@ import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.config.TemplateButtonConfig;
 import me.hsgamer.bettergui.downloader.AddonDownloader;
+import me.hsgamer.bettergui.hook.BetterGUIPlaceholderExpansion;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.bettergui.listener.QuitListener;
@@ -122,6 +123,7 @@ public final class BetterGUI extends JavaPlugin {
           return PlaceholderAPIHook.hasPlaceholders(original);
         }
       });
+      new BetterGUIPlaceholderExpansion().register();
     }
 
     getServer().getPluginManager().registerEvents(new QuitListener(), this);
