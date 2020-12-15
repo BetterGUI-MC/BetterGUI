@@ -5,13 +5,14 @@ import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 public class BetterGUIPlaceholderExpansion extends PlaceholderExpansion {
   @Override
   public String getIdentifier() {
-    return "bettergui_";
+    return getInstance().getName().toLowerCase(Locale.ROOT);
   }
 
   @Override
