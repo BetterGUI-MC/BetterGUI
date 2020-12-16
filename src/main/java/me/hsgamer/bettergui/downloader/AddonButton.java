@@ -86,6 +86,7 @@ public class AddonButton implements Button {
       CompletableFuture.supplyAsync(() -> {
         try {
           downloadInfo.download();
+          MessageUtils.sendMessage(humanEntity, "&eYou have to restart your server to run the addon");
           return true;
         } catch (DownloadingException e) {
           MessageUtils.sendMessage(humanEntity, "&cIt's still downloading");
