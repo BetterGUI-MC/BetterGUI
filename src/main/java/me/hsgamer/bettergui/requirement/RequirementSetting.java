@@ -45,6 +45,7 @@ public class RequirementSetting {
       }
     });
     Optional.ofNullable(keys.get("fail-command")).ifPresent(o -> actions.addAll(ActionBuilder.INSTANCE.getActions(menu, o)));
+    Optional.ofNullable(keys.get("fail-action")).ifPresent(o -> actions.addAll(ActionBuilder.INSTANCE.getActions(menu, o)));
   }
 
   /**

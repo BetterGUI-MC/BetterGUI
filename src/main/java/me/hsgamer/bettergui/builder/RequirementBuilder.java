@@ -75,8 +75,10 @@ public class RequirementBuilder extends Builder<String, Requirement> {
     RequirementSet requirementSet = new RequirementSet(name, menu, requirements);
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
 
-    Optional.ofNullable(keys.get("success-commands")).ifPresent(o -> requirementSet.setSuccessActions(ActionBuilder.INSTANCE.getActions(menu, o)));
-    Optional.ofNullable(keys.get("fail-commands")).ifPresent(o -> requirementSet.setFailActions(ActionBuilder.INSTANCE.getActions(menu, o)));
+    Optional.ofNullable(keys.get("success-command")).ifPresent(o -> requirementSet.setSuccessActions(ActionBuilder.INSTANCE.getActions(menu, o)));
+    Optional.ofNullable(keys.get("success-action")).ifPresent(o -> requirementSet.setSuccessActions(ActionBuilder.INSTANCE.getActions(menu, o)));
+    Optional.ofNullable(keys.get("fail-command")).ifPresent(o -> requirementSet.setFailActions(ActionBuilder.INSTANCE.getActions(menu, o)));
+    Optional.ofNullable(keys.get("fail-action")).ifPresent(o -> requirementSet.setFailActions(ActionBuilder.INSTANCE.getActions(menu, o)));
 
     return requirementSet;
   }
