@@ -2,7 +2,7 @@ name: Master Build
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
   build:
@@ -21,8 +21,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Generate Javadocs
+        run: mvn -B javadoc:javadoc
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
           name: "BetterGUI"
           path: "./target/BetterGUI.jar"
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/site/apidocs
