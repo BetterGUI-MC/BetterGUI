@@ -15,7 +15,6 @@ import me.hsgamer.bettergui.downloader.AddonDownloader;
 import me.hsgamer.bettergui.hook.BetterGUIPlaceholderExpansion;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.listener.AlternativeCommandListener;
-import me.hsgamer.bettergui.listener.QuitListener;
 import me.hsgamer.bettergui.manager.BetterGUIAddonManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginCommandManager;
@@ -126,7 +125,6 @@ public final class BetterGUI extends JavaPlugin {
       new BetterGUIPlaceholderExpansion().register();
     }
 
-    getServer().getPluginManager().registerEvents(new QuitListener(), this);
     if (Boolean.TRUE.equals(MainConfig.ENABLE_ALTERNATIVE_COMMAND_MANAGER.getValue())) {
       getLogger().info("Enabled alternative command manager");
       getServer().getPluginManager().registerEvents(new AlternativeCommandListener(), this);
