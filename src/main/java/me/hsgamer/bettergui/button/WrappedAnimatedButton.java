@@ -8,13 +8,12 @@ import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.bukkit.gui.Button;
 import me.hsgamer.hscore.bukkit.gui.button.AnimatedButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
 import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.math.BigDecimal;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class WrappedAnimatedButton extends BaseWrappedButton {
   /**
@@ -39,12 +38,27 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
       .map(String::valueOf)
       .map(Boolean::parseBoolean)
       .orElse(true);
+    int shift = Optional.ofNullable(keys.get("shift"))
+      .map(String::valueOf)
+      .flatMap(Validate::getNumber)
+      .map(BigDecimal::intValue)
+      .orElse(0);
+    boolean reverse = Optional.ofNullable(keys.get("reverse"))
+      .map(String::valueOf)
+      .map(Boolean::parseBoolean)
+      .orElse(false);
 
-    AnimatedButton animatedButton = new AnimatedButton(BetterGUI.getInstance(), update, async);
-    Optional.ofNullable(keys.get("child"))
+    List<WrappedButton> frames = Optional.ofNullable(keys.get("child"))
       .filter(o -> o instanceof ConfigurationSection)
       .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, (ConfigurationSection) o))
-      .ifPresent(frames -> frames.forEach(animatedButton::addChildButtons));
+      .orElse(Collections.emptyList());
+    frames = CollectionUtils.rotate(frames, shift);
+    if (reverse) {
+      frames = CollectionUtils.reverse(frames);
+    }
+
+    AnimatedButton animatedButton = new AnimatedButton(BetterGUI.getInstance(), update, async);
+    frames.forEach(animatedButton::addChildButtons);
     return animatedButton;
   }
 
