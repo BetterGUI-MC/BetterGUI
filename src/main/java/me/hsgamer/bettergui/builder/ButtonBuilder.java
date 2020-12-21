@@ -28,7 +28,13 @@ public class ButtonBuilder extends Builder<Menu, WrappedButton> {
   }
 
   private void registerDefaultButtons() {
-    register(MenuButton::new, "simple");
+    register(menu -> {
+      if (Boolean.TRUE.equals(MainConfig.USE_LEGACY_BUTTON.getValue())) {
+        return new LegacyMenuButton(menu);
+      } else {
+        return new MenuButton(menu);
+      }
+    }, "simple");
     register(DummyButton::new, "dummy");
     register(EmptyButton::new, "empty", "raw");
     register(WrappedAnimatedButton::new, "animated", "animate", "anim");

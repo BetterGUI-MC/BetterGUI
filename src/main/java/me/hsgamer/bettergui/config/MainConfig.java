@@ -23,6 +23,7 @@ public final class MainConfig extends PluginConfig {
   public static final BooleanConfigPath FORCED_UPDATE_INVENTORY = new BooleanConfigPath("forced-update-inventory", false);
   public static final BooleanConfigPath ENABLE_ALTERNATIVE_COMMAND_MANAGER = new BooleanConfigPath("alternative-command-manager.enable", false);
   public static final BooleanConfigPath ALTERNATIVE_COMMAND_MANAGER_CASE_INSENSITIVE = new BooleanConfigPath("alternative-command-manager.case-insensitive", true);
+  public static final BooleanConfigPath USE_LEGACY_BUTTON = new BooleanConfigPath("use-legacy-button", true);
   public static final ConfigPath<List<String>> ALTERNATIVE_COMMAND_MANAGER_IGNORED_COMMANDS = new AdvancedConfigPath<Object, List<String>>("alternative-command-manager.ignored-commands", Collections.singletonList("warp test")) {
     @Override
     public Object getFromConfig(Config config) {
