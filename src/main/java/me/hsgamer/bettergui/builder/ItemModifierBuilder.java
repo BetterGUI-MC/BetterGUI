@@ -36,6 +36,7 @@ public class ItemModifierBuilder extends Builder<Object, ItemModifier> {
     register(ItemFlagModifier::new, "flag", "item-flags", "itemflag", "itemflags", "item-flag");
     register(PotionModifier::new, "potion", "effect");
     register(SkullModifier::new, "skull", "head", "skull-owner");
+    register(NBTModifier::new, "nbt", "nbt-data");
   }
 
   /**
