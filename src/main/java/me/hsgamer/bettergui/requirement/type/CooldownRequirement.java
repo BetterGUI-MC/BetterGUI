@@ -6,7 +6,6 @@ import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.expression.ExpressionUtils;
 import me.hsgamer.hscore.variable.VariableManager;
-import org.bukkit.Bukkit;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -54,7 +53,7 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
     return Optional.ofNullable(ExpressionUtils.getResult(parsed))
       .map(bigDecimal -> Duration.ofMillis((long) bigDecimal.doubleValue() * 1000))
       .orElseGet(() -> {
-        Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed)));
+        MessageUtils.sendMessage(uuid, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed));
         return Duration.ZERO;
       });
   }

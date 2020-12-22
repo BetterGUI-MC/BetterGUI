@@ -6,10 +6,8 @@ import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.expression.ExpressionUtils;
 import me.hsgamer.hscore.variable.VariableManager;
-import org.bukkit.Bukkit;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class ConditionRequirement extends BaseRequirement<Boolean> {
@@ -23,7 +21,7 @@ public class ConditionRequirement extends BaseRequirement<Boolean> {
     list.replaceAll(s -> VariableManager.setVariables(s, uuid));
     for (String s : list) {
       if (!ExpressionUtils.isBoolean(s)) {
-        Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, MessageConfig.INVALID_CONDITION.getValue().replace("{input}", s)));
+        MessageUtils.sendMessage(uuid, MessageConfig.INVALID_CONDITION.getValue().replace("{input}", s));
         continue;
       }
       if (ExpressionUtils.getResult(s).intValue() != 1) {

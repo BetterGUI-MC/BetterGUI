@@ -5,7 +5,6 @@ import me.hsgamer.hscore.bukkit.item.ItemModifier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -28,8 +27,7 @@ public class ItemFlagModifier implements ItemModifier {
       try {
         flags.add(ItemFlag.valueOf(string.trim().toUpperCase().replace(" ", "_")));
       } catch (IllegalArgumentException e) {
-        String finalString = string;
-        Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, MessageConfig.INVALID_FLAG.getValue().replace("{input}", finalString)));
+        MessageUtils.sendMessage(uuid, MessageConfig.INVALID_FLAG.getValue().replace("{input}", string));
       }
     });
     return flags;

@@ -37,7 +37,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
   public Integer getParsedValue(UUID uuid) {
     String parsed = VariableManager.setVariables(String.valueOf(value).trim(), uuid);
     return Optional.ofNullable(ExpressionUtils.getResult(parsed)).map(BigDecimal::intValue).orElseGet(() -> {
-      Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed)));
+      MessageUtils.sendMessage(uuid, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed));
       return 0;
     });
   }

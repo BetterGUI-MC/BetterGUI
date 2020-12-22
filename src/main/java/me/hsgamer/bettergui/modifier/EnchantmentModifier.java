@@ -7,7 +7,6 @@ import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -39,7 +38,7 @@ public class EnchantmentModifier implements ItemModifier {
         if (optional.isPresent()) {
           level = optional.get().intValue();
         } else {
-          Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", rawLevel)));
+          MessageUtils.sendMessage(uuid, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", rawLevel));
           continue;
         }
       } else {
@@ -48,8 +47,7 @@ public class EnchantmentModifier implements ItemModifier {
       if (enchantment.isPresent()) {
         enchantments.put(enchantment.get(), level);
       } else {
-        String finalString = string;
-        Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, MessageConfig.INVALID_ENCHANTMENT.getValue().replace("{input}", finalString)));
+        MessageUtils.sendMessage(uuid, MessageConfig.INVALID_ENCHANTMENT.getValue().replace("{input}", string));
       }
     }
     return enchantments;
