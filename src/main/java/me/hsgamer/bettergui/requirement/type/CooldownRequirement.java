@@ -6,6 +6,7 @@ import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.expression.ExpressionUtils;
 import me.hsgamer.hscore.variable.VariableManager;
+import org.apache.commons.lang.time.DurationFormatUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,27 +24,24 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
     PluginVariableManager.register(name, (original, uuid) -> {
       long millis = getCooldown(uuid);
       millis = millis > 0 ? millis : 0;
-      int divide;
+
+      if (original.toLowerCase().startsWith("_format_")) {
+        return DurationFormatUtils.formatDuration(millis, original.substring("_format_".length()));
+      }
 
       switch (original.toLowerCase()) {
         case "_s":
         case "_seconds":
-          divide = 1000;
-          break;
+          return String.valueOf(millis / 1000);
         case "_m":
         case "_minutes":
-          divide = 60000;
-          break;
+          return String.valueOf(millis / 60000);
         case "_h":
         case "_hours":
-          divide = 3600000;
-          break;
+          return String.valueOf(millis / 3600000);
         default:
-          divide = 1;
-          break;
+          return String.valueOf(millis);
       }
-
-      return String.valueOf(millis / divide);
     });
   }
 
