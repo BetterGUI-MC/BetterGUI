@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.manager;
 
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
-import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
 import me.hsgamer.hscore.expression.ExpressionUtils;
@@ -127,7 +126,7 @@ public class PluginVariableManager {
         || color.equals(ChatColor.RESET)
         || color.equals(ChatColor.MAGIC)
         || color.equals(ChatColor.UNDERLINE));
-      return MessageUtils.colorize("&" + color.getChar());
+      return ChatColor.COLOR_CHAR + "" + color.getChar();
     });
 
     // Random
