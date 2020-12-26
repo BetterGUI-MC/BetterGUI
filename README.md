@@ -2,13 +2,15 @@
 
 ## Feature
 
-* Modular design (Base plugin with addons)
-* Simple settings
-* Animated Icons
-* Priority in icons
-* Special commands
-* View & Click Requirements
-* Cooldown
+* Stable
+* Modular design
+* From Simple to Complex
+* Many types of buttons
+* Many types of item modifiers
+* Support for custom requirements
+* Support for PlaceholderAPI
+* Arguments in menus
+* Addons and Addon Downloader
 
 ## Building
 
