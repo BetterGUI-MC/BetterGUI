@@ -31,6 +31,7 @@ import org.simpleyaml.configuration.file.FileConfiguration;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
@@ -40,7 +41,7 @@ public class SimpleMenu extends Menu {
   private final List<Action> closeActions = new LinkedList<>();
   private final RequirementSetting viewRequirement = new RequirementSetting(this, getName() + "_view");
   private final RequirementSetting closeRequirement = new RequirementSetting(this, getName() + "_close");
-  private final List<UUID> forceClose = Collections.synchronizedList(new ArrayList<>());
+  private final List<UUID> forceClose = new CopyOnWriteArrayList<>();
   private final Map<UUID, BukkitTask> updateTasks = new ConcurrentHashMap<>();
   private long ticks = 0;
   private Permission permission = new Permission(getInstance().getName().toLowerCase() + "." + getName());

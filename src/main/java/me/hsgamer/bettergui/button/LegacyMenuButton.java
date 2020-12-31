@@ -14,9 +14,10 @@ import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LegacyMenuButton extends BaseWrappedButton {
-  private final List<UUID> checked = Collections.synchronizedList(new ArrayList<>());
+  private final List<UUID> checked = new CopyOnWriteArrayList<>();
   private boolean checkOnlyOnCreation = false;
 
   /**
