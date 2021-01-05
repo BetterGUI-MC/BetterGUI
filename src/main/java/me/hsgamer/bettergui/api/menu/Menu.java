@@ -81,21 +81,21 @@ public abstract class Menu {
   /**
    * Get the former menu that opened this menu
    *
-   * @param player the player
+   * @param uuid the unique id
    *
    * @return the former menu
    */
-  public Optional<Menu> getParentMenu(Player player) {
-    return Optional.ofNullable(parentMenu.get(player.getUniqueId()));
+  public Optional<Menu> getParentMenu(UUID uuid) {
+    return Optional.ofNullable(parentMenu.get(uuid));
   }
 
   /**
    * Set the former menu
    *
-   * @param player the player
-   * @param menu   the former menu
+   * @param uuid the unique id
+   * @param menu the former menu
    */
-  public void setParentMenu(Player player, Menu menu) {
-    parentMenu.put(player.getUniqueId(), menu);
+  public void setParentMenu(UUID uuid, Menu menu) {
+    parentMenu.put(uuid, menu);
   }
 }

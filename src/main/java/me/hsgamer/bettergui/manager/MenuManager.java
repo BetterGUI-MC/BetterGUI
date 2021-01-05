@@ -26,21 +26,21 @@ public final class MenuManager {
   /**
    * Get all parent menus from a menu
    *
-   * @param menu   the start menu
-   * @param player the player
+   * @param menu the start menu
+   * @param uuid the unique id
    *
    * @return all parent menus
    */
-  public static List<Menu> getAllParentMenu(Menu menu, Player player) {
+  public static List<Menu> getAllParentMenu(Menu menu, UUID uuid) {
     List<Menu> list = new LinkedList<>();
-    Optional<Menu> optional = menu.getParentMenu(player);
+    Optional<Menu> optional = menu.getParentMenu(uuid);
     while (optional.isPresent()) {
       Menu parentMenu = optional.get();
       if (list.contains(parentMenu)) {
         break;
       }
       list.add(parentMenu);
-      optional = parentMenu.getParentMenu(player);
+      optional = parentMenu.getParentMenu(uuid);
     }
     return list;
   }
@@ -102,7 +102,7 @@ public final class MenuManager {
    */
   public void openMenu(String name, Player player, String[] args, Menu parentMenu, boolean bypass) {
     Menu menu = menuMap.get(name);
-    menu.setParentMenu(player, parentMenu);
+    menu.setParentMenu(player.getUniqueId(), parentMenu);
     menu.createInventory(player, args, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
   }
 

@@ -21,7 +21,9 @@ public class BackAction implements Action {
       return;
     }
 
-    Runnable runnable = menu != null ? () -> menu.createInventory(player, new String[0], player.hasPermission(Permissions.OPEN_MENU_BYPASS)) : player::closeInventory;
+    Runnable runnable = menu.getParentMenu(uuid)
+      .<Runnable>map(parentMenu -> () -> parentMenu.createInventory(player, new String[0], player.hasPermission(Permissions.OPEN_MENU_BYPASS)))
+      .orElse(player::closeInventory);
     taskChain.sync(() -> getInstance().getServer().getScheduler().scheduleSyncDelayedTask(getInstance(), runnable));
   }
 
