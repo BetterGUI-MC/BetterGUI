@@ -7,6 +7,7 @@ import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.expression.ExpressionUtils;
 import me.hsgamer.hscore.variable.VariableManager;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class ConditionRequirement extends BaseRequirement<Boolean> {
         MessageUtils.sendMessage(uuid, MessageConfig.INVALID_CONDITION.getValue().replace("{input}", s));
         continue;
       }
-      if (ExpressionUtils.getResult(s).intValue() != 1) {
+      if (ExpressionUtils.getResult(s).equals(BigDecimal.ZERO)) {
         return false;
       }
     }

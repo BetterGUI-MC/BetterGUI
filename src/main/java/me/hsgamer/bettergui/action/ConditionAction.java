@@ -6,6 +6,7 @@ import me.hsgamer.hscore.expression.ExpressionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class ConditionAction extends BaseAction {
       return;
     }
 
-    if (ExpressionUtils.getResult(replacedString).intValue() != 1) {
+    if (ExpressionUtils.getResult(replacedString).equals(BigDecimal.ZERO)) {
       taskChain.sync(TaskChain::abort);
     }
   }
