@@ -16,9 +16,10 @@ import me.hsgamer.bettergui.hook.BetterGUIPlaceholderExpansion;
 import me.hsgamer.bettergui.hook.PlaceholderAPIHook;
 import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.bettergui.manager.BetterGUIAddonManager;
+import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
-import me.hsgamer.bettergui.manager.PluginCommandManager;
 import me.hsgamer.bettergui.manager.PluginVariableManager;
+import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import me.hsgamer.hscore.bukkit.gui.GUIListener;
@@ -28,13 +29,11 @@ import me.hsgamer.hscore.variable.ExternalStringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.*;
 
-public final class BetterGUI extends JavaPlugin {
+public final class BetterGUI extends BasePlugin {
 
   private static BetterGUI instance;
   private static TaskChainFactory taskChainFactory;
@@ -44,7 +43,7 @@ public final class BetterGUI extends JavaPlugin {
   private final TemplateButtonConfig templateButtonConfig = new TemplateButtonConfig(this);
 
   private final MenuManager menuManager = new MenuManager(this);
-  private final PluginCommandManager commandManager = new PluginCommandManager(this);
+  private final MenuCommandManager menuCommandManager = new MenuCommandManager();
   private final BetterGUIAddonManager addonManager = new BetterGUIAddonManager(this);
   private final AddonDownloader addonDownloader = new AddonDownloader(this);
 
@@ -81,11 +80,9 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   @Override
-  public void onLoad() {
+  public void preLoad() {
     instance = this;
     MessageUtils.setPrefix(MessageConfig.PREFIX::getValue);
-    VariableManager.setReplaceAll(MainConfig.REPLACE_ALL_VARIABLES::getValue);
-    PluginVariableManager.registerDefaultVariables();
 
     if (getDescription().getVersion().contains("SNAPSHOT")) {
       getLogger().warning("You are using the development version");
@@ -106,10 +103,17 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   @Override
-  public void onEnable() {
+  public void load() {
+    VariableManager.setReplaceAll(MainConfig.REPLACE_ALL_VARIABLES::getValue);
+    PluginVariableManager.registerDefaultVariables();
+  }
+
+  @Override
+  public void enable() {
     GUIListener.init(this);
     taskChainFactory = BukkitTaskChainFactory.create(this);
 
+    // Check PlaceholderAPI hook
     if (PlaceholderAPIHook.setupPlugin()) {
       VariableManager.addExternalReplacer(new ExternalStringReplacer() {
         @Override
@@ -125,24 +129,42 @@ public final class BetterGUI extends JavaPlugin {
       new BetterGUIPlaceholderExpansion().register();
     }
 
+    // Check Alternative Command Manager
     if (Boolean.TRUE.equals(MainConfig.ENABLE_ALTERNATIVE_COMMAND_MANAGER.getValue())) {
       getLogger().info("Enabled alternative command manager");
       getServer().getPluginManager().registerEvents(new AlternativeCommandListener(), this);
     }
 
+    // Load addons
     addonManager.loadAddons();
 
-    Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-      loadCommands();
-      addonManager.enableAddons();
-      loadMenuConfig();
-      addonManager.callPostEnable();
-      CommandManager.syncCommand();
-      addonDownloader.createMenu();
-      if (Boolean.TRUE.equals(MainConfig.METRICS.getValue())) {
-        enableMetrics();
-      }
-    });
+    // Register default command
+    registerCommand(new OpenCommand());
+    registerCommand(new MainCommand(getName().toLowerCase()));
+    registerCommand(new GetAddonsCommand());
+    registerCommand(new ReloadCommand());
+    registerCommand(new GetVariablesCommand());
+    registerCommand(new AddonDownloaderCommand());
+  }
+
+  @Override
+  public void postEnable() {
+    addonManager.enableAddons();
+    loadMenuConfig();
+    addonManager.callPostEnable();
+    CommandManager.syncCommand();
+    addonDownloader.createMenu();
+
+    if (Boolean.TRUE.equals(MainConfig.METRICS.getValue())) {
+      Metrics metrics = new Metrics(this, 6609);
+      metrics.addCustomChart(new Metrics.DrilldownPie("addon", () -> {
+        Map<String, Map<String, Integer>> map = new HashMap<>();
+        Map<String, Integer> addons = addonManager.getAddonCount();
+        map.put(String.valueOf(addons.size()), addons);
+        return map;
+      }));
+      metrics.addCustomChart(new Metrics.AdvancedPie("addon_count", addonManager::getAddonCount));
+    }
   }
 
   /**
@@ -177,36 +199,9 @@ public final class BetterGUI extends JavaPlugin {
     return list;
   }
 
-  /**
-   * Load default commands
-   */
-  private void loadCommands() {
-    commandManager.register(new OpenCommand());
-    commandManager.register(new MainCommand(getName().toLowerCase()));
-    commandManager.register(new GetAddonsCommand());
-    commandManager.register(new ReloadCommand());
-    commandManager.register(new GetVariablesCommand());
-    commandManager.register(new AddonDownloaderCommand());
-  }
-
-  /**
-   * Enable metrics (BStats)
-   */
-  private void enableMetrics() {
-    Metrics metrics = new Metrics(this, 6609);
-    metrics.addCustomChart(new Metrics.DrilldownPie("addon", () -> {
-      Map<String, Map<String, Integer>> map = new HashMap<>();
-      Map<String, Integer> addons = addonManager.getAddonCount();
-      map.put(String.valueOf(addons.size()), addons);
-      return map;
-    }));
-    metrics.addCustomChart(new Metrics.AdvancedPie("addon_count", addonManager::getAddonCount));
-  }
-
   @Override
-  public void onDisable() {
-    HandlerList.unregisterAll(this);
-    commandManager.clearMenuCommand();
+  public void disable() {
+    menuCommandManager.clearMenuCommand();
     menuManager.clear();
     addonManager.disableAddons();
     addonDownloader.stopMenu();
@@ -214,10 +209,8 @@ public final class BetterGUI extends JavaPlugin {
     ButtonBuilder.INSTANCE.unregisterAll();
     ActionBuilder.INSTANCE.unregisterAll();
     MenuBuilder.INSTANCE.unregisterAll();
-    commandManager.unregisterAll();
     PluginVariableManager.unregisterAll();
     VariableManager.clearExternalReplacers();
-    Bukkit.getScheduler().cancelTasks(this);
   }
 
   /**
@@ -248,12 +241,12 @@ public final class BetterGUI extends JavaPlugin {
   }
 
   /**
-   * Get the command manager
+   * Get the menu command manager
    *
-   * @return the command manager
+   * @return the menu command manager
    */
-  public PluginCommandManager getCommandManager() {
-    return commandManager;
+  public MenuCommandManager getMenuCommandManager() {
+    return menuCommandManager;
   }
 
   /**

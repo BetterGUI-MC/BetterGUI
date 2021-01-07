@@ -161,7 +161,7 @@ public class SimpleMenu extends Menu {
               if (s.contains(" ")) {
                 getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
               } else {
-                getInstance().getCommandManager().registerMenuCommand(s, this);
+                getInstance().getMenuCommandManager().registerMenuCommand(s, this);
               }
             }
           });

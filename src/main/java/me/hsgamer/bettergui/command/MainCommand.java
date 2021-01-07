@@ -3,7 +3,8 @@ package me.hsgamer.bettergui.command;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.bettergui.manager.PluginCommandManager;
+import me.hsgamer.bettergui.manager.MenuCommandManager;
+import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.common.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,7 @@ public class MainCommand extends BukkitCommand {
       return false;
     }
 
-    PluginCommandManager manager = BetterGUI.getInstance().getCommandManager();
+    CommandManager manager = BetterGUI.getInstance().getCommandManager();
     sendMessage(commandSender, "");
     sendMessage(commandSender, "&e&lAuthor: &f" + Arrays.toString(BetterGUI.getInstance().getDescription().getAuthors().toArray()));
     sendMessage(commandSender, "&e&lVersion: &f" + BetterGUI.getInstance().getDescription().getVersion());
@@ -48,8 +49,11 @@ public class MainCommand extends BukkitCommand {
       }
     }
     sendMessage(commandSender, "");
+
+
+    MenuCommandManager menuCommandManager = BetterGUI.getInstance().getMenuCommandManager();
     sendMessage(commandSender, "&b&lMenu Command: ");
-    for (Command command : manager.getRegisteredMenuCommand().values()) {
+    for (Command command : menuCommandManager.getRegisteredMenuCommand().values()) {
       sendMessage(commandSender, "  &6" + command.getUsage());
     }
     sendMessage(commandSender, "");

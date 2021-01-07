@@ -24,7 +24,7 @@ public class ReloadCommand extends BukkitCommand {
       return false;
     }
 
-    getInstance().getCommandManager().clearMenuCommand();
+    getInstance().getMenuCommandManager().clearMenuCommand();
     PluginVariableManager.unregisterAll();
     getInstance().getMenuManager().clear();
     getInstance().getMainConfig().reloadConfig();

@@ -38,7 +38,7 @@ public class AlternativeCommandListener implements Listener {
       args = Arrays.copyOfRange(split, 1, split.length);
     }
 
-    Map<String, Command> menuCommand = BetterGUI.getInstance().getCommandManager().getRegisteredMenuCommand();
+    Map<String, Command> menuCommand = BetterGUI.getInstance().getMenuCommandManager().getRegisteredMenuCommand();
     if (caseInsensitive) {
       menuCommand = new CaseInsensitiveStringHashMap<>(menuCommand);
     }

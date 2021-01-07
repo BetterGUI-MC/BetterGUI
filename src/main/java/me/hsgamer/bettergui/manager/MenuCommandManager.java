@@ -9,18 +9,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class PluginCommandManager extends CommandManager {
-  private final Map<String, Command> registeredMenuCommand = new HashMap<>();
+import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
-  public PluginCommandManager(JavaPlugin plugin) {
-    super(plugin);
-  }
+public class MenuCommandManager {
+  private final Map<String, Command> registeredMenuCommand = new HashMap<>();
 
   /**
    * Register the command that opens the menu
@@ -50,10 +47,10 @@ public class PluginCommandManager extends CommandManager {
   public void registerMenuCommand(Command command) {
     String name = command.getName();
     if (registeredMenuCommand.containsKey(name)) {
-      plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", name);
+      getInstance().getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", name);
       return;
     }
-    registerCommandToCommandMap(plugin.getName() + "_menu", command);
+    CommandManager.registerCommandToCommandMap(getInstance().getName() + "_menu", command);
     registeredMenuCommand.put(name, command);
   }
 
@@ -63,9 +60,9 @@ public class PluginCommandManager extends CommandManager {
   public void clearMenuCommand() {
     registeredMenuCommand.values().forEach(command -> {
       try {
-        unregisterFromKnownCommands(command);
+        CommandManager.unregisterFromKnownCommands(command);
       } catch (IllegalAccessException e) {
-        this.plugin.getLogger().log(Level.WARNING, "Something wrong when unregister the command", e);
+        getInstance().getLogger().log(Level.WARNING, "Something wrong when unregister the command", e);
       }
     });
     registeredMenuCommand.clear();
