@@ -110,12 +110,12 @@ formatting-codes:
   NAME: '&dFormatting codes'
   LORE:
     - 'You can use all the formatting codes!'
-    - '&fColors: &c#c &a#a &9#9 &e#e &f... ...'
-    - '&fRandom (#k): &kfy379!H'
-    - '&fBold (#l): &lexample'
-    - '&fStrikethrough (#m): &mexample'
-    - '&fUnderline (#n): &nexample'
-    - '&fItalic (#o): &oexample'
+    - '&fColors: &c\&c &a\&a &9\&9 &e\&e &f... ...'
+    - '&fRandom (\&k): &kfy379!H'
+    - '&fBold (\&l): &lexample'
+    - '&fStrikethrough (\&m): &mexample'
+    - '&fUnderline (\&n): &nexample'
+    - '&fItalic (\&o): &oexample'
   ID: paper
   POSITION-X: 8
   POSITION-Y: 2
