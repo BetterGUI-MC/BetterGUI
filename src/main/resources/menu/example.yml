@@ -111,6 +111,7 @@ formatting-codes:
   LORE:
     - 'You can use all the formatting codes!'
     - '&fColors: &c\&c &a\&a &9\&9 &e\&e &f... ...'
+    - '&fHex Color (&#rrggbb) (1.16+): &#FF0000Red &#00FF00Green &#0000FFBlue'
     - '&fRandom (\&k): &kfy379!H'
     - '&fBold (\&l): &lexample'
     - '&fStrikethrough (\&m): &mexample'
