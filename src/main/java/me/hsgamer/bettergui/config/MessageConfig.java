@@ -1,11 +1,11 @@
 package me.hsgamer.bettergui.config;
 
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
-import me.hsgamer.hscore.config.PathLoader;
+import me.hsgamer.hscore.config.PathableConfig;
 import me.hsgamer.hscore.config.path.StringConfigPath;
 import org.bukkit.plugin.Plugin;
 
-public final class MessageConfig extends PluginConfig {
+public final class MessageConfig extends PathableConfig {
 
   public static final StringConfigPath PREFIX = new StringConfigPath("prefix", "&f[&bBetterGUI&f] ");
   public static final StringConfigPath NO_PERMISSION = new StringConfigPath("no-permission", "&cYou don't have permission to do this");
@@ -22,9 +22,12 @@ public final class MessageConfig extends PluginConfig {
   public static final StringConfigPath EMPTY_ARG_VALUE = new StringConfigPath("empty-arg-value", "/empty/");
 
   public MessageConfig(Plugin plugin) {
-    super(plugin, "messages.yml");
+    super(new PluginConfig(plugin, "messages.yml"));
+  }
+
+  @Override
+  public void setupConfig() {
+    super.setupConfig();
     getConfig().options().copyDefaults(true);
-    PathLoader.loadPath(this);
-    saveConfig();
   }
 }

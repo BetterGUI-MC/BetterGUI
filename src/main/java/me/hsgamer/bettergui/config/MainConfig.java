@@ -5,7 +5,7 @@ import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.AdvancedConfigPath;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.config.ConfigPath;
-import me.hsgamer.hscore.config.PathLoader;
+import me.hsgamer.hscore.config.PathableConfig;
 import me.hsgamer.hscore.config.path.BooleanConfigPath;
 import me.hsgamer.hscore.config.path.StringConfigPath;
 import org.bukkit.plugin.Plugin;
@@ -13,7 +13,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.Collections;
 import java.util.List;
 
-public final class MainConfig extends PluginConfig {
+public final class MainConfig extends PathableConfig {
 
   public static final StringConfigPath DEFAULT_MENU_TYPE = new StringConfigPath("default-menu-type", "simple");
   public static final StringConfigPath DEFAULT_BUTTON_TYPE = new StringConfigPath("default-button-type", "simple");
@@ -42,9 +42,12 @@ public final class MainConfig extends PluginConfig {
   };
 
   public MainConfig(Plugin plugin) {
-    super(plugin, "config.yml");
+    super(new PluginConfig(plugin, "config.yml"));
+  }
+
+  @Override
+  public void setupConfig() {
+    super.setupConfig();
     getConfig().options().copyDefaults(true);
-    PathLoader.loadPath(this);
-    saveConfig();
   }
 }
