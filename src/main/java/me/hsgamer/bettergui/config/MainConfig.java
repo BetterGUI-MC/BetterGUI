@@ -44,10 +44,4 @@ public final class MainConfig extends PathableConfig {
   public MainConfig(Plugin plugin) {
     super(new PluginConfig(plugin, "config.yml"));
   }
-
-  @Override
-  public void setupConfig() {
-    super.setupConfig();
-    getConfig().options().copyDefaults(true);
-  }
 }

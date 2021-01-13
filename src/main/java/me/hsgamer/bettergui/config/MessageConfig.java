@@ -24,10 +24,4 @@ public final class MessageConfig extends PathableConfig {
   public MessageConfig(Plugin plugin) {
     super(new PluginConfig(plugin, "messages.yml"));
   }
-
-  @Override
-  public void setupConfig() {
-    super.setupConfig();
-    getConfig().options().copyDefaults(true);
-  }
 }

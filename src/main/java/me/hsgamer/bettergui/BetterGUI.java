@@ -20,7 +20,6 @@ import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
-import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.bukkit.config.PluginConfig;
 import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
@@ -152,7 +151,6 @@ public final class BetterGUI extends BasePlugin {
     addonManager.enableAddons();
     loadMenuConfig();
     addonManager.callPostEnable();
-    CommandManager.syncCommand();
     addonDownloader.createMenu();
 
     if (Boolean.TRUE.equals(MainConfig.METRICS.getValue())) {
