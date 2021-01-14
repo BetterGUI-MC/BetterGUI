@@ -44,8 +44,8 @@ public abstract class TakableRequirement<V> extends BaseRequirement<V> {
   public void setValue(Object value) {
     if (value instanceof ConfigurationSection) {
       Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(((ConfigurationSection) value).getValues(false));
-      this.value = Optional.ofNullable(keys.get("value")).orElse(getDefaultValue());
       this.take = Optional.ofNullable(keys.get("take")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.take);
+      super.setValue(Optional.ofNullable(keys.get("value")).orElse(getDefaultValue()));
     } else {
       super.setValue(value);
     }
