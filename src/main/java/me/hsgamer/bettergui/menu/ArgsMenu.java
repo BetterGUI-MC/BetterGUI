@@ -41,7 +41,7 @@ public class ArgsMenu extends SimpleMenu {
           return playerArgs[index];
         }
       }
-      return "";
+      return null;
     });
   }
 
