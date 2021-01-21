@@ -39,9 +39,11 @@ public class ArgsMenu extends SimpleMenu {
         String[] playerArgs = argsPerPlayer.get(uuid);
         if (index >= 0 && index < playerArgs.length) {
           return playerArgs[index];
+        } else {
+          return null;
         }
       }
-      return null;
+      return "";
     });
   }
 
