@@ -27,6 +27,8 @@ import me.hsgamer.hscore.checker.spigotmc.SimpleVersionChecker;
 import me.hsgamer.hscore.variable.ExternalStringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.DrilldownPie;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -155,13 +157,13 @@ public final class BetterGUI extends BasePlugin {
 
     if (Boolean.TRUE.equals(MainConfig.METRICS.getValue())) {
       Metrics metrics = new Metrics(this, 6609);
-      metrics.addCustomChart(new Metrics.DrilldownPie("addon", () -> {
+      metrics.addCustomChart(new DrilldownPie("addon", () -> {
         Map<String, Map<String, Integer>> map = new HashMap<>();
         Map<String, Integer> addons = addonManager.getAddonCount();
         map.put(String.valueOf(addons.size()), addons);
         return map;
       }));
-      metrics.addCustomChart(new Metrics.AdvancedPie("addon_count", addonManager::getAddonCount));
+      metrics.addCustomChart(new AdvancedPie("addon_count", addonManager::getAddonCount));
     }
   }
 
