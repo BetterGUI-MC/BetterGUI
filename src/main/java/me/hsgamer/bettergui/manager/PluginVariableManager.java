@@ -1,12 +1,12 @@
 package me.hsgamer.bettergui.manager;
 
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
 import me.hsgamer.hscore.expression.ExpressionUtils;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -115,19 +115,7 @@ public class PluginVariableManager {
     VariableManager.register("ping", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(BukkitUtils::getPing).map(String::valueOf).orElse(""));
 
     // Rainbow Color
-    VariableManager.register("rainbow", (original, uuid) -> {
-      ChatColor[] values = ChatColor.values();
-      ChatColor color;
-      do {
-        color = values[ThreadLocalRandom.current().nextInt(values.length - 1)];
-      } while (color.equals(ChatColor.BOLD)
-        || color.equals(ChatColor.ITALIC)
-        || color.equals(ChatColor.STRIKETHROUGH)
-        || color.equals(ChatColor.RESET)
-        || color.equals(ChatColor.MAGIC)
-        || color.equals(ChatColor.UNDERLINE));
-      return ChatColor.COLOR_CHAR + "" + color.getChar();
-    });
+    VariableManager.register("rainbow", (original, uuid) -> MessageUtils.getRandomColor().toString());
 
     // Random
     VariableManager.register("random_", (original, uuid) -> {
