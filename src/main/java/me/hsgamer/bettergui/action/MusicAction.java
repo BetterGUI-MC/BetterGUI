@@ -22,6 +22,6 @@ public class MusicAction extends BaseAction {
   public void addToTaskChain(UUID uuid, TaskChain<?> taskChain) {
     String replacedString = getReplacedString(uuid);
     Optional.ofNullable(Bukkit.getPlayer(uuid))
-      .ifPresent(player -> taskChain.syncFuture(() -> NoteBlockMusic.playMusic(player, player.getLocation(), replacedString).thenApply(vo -> "music complete")));
+      .ifPresent(player -> taskChain.syncFuture(() -> NoteBlockMusic.playMusic(player, player::getLocation, replacedString).thenApply(vo -> "music complete")));
   }
 }
