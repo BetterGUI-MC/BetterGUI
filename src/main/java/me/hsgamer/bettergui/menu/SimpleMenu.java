@@ -67,21 +67,25 @@ public class SimpleMenu extends Menu {
         super.removeDisplay(uuid);
         Optional.ofNullable(updateTasks.remove(uuid)).ifPresent(BukkitTask::cancel);
       }
+
+      @Override
+      protected void onOpen(InventoryOpenEvent event) {
+        TaskChain<?> taskChain = BetterGUI.newChain();
+        UUID uuid = event.getPlayer().getUniqueId();
+        openActions.forEach(action -> action.addToTaskChain(uuid, taskChain));
+        taskChain.execute();
+      }
+
+      @Override
+      protected void onClose(InventoryCloseEvent event) {
+        TaskChain<?> taskChain = BetterGUI.newChain();
+        UUID uuid = event.getPlayer().getUniqueId();
+        closeActions.forEach(action -> action.addToTaskChain(uuid, taskChain));
+        taskChain.execute();
+      }
     };
 
     guiHolder.init();
-    guiHolder.addEventConsumer(InventoryOpenEvent.class, event -> {
-      TaskChain<?> taskChain = BetterGUI.newChain();
-      UUID uuid = event.getPlayer().getUniqueId();
-      openActions.forEach(action -> action.addToTaskChain(uuid, taskChain));
-      taskChain.execute();
-    });
-    guiHolder.addEventConsumer(InventoryCloseEvent.class, event -> {
-      TaskChain<?> taskChain = BetterGUI.newChain();
-      UUID uuid = event.getPlayer().getUniqueId();
-      closeActions.forEach(action -> action.addToTaskChain(uuid, taskChain));
-      taskChain.execute();
-    });
     guiHolder.setCloseFilter(uuid -> {
       if (forceClose.contains(uuid)) {
         forceClose.remove(uuid);

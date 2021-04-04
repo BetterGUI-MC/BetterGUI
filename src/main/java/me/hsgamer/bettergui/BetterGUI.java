@@ -198,7 +198,7 @@ public final class BetterGUI extends BasePlugin {
       for (File subFile : Objects.requireNonNull(file.listFiles())) {
         list.addAll(getMenuConfig(subFile));
       }
-    } else if (file.isFile() && file.getName().endsWith(".yml")) {
+    } else if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".yml")) {
       list.add(new BukkitConfig(file));
     }
     return list;
