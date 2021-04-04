@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.api.addon;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.hscore.bukkit.addon.PluginAddon;
-import me.hsgamer.hscore.bukkit.config.PluginConfig;
+import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -14,7 +14,7 @@ import java.io.File;
 public class BetterGUIAddon extends PluginAddon {
   @Override
   protected Config createConfig() {
-    return new PluginConfig(new File(getDataFolder(), "config.yml"));
+    return new BukkitConfig(new File(getDataFolder(), "config.yml"));
   }
 
   /**

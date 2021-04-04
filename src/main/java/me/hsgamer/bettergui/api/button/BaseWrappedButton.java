@@ -1,11 +1,11 @@
 package me.hsgamer.bettergui.api.button;
 
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.hscore.bukkit.gui.Button;
+import me.hsgamer.hscore.bukkit.gui.button.Button;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.simpleyaml.configuration.ConfigurationSection;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -21,7 +21,7 @@ public abstract class BaseWrappedButton implements WrappedButton {
    *
    * @param menu the menu
    */
-  public BaseWrappedButton(Menu menu) {
+  protected BaseWrappedButton(Menu menu) {
     this.menu = menu;
   }
 
@@ -32,10 +32,10 @@ public abstract class BaseWrappedButton implements WrappedButton {
    *
    * @return the button
    */
-  protected abstract Button createButton(ConfigurationSection section);
+  protected abstract Button createButton(Map<String, Object> section);
 
   @Override
-  public void setFromSection(ConfigurationSection section) {
+  public void setFromSection(Map<String, Object> section) {
     this.button = createButton(section);
   }
 

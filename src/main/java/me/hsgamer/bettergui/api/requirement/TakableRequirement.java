@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.api.requirement;
 
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.Map;
 import java.util.Optional;
@@ -15,7 +14,7 @@ import java.util.UUID;
 public abstract class TakableRequirement<V> extends BaseRequirement<V> {
   private boolean take = getDefaultTake();
 
-  public TakableRequirement(String name) {
+  protected TakableRequirement(String name) {
     super(name);
   }
 
@@ -42,9 +41,7 @@ public abstract class TakableRequirement<V> extends BaseRequirement<V> {
 
   @Override
   public void setValue(Object value) {
-    if (value instanceof ConfigurationSection) {
-      setFromMap(new CaseInsensitiveStringHashMap<>(((ConfigurationSection) value).getValues(false)));
-    } else if (value instanceof Map) {
+    if (value instanceof Map) {
       Map<String, Object> keys = new CaseInsensitiveStringHashMap<>();
       ((Map<?, ?>) value).forEach((k, v) -> keys.put(String.valueOf(k), v));
       setFromMap(keys);

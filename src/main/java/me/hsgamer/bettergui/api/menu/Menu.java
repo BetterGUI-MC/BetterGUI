@@ -1,7 +1,7 @@
 package me.hsgamer.bettergui.api.menu;
 
+import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
-import org.simpleyaml.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ public abstract class Menu {
    *
    * @param name the name of the menu
    */
-  public Menu(String name) {
+  protected Menu(String name) {
     this.name = name;
   }
 
@@ -37,9 +37,9 @@ public abstract class Menu {
   /**
    * Called when setting options
    *
-   * @param file the file of the menu
+   * @param config the config of the menu
    */
-  public abstract void setFromFile(FileConfiguration file);
+  public abstract void setFromConfig(Config config);
 
   /**
    * Called when opening the menu for the player

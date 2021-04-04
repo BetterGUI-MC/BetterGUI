@@ -15,7 +15,7 @@ public abstract class BaseRequirement<V> implements Requirement {
   protected Object value;
   private Menu menu;
 
-  public BaseRequirement(String name) {
+  protected BaseRequirement(String name) {
     this.name = name;
   }
 

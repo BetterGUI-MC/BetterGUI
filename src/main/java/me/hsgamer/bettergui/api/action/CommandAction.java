@@ -6,7 +6,7 @@ public abstract class CommandAction extends BaseAction {
    *
    * @param string the action string
    */
-  public CommandAction(String string) {
+  protected CommandAction(String string) {
     super(string);
   }
 

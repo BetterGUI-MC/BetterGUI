@@ -1,9 +1,9 @@
 package me.hsgamer.bettergui.api.button;
 
 import me.hsgamer.bettergui.api.menu.MenuElement;
-import me.hsgamer.hscore.bukkit.gui.Button;
-import org.simpleyaml.configuration.ConfigurationSection;
+import me.hsgamer.hscore.bukkit.gui.button.Button;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -16,7 +16,7 @@ public interface WrappedButton extends Button, MenuElement {
    *
    * @param section the section of that button in the config
    */
-  void setFromSection(ConfigurationSection section);
+  void setFromSection(Map<String, Object> section);
 
   /**
    * Get the name of the button

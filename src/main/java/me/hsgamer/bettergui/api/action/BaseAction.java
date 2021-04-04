@@ -19,7 +19,7 @@ public abstract class BaseAction implements Action {
    *
    * @param string the action string
    */
-  public BaseAction(String string) {
+  protected BaseAction(String string) {
     this.string = string;
     this.hasVariables = VariableManager.hasVariables(string);
   }
