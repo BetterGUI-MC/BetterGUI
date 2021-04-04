@@ -4,9 +4,9 @@ import me.hsgamer.bettergui.modifier.*;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.bukkit.item.ItemModifier;
 import me.hsgamer.hscore.bukkit.item.modifier.*;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -61,8 +61,8 @@ public class ItemModifierBuilder extends Builder<Object, ItemModifier> {
    *
    * @return the list of the modifiers
    */
-  public List<ItemModifier> getItemModifiers(ConfigurationSection section) {
-    return section.getValues(false).entrySet()
+  public List<ItemModifier> getItemModifiers(Map<String, Object> section) {
+    return section.entrySet()
       .stream()
       .flatMap(entry -> build(entry.getKey(), entry.getValue()).map(Stream::of).orElse(Stream.empty()))
       .collect(Collectors.toList());

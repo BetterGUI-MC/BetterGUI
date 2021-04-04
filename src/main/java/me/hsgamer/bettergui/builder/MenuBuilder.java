@@ -6,7 +6,7 @@ import me.hsgamer.bettergui.menu.ArgsMenu;
 import me.hsgamer.bettergui.menu.SimpleMenu;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import org.simpleyaml.configuration.file.FileConfiguration;
+import me.hsgamer.hscore.config.Config;
 
 import java.util.Map;
 import java.util.Optional;
@@ -31,21 +31,21 @@ public class MenuBuilder extends Builder<String, Menu> {
   }
 
   /**
-   * Build the menu from the configuration
+   * Build the menu from the config
    *
-   * @param name          the name of the menu
-   * @param configuration the configuration
+   * @param name   the name of the menu
+   * @param config the config
    *
    * @return the menu
    */
-  public Menu getMenu(String name, FileConfiguration configuration) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(configuration.getValues(true));
+  public Menu getMenu(String name, Config config) {
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(config.getValues(true));
     Menu menu = Optional.ofNullable(keys.get("menu-settings.menu-type"))
       .map(String::valueOf)
       .flatMap(string -> build(string, name))
       .orElseGet(() -> build(MainConfig.DEFAULT_MENU_TYPE.getValue(), name).orElse(null));
     if (menu != null) {
-      menu.setFromFile(configuration);
+      menu.setFromConfig(config);
     }
     return menu;
   }

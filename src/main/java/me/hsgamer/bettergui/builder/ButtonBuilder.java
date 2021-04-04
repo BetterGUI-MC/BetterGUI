@@ -6,7 +6,6 @@ import me.hsgamer.bettergui.button.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.List;
 import java.util.Map;
@@ -53,8 +52,8 @@ public class ButtonBuilder extends Builder<Menu, WrappedButton> {
    *
    * @return the button
    */
-  public WrappedButton getButton(Menu menu, String name, ConfigurationSection section) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(true));
+  public WrappedButton getButton(Menu menu, String name, Map<String, Object> section) {
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
     WrappedButton button = Optional.ofNullable(keys.get("type"))
       .map(String::valueOf)
       .flatMap(string -> build(string, menu))
@@ -74,10 +73,15 @@ public class ButtonBuilder extends Builder<Menu, WrappedButton> {
    *
    * @return the child buttons
    */
-  public List<WrappedButton> getChildButtons(WrappedButton parentButton, ConfigurationSection section) {
-    return section.getKeys(false)
+  public List<WrappedButton> getChildButtons(WrappedButton parentButton, Map<String, Object> section) {
+    return section.entrySet()
       .stream()
-      .map(key -> getButton(parentButton.getMenu(), parentButton.getName() + "_child_" + key, section.getConfigurationSection(key)))
+      .filter(entry -> entry.getValue() instanceof Map)
+      .map(entry -> {
+        // noinspection unchecked
+        Map<String, Object> value = (Map<String, Object>) entry.getValue();
+        return getButton(parentButton.getMenu(), parentButton.getName() + "_child_" + entry.getKey(), value);
+      })
       .collect(Collectors.toList());
   }
 }

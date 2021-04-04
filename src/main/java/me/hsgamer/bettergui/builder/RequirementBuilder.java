@@ -9,7 +9,6 @@ import me.hsgamer.bettergui.requirement.type.LevelRequirement;
 import me.hsgamer.bettergui.requirement.type.PermissionRequirement;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.List;
 import java.util.Map;
@@ -65,15 +64,15 @@ public class RequirementBuilder extends Builder<String, Requirement> {
    *
    * @return the requirement set
    */
-  public RequirementSet getRequirementSet(Menu menu, String name, ConfigurationSection section) {
-    List<Requirement> requirements = section.getMapValues(false).entrySet().stream().flatMap(entry -> {
+  public RequirementSet getRequirementSet(Menu menu, String name, Map<String, Object> section) {
+    List<Requirement> requirements = section.entrySet().stream().flatMap(entry -> {
       String type = entry.getKey();
       Object value = entry.getValue();
       return getRequirement(menu, type, name + "_" + type, value).map(Stream::of).orElse(Stream.empty());
     }).collect(Collectors.toList());
 
     RequirementSet requirementSet = new RequirementSet(name, menu, requirements);
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
 
     Optional.ofNullable(keys.get("success-command")).ifPresent(o -> requirementSet.setSuccessActions(ActionBuilder.INSTANCE.getActions(menu, o)));
     Optional.ofNullable(keys.get("success-action")).ifPresent(o -> requirementSet.setSuccessActions(ActionBuilder.INSTANCE.getActions(menu, o)));
