@@ -39,7 +39,7 @@ public class MenuBuilder extends Builder<String, Menu> {
    * @return the menu
    */
   public Menu getMenu(String name, Config config) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(config.getValues(true));
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(config.getNormalizedValues(true));
     Menu menu = Optional.ofNullable(keys.get("menu-settings.menu-type"))
       .map(String::valueOf)
       .flatMap(string -> build(string, name))

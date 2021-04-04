@@ -108,6 +108,9 @@ public final class BetterGUI extends BasePlugin {
   public void load() {
     VariableManager.setReplaceAll(MainConfig.REPLACE_ALL_VARIABLES::getValue);
     PluginVariableManager.registerDefaultVariables();
+    mainConfig.setup();
+    messageConfig.setup();
+    templateButtonConfig.setup();
   }
 
   @Override
@@ -177,6 +180,7 @@ public final class BetterGUI extends BasePlugin {
       saveResource("menu" + File.separator + "example.yml", false);
     }
     for (Config pluginConfig : getMenuConfig(menusFolder)) {
+      pluginConfig.setup();
       menuManager.registerMenu(pluginConfig);
     }
   }
