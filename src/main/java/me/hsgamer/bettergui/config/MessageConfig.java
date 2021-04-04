@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.config;
 
-import me.hsgamer.hscore.bukkit.config.PluginConfig;
+import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.config.PathableConfig;
 import me.hsgamer.hscore.config.path.StringConfigPath;
 import org.bukkit.plugin.Plugin;
@@ -22,6 +22,6 @@ public final class MessageConfig extends PathableConfig {
   public static final StringConfigPath EMPTY_ARG_VALUE = new StringConfigPath("empty-arg-value", "/empty/");
 
   public MessageConfig(Plugin plugin) {
-    super(new PluginConfig(plugin, "messages.yml"));
+    super(new BukkitConfig(plugin, "messages.yml"));
   }
 }

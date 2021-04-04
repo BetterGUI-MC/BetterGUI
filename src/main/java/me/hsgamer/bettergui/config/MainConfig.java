@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.config;
 
-import me.hsgamer.hscore.bukkit.config.PluginConfig;
+import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.AdvancedConfigPath;
 import me.hsgamer.hscore.config.Config;
@@ -42,6 +42,6 @@ public final class MainConfig extends PathableConfig {
   };
 
   public MainConfig(Plugin plugin) {
-    super(new PluginConfig(plugin, "config.yml"));
+    super(new BukkitConfig(plugin, "config.yml"));
   }
 }
