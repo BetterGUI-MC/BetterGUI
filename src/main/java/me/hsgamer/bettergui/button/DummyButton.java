@@ -7,8 +7,8 @@ import me.hsgamer.bettergui.utils.CommonStringReplacers;
 import me.hsgamer.hscore.bukkit.item.ItemBuilder;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.simpleyaml.configuration.ConfigurationSection;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class DummyButton implements WrappedButton {
@@ -29,7 +29,7 @@ public class DummyButton implements WrappedButton {
   }
 
   @Override
-  public void setFromSection(ConfigurationSection section) {
+  public void setFromSection(Map<String, Object> section) {
     ItemModifierBuilder.INSTANCE.getItemModifiers(section).forEach(itemBuilder::addItemModifier);
   }
 

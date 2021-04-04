@@ -16,7 +16,6 @@ import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.*;
 
@@ -41,8 +40,9 @@ public class MenuButton implements WrappedButton {
 
   private void setActions(Menu menu, Object o) {
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
-    if (o instanceof ConfigurationSection) {
-      Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(((ConfigurationSection) o).getValues(false));
+    if (o instanceof Map) {
+      // noinspection unchecked
+      Map<String, Object> keys = new CaseInsensitiveStringHashMap<>((Map<String, Object>) o);
       List<Action> defaultActions = Optional.ofNullable(keys.get("default")).map(value -> ActionBuilder.INSTANCE.getActions(menu, value)).orElse(Collections.emptyList());
       clickTypeMap.forEach((clickTypeName, clickType) -> actionMap.put(clickType, Optional.ofNullable(keys.get(clickTypeName)).map(obj -> ActionBuilder.INSTANCE.getActions(menu, obj)).orElse(defaultActions)));
     } else {
@@ -51,9 +51,9 @@ public class MenuButton implements WrappedButton {
   }
 
   @Override
-  public void setFromSection(ConfigurationSection section) {
+  public void setFromSection(Map<String, Object> section) {
     ItemModifierBuilder.INSTANCE.getItemModifiers(section).forEach(itemBuilder::addItemModifier);
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
     this.closeOnClick = Optional.ofNullable(keys.get("close-on-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     Optional.ofNullable(keys.get("command")).ifPresent(o -> setActions(menu, o));
     Optional.ofNullable(keys.get("action")).ifPresent(o -> setActions(menu, o));

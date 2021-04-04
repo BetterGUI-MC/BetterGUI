@@ -9,11 +9,10 @@ import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.bukkit.gui.Button;
-import me.hsgamer.hscore.bukkit.gui.button.AirButton;
+import me.hsgamer.hscore.bukkit.gui.button.Button;
+import me.hsgamer.hscore.bukkit.gui.button.impl.AirButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import org.bukkit.Bukkit;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.*;
 
@@ -32,8 +31,9 @@ public class WrappedAirButton extends BaseWrappedButton {
 
   private void setActions(Object o) {
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
-    if (o instanceof ConfigurationSection) {
-      Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(((ConfigurationSection) o).getValues(false));
+    if (o instanceof Map) {
+      // noinspection unchecked
+      Map<String, Object> keys = new CaseInsensitiveStringHashMap<>((Map<String, Object>) o);
       List<Action> defaultActions = Optional.ofNullable(keys.get("default")).map(value -> ActionBuilder.INSTANCE.getActions(getMenu(), value)).orElse(Collections.emptyList());
       clickTypeMap.forEach((clickTypeName, clickType) -> {
         if (keys.containsKey(clickTypeName)) {
@@ -48,8 +48,8 @@ public class WrappedAirButton extends BaseWrappedButton {
   }
 
   @Override
-  protected Button createButton(ConfigurationSection section) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
+  protected Button createButton(Map<String, Object> section) {
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
     boolean closeOnClick = Optional.ofNullable(keys.get("close-on-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     Optional.ofNullable(keys.get("command")).ifPresent(this::setActions);
     Optional.ofNullable(keys.get("action")).ifPresent(this::setActions);

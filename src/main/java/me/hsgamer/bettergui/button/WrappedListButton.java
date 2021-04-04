@@ -4,10 +4,9 @@ import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
-import me.hsgamer.hscore.bukkit.gui.Button;
-import me.hsgamer.hscore.bukkit.gui.button.ListButton;
+import me.hsgamer.hscore.bukkit.gui.button.Button;
+import me.hsgamer.hscore.bukkit.gui.button.impl.ListButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -26,12 +25,13 @@ public class WrappedListButton extends BaseWrappedButton {
   }
 
   @Override
-  protected Button createButton(ConfigurationSection section) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
+  protected Button createButton(Map<String, Object> section) {
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
     boolean keepCurrentIndex = Optional.ofNullable(keys.get("keep-current-index")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     return Optional.ofNullable(keys.get("child"))
-      .filter(o -> o instanceof ConfigurationSection)
-      .map(o -> new LinkedList<Button>(ButtonBuilder.INSTANCE.getChildButtons(this, (ConfigurationSection) o)))
+      .filter(o -> o instanceof Map)
+      .map(o -> (Map<String, Object>) o)
+      .map(o -> new LinkedList<Button>(ButtonBuilder.INSTANCE.getChildButtons(this, o)))
       .map(list -> {
         ListButton button = new ListButton(list);
         button.setKeepCurrentIndex(keepCurrentIndex);

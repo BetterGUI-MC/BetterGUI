@@ -5,12 +5,11 @@ import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
-import me.hsgamer.hscore.bukkit.gui.Button;
-import me.hsgamer.hscore.bukkit.gui.button.AnimatedButton;
+import me.hsgamer.hscore.bukkit.gui.button.Button;
+import me.hsgamer.hscore.bukkit.gui.button.impl.AnimatedButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -26,8 +25,8 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
   }
 
   @Override
-  protected Button createButton(ConfigurationSection section) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
+  protected Button createButton(Map<String, Object> section) {
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
     long update = Optional.ofNullable(keys.get("update"))
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
@@ -49,8 +48,9 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
       .orElse(false);
 
     List<WrappedButton> frames = Optional.ofNullable(keys.get("child"))
-      .filter(o -> o instanceof ConfigurationSection)
-      .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, (ConfigurationSection) o))
+      .filter(o -> o instanceof Map)
+      .map(o -> (Map<String, Object>) o)
+      .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, o))
       .orElse(Collections.emptyList());
     frames = CollectionUtils.rotate(frames, shift);
     if (reverse) {

@@ -8,10 +8,9 @@ import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.requirement.RequirementSetting;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.bukkit.gui.Button;
-import me.hsgamer.hscore.bukkit.gui.button.PredicateButton;
+import me.hsgamer.hscore.bukkit.gui.button.Button;
+import me.hsgamer.hscore.bukkit.gui.button.impl.PredicateButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,22 +29,22 @@ public class WrappedPredicateButton extends BaseWrappedButton {
     super(menu);
   }
 
-  private Map<AdvancedClickType, RequirementSetting> setClickRequirements(ConfigurationSection section) {
+  private Map<AdvancedClickType, RequirementSetting> setClickRequirements(Map<String, Object> section) {
     Map<AdvancedClickType, RequirementSetting> clickRequirements = new ConcurrentHashMap<>();
 
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
 
     RequirementSetting defaultSetting = new RequirementSetting(getMenu(), getName() + "_click_default");
     Optional.ofNullable(keys.get("default"))
-      .filter(o -> o instanceof ConfigurationSection)
-      .map(o -> (ConfigurationSection) o)
+      .filter(o -> o instanceof Map)
+      .map(o -> (Map<String, Object>) o)
       .ifPresent(defaultSetting::loadFromSection);
 
     clickTypeMap.forEach((clickTypeName, clickType) ->
       clickRequirements.put(clickType, Optional.ofNullable(keys.get(clickTypeName))
-        .filter(o -> o instanceof ConfigurationSection)
-        .map(o -> (ConfigurationSection) o)
+        .filter(o -> o instanceof Map)
+        .map(o -> (Map<String, Object>) o)
         .map(subsection -> {
           RequirementSetting setting = new RequirementSetting(getMenu(), getName() + "_click_" + clickTypeName.toLowerCase(Locale.ROOT));
           setting.loadFromSection(subsection);
@@ -57,27 +56,27 @@ public class WrappedPredicateButton extends BaseWrappedButton {
   }
 
   @Override
-  protected Button createButton(ConfigurationSection section) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
+  protected Button createButton(Map<String, Object> section) {
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
 
     PredicateButton predicateButton = new PredicateButton(
       Optional.ofNullable(keys.get("button"))
-        .filter(o -> o instanceof ConfigurationSection)
-        .map(o -> (ConfigurationSection) o)
+        .filter(o -> o instanceof Map)
+        .map(o -> (Map<String, Object>) o)
         .map(subsection -> (Button) ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_button", subsection))
         .orElse(Button.EMPTY)
     );
     Optional.ofNullable(keys.get("fallback"))
-      .filter(o -> o instanceof ConfigurationSection)
-      .map(o -> (ConfigurationSection) o)
+      .filter(o -> o instanceof Map)
+      .map(o -> (Map<String, Object>) o)
       .map(subsection -> ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_fallback", subsection))
       .ifPresent(predicateButton::setFallbackButton);
 
     this.checkOnlyOnCreation = Optional.ofNullable(keys.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.checkOnlyOnCreation);
 
     Optional.ofNullable(keys.get("view-requirement"))
-      .filter(o -> o instanceof ConfigurationSection)
-      .map(o -> (ConfigurationSection) o)
+      .filter(o -> o instanceof Map)
+      .map(o -> (Map<String, Object>) o)
       .ifPresent(subsection -> {
         RequirementSetting viewRequirement = new RequirementSetting(getMenu(), getName() + "_view");
         viewRequirement.loadFromSection(subsection);
@@ -98,8 +97,8 @@ public class WrappedPredicateButton extends BaseWrappedButton {
         });
       });
     Optional.ofNullable(keys.get("click-requirement"))
-      .filter(o -> o instanceof ConfigurationSection)
-      .map(o -> (ConfigurationSection) o)
+      .filter(o -> o instanceof Map)
+      .map(o -> (Map<String, Object>) o)
       .ifPresent(subsection -> {
         Map<AdvancedClickType, RequirementSetting> clickRequirements = setClickRequirements(subsection);
         predicateButton.setClickPredicate((uuid, event) -> {

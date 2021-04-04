@@ -7,7 +7,6 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.*;
 
@@ -37,11 +36,11 @@ public class RequirementSetting {
    *
    * @param section the section
    */
-  public void loadFromSection(ConfigurationSection section) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section.getValues(false));
+  public void loadFromSection(Map<String, Object> section) {
+    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
     keys.forEach((key, value) -> {
-      if (value instanceof ConfigurationSection) {
-        requirementSets.add(RequirementBuilder.INSTANCE.getRequirementSet(menu, name + "_reqset_" + key, (ConfigurationSection) value));
+      if (value instanceof Map) {
+        requirementSets.add(RequirementBuilder.INSTANCE.getRequirementSet(menu, name + "_reqset_" + key, (Map<String, Object>) value));
       }
     });
     Optional.ofNullable(keys.get("fail-command")).ifPresent(o -> actions.addAll(ActionBuilder.INSTANCE.getActions(menu, o)));
