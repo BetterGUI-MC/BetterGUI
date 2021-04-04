@@ -25,7 +25,7 @@ public class ConditionRequirement extends BaseRequirement<Boolean> {
         MessageUtils.sendMessage(uuid, MessageConfig.INVALID_CONDITION.getValue().replace("{input}", s));
         continue;
       }
-      if (ExpressionUtils.getResult(s).equals(BigDecimal.ZERO)) {
+      if (BigDecimal.ZERO.equals(ExpressionUtils.getResult(s))) {
         return false;
       }
     }
