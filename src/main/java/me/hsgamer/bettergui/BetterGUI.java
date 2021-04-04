@@ -20,10 +20,11 @@ import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
-import me.hsgamer.hscore.bukkit.config.PluginConfig;
+import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.hscore.checker.spigotmc.SimpleVersionChecker;
+import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
+import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.ExternalStringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bstats.bukkit.Metrics;
@@ -90,7 +91,7 @@ public final class BetterGUI extends BasePlugin {
       getLogger().warning("This is not ready for production");
       getLogger().warning("Use in your own risk");
     } else {
-      new SimpleVersionChecker(75620).getVersion().thenAccept(output -> {
+      new SpigotVersionChecker(75620).getVersion().thenAccept(output -> {
         if (output.startsWith("Error when getting version:")) {
           getLogger().warning(output);
         } else if (this.getDescription().getVersion().equalsIgnoreCase(output)) {
@@ -175,7 +176,7 @@ public final class BetterGUI extends BasePlugin {
     if (!menusFolder.exists() && menusFolder.mkdirs()) {
       saveResource("menu" + File.separator + "example.yml", false);
     }
-    for (PluginConfig pluginConfig : getMenuConfig(menusFolder)) {
+    for (Config pluginConfig : getMenuConfig(menusFolder)) {
       menuManager.registerMenu(pluginConfig);
     }
   }
@@ -187,14 +188,14 @@ public final class BetterGUI extends BasePlugin {
    *
    * @return the menu config
    */
-  private List<PluginConfig> getMenuConfig(File file) {
-    List<PluginConfig> list = new ArrayList<>();
+  private List<Config> getMenuConfig(File file) {
+    List<Config> list = new ArrayList<>();
     if (file.isDirectory()) {
       for (File subFile : Objects.requireNonNull(file.listFiles())) {
         list.addAll(getMenuConfig(subFile));
       }
     } else if (file.isFile() && file.getName().endsWith(".yml")) {
-      list.add(new PluginConfig(file));
+      list.add(new BukkitConfig(file));
     }
     return list;
   }

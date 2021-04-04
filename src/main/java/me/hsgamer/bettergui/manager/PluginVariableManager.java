@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.manager;
 
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
-import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
 import me.hsgamer.hscore.expression.ExpressionUtils;
