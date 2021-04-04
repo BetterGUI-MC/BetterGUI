@@ -3,10 +3,9 @@ package me.hsgamer.bettergui.manager;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.MenuBuilder;
-import me.hsgamer.hscore.bukkit.config.PluginConfig;
+import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.simpleyaml.configuration.file.FileConfiguration;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -48,11 +47,10 @@ public final class MenuManager {
   /**
    * Register the menu
    *
-   * @param file the menu file
+   * @param config the menu config
    */
-  public void registerMenu(PluginConfig file) {
-    String name = file.getFileName();
-    FileConfiguration config = file.getConfig();
+  public void registerMenu(Config config) {
+    String name = config.getName();
     if (menuMap.containsKey(name)) {
       plugin.getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
     } else {

@@ -114,9 +114,6 @@ public class PluginVariableManager {
     // Ping
     VariableManager.register("ping", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(BukkitUtils::getPing).map(String::valueOf).orElse(""));
 
-    // Rainbow Color
-    VariableManager.register("rainbow", (original, uuid) -> MessageUtils.getRandomColor().toString());
-
     // Random
     VariableManager.register("random_", (original, uuid) -> {
       original = original.trim();

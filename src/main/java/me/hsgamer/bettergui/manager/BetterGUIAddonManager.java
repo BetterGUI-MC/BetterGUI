@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.manager;
 import me.hsgamer.hscore.addon.object.Addon;
 import me.hsgamer.hscore.addon.object.AddonPath;
 import me.hsgamer.hscore.bukkit.addon.PluginAddonManager;
-import me.hsgamer.hscore.bukkit.config.PluginYamlProvider;
+import me.hsgamer.hscore.bukkit.config.BukkitConfigProvider;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
@@ -52,11 +52,6 @@ public class BetterGUIAddonManager extends PluginAddonManager {
   @Override
   public String getAddonConfigFileName() {
     return "addon.yml";
-  }
-
-  @Override
-  protected ConfigProvider<?> getConfigProvider() {
-    return new PluginYamlProvider();
   }
 
   /**
@@ -112,6 +107,11 @@ public class BetterGUIAddonManager extends PluginAddonManager {
     }).sorted(DEPEND_COMPARATOR).forEach(entry -> sorted.put(entry.getKey(), entry.getValue()));
 
     return sorted;
+  }
+
+  @Override
+  public ConfigProvider<?> getConfigProvider() {
+    return new BukkitConfigProvider();
   }
 
   @Override
