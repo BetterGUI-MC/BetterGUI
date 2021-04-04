@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.downloader;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.hscore.bukkit.gui.Button;
+import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.downloader.exception.DownloadingException;
 import me.hsgamer.hscore.downloader.object.DownloadInfo;
