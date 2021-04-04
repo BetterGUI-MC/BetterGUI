@@ -2,8 +2,7 @@ package me.hsgamer.bettergui.config;
 
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.common.CollectionUtils;
-import me.hsgamer.hscore.config.AdvancedConfigPath;
-import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.config.BaseConfigPath;
 import me.hsgamer.hscore.config.ConfigPath;
 import me.hsgamer.hscore.config.PathableConfig;
 import me.hsgamer.hscore.config.path.BooleanConfigPath;
@@ -24,22 +23,7 @@ public final class MainConfig extends PathableConfig {
   public static final BooleanConfigPath ENABLE_ALTERNATIVE_COMMAND_MANAGER = new BooleanConfigPath("alternative-command-manager.enable", false);
   public static final BooleanConfigPath ALTERNATIVE_COMMAND_MANAGER_CASE_INSENSITIVE = new BooleanConfigPath("alternative-command-manager.case-insensitive", true);
   public static final BooleanConfigPath USE_LEGACY_BUTTON = new BooleanConfigPath("use-legacy-button", true);
-  public static final ConfigPath<List<String>> ALTERNATIVE_COMMAND_MANAGER_IGNORED_COMMANDS = new AdvancedConfigPath<Object, List<String>>("alternative-command-manager.ignored-commands", Collections.singletonList("warp test")) {
-    @Override
-    public Object getFromConfig(Config config) {
-      return config.get(getPath());
-    }
-
-    @Override
-    public List<String> convert(Object rawValue) {
-      return CollectionUtils.createStringListFromObject(rawValue, true);
-    }
-
-    @Override
-    public Object convertToRaw(List<String> value) {
-      return value;
-    }
-  };
+  public static final ConfigPath<List<String>> ALTERNATIVE_COMMAND_MANAGER_IGNORED_COMMANDS = new BaseConfigPath<>("alternative-command-manager.ignored-commands", Collections.singletonList("warp test"), o -> CollectionUtils.createStringListFromObject(o, true));
 
   public MainConfig(Plugin plugin) {
     super(new BukkitConfig(plugin, "config.yml"));
