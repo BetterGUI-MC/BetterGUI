@@ -12,12 +12,13 @@ import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.requirement.RequirementSetting;
 import me.hsgamer.bettergui.utils.CommonStringReplacers;
 import me.hsgamer.bettergui.utils.SlotUtils;
-import me.hsgamer.hscore.bukkit.gui.GUIDisplay;
-import me.hsgamer.hscore.bukkit.gui.GUIHolder;
+import me.hsgamer.hscore.bukkit.gui.simple.SimpleGUIDisplay;
+import me.hsgamer.hscore.bukkit.gui.simple.SimpleGUIHolder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
+import me.hsgamer.hscore.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -25,8 +26,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.permissions.Permission;
 import org.bukkit.scheduler.BukkitTask;
-import org.simpleyaml.configuration.ConfigurationSection;
-import org.simpleyaml.configuration.file.FileConfiguration;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -36,7 +35,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 public class SimpleMenu extends Menu {
-  private final GUIHolder guiHolder;
+  private final SimpleGUIHolder guiHolder;
   private final List<Action> openActions = new LinkedList<>();
   private final List<Action> closeActions = new LinkedList<>();
   private final RequirementSetting viewRequirement = new RequirementSetting(this, getName() + "_view");
@@ -53,10 +52,10 @@ public class SimpleMenu extends Menu {
    */
   public SimpleMenu(String name) {
     super(name);
-    guiHolder = new GUIHolder(getInstance(), true) {
+    guiHolder = new SimpleGUIHolder(getInstance(), true) {
       @Override
-      public GUIDisplay createDisplay(UUID uuid) {
-        GUIDisplay guiDisplay = super.createDisplay(uuid);
+      public SimpleGUIDisplay createDisplay(UUID uuid) {
+        SimpleGUIDisplay guiDisplay = super.createDisplay(uuid);
         if (ticks >= 0) {
           updateTasks.put(uuid, Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), guiDisplay::update, ticks, ticks));
         }
@@ -101,15 +100,12 @@ public class SimpleMenu extends Menu {
   }
 
   @Override
-  public void setFromFile(FileConfiguration file) {
-    for (Map.Entry<String, Object> entry : file.getValues(false).entrySet()) {
-      String key = entry.getKey();
-      Object value = entry.getValue();
-      if (!(value instanceof ConfigurationSection)) {
-        continue;
+  public void setFromConfig(Config config) {
+    config.getNormalizedValues(false).forEach((key, value) -> {
+      if (!(value instanceof Map)) {
+        return;
       }
-      ConfigurationSection section = (ConfigurationSection) value;
-      Map<String, Object> values = new CaseInsensitiveStringHashMap<>(section.getValues(false));
+      Map<String, Object> values = new CaseInsensitiveStringHashMap<>((Map<String, Object>) value);
 
       if (key.equalsIgnoreCase("menu-settings")) {
 
@@ -143,13 +139,13 @@ public class SimpleMenu extends Menu {
         this.ticks = Optional.ofNullable(values.get("ticks")).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::longValue).orElse(this.ticks);
 
         Optional.ofNullable(values.get("view-requirement"))
-          .filter(o -> o instanceof ConfigurationSection)
-          .map(o -> (ConfigurationSection) o)
+          .filter(o -> o instanceof Map)
+          .map(o -> (Map<String, Object>) o)
           .ifPresent(this.viewRequirement::loadFromSection);
 
         Optional.ofNullable(values.get("close-requirement"))
-          .filter(o -> o instanceof ConfigurationSection)
-          .map(o -> (ConfigurationSection) o)
+          .filter(o -> o instanceof Map)
+          .map(o -> (Map<String, Object>) o)
           .ifPresent(this.closeRequirement::loadFromSection);
 
         this.permission = Optional.ofNullable(values.get("permission")).map(String::valueOf).map(Permission::new).orElse(this.permission);
@@ -181,16 +177,15 @@ public class SimpleMenu extends Menu {
           return title;
         }));
       } else if (key.equalsIgnoreCase("default-icon") || key.equalsIgnoreCase("default-button")) {
-        WrappedButton button = ButtonBuilder.INSTANCE.getButton(this, "menu_" + getName() + "_button_" + key, section);
+        WrappedButton button = ButtonBuilder.INSTANCE.getButton(this, "menu_" + getName() + "_button_" + key, values);
         button.init();
         guiHolder.setDefaultButton(button);
       } else {
-        WrappedButton button = ButtonBuilder.INSTANCE.getButton(this, "menu_" + getName() + "_button_" + key, section);
+        WrappedButton button = ButtonBuilder.INSTANCE.getButton(this, "menu_" + getName() + "_button_" + key, values);
         button.init();
         SlotUtils.getSlots(values).forEach(slot -> guiHolder.setButton(slot, button));
       }
-    }
-
+    });
   }
 
   @Override
@@ -226,7 +221,7 @@ public class SimpleMenu extends Menu {
 
   @Override
   public void updateInventory(Player player) {
-    guiHolder.getDisplay(player.getUniqueId()).ifPresent(GUIDisplay::update);
+    guiHolder.getDisplay(player.getUniqueId()).ifPresent(SimpleGUIDisplay::update);
   }
 
   @Override

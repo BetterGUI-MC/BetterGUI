@@ -9,8 +9,8 @@ import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
+import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
-import org.simpleyaml.configuration.file.FileConfiguration;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -48,14 +48,18 @@ public class ArgsMenu extends SimpleMenu {
   }
 
   @Override
-  public void setFromFile(FileConfiguration file) {
-    super.setFromFile(file);
-    for (String key : file.getKeys(false)) {
+  public void setFromConfig(Config config) {
+    super.setFromConfig(config);
+    config.getNormalizedValues(false).forEach((key, value) -> {
       if (!key.equalsIgnoreCase("menu-settings")) {
         return;
       }
 
-      Map<String, Object> settings = new CaseInsensitiveStringHashMap<>(file.getConfigurationSection(key).getValues(false));
+      if (!(value instanceof Map)) {
+        return;
+      }
+
+      Map<String, Object> settings = new CaseInsensitiveStringHashMap<>((Map<String, Object>) value);
 
       this.minArgs = Optional.ofNullable(settings.get(Settings.MIN_ARGS)).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::intValue).orElse(this.minArgs);
       this.defaultArgs = Optional.ofNullable(settings.get(Settings.DEFAULT_ARGS)).map(String::valueOf).map(s -> s.split(" ")).orElse(this.defaultArgs);
@@ -67,7 +71,7 @@ public class ArgsMenu extends SimpleMenu {
         }
       });
       Optional.ofNullable(settings.get(Settings.MIN_ARGS_ACTION)).ifPresent(o -> this.minArgsAction.addAll(ActionBuilder.INSTANCE.getActions(this, o)));
-    }
+    });
   }
 
   @Override
