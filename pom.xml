@@ -251,7 +251,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-gui-simple</artifactId>
-      <version>3.1</version>
+      <version>3.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>

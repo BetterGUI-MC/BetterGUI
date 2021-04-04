@@ -42,6 +42,9 @@ public class WrappedListButton extends BaseWrappedButton {
   @Override
   public void refresh(UUID uuid) {
     if (this.button instanceof ListButton) {
+      if (!((ListButton) this.button).isKeepCurrentIndex()) {
+        ((ListButton) this.button).removeCurrentIndex(uuid);
+      }
       ((ListButton) this.button).getButtons().stream().filter(button -> button instanceof WrappedButton).forEach(button -> ((WrappedButton) button).refresh(uuid));
     }
   }
