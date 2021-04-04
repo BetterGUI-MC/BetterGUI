@@ -37,7 +37,7 @@ default-icon:
 # You can use lowercase or uppercase whatever you want
 spawncmd:
   COMMAND: 'spawn'
-  NAME: '{rainbow}/spawn'
+  NAME: '&u/spawn'
   LORE:
     - 'It just executes /spawn'
     - 'as the player who clicked.'
