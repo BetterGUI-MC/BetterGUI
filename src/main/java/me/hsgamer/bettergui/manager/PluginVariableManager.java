@@ -70,6 +70,7 @@ public class PluginVariableManager {
 
     // Location
     VariableManager.register("world", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getLocation().getWorld().getName()).orElse(""));
+    VariableManager.register("world_env", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getLocation().getWorld().getEnvironment()).map(String::valueOf).orElse(""));
     VariableManager.register("x", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getX).map(String::valueOf).orElse(""));
     VariableManager.register("y", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getY).map(String::valueOf).orElse(""));
     VariableManager.register("z", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getZ).map(String::valueOf).orElse(""));
@@ -87,6 +88,8 @@ public class PluginVariableManager {
         return String.valueOf(player.getBedSpawnLocation().getY());
       } else if (original.equalsIgnoreCase("z")) {
         return String.valueOf(player.getBedSpawnLocation().getZ());
+      } else if (original.equalsIgnoreCase("world_env")) {
+        return player.getBedSpawnLocation().getWorld().getEnvironment().name();
       } else {
         return null;
       }
