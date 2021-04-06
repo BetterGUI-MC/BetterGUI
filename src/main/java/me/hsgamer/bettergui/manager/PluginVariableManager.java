@@ -7,6 +7,7 @@ import me.hsgamer.hscore.expression.ExpressionUtils;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
@@ -69,8 +70,14 @@ public class PluginVariableManager {
       .register("max_players", (original, uuid) -> String.valueOf(Bukkit.getMaxPlayers()));
 
     // Location
-    VariableManager.register("world", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getLocation().getWorld().getName()).orElse(""));
-    VariableManager.register("world_env", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getLocation().getWorld().getEnvironment()).map(String::valueOf).orElse(""));
+    VariableManager.register("world", (original, uuid) -> {
+      Optional<World> optional = Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getLocation().getWorld());
+      if (original.equalsIgnoreCase("env")) {
+        return optional.map(World::getEnvironment).map(Enum::name).orElse("");
+      } else {
+        return optional.map(World::getName).orElse("");
+      }
+    });
     VariableManager.register("x", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getX).map(String::valueOf).orElse(""));
     VariableManager.register("y", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getY).map(String::valueOf).orElse(""));
     VariableManager.register("z", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getZ).map(String::valueOf).orElse(""));
