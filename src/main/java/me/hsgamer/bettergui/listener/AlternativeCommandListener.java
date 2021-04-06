@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class AlternativeCommandListener implements Listener {
-  private static final Pattern SPACE_PATTERN = Pattern.compile(" ");
+  private static final Pattern SPACE_PATTERN = Pattern.compile("\\s");
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onCommand(PlayerCommandPreprocessEvent event) {
