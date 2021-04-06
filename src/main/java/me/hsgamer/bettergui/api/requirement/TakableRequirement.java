@@ -42,8 +42,7 @@ public abstract class TakableRequirement<V> extends BaseRequirement<V> {
   @Override
   public void setValue(Object value) {
     if (value instanceof Map) {
-      Map<String, Object> keys = new CaseInsensitiveStringHashMap<>();
-      ((Map<?, ?>) value).forEach((k, v) -> keys.put(String.valueOf(k), v));
+      Map<String, Object> keys = new CaseInsensitiveStringHashMap<>((Map<String, Object>) value);
       setFromMap(keys);
     } else {
       super.setValue(value);

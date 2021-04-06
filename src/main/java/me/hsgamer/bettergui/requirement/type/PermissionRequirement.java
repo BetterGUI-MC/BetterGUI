@@ -27,7 +27,7 @@ public class PermissionRequirement extends BaseRequirement<List<String>> {
     if (player == null) {
       return true;
     }
-    return getParsedValue(uuid).stream().allMatch(s -> hasPermission(player, s));
+    return getParsedValue(uuid).parallelStream().allMatch(s -> hasPermission(player, s));
   }
 
   private boolean hasPermission(Player player, String permission) {
