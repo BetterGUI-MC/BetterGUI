@@ -278,8 +278,7 @@ list-icon:
         name: "&aYou are in {world}"
       view-requirement:
         condition:
-          # STREQ: Compare 2 strings if they are the same
-          condition: STREQ("{world}", "world")
+          condition: STREQIC("{world_env}", "normal")
     nether:
       type: predicate
       button:
@@ -287,7 +286,7 @@ list-icon:
         name: "&cYou are in {world}"
       view-requirement:
         condition:
-          condition: STREQ("{world}", "world_nether")
+          condition: STREQIC("{world_env}", "nether")
     unknown:
       id: bedrock
       name: "&cYou are in {world}"
@@ -345,11 +344,11 @@ requirement-set:
   click-requirement:
     default:
       world:
-        condition: STREQ("{world}", "world")
+        condition: STREQIC("{world_env}", "normal")
         success-command:
           - "tell: &aYou are in the overworld"
       nether_world:
-        condition: STREQ("{world}", "world_nether")
+        condition: STREQIC("{world_env}", "nether")
         level: 10
         success-command:
           - "tell: &aYou are in nether"
