@@ -72,7 +72,7 @@ public class PluginVariableManager {
     // Location
     VariableManager.register("world", (original, uuid) -> {
       Optional<World> optional = Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getLocation().getWorld());
-      if (original.equalsIgnoreCase("env")) {
+      if (original.equalsIgnoreCase("_env")) {
         return optional.map(World::getEnvironment).map(Enum::name).orElse("");
       } else {
         return optional.map(World::getName).orElse("");
