@@ -349,7 +349,9 @@ requirement-set:
           - "tell: &aYou are in the overworld"
       nether_world:
         condition: STREQIC("{world_env}", "nether")
-        level: 10
+        level:
+          value: 10
+          take: false
         success-command:
           - "tell: &aYou are in nether"
       permission:
