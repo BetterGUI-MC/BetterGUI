@@ -32,7 +32,6 @@ public class MainCommand extends BukkitCommand {
     sendMessage(commandSender, "");
     sendMessage(commandSender, "&e&lAuthor: &f" + Arrays.toString(BetterGUI.getInstance().getDescription().getAuthors().toArray()));
     sendMessage(commandSender, "&e&lVersion: &f" + BetterGUI.getInstance().getDescription().getVersion());
-    sendMessage(commandSender, "&9&lDiscord: &fhttps://discord.com/invite/9m4GdFD");
     sendMessage(commandSender, "");
     sendMessage(commandSender, "&b&lCommand: ");
     for (Command command : manager.getRegistered().values()) {
