@@ -17,6 +17,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ArgsMenu extends SimpleMenu {
+  private static final String MIN_ARGS = "min-args";
+  private static final String ARGS = "args";
+  private static final String MIN_ARGS_ACTION = "min-args-action";
+  private static final String DEFAULT_ARGS = "default-args";
+
   private final Map<UUID, String[]> argsPerPlayer = new ConcurrentHashMap<>();
   private final Map<String, Integer> argToIndexMap = new CaseInsensitiveStringHashMap<>();
   private final List<Action> minArgsAction = new LinkedList<>();
@@ -61,16 +66,16 @@ public class ArgsMenu extends SimpleMenu {
 
       Map<String, Object> settings = new CaseInsensitiveStringHashMap<>((Map<String, Object>) value);
 
-      this.minArgs = Optional.ofNullable(settings.get(Settings.MIN_ARGS)).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::intValue).orElse(this.minArgs);
-      this.defaultArgs = Optional.ofNullable(settings.get(Settings.DEFAULT_ARGS)).map(String::valueOf).map(s -> s.split(" ")).orElse(this.defaultArgs);
+      this.minArgs = Optional.ofNullable(settings.get(MIN_ARGS)).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::intValue).orElse(this.minArgs);
+      this.defaultArgs = Optional.ofNullable(settings.get(DEFAULT_ARGS)).map(String::valueOf).map(s -> s.split(" ")).orElse(this.defaultArgs);
 
-      Optional.ofNullable(settings.get(Settings.ARGS)).map(o -> CollectionUtils.createStringListFromObject(o, true)).ifPresent(list -> {
+      Optional.ofNullable(settings.get(ARGS)).map(o -> CollectionUtils.createStringListFromObject(o, true)).ifPresent(list -> {
         this.registeredArgs = list.size();
         for (int i = 0; i < list.size(); i++) {
           this.argToIndexMap.put(list.get(i), i);
         }
       });
-      Optional.ofNullable(settings.get(Settings.MIN_ARGS_ACTION)).ifPresent(o -> this.minArgsAction.addAll(ActionBuilder.INSTANCE.getActions(this, o)));
+      Optional.ofNullable(settings.get(MIN_ARGS_ACTION)).ifPresent(o -> this.minArgsAction.addAll(ActionBuilder.INSTANCE.getActions(this, o)));
     });
   }
 
@@ -110,12 +115,5 @@ public class ArgsMenu extends SimpleMenu {
       return clone;
     }
     return args;
-  }
-
-  private static final class Settings {
-    static final String MIN_ARGS = "min-args";
-    static final String ARGS = "args";
-    static final String MIN_ARGS_ACTION = "min-args-action";
-    static final String DEFAULT_ARGS = "default-args";
   }
 }

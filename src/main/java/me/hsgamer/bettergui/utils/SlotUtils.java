@@ -12,6 +12,10 @@ import java.util.stream.Stream;
  * The utility class for generating slots
  */
 public class SlotUtils {
+  private static final String POS_X = "position-x";
+  private static final String POS_Y = "position-y";
+  private static final String POS_SLOT = "slot";
+
   private SlotUtils() {
     // EMPTY
   }
@@ -26,20 +30,20 @@ public class SlotUtils {
   public static List<Integer> getSlots(Map<String, Object> map) {
     List<Integer> slots = new ArrayList<>();
 
-    if (map.containsKey(Setting.X) || map.containsKey(Setting.Y)) {
+    if (map.containsKey(POS_X) || map.containsKey(POS_Y)) {
       int x = 1;
       int y = 1;
-      if (map.containsKey(Setting.X)) {
-        x = Integer.parseInt(String.valueOf(map.get(Setting.X)));
+      if (map.containsKey(POS_X)) {
+        x = Integer.parseInt(String.valueOf(map.get(POS_X)));
       }
-      if (map.containsKey(Setting.Y)) {
-        y = Integer.parseInt(String.valueOf(map.get(Setting.Y)));
+      if (map.containsKey(POS_Y)) {
+        y = Integer.parseInt(String.valueOf(map.get(POS_Y)));
       }
       slots.add((y - 1) * 9 + x - 1);
     }
-    if (map.containsKey(Setting.SLOT)) {
+    if (map.containsKey(POS_SLOT)) {
       slots.addAll(Arrays
-        .stream(String.valueOf(map.get(Setting.SLOT)).split(","))
+        .stream(String.valueOf(map.get(POS_SLOT)).split(","))
         .map(String::trim)
         .flatMap(SlotUtils::generateSlots).collect(Collectors.toList()));
     }
@@ -71,16 +75,5 @@ public class SlotUtils {
       }
     }
     return Stream.empty();
-  }
-
-  public static class Setting {
-
-    static final String X = "position-x";
-    static final String Y = "position-y";
-    static final String SLOT = "slot";
-
-    private Setting() {
-      // EMPTY
-    }
   }
 }
