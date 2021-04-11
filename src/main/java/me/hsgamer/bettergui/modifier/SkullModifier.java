@@ -26,7 +26,7 @@ public class SkullModifier extends ItemMetaModifier {
   public ItemMeta modifyMeta(ItemMeta meta, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
     if (meta instanceof SkullMeta) {
       String value = StringReplacer.replace(skullString, uuid, stringReplacerMap.values());
-      if (MainConfig.LOAD_PLAYER_SKULL_ASYNC.getValue() && BukkitUtils.isUsername(value)) {
+      if (Boolean.TRUE.equals(MainConfig.LOAD_PLAYER_SKULL_ASYNC.getValue()) && BukkitUtils.isUsername(value)) {
         CompletableFuture<OfflinePlayer> completableFuture = BukkitUtils.getOfflinePlayerAsync(value);
         if (completableFuture.isDone()) {
           return SkullUtils.applySkin(meta, completableFuture.join());
