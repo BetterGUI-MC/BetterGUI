@@ -1,18 +1,17 @@
 package me.hsgamer.bettergui.modifier;
 
 import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.hscore.bukkit.item.ItemModifier;
+import me.hsgamer.hscore.bukkit.item.ItemMetaModifier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
 import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ItemFlagModifier implements ItemModifier {
+public class ItemFlagModifier extends ItemMetaModifier {
   private List<String> flagList = Collections.emptyList();
 
   @Override
@@ -34,13 +33,28 @@ public class ItemFlagModifier implements ItemModifier {
   }
 
   @Override
-  public ItemStack modify(ItemStack original, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
-    ItemMeta itemMeta = original.getItemMeta();
+  public ItemMeta modifyMeta(ItemMeta meta, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
     for (ItemFlag flag : getParsed(uuid, stringReplacerMap.values())) {
-      itemMeta.addItemFlags(flag);
+      meta.addItemFlags(flag);
     }
-    original.setItemMeta(itemMeta);
-    return original;
+    return meta;
+  }
+
+  @Override
+  public void loadFromItemMeta(ItemMeta meta) {
+    this.flagList = meta.getItemFlags().stream().map(ItemFlag::name).collect(Collectors.toList());
+  }
+
+  @Override
+  public boolean canLoadFromItemMeta(ItemMeta meta) {
+    return true;
+  }
+
+  @Override
+  public boolean compareWithItemMeta(ItemMeta meta, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
+    Set<ItemFlag> list1 = getParsed(uuid, stringReplacerMap.values());
+    Set<ItemFlag> list2 = meta.getItemFlags();
+    return list1.size() == list2.size() && list1.containsAll(list2);
   }
 
   @Override
@@ -51,25 +65,5 @@ public class ItemFlagModifier implements ItemModifier {
   @Override
   public void loadFromObject(Object object) {
     this.flagList = CollectionUtils.createStringListFromObject(object, true);
-  }
-
-  @Override
-  public boolean canLoadFromItemStack(ItemStack itemStack) {
-    return itemStack.hasItemMeta();
-  }
-
-  @Override
-  public void loadFromItemStack(ItemStack itemStack) {
-    this.flagList = itemStack.getItemMeta().getItemFlags().stream().map(ItemFlag::name).collect(Collectors.toList());
-  }
-
-  @Override
-  public boolean compareWithItemStack(ItemStack itemStack, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
-    Set<ItemFlag> list1 = getParsed(uuid, stringReplacerMap.values());
-    if (list1.isEmpty() && (!itemStack.hasItemMeta() || itemStack.getItemMeta().getItemFlags().isEmpty())) {
-      return true;
-    }
-    Set<ItemFlag> list2 = itemStack.getItemMeta().getItemFlags();
-    return list1.size() == list2.size() && list1.containsAll(list2);
   }
 }

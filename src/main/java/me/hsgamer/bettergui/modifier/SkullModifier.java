@@ -1,11 +1,10 @@
 package me.hsgamer.bettergui.modifier;
 
 import com.cryptomorin.xseries.SkullUtils;
-import me.hsgamer.hscore.bukkit.item.ItemModifier;
+import me.hsgamer.hscore.bukkit.item.ItemMetaModifier;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -14,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class SkullModifier implements ItemModifier {
+public class SkullModifier extends ItemMetaModifier {
   private String skullString = "";
 
   @Override
@@ -23,20 +22,34 @@ public class SkullModifier implements ItemModifier {
   }
 
   @Override
-  public ItemStack modify(ItemStack original, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
-    ItemMeta itemMeta = original.getItemMeta();
-    if (itemMeta instanceof SkullMeta) {
+  public ItemMeta modifyMeta(ItemMeta meta, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
+    if (meta instanceof SkullMeta) {
       String value = StringReplacer.replace(skullString, uuid, stringReplacerMap.values());
       if (BukkitUtils.isUsername(value)) {
         CompletableFuture<OfflinePlayer> completableFuture = BukkitUtils.getOfflinePlayerAsync(value);
         if (completableFuture.isDone()) {
-          original.setItemMeta(SkullUtils.applySkin(itemMeta, completableFuture.join()));
+          return SkullUtils.applySkin(meta, completableFuture.join());
         }
       } else {
-        original.setItemMeta(SkullUtils.applySkin(itemMeta, value));
+        return SkullUtils.applySkin(meta, value);
       }
     }
-    return original;
+    return meta;
+  }
+
+  @Override
+  public void loadFromItemMeta(ItemMeta meta) {
+    this.skullString = Optional.ofNullable(SkullUtils.getSkinValue(meta)).orElse("");
+  }
+
+  @Override
+  public boolean canLoadFromItemMeta(ItemMeta meta) {
+    return meta instanceof SkullMeta;
+  }
+
+  @Override
+  public boolean compareWithItemMeta(ItemMeta meta, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
+    return false;
   }
 
   @Override
@@ -47,20 +60,5 @@ public class SkullModifier implements ItemModifier {
   @Override
   public void loadFromObject(Object object) {
     this.skullString = String.valueOf(object);
-  }
-
-  @Override
-  public boolean canLoadFromItemStack(ItemStack itemStack) {
-    return itemStack.getItemMeta() instanceof SkullMeta;
-  }
-
-  @Override
-  public void loadFromItemStack(ItemStack itemStack) {
-    this.skullString = Optional.of(itemStack.getItemMeta()).map(SkullUtils::getSkinValue).orElse("");
-  }
-
-  @Override
-  public boolean compareWithItemStack(ItemStack itemStack, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
-    return false;
   }
 }

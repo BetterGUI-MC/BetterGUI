@@ -2,12 +2,11 @@ package me.hsgamer.bettergui.modifier;
 
 import com.cryptomorin.xseries.XEnchantment;
 import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.hscore.bukkit.item.ItemModifier;
+import me.hsgamer.hscore.bukkit.item.ItemMetaModifier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -15,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class EnchantmentModifier implements ItemModifier {
+public class EnchantmentModifier extends ItemMetaModifier {
   private List<String> enchantmentList = Collections.emptyList();
 
   @Override
@@ -54,49 +53,34 @@ public class EnchantmentModifier implements ItemModifier {
   }
 
   @Override
-  public ItemStack modify(ItemStack original, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
-    ItemMeta itemMeta = original.getItemMeta();
+  public ItemMeta modifyMeta(ItemMeta meta, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
     Map<XEnchantment, Integer> map = getParsed(uuid, stringReplacerMap.values());
-    if (itemMeta instanceof EnchantmentStorageMeta) {
-      map.forEach((enchant, level) -> ((EnchantmentStorageMeta) itemMeta).addStoredEnchant(enchant.parseEnchantment(), level, true));
+    if (map instanceof EnchantmentStorageMeta) {
+      map.forEach((enchant, level) -> ((EnchantmentStorageMeta) meta).addStoredEnchant(enchant.parseEnchantment(), level, true));
     } else {
-      map.forEach((enchantment, level) -> itemMeta.addEnchant(enchantment.parseEnchantment(), level, true));
+      map.forEach((enchantment, level) -> meta.addEnchant(enchantment.parseEnchantment(), level, true));
     }
-    original.setItemMeta(itemMeta);
-    return original;
+    return meta;
   }
 
   @Override
-  public Object toObject() {
-    return enchantmentList;
-  }
-
-  @Override
-  public void loadFromObject(Object object) {
-    this.enchantmentList = CollectionUtils.createStringListFromObject(object, true);
-  }
-
-  @Override
-  public boolean canLoadFromItemStack(ItemStack itemStack) {
-    return itemStack.hasItemMeta();
-  }
-
-  @Override
-  public void loadFromItemStack(ItemStack itemStack) {
-    this.enchantmentList = itemStack.getItemMeta().getEnchants().entrySet()
+  public void loadFromItemMeta(ItemMeta meta) {
+    this.enchantmentList = meta.getEnchants().entrySet()
       .stream()
       .map(entry -> XEnchantment.matchXEnchantment(entry.getKey()).name() + ", " + entry.getValue())
       .collect(Collectors.toList());
   }
 
   @Override
-  public boolean compareWithItemStack(ItemStack itemStack, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
+  public boolean canLoadFromItemMeta(ItemMeta meta) {
+    return meta.hasEnchants();
+  }
+
+  @Override
+  public boolean compareWithItemMeta(ItemMeta meta, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
     Map<XEnchantment, Integer> list1 = getParsed(uuid, stringReplacerMap.values());
-    if (list1.isEmpty() && (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasEnchants())) {
-      return true;
-    }
     Map<XEnchantment, Integer> list2 = new EnumMap<>(XEnchantment.class);
-    itemStack.getItemMeta().getEnchants().forEach(((enchantment, integer) -> list2.put(XEnchantment.matchXEnchantment(enchantment), integer)));
+    meta.getEnchants().forEach(((enchantment, integer) -> list2.put(XEnchantment.matchXEnchantment(enchantment), integer)));
     if (list1.size() != list2.size()) {
       return false;
     }
@@ -108,5 +92,15 @@ public class EnchantmentModifier implements ItemModifier {
       }
     }
     return true;
+  }
+
+  @Override
+  public Object toObject() {
+    return enchantmentList;
+  }
+
+  @Override
+  public void loadFromObject(Object object) {
+    this.enchantmentList = CollectionUtils.createStringListFromObject(object, true);
   }
 }
