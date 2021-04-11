@@ -266,7 +266,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-item</artifactId>
-      <version>3.2</version>
+      <version>3.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
