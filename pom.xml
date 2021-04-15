@@ -205,7 +205,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-checker-spigotmc</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
       <exclusions>
         <exclusion>
           <groupId>com.googlecode.json-simple</groupId>
@@ -216,67 +216,67 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-utils</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-config</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-config-path</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-common</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-variable</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-expression</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-builder</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-gui-simple</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-command</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-addon</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-item</artifactId>
-      <version>3.3-SNAPSHOT</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-clicktype</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-downloader</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
       <exclusions>
         <exclusion>
           <artifactId>json-simple</artifactId>
@@ -287,7 +287,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-baseplugin</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
   </dependencies>
 
