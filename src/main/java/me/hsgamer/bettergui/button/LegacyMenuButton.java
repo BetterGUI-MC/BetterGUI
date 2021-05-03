@@ -13,10 +13,10 @@ import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class LegacyMenuButton extends BaseWrappedButton {
-  private final List<UUID> checked = new CopyOnWriteArrayList<>();
+  private final Set<UUID> checked = new ConcurrentSkipListSet<>();
   private boolean checkOnlyOnCreation = false;
 
   /**
