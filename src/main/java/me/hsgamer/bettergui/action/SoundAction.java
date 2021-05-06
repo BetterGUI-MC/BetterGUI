@@ -22,7 +22,6 @@ public class SoundAction extends BaseAction {
   @Override
   public void addToTaskChain(UUID uuid, TaskChain<?> taskChain) {
     String replacedString = getReplacedString(uuid);
-    Optional.ofNullable(Bukkit.getPlayer(uuid))
-      .ifPresent(player -> taskChain.syncFuture(() -> Objects.requireNonNull(XSound.play(player, replacedString)).thenApply(vo -> "sound complete")));
+    Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> taskChain.sync(() -> Objects.requireNonNull(XSound.play(player, replacedString)).thenAccept(XSound.Record::play)));
   }
 }
