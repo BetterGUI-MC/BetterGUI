@@ -24,12 +24,12 @@ public final class OpenCommand extends BukkitCommand {
 
   public OpenCommand() {
     super("openmenu", "Open the specific menu", "/openmenu <menu_name> [player] [args...]", Collections.singletonList("om"));
+    setPermission(Permissions.OPEN_MENU.getName());
   }
 
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
-    if (!commandSender.hasPermission(Permissions.OPEN_MENU)) {
-      sendMessage(commandSender, MessageConfig.NO_PERMISSION.getValue());
+    if (!testPermission(commandSender)) {
       return false;
     }
     if (strings.length <= 0) {

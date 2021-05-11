@@ -14,14 +14,13 @@ import static me.hsgamer.hscore.bukkit.utils.MessageUtils.sendMessage;
 public class AddonDownloaderCommand extends BukkitCommand {
 
   public AddonDownloaderCommand() {
-    super("addondownloader", "Open the addon downloader", "/addondownloader",
-      Arrays.asList("addondl", "addondown"));
+    super("addondownloader", "Open the addon downloader", "/addondownloader", Arrays.asList("addondl", "addondown"));
+    setPermission(Permissions.ADDON_DOWNLOADER.getName());
   }
 
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
-    if (!commandSender.hasPermission(Permissions.ADDON_DOWNLOADER)) {
-      sendMessage(commandSender, MessageConfig.NO_PERMISSION.getValue());
+    if (!testPermission(commandSender)) {
       return false;
     }
 

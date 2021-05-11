@@ -2,7 +2,6 @@ package me.hsgamer.bettergui.command;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.common.Validate;
@@ -19,12 +18,12 @@ import static me.hsgamer.hscore.bukkit.utils.MessageUtils.sendMessage;
 public class MainCommand extends BukkitCommand {
   public MainCommand(String name) {
     super(name, "Show all available commands", "/" + name, new ArrayList<>());
+    setPermission(Permissions.HELP.getName());
   }
 
   @Override
   public boolean execute(CommandSender commandSender, String s, String[] strings) {
-    if (!commandSender.hasPermission(Permissions.HELP)) {
-      sendMessage(commandSender, MessageConfig.NO_PERMISSION.getValue());
+    if (!testPermission(commandSender)) {
       return false;
     }
 

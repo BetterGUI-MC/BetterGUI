@@ -2,7 +2,6 @@ package me.hsgamer.bettergui.command;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.BetterGUIAddonManager.Setting;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -14,14 +13,13 @@ import static me.hsgamer.hscore.bukkit.utils.MessageUtils.sendMessage;
 public final class GetAddonsCommand extends BukkitCommand {
 
   public GetAddonsCommand() {
-    super("addons", "Get the loaded addons", "/addons",
-      Arrays.asList("menuaddons", "getmenuaddons"));
+    super("addons", "Get the loaded addons", "/addons", Arrays.asList("menuaddons", "getmenuaddons"));
+    setPermission(Permissions.ADDONS.getName());
   }
 
   @Override
   public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-    if (!sender.hasPermission(Permissions.ADDONS)) {
-      sendMessage(sender, MessageConfig.NO_PERMISSION.getValue());
+    if (!testPermission(sender)) {
       return false;
     }
 

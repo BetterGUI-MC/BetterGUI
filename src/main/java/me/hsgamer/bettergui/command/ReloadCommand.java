@@ -15,12 +15,12 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 public class ReloadCommand extends BukkitCommand {
   public ReloadCommand() {
     super("reloadmenu", "Reload the plugin", "/reloadmenu", Arrays.asList("rlmenu", "reloadplugin", "rlplugin"));
+    setPermission(Permissions.RELOAD.getName());
   }
 
   @Override
   public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-    if (!sender.hasPermission(Permissions.RELOAD)) {
-      MessageUtils.sendMessage(sender, MessageConfig.NO_PERMISSION.getValue());
+    if (!testPermission(sender)) {
       return false;
     }
 
