@@ -23,7 +23,6 @@ public final class MainConfig extends PathableConfig {
   public static final BooleanConfigPath ENABLE_ALTERNATIVE_COMMAND_MANAGER = new BooleanConfigPath("alternative-command-manager.enable", false);
   public static final BooleanConfigPath ALTERNATIVE_COMMAND_MANAGER_CASE_INSENSITIVE = new BooleanConfigPath("alternative-command-manager.case-insensitive", true);
   public static final BooleanConfigPath USE_LEGACY_BUTTON = new BooleanConfigPath("use-legacy-button", true);
-  public static final BooleanConfigPath LOAD_PLAYER_SKULL_ASYNC = new BooleanConfigPath("load-player-skull-async", false);
   public static final ConfigPath<List<String>> ALTERNATIVE_COMMAND_MANAGER_IGNORED_COMMANDS = new BaseConfigPath<>("alternative-command-manager.ignored-commands", Collections.singletonList("warp test"), o -> CollectionUtils.createStringListFromObject(o, true));
 
   public MainConfig(Plugin plugin) {
