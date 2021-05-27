@@ -287,7 +287,7 @@
     <dependency>
       <groupId>me.HSGamer</groupId>
       <artifactId>HSCore-bukkit-baseplugin</artifactId>
-      <version>3.3</version>
+      <version>3.4</version>
     </dependency>
   </dependencies>
 
