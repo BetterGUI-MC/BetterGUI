@@ -37,13 +37,13 @@ public class WrappedPredicateButton extends BaseWrappedButton {
 
     RequirementSetting defaultSetting = new RequirementSetting(getMenu(), getName() + "_click_default");
     Optional.ofNullable(keys.get("default"))
-      .filter(o -> o instanceof Map)
+      .filter(Map.class::isInstance)
       .map(o -> (Map<String, Object>) o)
       .ifPresent(defaultSetting::loadFromSection);
 
     clickTypeMap.forEach((clickTypeName, clickType) ->
       clickRequirements.put(clickType, Optional.ofNullable(keys.get(clickTypeName))
-        .filter(o -> o instanceof Map)
+        .filter(Map.class::isInstance)
         .map(o -> (Map<String, Object>) o)
         .map(subsection -> {
           RequirementSetting setting = new RequirementSetting(getMenu(), getName() + "_click_" + clickTypeName.toLowerCase(Locale.ROOT));
@@ -61,13 +61,13 @@ public class WrappedPredicateButton extends BaseWrappedButton {
 
     PredicateButton predicateButton = new PredicateButton(
       Optional.ofNullable(keys.get("button"))
-        .filter(o -> o instanceof Map)
+        .filter(Map.class::isInstance)
         .map(o -> (Map<String, Object>) o)
         .map(subsection -> (Button) ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_button", subsection))
         .orElse(Button.EMPTY)
     );
     Optional.ofNullable(keys.get("fallback"))
-      .filter(o -> o instanceof Map)
+      .filter(Map.class::isInstance)
       .map(o -> (Map<String, Object>) o)
       .map(subsection -> ButtonBuilder.INSTANCE.getButton(getMenu(), getName() + "_fallback", subsection))
       .ifPresent(predicateButton::setFallbackButton);
@@ -75,7 +75,7 @@ public class WrappedPredicateButton extends BaseWrappedButton {
     this.checkOnlyOnCreation = Optional.ofNullable(keys.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.checkOnlyOnCreation);
 
     Optional.ofNullable(keys.get("view-requirement"))
-      .filter(o -> o instanceof Map)
+      .filter(Map.class::isInstance)
       .map(o -> (Map<String, Object>) o)
       .ifPresent(subsection -> {
         RequirementSetting viewRequirement = new RequirementSetting(getMenu(), getName() + "_view");
@@ -97,7 +97,7 @@ public class WrappedPredicateButton extends BaseWrappedButton {
         });
       });
     Optional.ofNullable(keys.get("click-requirement"))
-      .filter(o -> o instanceof Map)
+      .filter(Map.class::isInstance)
       .map(o -> (Map<String, Object>) o)
       .ifPresent(subsection -> {
         Map<AdvancedClickType, RequirementSetting> clickRequirements = setClickRequirements(subsection);

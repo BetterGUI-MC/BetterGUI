@@ -143,12 +143,12 @@ public class SimpleMenu extends Menu {
         this.ticks = Optional.ofNullable(values.get("ticks")).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::longValue).orElse(this.ticks);
 
         Optional.ofNullable(values.get("view-requirement"))
-          .filter(o -> o instanceof Map)
+          .filter(Map.class::isInstance)
           .map(o -> (Map<String, Object>) o)
           .ifPresent(this.viewRequirement::loadFromSection);
 
         Optional.ofNullable(values.get("close-requirement"))
-          .filter(o -> o instanceof Map)
+          .filter(Map.class::isInstance)
           .map(o -> (Map<String, Object>) o)
           .ifPresent(this.closeRequirement::loadFromSection);
 
@@ -196,7 +196,7 @@ public class SimpleMenu extends Menu {
   public boolean createInventory(Player player, String[] args, boolean bypass) {
     guiHolder.getButtonSlotMap().values()
       .stream()
-      .filter(button -> button instanceof WrappedButton)
+      .filter(WrappedButton.class::isInstance)
       .forEach(button -> ((WrappedButton) button).refresh(player.getUniqueId()));
 
     UUID uuid = player.getUniqueId();

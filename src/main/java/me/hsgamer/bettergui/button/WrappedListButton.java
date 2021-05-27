@@ -29,7 +29,7 @@ public class WrappedListButton extends BaseWrappedButton {
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
     boolean keepCurrentIndex = Optional.ofNullable(keys.get("keep-current-index")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     return Optional.ofNullable(keys.get("child"))
-      .filter(o -> o instanceof Map)
+      .filter(Map.class::isInstance)
       .map(o -> (Map<String, Object>) o)
       .map(o -> new LinkedList<Button>(ButtonBuilder.INSTANCE.getChildButtons(this, o)))
       .map(list -> {
@@ -45,7 +45,7 @@ public class WrappedListButton extends BaseWrappedButton {
       if (!((ListButton) this.button).isKeepCurrentIndex()) {
         ((ListButton) this.button).removeCurrentIndex(uuid);
       }
-      ((ListButton) this.button).getButtons().stream().filter(button -> button instanceof WrappedButton).forEach(button -> ((WrappedButton) button).refresh(uuid));
+      ((ListButton) this.button).getButtons().stream().filter(WrappedButton.class::isInstance).forEach(button -> ((WrappedButton) button).refresh(uuid));
     }
   }
 }

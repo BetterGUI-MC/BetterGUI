@@ -26,7 +26,7 @@ public class TemplateButton extends BaseWrappedButton {
     Map<String, Object> templateMap = Optional.ofNullable(keys.get("template"))
       .map(String::valueOf)
       .map(s -> BetterGUI.getInstance().getTemplateButtonConfig().get(s))
-      .filter(o -> o instanceof Map)
+      .filter(Map.class::isInstance)
       .map(o -> (Map<String, Object>) o)
       .orElseGet(CaseInsensitiveStringHashMap::new);
     keys.entrySet()

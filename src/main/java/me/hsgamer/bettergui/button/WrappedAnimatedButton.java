@@ -48,7 +48,7 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
       .orElse(false);
 
     List<WrappedButton> frames = Optional.ofNullable(keys.get("child"))
-      .filter(o -> o instanceof Map)
+      .filter(Map.class::isInstance)
       .map(o -> (Map<String, Object>) o)
       .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, o))
       .orElse(Collections.emptyList());
@@ -65,7 +65,7 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
   @Override
   public void refresh(UUID uuid) {
     if (this.button instanceof AnimatedButton) {
-      ((AnimatedButton) this.button).getButtons().stream().filter(button -> button instanceof WrappedButton).forEach(button -> ((WrappedButton) button).refresh(uuid));
+      ((AnimatedButton) this.button).getButtons().stream().filter(WrappedButton.class::isInstance).forEach(button -> ((WrappedButton) button).refresh(uuid));
     }
   }
 }
