@@ -24,7 +24,7 @@ public class TemplateButton extends BaseWrappedButton {
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
     Map<String, Object> templateMap = Optional.ofNullable(keys.get("template"))
       .map(String::valueOf)
-      .map(s -> BetterGUI.getInstance().getTemplateButtonConfig().get(s))
+      .map(s -> BetterGUI.getInstance().getTemplateButtonConfig().getNormalized(s))
       .filter(Map.class::isInstance)
       .map(o -> (Map<String, Object>) o)
       .orElseGet(CaseInsensitiveStringHashMap::new);
@@ -37,9 +37,15 @@ public class TemplateButton extends BaseWrappedButton {
 
     keys.entrySet()
       .stream()
-      .filter(entry -> !entry.getKey().equalsIgnoreCase("type") && !entry.getKey().equalsIgnoreCase("template"))
+      .filter(entry ->
+        !entry.getKey().equalsIgnoreCase("variable")
+          && !entry.getKey().equalsIgnoreCase("type")
+          && !entry.getKey().equalsIgnoreCase("template")
+      )
       .forEach(entry -> templateMap.put(entry.getKey(), entry.getValue()));
-    templateMap.replaceAll((s, o) -> replaceVariables(o, variableMap));
+    if (!variableMap.isEmpty()) {
+      templateMap.replaceAll((s, o) -> replaceVariables(o, variableMap));
+    }
 
     return ButtonBuilder.INSTANCE.getButton(getMenu(), getName(), templateMap);
   }
@@ -51,14 +57,14 @@ public class TemplateButton extends BaseWrappedButton {
         string = string.replace("{" + entry.getKey() + "}", entry.getValue());
       }
       return string;
-    } else if (obj instanceof Map) {
-      // noinspection unchecked
-      ((Map) obj).replaceAll((k, v) -> replaceVariables(v, variableMap));
     } else if (obj instanceof Collection) {
       List<Object> replaceList = new ArrayList<>();
       // noinspection unchecked
       ((Collection) obj).forEach(o -> replaceList.add(replaceVariables(o, variableMap)));
       return replaceList;
+    } else if (obj instanceof Map) {
+      // noinspection unchecked
+      ((Map) obj).replaceAll((k, v) -> replaceVariables(v, variableMap));
     }
     return obj;
   }
