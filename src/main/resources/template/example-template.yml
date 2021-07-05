@@ -1,9 +1,10 @@
 test-xp:
-  id: paper
+  id: exp bottle
   name: "&eGive &f{xp} XP"
   lore:
     - ""
     - "&fThis is a test template button"
+    - "&fLevel: {level}"
   command: "console: xp {xp} {player}"
 
 test-xp-predicate:

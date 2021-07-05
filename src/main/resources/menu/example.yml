@@ -304,7 +304,9 @@ test-view-requirement:
       - "You will see this icon when the level is higher than 5"
   view-requirement:
     level:
-      level: 5
+      level:
+        value: 5
+        take: false
 
 animated-icon:
   position-x: 2
@@ -431,6 +433,7 @@ test-xp-200:
         xp: 20
         level: 10
     default:
+      type: template
       template: test-xp
       variable:
         xp: 10
