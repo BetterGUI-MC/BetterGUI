@@ -21,18 +21,19 @@ public class TemplateButton extends BaseWrappedButton {
 
   @Override
   protected Button createButton(Map<String, Object> section) {
+    Map<String, Object> finalMap = new CaseInsensitiveStringHashMap<>();
+
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
-    Map<String, Object> templateMap = Optional.ofNullable(keys.get("template"))
+    Optional.ofNullable(keys.get("template"))
       .map(String::valueOf)
       .flatMap(s -> BetterGUI.getInstance().getTemplateButtonConfig().get(s))
-      .orElseGet(CaseInsensitiveStringHashMap::new);
+      .ifPresent(finalMap::putAll);
     Map<String, String> variableMap = new HashMap<>();
     // noinspection unchecked
     Optional.ofNullable(keys.get("variable"))
       .filter(Map.class::isInstance)
       .map(Map.class::cast)
       .ifPresent(map -> map.forEach((k, v) -> variableMap.put(String.valueOf(k), String.valueOf(v))));
-
     keys.entrySet()
       .stream()
       .filter(entry ->
@@ -40,12 +41,12 @@ public class TemplateButton extends BaseWrappedButton {
           && !entry.getKey().equalsIgnoreCase("type")
           && !entry.getKey().equalsIgnoreCase("template")
       )
-      .forEach(entry -> templateMap.put(entry.getKey(), entry.getValue()));
+      .forEach(entry -> finalMap.put(entry.getKey(), entry.getValue()));
     if (!variableMap.isEmpty()) {
-      templateMap.replaceAll((s, o) -> replaceVariables(o, variableMap));
+      finalMap.replaceAll((s, o) -> replaceVariables(o, variableMap));
     }
 
-    return ButtonBuilder.INSTANCE.getButton(getMenu(), getName(), templateMap);
+    return ButtonBuilder.INSTANCE.getButton(getMenu(), getName(), finalMap);
   }
 
   private Object replaceVariables(Object obj, Map<String, String> variableMap) {
