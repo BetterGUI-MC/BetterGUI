@@ -1,0 +1,20 @@
+test-xp:
+  id: paper
+  name: "&eGive &f{xp} XP"
+  lore:
+    - ""
+    - "&fThis is a test template button"
+  command: "console: xp {xp} {player}"
+
+test-xp-predicate:
+  type: predicate
+  button:
+    type: template
+    template: test-xp
+    variable:
+      xp: "{xp}"
+  view-requirement:
+    level-check:
+      level:
+        value: "{level}"
+        take: false

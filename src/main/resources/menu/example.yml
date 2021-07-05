@@ -387,6 +387,54 @@ potion:
     - "SPEED"
     - "WEAKNESS, 30, 1"
 
+test-xp-100:
+  type: template
+  position-x: 7
+  position-y: 4
+  template: test-xp
+  variable:
+    xp: 100
+
+test-xp-200:
+  type: list
+  position-x: 8
+  position-y: 4
+  child:
+    test-xp-50:
+      type: template
+      template: test-xp-predicate
+      variable:
+        xp: 100
+        level: 50
+    test-xp-40:
+      type: template
+      template: test-xp-predicate
+      variable:
+        xp: 80
+        level: 40
+    test-xp-30:
+      type: template
+      template: test-xp-predicate
+      variable:
+        xp: 60
+        level: 30
+    test-xp-20:
+      type: template
+      template: test-xp-predicate
+      variable:
+        xp: 40
+        level: 20
+    test-xp-10:
+      type: template
+      template: test-xp-predicate
+      variable:
+        xp: 20
+        level: 10
+    default:
+      template: test-xp
+      variable:
+        xp: 10
+
 multi-slot:
   slot: 0-8,45,46,47-52
   type: animated

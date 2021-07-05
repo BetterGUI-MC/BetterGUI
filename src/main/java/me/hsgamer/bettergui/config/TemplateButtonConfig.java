@@ -17,7 +17,7 @@ public class TemplateButtonConfig {
   public TemplateButtonConfig(Plugin plugin) {
     this.templateFolder = new File(plugin.getDataFolder(), "template");
     if (!templateFolder.exists() && templateFolder.mkdirs()) {
-      // TODO: Give a simple template config here
+      plugin.saveResource("template" + File.separator + "example-template.yml", false);
     }
   }
 
