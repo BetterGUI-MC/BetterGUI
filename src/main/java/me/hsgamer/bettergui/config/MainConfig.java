@@ -12,6 +12,9 @@ import org.bukkit.plugin.Plugin;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The main config of the plugin
+ */
 public final class MainConfig extends PathableConfig {
 
   public static final StringConfigPath DEFAULT_MENU_TYPE = new StringConfigPath("default-menu-type", "simple");

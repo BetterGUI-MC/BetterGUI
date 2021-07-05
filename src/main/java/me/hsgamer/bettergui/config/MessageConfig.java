@@ -5,6 +5,9 @@ import me.hsgamer.hscore.config.PathableConfig;
 import me.hsgamer.hscore.config.path.StringConfigPath;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * The config for messages
+ */
 public final class MessageConfig extends PathableConfig {
 
   public static final StringConfigPath PREFIX = new StringConfigPath("prefix", "&f[&bBetterGUI&f] ");

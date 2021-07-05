@@ -24,9 +24,7 @@ public class TemplateButton extends BaseWrappedButton {
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
     Map<String, Object> templateMap = Optional.ofNullable(keys.get("template"))
       .map(String::valueOf)
-      .map(s -> BetterGUI.getInstance().getTemplateButtonConfig().getNormalized(s))
-      .filter(Map.class::isInstance)
-      .map(o -> (Map<String, Object>) o)
+      .flatMap(s -> BetterGUI.getInstance().getTemplateButtonConfig().get(s))
       .orElseGet(CaseInsensitiveStringHashMap::new);
     Map<String, String> variableMap = new HashMap<>();
     // noinspection unchecked

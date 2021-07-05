@@ -34,7 +34,7 @@ public class ReloadCommand extends BukkitCommand {
     if (commandLabel.equalsIgnoreCase("reloadplugin") || commandLabel.equalsIgnoreCase("rlplugin")) {
       getInstance().getAddonManager().callReload();
     }
-    getInstance().loadMenuConfig();
+    getInstance().getMenuManager().loadMenuConfig();
     CommandManager.syncCommand();
     MessageUtils.sendMessage(sender, MessageConfig.SUCCESS.getValue());
     return true;

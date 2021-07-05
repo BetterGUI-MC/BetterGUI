@@ -3,10 +3,12 @@ package me.hsgamer.bettergui.manager;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.MenuBuilder;
+import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -42,6 +44,28 @@ public final class MenuManager {
       optional = parentMenu.getParentMenu(uuid);
     }
     return list;
+  }
+
+  /**
+   * Load the menu config
+   */
+  public void loadMenuConfig() {
+    File menusFolder = new File(plugin.getDataFolder(), "menu");
+    if (!menusFolder.exists() && menusFolder.mkdirs()) {
+      plugin.saveResource("menu" + File.separator + "example.yml", false);
+    }
+    LinkedList<File> files = new LinkedList<>();
+    files.add(menusFolder);
+    while (!files.isEmpty()) {
+      File file = files.pop();
+      if (file.isDirectory()) {
+        files.addAll(Arrays.asList(Objects.requireNonNull(file.listFiles())));
+      } else if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".yml")) {
+        Config pluginConfig = new BukkitConfig(file);
+        pluginConfig.setup();
+        this.registerMenu(pluginConfig);
+      }
+    }
   }
 
   /**

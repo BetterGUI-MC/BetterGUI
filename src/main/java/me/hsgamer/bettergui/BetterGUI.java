@@ -20,11 +20,9 @@ import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
-import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
-import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.ExternalStringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bstats.bukkit.Metrics;
@@ -32,8 +30,9 @@ import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.DrilldownPie;
 import org.bukkit.Bukkit;
 
-import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public final class BetterGUI extends BasePlugin {
 
@@ -150,12 +149,13 @@ public final class BetterGUI extends BasePlugin {
     registerCommand(new ReloadCommand());
     registerCommand(new GetVariablesCommand());
     registerCommand(new AddonDownloaderCommand());
+    registerCommand(new GetTemplateButtonsCommand());
   }
 
   @Override
   public void postEnable() {
     addonManager.enableAddons();
-    loadMenuConfig();
+    menuManager.loadMenuConfig();
     addonManager.callPostEnable();
     addonDownloader.createMenu();
 
@@ -171,45 +171,13 @@ public final class BetterGUI extends BasePlugin {
     }
   }
 
-  /**
-   * Load the menu config
-   */
-  public void loadMenuConfig() {
-    File menusFolder = new File(getDataFolder(), "menu");
-    if (!menusFolder.exists() && menusFolder.mkdirs()) {
-      saveResource("menu" + File.separator + "example.yml", false);
-    }
-    for (Config pluginConfig : getMenuConfig(menusFolder)) {
-      pluginConfig.setup();
-      menuManager.registerMenu(pluginConfig);
-    }
-  }
-
-  /**
-   * Get the menu config
-   *
-   * @param file the folder
-   *
-   * @return the menu config
-   */
-  private List<Config> getMenuConfig(File file) {
-    List<Config> list = new ArrayList<>();
-    if (file.isDirectory()) {
-      for (File subFile : Objects.requireNonNull(file.listFiles())) {
-        list.addAll(getMenuConfig(subFile));
-      }
-    } else if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".yml")) {
-      list.add(new BukkitConfig(file));
-    }
-    return list;
-  }
-
   @Override
   public void disable() {
     menuCommandManager.clearMenuCommand();
     menuManager.clear();
     addonManager.disableAddons();
     addonDownloader.stopMenu();
+    templateButtonConfig.clear();
     RequirementBuilder.INSTANCE.unregisterAll();
     ButtonBuilder.INSTANCE.unregisterAll();
     ActionBuilder.INSTANCE.unregisterAll();
