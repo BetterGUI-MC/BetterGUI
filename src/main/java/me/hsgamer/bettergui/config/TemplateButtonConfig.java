@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class TemplateButtonConfig {
   private final File templateFolder;
-  private final Map<String, Map<String, Object>> templateMap = new HashMap<>();
+  private final Map<String, Config> templateMap = new HashMap<>();
 
   public TemplateButtonConfig(Plugin plugin) {
     this.templateFolder = new File(plugin.getDataFolder(), "template");
@@ -35,7 +35,7 @@ public class TemplateButtonConfig {
       Config config = new BukkitConfig(subFile);
       config.setup();
       for (String key : config.getKeys(false)) {
-        templateMap.put(key, config.getNormalizedValues(key, false));
+        templateMap.put(key, config);
       }
     }
   }
@@ -63,7 +63,7 @@ public class TemplateButtonConfig {
    * @return the values as map
    */
   public Optional<Map<String, Object>> get(String name) {
-    return Optional.ofNullable(this.templateMap.get(name));
+    return Optional.ofNullable(this.templateMap.get(name)).map(config -> config.getNormalizedValues(name, false));
   }
 
   /**
