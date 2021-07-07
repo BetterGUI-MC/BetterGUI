@@ -5,8 +5,8 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.config.MainConfig;
+import me.hsgamer.bettergui.utils.ButtonUtils;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
@@ -14,7 +14,10 @@ import me.hsgamer.hscore.bukkit.gui.button.impl.AirButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import org.bukkit.Bukkit;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class WrappedAirButton extends BaseWrappedButton {
 
@@ -29,30 +32,12 @@ public class WrappedAirButton extends BaseWrappedButton {
     super(menu);
   }
 
-  private void setActions(Object o) {
-    Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
-    if (o instanceof Map) {
-      // noinspection unchecked
-      Map<String, Object> keys = new CaseInsensitiveStringHashMap<>((Map<String, Object>) o);
-      List<Action> defaultActions = Optional.ofNullable(keys.get("default")).map(value -> ActionBuilder.INSTANCE.getActions(getMenu(), value)).orElse(Collections.emptyList());
-      clickTypeMap.forEach((clickTypeName, clickType) -> {
-        if (keys.containsKey(clickTypeName)) {
-          actionMap.put(clickType, ActionBuilder.INSTANCE.getActions(getMenu(), keys.get(clickTypeName)));
-        } else {
-          actionMap.put(clickType, defaultActions);
-        }
-      });
-    } else {
-      clickTypeMap.values().forEach(advancedClickType -> actionMap.put(advancedClickType, ActionBuilder.INSTANCE.getActions(getMenu(), o)));
-    }
-  }
-
   @Override
   protected Button createButton(Map<String, Object> section) {
     Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
     boolean closeOnClick = Optional.ofNullable(keys.get("close-on-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
-    Optional.ofNullable(keys.get("command")).ifPresent(this::setActions);
-    Optional.ofNullable(keys.get("action")).ifPresent(this::setActions);
+    Optional.ofNullable(keys.get("command")).map(o -> ButtonUtils.convertActions(o, this)).ifPresent(actionMap::putAll);
+    Optional.ofNullable(keys.get("action")).map(o -> ButtonUtils.convertActions(o, this)).ifPresent(actionMap::putAll);
 
     return new AirButton((uuid, event) -> {
       TaskChain<?> taskChain = BetterGUI.newChain();

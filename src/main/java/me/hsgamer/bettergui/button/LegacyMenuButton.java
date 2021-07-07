@@ -5,15 +5,17 @@ import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.requirement.RequirementSetting;
+import me.hsgamer.bettergui.utils.ButtonUtils;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.bukkit.gui.button.impl.PredicateButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class LegacyMenuButton extends BaseWrappedButton {
@@ -27,32 +29,6 @@ public class LegacyMenuButton extends BaseWrappedButton {
    */
   public LegacyMenuButton(Menu menu) {
     super(menu);
-  }
-
-  private Map<AdvancedClickType, RequirementSetting> setClickRequirements(Map<String, Object> section) {
-    Map<AdvancedClickType, RequirementSetting> clickRequirements = new ConcurrentHashMap<>();
-
-    Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
-    Map<String, Object> keys = new CaseInsensitiveStringLinkedMap<>(section);
-
-    RequirementSetting defaultSetting = new RequirementSetting(getMenu(), getName() + "_click_default");
-    Optional.ofNullable(keys.get("default"))
-      .filter(Map.class::isInstance)
-      .map(o -> (Map<String, Object>) o)
-      .ifPresent(defaultSetting::loadFromSection);
-
-    clickTypeMap.forEach((clickTypeName, clickType) ->
-      clickRequirements.put(clickType, Optional.ofNullable(keys.get(clickTypeName))
-        .filter(Map.class::isInstance)
-        .map(o -> (Map<String, Object>) o)
-        .map(subsection -> {
-          RequirementSetting setting = new RequirementSetting(getMenu(), getName() + "_click_" + clickTypeName.toLowerCase(Locale.ROOT));
-          setting.loadFromSection(subsection);
-          return setting;
-        }).orElse(defaultSetting))
-    );
-
-    return clickRequirements;
   }
 
   @Override
@@ -93,7 +69,7 @@ public class LegacyMenuButton extends BaseWrappedButton {
       .filter(Map.class::isInstance)
       .map(o -> (Map<String, Object>) o)
       .ifPresent(subsection -> {
-        Map<AdvancedClickType, RequirementSetting> clickRequirements = setClickRequirements(subsection);
+        Map<AdvancedClickType, RequirementSetting> clickRequirements = ButtonUtils.convertClickRequirements(subsection, this);
         predicateButton.setClickPredicate((uuid, event) -> {
           RequirementSetting clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(event, Boolean.TRUE.equals(MainConfig.MODERN_CLICK_TYPE.getValue())));
           if (!clickRequirement.check(uuid)) {
