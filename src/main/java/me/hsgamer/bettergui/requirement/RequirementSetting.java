@@ -6,7 +6,7 @@ import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
 
 import java.util.*;
 
@@ -37,7 +37,7 @@ public class RequirementSetting {
    * @param section the section
    */
   public void loadFromSection(Map<String, Object> section) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
+    Map<String, Object> keys = new CaseInsensitiveStringLinkedMap<>(section);
     keys.forEach((key, value) -> {
       if (value instanceof Map) {
         requirementSets.add(RequirementBuilder.INSTANCE.getRequirementSet(menu, name + "_reqset_" + key, (Map<String, Object>) value));

@@ -5,7 +5,7 @@ import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.menu.ArgsMenu;
 import me.hsgamer.bettergui.menu.SimpleMenu;
 import me.hsgamer.hscore.builder.Builder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
 import me.hsgamer.hscore.config.Config;
 
 import java.util.Map;
@@ -39,7 +39,7 @@ public class MenuBuilder extends Builder<String, Menu> {
    * @return the menu
    */
   public Menu getMenu(String name, Config config) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(config.getNormalizedValues(true));
+    Map<String, Object> keys = new CaseInsensitiveStringLinkedMap<>(config.getNormalizedValues(true));
     Menu menu = Optional.ofNullable(keys.get("menu-settings.menu-type"))
       .map(String::valueOf)
       .flatMap(string -> build(string, name))

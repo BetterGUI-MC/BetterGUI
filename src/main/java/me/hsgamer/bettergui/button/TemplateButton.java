@@ -5,7 +5,7 @@ import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
 
 import java.util.*;
 
@@ -21,9 +21,9 @@ public class TemplateButton extends BaseWrappedButton {
 
   @Override
   protected Button createButton(Map<String, Object> section) {
-    Map<String, Object> finalMap = new CaseInsensitiveStringHashMap<>();
+    Map<String, Object> finalMap = new CaseInsensitiveStringLinkedMap<>();
 
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
+    Map<String, Object> keys = new CaseInsensitiveStringLinkedMap<>(section);
     Optional.ofNullable(keys.get("template"))
       .map(String::valueOf)
       .flatMap(s -> BetterGUI.getInstance().getTemplateButtonConfig().get(s))

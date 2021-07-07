@@ -11,6 +11,7 @@ import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.bukkit.gui.button.impl.PredicateButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,7 +34,7 @@ public class WrappedPredicateButton extends BaseWrappedButton {
     Map<AdvancedClickType, RequirementSetting> clickRequirements = new ConcurrentHashMap<>();
 
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
+    Map<String, Object> keys = new CaseInsensitiveStringLinkedMap<>(section);
 
     RequirementSetting defaultSetting = new RequirementSetting(getMenu(), getName() + "_click_default");
     Optional.ofNullable(keys.get("default"))
