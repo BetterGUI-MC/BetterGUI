@@ -1,4 +1,4 @@
-# BetterGUI ![Spiget Version](https://img.shields.io/spiget/version/75620?color=orange&label=version) [![Build Status](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/badge/icon)](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/) [![Discord](https://img.shields.io/discord/660795353037144064)](https://discord.gg/9m4GdFD) [![Javadocs](https://img.shields.io/badge/javadocs-link-green)](https://bettergui-mc.github.io/BetterGUI)
+# BetterGUI ![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/me.HSGamer/BetterGUI?color=orange&label=version&server=https%3A%2F%2Frepo.codemc.io) [![Build Status](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/badge/icon)](https://ci.codemc.io/job/BetterGUI-MC/job/BetterGUI/) [![Discord](https://img.shields.io/discord/660795353037144064)](https://discord.gg/9m4GdFD) [![Javadocs](https://img.shields.io/badge/javadocs-link-green)](https://bettergui-mc.github.io/BetterGUI)
 
 ## Feature
 
