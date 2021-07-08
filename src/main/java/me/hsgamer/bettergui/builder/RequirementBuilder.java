@@ -8,7 +8,7 @@ import me.hsgamer.bettergui.requirement.type.CooldownRequirement;
 import me.hsgamer.bettergui.requirement.type.LevelRequirement;
 import me.hsgamer.bettergui.requirement.type.PermissionRequirement;
 import me.hsgamer.hscore.builder.Builder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
 import java.util.List;
 import java.util.Map;
@@ -72,7 +72,7 @@ public class RequirementBuilder extends Builder<String, Requirement> {
     }).collect(Collectors.toList());
 
     RequirementSet requirementSet = new RequirementSet(name, menu, requirements);
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
 
     Optional.ofNullable(keys.get("success-command")).ifPresent(o -> requirementSet.setSuccessActions(ActionBuilder.INSTANCE.getActions(menu, o)));
     Optional.ofNullable(keys.get("success-action")).ifPresent(o -> requirementSet.setSuccessActions(ActionBuilder.INSTANCE.getActions(menu, o)));

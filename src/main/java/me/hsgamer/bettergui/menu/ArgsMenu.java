@@ -7,7 +7,7 @@ import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
@@ -65,7 +65,7 @@ public class ArgsMenu extends SimpleMenu {
         return;
       }
 
-      Map<String, Object> settings = new CaseInsensitiveStringLinkedMap<>((Map<String, Object>) value);
+      Map<String, Object> settings = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
 
       this.minArgs = Optional.ofNullable(settings.get(MIN_ARGS)).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::intValue).orElse(this.minArgs);
       this.defaultArgs = Optional.ofNullable(settings.get(DEFAULT_ARGS)).map(String::valueOf).map(s -> s.split(" ")).orElse(this.defaultArgs);

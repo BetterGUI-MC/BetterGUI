@@ -5,7 +5,7 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.button.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.hscore.builder.Builder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
 import java.util.List;
 import java.util.Map;
@@ -54,7 +54,7 @@ public class ButtonBuilder extends Builder<Menu, WrappedButton> {
    * @return the button
    */
   public WrappedButton getButton(Menu menu, String name, Map<String, Object> section) {
-    Map<String, Object> keys = new CaseInsensitiveStringLinkedMap<>(section);
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
     WrappedButton button = Optional.ofNullable(keys.get("type"))
       .map(String::valueOf)
       .flatMap(string -> build(string, menu))

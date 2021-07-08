@@ -6,8 +6,7 @@ import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.requirement.RequirementSetting;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,7 +20,7 @@ public class ButtonUtils {
     Map<AdvancedClickType, RequirementSetting> clickRequirements = new ConcurrentHashMap<>();
 
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
-    Map<String, Object> keys = new CaseInsensitiveStringLinkedMap<>(section);
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
 
     RequirementSetting defaultSetting = new RequirementSetting(button.getMenu(), button.getName() + "_click_default");
     Optional.ofNullable(keys.get("default"))
@@ -48,7 +47,7 @@ public class ButtonUtils {
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
     if (o instanceof Map) {
       // noinspection unchecked
-      Map<String, Object> keys = new CaseInsensitiveStringHashMap<>((Map<String, Object>) o);
+      Map<String, Object> keys = new CaseInsensitiveStringMap<>((Map<String, Object>) o);
       List<Action> defaultActions = Optional.ofNullable(keys.get("default")).map(value -> ActionBuilder.INSTANCE.getActions(button.getMenu(), value)).orElse(Collections.emptyList());
       clickTypeMap.forEach((clickTypeName, clickType) -> {
         if (keys.containsKey(clickTypeName)) {

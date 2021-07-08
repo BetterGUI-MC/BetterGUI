@@ -10,7 +10,7 @@ import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.bukkit.gui.button.impl.PredicateButton;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +33,7 @@ public class LegacyMenuButton extends BaseWrappedButton {
 
   @Override
   protected Button createButton(Map<String, Object> section) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
 
     MenuButton menuButton = new MenuButton(getMenu());
     menuButton.setName(getName());

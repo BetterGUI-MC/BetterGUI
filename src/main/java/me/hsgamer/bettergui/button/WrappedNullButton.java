@@ -11,7 +11,7 @@ import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.bukkit.gui.button.impl.NullButton;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class WrappedNullButton extends BaseWrappedButton {
 
   @Override
   protected Button createButton(Map<String, Object> section) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
     boolean closeOnClick = Optional.ofNullable(keys.get("close-on-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     Optional.ofNullable(keys.get("command")).map(o -> ButtonUtils.convertActions(o, this)).ifPresent(actionMap::putAll);
     Optional.ofNullable(keys.get("action")).map(o -> ButtonUtils.convertActions(o, this)).ifPresent(actionMap::putAll);

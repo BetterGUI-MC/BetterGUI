@@ -15,7 +15,7 @@ import me.hsgamer.bettergui.utils.SlotUtils;
 import me.hsgamer.hscore.bukkit.gui.simple.SimpleGUIDisplay;
 import me.hsgamer.hscore.bukkit.gui.simple.SimpleGUIHolder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
@@ -109,7 +109,7 @@ public class SimpleMenu extends Menu {
       if (!(value instanceof Map)) {
         return;
       }
-      Map<String, Object> values = new CaseInsensitiveStringLinkedMap<>((Map<String, Object>) value);
+      Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
 
       if (key.equalsIgnoreCase("menu-settings")) {
 

@@ -7,7 +7,7 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.bukkit.gui.button.impl.AnimatedButton;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
 
@@ -26,7 +26,7 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
 
   @Override
   protected Button createButton(Map<String, Object> section) {
-    Map<String, Object> keys = new CaseInsensitiveStringHashMap<>(section);
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
     long update = Optional.ofNullable(keys.get("update"))
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
