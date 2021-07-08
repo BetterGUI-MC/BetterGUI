@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.downloader;
 
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.hscore.bukkit.gui.simple.SimpleGUIBuilder;
 import me.hsgamer.hscore.bukkit.gui.simple.SimpleGUIHolder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.downloader.Downloader;
@@ -20,14 +21,8 @@ public class AddonDownloader extends Downloader {
   public void createMenu() {
     guiHolder.setSize(54);
     guiHolder.setTitle(MessageUtils.colorize("&4&lAddon Downloader"));
-
-    int i = 0;
-    for (DownloadInfo downloadInfo : downloadInfoMap.values()) {
-      AddonButton addonButton = new AddonButton(downloadInfo);
-      addonButton.init();
-      guiHolder.setButton(i++, addonButton);
-    }
     guiHolder.init();
+    checkDownloadInfo();
   }
 
   public void stopMenu() {
@@ -36,6 +31,19 @@ public class AddonDownloader extends Downloader {
   }
 
   public void openMenu(UUID uuid) {
+    checkDownloadInfo();
     guiHolder.createDisplay(uuid).init();
+  }
+
+  private void checkDownloadInfo() {
+    if (downloadInfoMap.isEmpty()) {
+      return;
+    }
+    SimpleGUIBuilder builder = SimpleGUIBuilder.create(guiHolder);
+    for (DownloadInfo downloadInfo : downloadInfoMap.values()) {
+      AddonButton addonButton = new AddonButton(downloadInfo);
+      addonButton.init();
+      builder.add(addonButton);
+    }
   }
 }
