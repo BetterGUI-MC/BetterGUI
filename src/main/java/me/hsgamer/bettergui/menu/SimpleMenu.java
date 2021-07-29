@@ -138,6 +138,12 @@ public class SimpleMenu extends Menu {
           .map(BigDecimal::intValue)
           .map(i -> i * 9)
           .ifPresent(this.guiHolder::setSize);
+        Optional.ofNullable(values.get("slots")).map(String::valueOf).ifPresent(s -> guiHolder.setSizeFunction(uuid -> {
+          String slots = s;
+          slots = CommonStringReplacers.VARIABLE.replace(slots, uuid);
+          slots = CommonStringReplacers.EXPRESSION.replace(slots, uuid);
+          return Validate.getNumber(slots).map(BigDecimal::intValue).map(i -> Math.max(1, i)).orElse(9);
+        }));
 
         this.ticks = Optional.ofNullable(values.get("auto-refresh")).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::longValue).orElse(this.ticks);
         this.ticks = Optional.ofNullable(values.get("ticks")).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::longValue).orElse(this.ticks);
