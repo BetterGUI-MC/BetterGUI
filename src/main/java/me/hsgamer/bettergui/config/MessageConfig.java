@@ -18,7 +18,6 @@ public final class MessageConfig extends PathableConfig {
   public static final StringConfigPath MENU_NOT_FOUND = new StringConfigPath("menu-not-found", "&cThat menu does not exist");
   public static final StringConfigPath HAVE_MET_REQUIREMENT_PLACEHOLDER = new StringConfigPath("have-met-requirement-placeholder", "Yes");
   public static final StringConfigPath INVALID_NUMBER = new StringConfigPath("invalid-number", "&cError converting! {input} is not a valid number");
-  public static final StringConfigPath INVALID_CONDITION = new StringConfigPath("invalid-condition", "&cInvalid condition! Please inform the staff");
   public static final StringConfigPath INVALID_FLAG = new StringConfigPath("invalid-flag", "&cCannot find flag '{input}'. Inform the staff");
   public static final StringConfigPath INVALID_ENCHANTMENT = new StringConfigPath("invalid-enchantment", "&cError parsing enchantment! {input} is not a valid enchantment");
   public static final StringConfigPath PLAYER_NOT_FOUND = new StringConfigPath("player-not-found", "&cThe player is not found. Maybe he is offline or didn't join your server");

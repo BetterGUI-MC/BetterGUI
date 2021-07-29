@@ -3,11 +3,8 @@ package me.hsgamer.bettergui.action;
 import co.aikar.taskchain.TaskChain;
 import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.hscore.expression.ExpressionUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.UUID;
 
 public class ConditionAction extends BaseAction {
@@ -23,12 +20,7 @@ public class ConditionAction extends BaseAction {
   @Override
   public void addToTaskChain(UUID uuid, TaskChain<?> taskChain) {
     String replacedString = getReplacedString(uuid);
-    if (!ExpressionUtils.isBoolean(replacedString)) {
-      Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> player.sendMessage(ChatColor.RED + "Invalid condition! Please inform the staff"));
-      return;
-    }
-
-    if (ExpressionUtils.getResult(replacedString).equals(BigDecimal.ZERO)) {
+    if (BigDecimal.ZERO.equals(ExpressionUtils.getResult(replacedString))) {
       taskChain.sync(TaskChain::abort);
     }
   }
