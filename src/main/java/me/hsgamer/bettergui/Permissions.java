@@ -1,9 +1,11 @@
 package me.hsgamer.bettergui;
 
+import org.bukkit.Bukkit;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
+import static org.bukkit.Bukkit.getPluginManager;
 
 public final class Permissions {
 
@@ -17,6 +19,17 @@ public final class Permissions {
   public static final Permission TEMPLATE_BUTTON = new Permission(PREFIX + ".templatebuttons", PermissionDefault.OP);
   public static final Permission OPEN_MENU_BYPASS = new Permission(PREFIX + ".openmenu.bypass", PermissionDefault.OP);
   public static final Permission ADDON_DOWNLOADER = new Permission(PREFIX + ".addons.downloader", PermissionDefault.OP);
+
+  static {
+    getPluginManager().addPermission(OPEN_MENU);
+    getPluginManager().addPermission(RELOAD);
+    getPluginManager().addPermission(ADDONS);
+    getPluginManager().addPermission(HELP);
+    getPluginManager().addPermission(VARIABLE);
+    getPluginManager().addPermission(TEMPLATE_BUTTON);
+    getPluginManager().addPermission(OPEN_MENU_BYPASS);
+    getPluginManager().addPermission(ADDON_DOWNLOADER);
+  }
 
   private Permissions() {
 
