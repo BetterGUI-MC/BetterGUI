@@ -45,7 +45,7 @@ public class LegacyMenuButton extends BaseWrappedButton {
 
     Optional.ofNullable(keys.get("view-requirement"))
       .filter(Map.class::isInstance)
-      .map(o -> (Map<String, Object>) o)
+      .<Map<String, Object>>map(Map.class::cast)
       .ifPresent(subsection -> {
         RequirementSetting viewRequirement = new RequirementSetting(getMenu(), getName() + "_view");
         viewRequirement.loadFromSection(subsection);
@@ -67,7 +67,7 @@ public class LegacyMenuButton extends BaseWrappedButton {
       });
     Optional.ofNullable(keys.get("click-requirement"))
       .filter(Map.class::isInstance)
-      .map(o -> (Map<String, Object>) o)
+      .<Map<String, Object>>map(Map.class::cast)
       .ifPresent(subsection -> {
         Map<AdvancedClickType, RequirementSetting> clickRequirements = ButtonUtils.convertClickRequirements(subsection, this);
         predicateButton.setClickPredicate((uuid, event) -> {

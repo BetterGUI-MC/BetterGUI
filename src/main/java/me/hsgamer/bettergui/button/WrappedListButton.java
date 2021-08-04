@@ -30,7 +30,7 @@ public class WrappedListButton extends BaseWrappedButton {
     boolean keepCurrentIndex = Optional.ofNullable(keys.get("keep-current-index")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     return Optional.ofNullable(keys.get("child"))
       .filter(Map.class::isInstance)
-      .map(o -> (Map<String, Object>) o)
+      .<Map<String, Object>>map(Map.class::cast)
       .map(o -> new LinkedList<Button>(ButtonBuilder.INSTANCE.getChildButtons(this, o)))
       .map(list -> {
         ListButton button = new ListButton(list);

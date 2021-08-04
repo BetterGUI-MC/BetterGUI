@@ -25,13 +25,13 @@ public class ButtonUtils {
     RequirementSetting defaultSetting = new RequirementSetting(button.getMenu(), button.getName() + "_click_default");
     Optional.ofNullable(keys.get("default"))
       .filter(Map.class::isInstance)
-      .map(o -> (Map<String, Object>) o)
+      .<Map<String, Object>>map(Map.class::cast)
       .ifPresent(defaultSetting::loadFromSection);
 
     clickTypeMap.forEach((clickTypeName, clickType) ->
       clickRequirements.put(clickType, Optional.ofNullable(keys.get(clickTypeName))
         .filter(Map.class::isInstance)
-        .map(o -> (Map<String, Object>) o)
+        .<Map<String, Object>>map(Map.class::cast)
         .map(subsection -> {
           RequirementSetting setting = new RequirementSetting(button.getMenu(), button.getName() + "_click_" + clickTypeName.toLowerCase(Locale.ROOT));
           setting.loadFromSection(subsection);

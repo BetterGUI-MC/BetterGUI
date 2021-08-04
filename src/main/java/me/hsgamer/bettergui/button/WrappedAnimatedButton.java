@@ -49,7 +49,7 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
 
     List<WrappedButton> frames = Optional.ofNullable(keys.get("child"))
       .filter(Map.class::isInstance)
-      .map(o -> (Map<String, Object>) o)
+      .<Map<String, Object>>map(Map.class::cast)
       .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, o))
       .orElse(Collections.emptyList());
     frames = CollectionUtils.rotate(frames, shift);

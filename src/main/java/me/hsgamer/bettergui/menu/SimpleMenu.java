@@ -150,12 +150,12 @@ public class SimpleMenu extends Menu {
 
         Optional.ofNullable(values.get("view-requirement"))
           .filter(Map.class::isInstance)
-          .map(o -> (Map<String, Object>) o)
+          .<Map<String, Object>>map(Map.class::cast)
           .ifPresent(this.viewRequirement::loadFromSection);
 
         Optional.ofNullable(values.get("close-requirement"))
           .filter(Map.class::isInstance)
-          .map(o -> (Map<String, Object>) o)
+          .<Map<String, Object>>map(Map.class::cast)
           .ifPresent(this.closeRequirement::loadFromSection);
 
         this.permission = Optional.ofNullable(values.get("permission")).map(String::valueOf).map(Permission::new).orElse(this.permission);
