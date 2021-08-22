@@ -125,7 +125,11 @@ public class AddonButton implements Button {
     // EMPTY
   }
 
-  private enum Status {
+  public Status getStatus() {
+    return status;
+  }
+
+  public enum Status {
     AVAILABLE,
     OUTDATED,
     LATEST,

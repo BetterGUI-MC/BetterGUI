@@ -157,6 +157,7 @@ public final class BetterGUI extends BasePlugin {
     addonManager.enableAddons();
     menuManager.loadMenuConfig();
     addonManager.callPostEnable();
+    addonDownloader.setup();
     addonDownloader.createMenu();
 
     if (Boolean.TRUE.equals(MainConfig.METRICS.getValue())) {
