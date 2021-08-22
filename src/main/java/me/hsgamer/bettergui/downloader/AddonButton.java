@@ -77,7 +77,7 @@ public class AddonButton implements Button {
     HumanEntity humanEntity = event.getWhoClicked();
     ClickType clickType = event.getClick();
     if (clickType.isLeftClick()) {
-      if (getInstance().getAddonManager().isAddonLoaded(downloadInfo.getName()) && getInstance().getAddonManager().getAddon(downloadInfo.getName()).getDescription().getVersion().equals(downloadInfo.getVersion())) {
+      if (status == Status.LATEST) {
         MessageUtils.sendMessage(humanEntity, "&cIt's already up-to-date");
         return;
       }
@@ -109,15 +109,9 @@ public class AddonButton implements Button {
 
   @Override
   public void init() {
-    if (getInstance().getAddonManager().isAddonLoaded(downloadInfo.getName())) {
-      if (getInstance().getAddonManager().getAddon(downloadInfo.getName()).getDescription().getVersion().equals(downloadInfo.getVersion())) {
-        status = Status.LATEST;
-      } else {
-        status = Status.OUTDATED;
-      }
-    } else {
-      status = Status.AVAILABLE;
-    }
+    status = Optional.ofNullable(getInstance().getAddonManager().getAddon(downloadInfo.getName()))
+      .map(addon -> addon.getDescription().getVersion().equals(downloadInfo.getVersion()) ? Status.LATEST : Status.OUTDATED)
+      .orElse(Status.AVAILABLE);
   }
 
   @Override
