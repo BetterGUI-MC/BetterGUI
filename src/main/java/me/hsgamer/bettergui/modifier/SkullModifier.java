@@ -18,10 +18,10 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class SkullModifier extends ItemMetaModifier {
-  private static final boolean IS_PAPER;
+  private static final boolean PLAYER_PROFILE_SUPPORT;
 
   static {
-    IS_PAPER = Validate.isClassLoaded("com.destroystokyo.paper.PaperConfig");
+    PLAYER_PROFILE_SUPPORT = Validate.isMethodLoaded(Player.class.getName(), "getPlayerProfile");
   }
 
   private String skullString = "";
@@ -33,24 +33,25 @@ public class SkullModifier extends ItemMetaModifier {
 
   @Override
   public ItemMeta modifyMeta(ItemMeta meta, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
-    if (meta instanceof SkullMeta) {
-      String value = StringReplacer.replace(skullString, uuid, stringReplacerMap.values());
-      if (!BukkitUtils.isUsername(value)) {
-        return SkullUtils.applySkin(meta, value);
+    if (!(meta instanceof SkullMeta)) {
+      return meta;
+    }
+    String value = StringReplacer.replace(skullString, uuid, stringReplacerMap.values());
+    if (!BukkitUtils.isUsername(value)) {
+      return SkullUtils.applySkin(meta, value);
+    }
+    Player player = Bukkit.getPlayer(value);
+    if (player != null) {
+      if (!PLAYER_PROFILE_SUPPORT || XMaterial.getVersion() < 12) {
+        return SkullUtils.applySkin(meta, player);
       }
-      Player player = Bukkit.getPlayer(value);
-      if (player != null) {
-        if (!IS_PAPER || XMaterial.getVersion() < 12) {
-          return SkullUtils.applySkin(meta, player);
-        }
-        if (player.getPlayerProfile().hasTextures()) {
-          ((SkullMeta) meta).setPlayerProfile(player.getPlayerProfile());
-        }
-      } else {
-        CompletableFuture<OfflinePlayer> completableFuture = BukkitUtils.getOfflinePlayerAsync(value);
-        if (completableFuture.isDone()) {
-          return SkullUtils.applySkin(meta, completableFuture.join());
-        }
+      if (player.getPlayerProfile().hasTextures()) {
+        ((SkullMeta) meta).setPlayerProfile(player.getPlayerProfile());
+      }
+    } else {
+      CompletableFuture<OfflinePlayer> completableFuture = BukkitUtils.getOfflinePlayerAsync(value);
+      if (completableFuture.isDone()) {
+        return SkullUtils.applySkin(meta, completableFuture.join());
       }
     }
     return meta;
