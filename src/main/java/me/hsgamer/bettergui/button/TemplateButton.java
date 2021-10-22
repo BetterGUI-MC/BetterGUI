@@ -69,8 +69,7 @@ public class TemplateButton extends BaseWrappedButton {
       return string;
     } else if (obj instanceof Collection) {
       List<Object> replaceList = new ArrayList<>();
-      // noinspection unchecked
-      ((Collection) obj).forEach(o -> replaceList.add(replaceVariables(o, variableMap)));
+      ((Collection<?>) obj).forEach(o -> replaceList.add(replaceVariables(o, variableMap)));
       return replaceList;
     } else if (obj instanceof Map) {
       // noinspection unchecked
