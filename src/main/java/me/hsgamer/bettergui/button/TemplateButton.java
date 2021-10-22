@@ -33,7 +33,18 @@ public class TemplateButton extends BaseWrappedButton {
     Optional.ofNullable(keys.get("variable"))
       .filter(Map.class::isInstance)
       .map(Map.class::cast)
-      .ifPresent(map -> map.forEach((k, v) -> variableMap.put(String.valueOf(k), String.valueOf(v))));
+      .ifPresent(map -> map.forEach((k, v) -> {
+        String variable = String.valueOf(k);
+        String value;
+        if (v instanceof List) {
+          List<String> list = new ArrayList<>();
+          ((List<?>) v).forEach(o -> list.add(String.valueOf(o)));
+          value = String.join("\n", list);
+        } else {
+          value = String.valueOf(v);
+        }
+        variableMap.put(variable, value);
+      }));
     keys.entrySet()
       .stream()
       .filter(entry ->
