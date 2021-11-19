@@ -25,7 +25,7 @@ public class AlternativeCommandListener implements Listener {
 
     List<String> ignoredCommands = MainConfig.ALTERNATIVE_COMMAND_MANAGER_IGNORED_COMMANDS.getValue();
     boolean caseInsensitive = MainConfig.ALTERNATIVE_COMMAND_MANAGER_CASE_INSENSITIVE.getValue();
-    boolean blacklist = MainConfig.ALTERNATIVE_COMMAND_MANAGER_BLACKLIST.getValue();
+    boolean blacklist = MainConfig.ALTERNATIVE_COMMAND_MANAGER_SHOULD_IGNORE.getValue();
 
     String rawCommand = event.getMessage().substring(1);
     if (ignoredCommands.stream().anyMatch(s -> caseInsensitive ? s.equalsIgnoreCase(rawCommand) : s.equals(rawCommand)) == blacklist) {
