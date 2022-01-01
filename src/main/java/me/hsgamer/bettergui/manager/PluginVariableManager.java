@@ -60,26 +60,28 @@ public class PluginVariableManager {
    */
   public static void registerDefaultVariables() {
     // Player Name
-    register("player", (original, uuid) -> Bukkit.getOfflinePlayer(uuid).getName());
+    register("player", (original, uuid) -> !original.isEmpty() ? null : Bukkit.getOfflinePlayer(uuid).getName());
 
     // Online Player
-    register("online", (original, uuid) -> String.valueOf(Bukkit.getOnlinePlayers().size()));
+    register("online", (original, uuid) -> !original.isEmpty() ? null : String.valueOf(Bukkit.getOnlinePlayers().size()));
 
     // Max Players
-    register("max_players", (original, uuid) -> String.valueOf(Bukkit.getMaxPlayers()));
+    register("max_players", (original, uuid) -> !original.isEmpty() ? null : String.valueOf(Bukkit.getMaxPlayers()));
 
     // Location
     register("world", (original, uuid) -> {
       Optional<World> optional = Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getLocation().getWorld());
       if (original.equalsIgnoreCase("_env")) {
         return optional.map(World::getEnvironment).map(Enum::name).orElse("");
-      } else {
+      } else if (original.isEmpty()) {
         return optional.map(World::getName).orElse("");
+      } else {
+        return null;
       }
     });
-    register("x", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getX).map(String::valueOf).orElse(""));
-    register("y", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getY).map(String::valueOf).orElse(""));
-    register("z", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getZ).map(String::valueOf).orElse(""));
+    register("x", (original, uuid) -> !original.isEmpty() ? null : Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getX).map(String::valueOf).orElse(""));
+    register("y", (original, uuid) -> !original.isEmpty() ? null : Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getY).map(String::valueOf).orElse(""));
+    register("z", (original, uuid) -> !original.isEmpty() ? null : Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLocation).map(Location::getZ).map(String::valueOf).orElse(""));
 
     // Bed Location
     register("bed_", (original, uuid) -> {
@@ -102,25 +104,25 @@ public class PluginVariableManager {
     });
 
     // Exp
-    register("exp", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getTotalExperience).map(String::valueOf).orElse(""));
+    register("exp", (original, uuid) -> !original.isEmpty() ? null : Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getTotalExperience).map(String::valueOf).orElse(""));
 
     // Level
-    register("level", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLevel).map(String::valueOf).orElse(""));
+    register("level", (original, uuid) -> !original.isEmpty() ? null : Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getLevel).map(String::valueOf).orElse(""));
 
     // Exp to level
-    register("exp_to_level", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getExpToLevel).map(String::valueOf).orElse(""));
+    register("exp_to_level", (original, uuid) -> !original.isEmpty() ? null : Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getExpToLevel).map(String::valueOf).orElse(""));
 
     // Food Level
-    register("food_level", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getFoodLevel).map(String::valueOf).orElse(""));
+    register("food_level", (original, uuid) -> !original.isEmpty() ? null : Optional.ofNullable(Bukkit.getPlayer(uuid)).map(Player::getFoodLevel).map(String::valueOf).orElse(""));
 
     // IP
-    register("ip", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getAddress().getHostName()).orElse(""));
+    register("ip", (original, uuid) -> !original.isEmpty() ? null : Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getAddress().getHostName()).orElse(""));
 
     // Biome
-    register("biome", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getLocation().getBlock().getBiome().name()).orElse(""));
+    register("biome", (original, uuid) -> !original.isEmpty() ? null : Optional.ofNullable(Bukkit.getPlayer(uuid)).map(player -> player.getLocation().getBlock().getBiome().name()).orElse(""));
 
     // Ping
-    register("ping", (original, uuid) -> Optional.ofNullable(Bukkit.getPlayer(uuid)).map(BukkitUtils::getPing).map(String::valueOf).orElse(""));
+    register("ping", (original, uuid) -> !original.isEmpty() ? null : Optional.ofNullable(Bukkit.getPlayer(uuid)).map(BukkitUtils::getPing).map(String::valueOf).orElse(""));
 
     // Random
     register("random_", (original, uuid) -> {
@@ -146,6 +148,6 @@ public class PluginVariableManager {
     register("condition_", (original, uuid) -> Optional.ofNullable(ExpressionUtils.getResult(original)).map(BigDecimal::toString).orElse(null));
 
     // UUID
-    register("uuid", (original, uuid) -> uuid.toString());
+    register("uuid", (original, uuid) -> !original.isEmpty() ? null : uuid.toString());
   }
 }
