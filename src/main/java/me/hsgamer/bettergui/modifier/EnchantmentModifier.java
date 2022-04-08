@@ -7,6 +7,7 @@ import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -55,10 +56,17 @@ public class EnchantmentModifier extends ItemMetaModifier {
   @Override
   public ItemMeta modifyMeta(ItemMeta meta, UUID uuid, Map<String, StringReplacer> stringReplacerMap) {
     Map<XEnchantment, Integer> map = getParsed(uuid, stringReplacerMap.values());
-    if (map instanceof EnchantmentStorageMeta) {
-      map.forEach((enchant, level) -> ((EnchantmentStorageMeta) meta).addStoredEnchant(enchant.parseEnchantment(), level, true));
+    Map<Enchantment, Integer> enchantments = new HashMap<>();
+    for (Map.Entry<XEnchantment, Integer> entry : map.entrySet()) {
+      Enchantment enchantment = entry.getKey().getEnchant();
+      if (enchantment != null) {
+        enchantments.put(enchantment, entry.getValue());
+      }
+    }
+    if (meta instanceof EnchantmentStorageMeta) {
+      enchantments.forEach((enchant, level) -> ((EnchantmentStorageMeta) meta).addStoredEnchant(enchant, level, true));
     } else {
-      map.forEach((enchantment, level) -> meta.addEnchant(enchantment.parseEnchantment(), level, true));
+      enchantments.forEach((enchant, level) -> meta.addEnchant(enchant, level, true));
     }
     return meta;
   }
