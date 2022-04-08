@@ -10,16 +10,14 @@ import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class PotionModifier extends ItemMetaModifier {
   private List<String> potionEffectList = Collections.emptyList();
 
   public List<PotionEffect> getParsed(UUID uuid, Collection<StringReplacer> stringReplacers) {
-    return potionEffectList.stream()
-      .map(s -> StringReplacer.replace(s, uuid, stringReplacers))
-      .flatMap(s -> Optional.ofNullable(XPotion.parsePotionEffectFromString(s)).map(Stream::of).orElse(Stream.empty()))
-      .collect(Collectors.toList());
+    List<String> list = new ArrayList<>(potionEffectList);
+    list.replaceAll(s -> StringReplacer.replace(s, uuid, stringReplacers));
+    return XPotion.parseEffects(list).stream().map(XPotion.Effect::getEffect).collect(Collectors.toList());
   }
 
   @Override
