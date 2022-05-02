@@ -12,16 +12,56 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class SkullModifier extends ItemMetaModifier {
-  private static final boolean PLAYER_PROFILE_SUPPORT;
-
+  private static boolean playerProfileSupport;
+  private static Method getProfileMethod = null;
+  private static Method setProfileMethod = null;
+  private static Method isCompleteMethod = null;
   static {
-    PLAYER_PROFILE_SUPPORT = Validate.isMethodLoaded(Player.class.getName(), "getPlayerProfile");
+    loadProfileClass();
+  }
+
+  private static void loadProfileClass() {
+    boolean paperProfileSupport = Validate.isClassLoaded("com.destroystokyo.paper.profile.PlayerProfile");
+    boolean spigotProfileSupport = Validate.isClassLoaded("org.bukkit.profile.PlayerProfile");
+    playerProfileSupport = paperProfileSupport || spigotProfileSupport;
+
+    if (playerProfileSupport) {
+      try {
+        getProfileMethod = Player.class.getDeclaredMethod("getPlayerProfile");
+      } catch (NoSuchMethodException ignored) {
+        playerProfileSupport = false;
+        return;
+      }
+
+      Class<?> playerProfileClass;
+      if (spigotProfileSupport) {
+        try {
+          playerProfileClass = Class.forName("org.bukkit.profile.PlayerProfile");
+          setProfileMethod = SkullMeta.class.getDeclaredMethod("setOwnerProfile", playerProfileClass);
+          isCompleteMethod = playerProfileClass.getDeclaredMethod("isComplete");
+        } catch (Exception ignored) {
+          playerProfileSupport = false;
+          return;
+        }
+      }
+
+      if (paperProfileSupport) {
+        try {
+          playerProfileClass = Class.forName("com.destroystokyo.paper.profile.PlayerProfile");
+          setProfileMethod = SkullMeta.class.getDeclaredMethod("setPlayerProfile", playerProfileClass);
+          isCompleteMethod = playerProfileClass.getDeclaredMethod("hasTextures");
+        } catch (Exception ignored) {
+          playerProfileSupport = false;
+        }
+      }
+    }
   }
 
   private String skullString = "";
@@ -42,11 +82,17 @@ public class SkullModifier extends ItemMetaModifier {
     }
     Player player = Bukkit.getPlayer(value);
     if (player != null) {
-      if (!PLAYER_PROFILE_SUPPORT || XMaterial.getVersion() < 12) {
+      if (!playerProfileSupport || XMaterial.getVersion() < 12) {
         return SkullUtils.applySkin(meta, player);
       }
-      if (player.getPlayerProfile().hasTextures()) {
-        ((SkullMeta) meta).setPlayerProfile(player.getPlayerProfile());
+      try {
+        Object profile = getProfileMethod.invoke(player);
+        if ((boolean) isCompleteMethod.invoke(profile)) {
+          SkullMeta skullMeta = (SkullMeta) meta;
+          setProfileMethod.invoke(skullMeta, profile);
+        }
+      } catch (Exception e) {
+        return SkullUtils.applySkin(meta, player);
       }
     } else {
       CompletableFuture<OfflinePlayer> completableFuture = BukkitUtils.getOfflinePlayerAsync(value);
