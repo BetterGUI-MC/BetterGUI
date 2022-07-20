@@ -44,6 +44,9 @@
             </goals>
             <configuration>
               <createDependencyReducedPom>true</createDependencyReducedPom>
+              <shadedClassifierName>shaded</shadedClassifierName>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <shadeSourcesContent>true</shadeSourcesContent>
               <filters>
                 <filter>
                   <artifact>*:*</artifact>
@@ -178,7 +181,6 @@
       <groupId>co.aikar</groupId>
       <artifactId>taskchain-bukkit</artifactId>
       <version>3.7.2</version>
-      <optional>true</optional>
     </dependency>
 
     <!-- PlaceholderAPI -->
@@ -194,7 +196,6 @@
       <groupId>com.github.cryptomorin</groupId>
       <artifactId>XSeries</artifactId>
       <version>8.7.1</version>
-      <optional>true</optional>
     </dependency>
 
     <!-- BStats -->
@@ -202,7 +203,6 @@
       <groupId>org.bstats</groupId>
       <artifactId>bstats-bukkit</artifactId>
       <version>3.0.0</version>
-      <optional>true</optional>
     </dependency>
 
     <!-- HSCore -->
@@ -210,7 +210,6 @@
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-checker-spigotmc</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
       <exclusions>
         <exclusion>
           <groupId>com.googlecode.json-simple</groupId>
@@ -222,79 +221,66 @@
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-utils</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-config</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-config-path</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-common</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-variable</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-expression</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-builder</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-gui-simple</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-command</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-addon</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-item</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-clicktype</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-downloader-json</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
       <exclusions>
         <exclusion>
           <artifactId>json-simple</artifactId>
@@ -306,13 +292,11 @@
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-downloader-web-stream</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-baseplugin</artifactId>
       <version>${core.version}</version>
-      <optional>true</optional>
     </dependency>
   </dependencies>
 
