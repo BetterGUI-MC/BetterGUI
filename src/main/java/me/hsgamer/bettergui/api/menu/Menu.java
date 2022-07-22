@@ -50,21 +50,21 @@ public abstract class Menu {
    *
    * @return Whether it's successful
    */
-  public abstract boolean createInventory(Player player, String[] args, boolean bypass);
+  public abstract boolean create(Player player, String[] args, boolean bypass);
 
   /**
    * Called when updating the menu
    *
    * @param player the player involved in
    */
-  public abstract void updateInventory(Player player);
+  public abstract void update(Player player);
 
   /**
-   * Close the inventory
+   * Close the menu
    *
    * @param player the player involved in
    */
-  public abstract void closeInventory(Player player);
+  public abstract void close(Player player);
 
   /**
    * Close/Clear all inventories of the type
