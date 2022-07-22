@@ -56,23 +56,7 @@
                 </filter>
               </filters>
               <relocations>
-                <!-- XSeries -->
-                <relocation>
-                  <pattern>com.cryptomorin.xseries</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.lib.xseries</shadedPattern>
-                </relocation>
-
-                <!-- BStats -->
-                <relocation>
-                  <pattern>org.bstats</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.lib.bstats</shadedPattern>
-                </relocation>
-
                 <!-- HSCore -->
-                <relocation>
-                  <pattern>me.hsgamer.hscore.bukkit.item.modifier</pattern>
-                  <shadedPattern>me.hsgamer.bettergui.modifier</shadedPattern>
-                </relocation>
                 <relocation>
                   <pattern>me.hsgamer.hscore</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.core</shadedPattern>
@@ -142,16 +126,8 @@
       <url>https://oss.sonatype.org/content/groups/public/</url>
     </repository>
     <repository>
-      <id>aikar</id>
-      <url>https://repo.aikar.co/content/groups/aikar/</url>
-    </repository>
-    <repository>
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
-    </repository>
-    <repository>
-      <id>placeholderapi</id>
-      <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
     </repository>
   </repositories>
 
@@ -164,116 +140,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- PlaceholderAPI -->
-    <dependency>
-      <groupId>me.clip</groupId>
-      <artifactId>placeholderapi</artifactId>
-      <version>2.11.1</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- XSeries -->
-    <dependency>
-      <groupId>com.github.cryptomorin</groupId>
-      <artifactId>XSeries</artifactId>
-      <version>8.7.1</version>
-    </dependency>
-
-    <!-- BStats -->
-    <dependency>
-      <groupId>org.bstats</groupId>
-      <artifactId>bstats-bukkit</artifactId>
-      <version>3.0.0</version>
-    </dependency>
-
     <!-- HSCore -->
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-checker-spigotmc</artifactId>
-      <version>${core.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.googlecode.json-simple</groupId>
-          <artifactId>json-simple</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-task</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-bukkit-utils</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-bukkit-config</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-config-path</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-common</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-variable</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-builder</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-bukkit-gui-simple</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-bukkit-command</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-bukkit-addon</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-bukkit-item</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-bukkit-clicktype</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-downloader-json</artifactId>
-      <version>${core.version}</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>json-simple</artifactId>
-          <groupId>com.googlecode.json-simple</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-downloader-web-stream</artifactId>
-      <version>${core.version}</version>
-    </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-baseplugin</artifactId>
