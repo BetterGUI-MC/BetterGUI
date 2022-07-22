@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>me.hsgamer</groupId>
-  <artifactId>BetterGUI</artifactId>
+  <artifactId>bettergui</artifactId>
   <version>7.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -69,7 +69,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.4.0</version>
         <configuration>
           <links>
             <link>https://hsgamer.github.io/HSCore/</link>
