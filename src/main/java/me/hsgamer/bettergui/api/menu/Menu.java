@@ -13,16 +13,16 @@ import java.util.UUID;
  */
 public abstract class Menu {
 
-  private final String name;
+  protected final Config config;
   private final Map<UUID, Menu> parentMenu = new HashMap<>();
 
   /**
    * Create a new menu
    *
-   * @param name the name of the menu
+   * @param config the config
    */
-  protected Menu(String name) {
-    this.name = name;
+  protected Menu(Config config) {
+    this.config = config;
   }
 
   /**
@@ -31,15 +31,17 @@ public abstract class Menu {
    * @return the name
    */
   public String getName() {
-    return name;
+    return config.getName();
   }
 
   /**
-   * Called when setting options
+   * Get the config
    *
-   * @param config the config of the menu
+   * @return the config
    */
-  public abstract void setFromConfig(Config config);
+  public Config getConfig() {
+    return config;
+  }
 
   /**
    * Called when opening the menu for the player
