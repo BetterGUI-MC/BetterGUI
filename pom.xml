@@ -153,12 +153,32 @@
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-bukkit-gui-simple</artifactId>
+      <version>${core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-bukkit-gui-button</artifactId>
+      <version>${core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
       <artifactId>hscore-config-annotated</artifactId>
       <version>${core.version}</version>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-variable</artifactId>
+      <version>${core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-builder</artifactId>
+      <version>${core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-collections</artifactId>
       <version>${core.version}</version>
     </dependency>
   </dependencies>
