@@ -1,9 +1,11 @@
 package me.hsgamer.bettergui;
 
 import me.hsgamer.bettergui.config.MainConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 
 /**
  * The main class of the plugin
@@ -11,8 +13,9 @@ import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 public final class BetterGUI extends BasePlugin {
   private static BetterGUI instance;
   private final MainConfig mainConfig = new MainConfig(this);
+  private final MessageConfig messageConfig = new MessageConfig(this);
   private final MenuManager menuManager = new MenuManager(this);
-  private final MenuCommandManager menuCommandManager = new MenuCommandManager();
+  private final MenuCommandManager menuCommandManager = new MenuCommandManager(this);
 
   /**
    * Get the instance of the plugin
@@ -31,6 +34,8 @@ public final class BetterGUI extends BasePlugin {
   @Override
   public void load() {
     mainConfig.setup();
+    messageConfig.setup();
+    MessageUtils.setPrefix(() -> messageConfig.prefix);
   }
 
   @Override
@@ -61,6 +66,15 @@ public final class BetterGUI extends BasePlugin {
    */
   public MainConfig getMainConfig() {
     return mainConfig;
+  }
+
+  /**
+   * Get the message config
+   *
+   * @return the message config
+   */
+  public MessageConfig getMessageConfig() {
+    return messageConfig;
   }
 
   /**
