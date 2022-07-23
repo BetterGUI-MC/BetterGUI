@@ -29,13 +29,13 @@ public final class BetterGUI extends BasePlugin {
   @Override
   public void preLoad() {
     instance = this;
+    MessageUtils.setPrefix(() -> messageConfig.prefix);
   }
 
   @Override
   public void load() {
     mainConfig.setup();
     messageConfig.setup();
-    MessageUtils.setPrefix(() -> messageConfig.prefix);
   }
 
   @Override
