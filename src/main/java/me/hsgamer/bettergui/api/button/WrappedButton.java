@@ -15,6 +15,7 @@ import java.util.UUID;
 public abstract class WrappedButton implements Button, MenuElement {
   protected final Menu menu;
   protected final String name;
+  protected final Map<String, Object> options;
   protected final Button button;
 
   /**
@@ -27,6 +28,7 @@ public abstract class WrappedButton implements Button, MenuElement {
   protected WrappedButton(Menu menu, String name, Map<String, Object> options) {
     this.menu = menu;
     this.name = name;
+    this.options = options;
     this.button = createButton(options);
   }
 
@@ -48,8 +50,22 @@ public abstract class WrappedButton implements Button, MenuElement {
     // EMPTY
   }
 
+  /**
+   * Get the name of the button
+   *
+   * @return the name
+   */
   public String getName() {
     return name;
+  }
+
+  /**
+   * Get the options of the button
+   *
+   * @return the options
+   */
+  public Map<String, Object> getOptions() {
+    return options;
   }
 
   @Override
