@@ -5,8 +5,8 @@ import me.hsgamer.bettergui.api.process.ProcessApplier;
 /**
  * Constants for {@link ProcessApplier}
  */
-public final class RunnableApplierConstants {
-  private RunnableApplierConstants() {
+public final class ProcessApplierConstants {
+  private ProcessApplierConstants() {
     // EMPTY
   }
 }
