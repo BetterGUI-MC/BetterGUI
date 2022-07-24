@@ -1,7 +1,7 @@
 package me.hsgamer.bettergui.api.requirement;
 
-import me.hsgamer.bettergui.api.RunnableApplier;
 import me.hsgamer.bettergui.api.menu.MenuElement;
+import me.hsgamer.bettergui.api.process.ProcessApplier;
 
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public interface Requirement extends MenuElement {
     /**
      * The action if the requirement is met
      */
-    public final RunnableApplier applier;
+    public final ProcessApplier applier;
 
     /**
      * Create a new result
@@ -37,19 +37,9 @@ public interface Requirement extends MenuElement {
      * @param success whether the requirement is met
      * @param applier the action if the requirement is met
      */
-    public Result(boolean success, RunnableApplier applier) {
+    public Result(boolean success, ProcessApplier applier) {
       this.isSuccess = success;
       this.applier = applier;
-    }
-
-    /**
-     * Create a new result
-     *
-     * @param success whether the requirement is met
-     */
-    public Result(boolean success) {
-      this(success, (uuid, batchRunnable) -> {
-      });
     }
 
     /**
@@ -59,7 +49,7 @@ public interface Requirement extends MenuElement {
      *
      * @return the result
      */
-    public Result success(RunnableApplier applier) {
+    public Result success(ProcessApplier applier) {
       return new Result(true, applier);
     }
 
@@ -69,7 +59,7 @@ public interface Requirement extends MenuElement {
      * @return the result
      */
     public Result success() {
-      return new Result(true);
+      return new Result(true, (uuid, process) -> process.next());
     }
 
     /**
@@ -78,7 +68,7 @@ public interface Requirement extends MenuElement {
      * @return the result
      */
     public Result fail() {
-      return new Result(false);
+      return new Result(false, (uuid, process) -> process.next());
     }
   }
 }

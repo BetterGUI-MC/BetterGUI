@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.api.requirement;
 
-import me.hsgamer.bettergui.api.RunnableApplier;
+import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
@@ -45,10 +45,12 @@ public abstract class TakableRequirement<V> extends BaseRequirement<V> {
    *
    * @return the success result
    */
-  public Result successConditional(RunnableApplier applier) {
-    return new Result(true, (uuid, batchRunnable) -> {
+  public Result successConditional(ProcessApplier applier) {
+    return new Result(true, (uuid, process) -> {
       if (take) {
-        applier.accept(uuid, batchRunnable);
+        applier.accept(uuid, process);
+      } else {
+        process.next();
       }
     });
   }
