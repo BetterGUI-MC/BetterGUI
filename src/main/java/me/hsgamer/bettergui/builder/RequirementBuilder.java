@@ -28,7 +28,7 @@ public final class RequirementBuilder extends MassBuilder<RequirementBuilder.Inp
     register(new Element<Input, Requirement>() {
       @Override
       public boolean canBuild(Input input) {
-        String requirement = input.name;
+        String requirement = input.type;
         for (String s : type) {
           if (requirement.equalsIgnoreCase(s)) {
             return true;
@@ -46,11 +46,13 @@ public final class RequirementBuilder extends MassBuilder<RequirementBuilder.Inp
 
   public static class Input {
     public final Menu menu;
+    public final String type;
     public final String name;
     public final Object value;
 
-    public Input(Menu menu, String name, Object value) {
+    public Input(Menu menu, String type, String name, Object value) {
       this.menu = menu;
+      this.type = type;
       this.name = name;
       this.value = value;
     }

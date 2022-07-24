@@ -11,6 +11,7 @@ import java.util.UUID;
  * @param <V> the type of the final value
  */
 public abstract class BaseRequirement<V> implements Requirement {
+  private final String name;
   private final Object value;
   private final Menu menu;
 
@@ -20,6 +21,7 @@ public abstract class BaseRequirement<V> implements Requirement {
    * @param input the input
    */
   protected BaseRequirement(RequirementBuilder.Input input) {
+    this.name = input.name;
     this.menu = input.menu;
     this.value = handleValue(input.value);
   }
@@ -58,5 +60,10 @@ public abstract class BaseRequirement<V> implements Requirement {
   @Override
   public Menu getMenu() {
     return menu;
+  }
+
+  @Override
+  public String getName() {
+    return name;
   }
 }

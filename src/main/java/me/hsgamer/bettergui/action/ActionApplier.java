@@ -1,4 +1,4 @@
-package me.hsgamer.bettergui.applier;
+package me.hsgamer.bettergui.action;
 
 import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;

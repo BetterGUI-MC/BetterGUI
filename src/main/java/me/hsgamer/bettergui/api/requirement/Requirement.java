@@ -19,6 +19,13 @@ public interface Requirement extends MenuElement {
   Result check(UUID uuid);
 
   /**
+   * Get the name of the requirement
+   *
+   * @return the name
+   */
+  String getName();
+
+  /**
    * The result of the requirement
    */
   class Result {
@@ -49,8 +56,19 @@ public interface Requirement extends MenuElement {
      *
      * @return the result
      */
-    public Result success(ProcessApplier applier) {
+    public static Result success(ProcessApplier applier) {
       return new Result(true, applier);
+    }
+
+    /**
+     * Create a failure result
+     *
+     * @param applier the action if the requirement is not met
+     *
+     * @return the result
+     */
+    public static Result fail(ProcessApplier applier) {
+      return new Result(false, applier);
     }
 
     /**
@@ -58,7 +76,7 @@ public interface Requirement extends MenuElement {
      *
      * @return the result
      */
-    public Result success() {
+    public static Result success() {
       return new Result(true, (uuid, process) -> process.next());
     }
 
@@ -67,7 +85,7 @@ public interface Requirement extends MenuElement {
      *
      * @return the result
      */
-    public Result fail() {
+    public static Result fail() {
       return new Result(false, (uuid, process) -> process.next());
     }
   }
