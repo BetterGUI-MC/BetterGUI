@@ -1,19 +1,20 @@
-package me.hsgamer.bettergui.action;
+package me.hsgamer.bettergui.api.action;
 
-import me.hsgamer.bettergui.api.action.BaseAction;
-import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.builder.ActionBuilder;
 
 import java.util.UUID;
 
+/**
+ * The command action
+ */
 public abstract class CommandAction extends BaseAction {
   /**
    * Create a new action
    *
-   * @param menu   the menu
-   * @param string the action string
+   * @param input the input
    */
-  protected CommandAction(Menu menu, String string) {
-    super(menu, string);
+  protected CommandAction(ActionBuilder.Input input) {
+    super(input);
   }
 
   /**

@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.api.action;
 
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.builder.ActionBuilder;
 
 import java.util.UUID;
 
@@ -15,12 +16,11 @@ public abstract class BaseAction implements Action {
   /**
    * Create a new action
    *
-   * @param menu   the menu
-   * @param string the action string
+   * @param input the input
    */
-  protected BaseAction(Menu menu, String string) {
-    this.menu = menu;
-    this.string = string;
+  protected BaseAction(ActionBuilder.Input input) {
+    this.menu = input.menu;
+    this.string = input.name;
     this.canBeReplaced = menu.canBeReplaced(string);
   }
 

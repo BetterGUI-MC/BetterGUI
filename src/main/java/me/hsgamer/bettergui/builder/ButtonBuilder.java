@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 /**
  * The button builder
  */
-public class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, WrappedButton> {
+public final class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, WrappedButton> {
   /**
    * The instance of the button builder
    */

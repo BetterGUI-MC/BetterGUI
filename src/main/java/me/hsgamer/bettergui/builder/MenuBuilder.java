@@ -13,7 +13,7 @@ import java.util.function.Function;
 /**
  * The menu builder
  */
-public class MenuBuilder extends MassBuilder<Config, Menu> {
+public final class MenuBuilder extends MassBuilder<Config, Menu> {
   /**
    * The instance of the menu builder
    */
