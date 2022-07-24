@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.api.menu;
 
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.variable.ExternalStringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
 
@@ -14,7 +15,7 @@ public abstract class Menu {
 
   protected final Config config;
   private final Map<UUID, Menu> parentMenu = new HashMap<>();
-  private final List<StringReplacer> stringReplacers = new ArrayList<>();
+  private final List<ExternalStringReplacer> stringReplacers = new ArrayList<>();
 
   /**
    * Create a new menu
@@ -23,8 +24,30 @@ public abstract class Menu {
    */
   protected Menu(Config config) {
     this.config = config;
-    stringReplacers.add((original, uuid) -> original.replace("{current_menu}", getName()));
-    stringReplacers.add(VariableManager::setVariables);
+    stringReplacers.add(new ExternalStringReplacer() {
+      private static final String CURRENT_MENU_VARIABLE = "{current-menu}";
+
+      @Override
+      public boolean canBeReplaced(String string) {
+        return string.contains(CURRENT_MENU_VARIABLE);
+      }
+
+      @Override
+      public String replace(String original, UUID uuid) {
+        return original.replace(CURRENT_MENU_VARIABLE, getName());
+      }
+    });
+    stringReplacers.add(new ExternalStringReplacer() {
+      @Override
+      public boolean canBeReplaced(String string) {
+        return VariableManager.hasVariables(string);
+      }
+
+      @Override
+      public String replace(String original, UUID uuid) {
+        return VariableManager.setVariables(original, uuid);
+      }
+    });
   }
 
   /**
@@ -50,7 +73,7 @@ public abstract class Menu {
    *
    * @return the string replacers
    */
-  public List<StringReplacer> getStringReplacers() {
+  public List<ExternalStringReplacer> getStringReplacers() {
     return stringReplacers;
   }
 
@@ -110,6 +133,17 @@ public abstract class Menu {
    */
   public void setParentMenu(UUID uuid, Menu menu) {
     parentMenu.put(uuid, menu);
+  }
+
+  /**
+   * Check if the string can be replaced
+   *
+   * @param string the string
+   *
+   * @return true if it can be replaced
+   */
+  public boolean canBeReplaced(String string) {
+    return stringReplacers.stream().anyMatch(replacer -> replacer.canBeReplaced(string));
   }
 
   /**
