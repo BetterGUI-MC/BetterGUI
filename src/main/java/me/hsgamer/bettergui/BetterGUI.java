@@ -8,9 +8,11 @@ import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.config.TemplateButtonConfig;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
+import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.variable.VariableManager;
 
 /**
  * The main class of the plugin
@@ -40,6 +42,8 @@ public final class BetterGUI extends BasePlugin {
 
   @Override
   public void load() {
+    VariableManager.setReplaceAll(() -> mainConfig.replaceAllVariables);
+    PluginVariableManager.registerDefaultVariables();
     mainConfig.setup();
     messageConfig.setup();
   }
@@ -70,6 +74,8 @@ public final class BetterGUI extends BasePlugin {
     Permissions.unregister();
     ButtonBuilder.INSTANCE.clear();
     MenuBuilder.INSTANCE.clear();
+    PluginVariableManager.unregisterAll();
+    VariableManager.clearExternalReplacers();
   }
 
   /**

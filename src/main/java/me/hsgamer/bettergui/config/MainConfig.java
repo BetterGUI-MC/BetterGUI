@@ -11,11 +11,13 @@ import org.bukkit.plugin.Plugin;
 public class MainConfig extends AnnotatedConfig {
   public final @ConfigPath("default-menu-type") String defaultMenuType;
   public final @ConfigPath("default-button-type") String defaultButtonType;
+  public final @ConfigPath("replace-all-variables-each-check") boolean replaceAllVariables;
 
   public MainConfig(Plugin plugin) {
     super(new BukkitConfig(plugin, "config.yml"));
 
     defaultMenuType = "simple";
     defaultButtonType = "simple";
+    replaceAllVariables = true;
   }
 }
