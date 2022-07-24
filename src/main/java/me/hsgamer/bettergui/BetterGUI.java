@@ -1,10 +1,15 @@
 package me.hsgamer.bettergui;
 
+import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.builder.MenuBuilder;
+import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.config.TemplateButtonConfig;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
+import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 
 /**
@@ -14,6 +19,7 @@ public final class BetterGUI extends BasePlugin {
   private static BetterGUI instance;
   private final MainConfig mainConfig = new MainConfig(this);
   private final MessageConfig messageConfig = new MessageConfig(this);
+  private final TemplateButtonConfig templateButtonConfig = new TemplateButtonConfig(this);
   private final MenuManager menuManager = new MenuManager(this);
   private final MenuCommandManager menuCommandManager = new MenuCommandManager(this);
 
@@ -41,6 +47,10 @@ public final class BetterGUI extends BasePlugin {
   @Override
   public void enable() {
     Permissions.register();
+
+    GUIListener.init(this);
+
+    registerCommand(new OpenCommand(this));
   }
 
   @Override
@@ -52,11 +62,14 @@ public final class BetterGUI extends BasePlugin {
   public void disable() {
     menuCommandManager.clearMenuCommand();
     menuManager.clear();
+    templateButtonConfig.clear();
   }
 
   @Override
   public void postDisable() {
     Permissions.unregister();
+    ButtonBuilder.INSTANCE.clear();
+    MenuBuilder.INSTANCE.clear();
   }
 
   /**
@@ -75,6 +88,15 @@ public final class BetterGUI extends BasePlugin {
    */
   public MessageConfig getMessageConfig() {
     return messageConfig;
+  }
+
+  /**
+   * Get the template button config
+   *
+   * @return the template button config
+   */
+  public TemplateButtonConfig getTemplateButtonConfig() {
+    return templateButtonConfig;
   }
 
   /**
