@@ -38,6 +38,20 @@ public abstract class Menu {
       }
     });
     stringReplacers.add(new ExternalStringReplacer() {
+      private static final String PARENT_NAME_VARIABLE = "{parent-menu}";
+
+      @Override
+      public boolean canBeReplaced(String string) {
+        return string.contains(PARENT_NAME_VARIABLE);
+      }
+
+      @Override
+      public String replace(String original, UUID uuid) {
+        String parentMenuName = getParentMenu(uuid).map(Menu::getName).orElse("");
+        return original.replace(PARENT_NAME_VARIABLE, parentMenuName);
+      }
+    });
+    stringReplacers.add(new ExternalStringReplacer() {
       @Override
       public boolean canBeReplaced(String string) {
         return VariableManager.hasVariables(string);
