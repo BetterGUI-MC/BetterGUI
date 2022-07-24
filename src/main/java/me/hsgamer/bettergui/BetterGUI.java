@@ -6,6 +6,7 @@ import me.hsgamer.bettergui.command.OpenCommand;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.config.TemplateButtonConfig;
+import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginVariableManager;
@@ -53,6 +54,11 @@ public final class BetterGUI extends BasePlugin {
     Permissions.register();
 
     GUIListener.init(this);
+
+    if (mainConfig.alternativeCommandManager.enable) {
+      getLogger().info("Enabled alternative command manager");
+      registerListener(new AlternativeCommandListener(this));
+    }
 
     registerCommand(new OpenCommand(this));
   }
