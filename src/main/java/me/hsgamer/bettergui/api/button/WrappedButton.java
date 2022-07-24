@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.api.button;
 
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.menu.MenuElement;
+import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -21,14 +22,12 @@ public abstract class WrappedButton implements Button, MenuElement {
   /**
    * Create a new wrapped button
    *
-   * @param menu    the menu
-   * @param name    the name
-   * @param options the options
+   * @param input the input
    */
-  protected WrappedButton(Menu menu, String name, Map<String, Object> options) {
-    this.menu = menu;
-    this.name = name;
-    this.options = options;
+  protected WrappedButton(ButtonBuilder.Input input) {
+    this.menu = input.menu;
+    this.name = input.name;
+    this.options = input.options;
     this.button = createButton(options);
   }
 

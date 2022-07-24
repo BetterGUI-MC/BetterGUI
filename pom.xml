@@ -186,6 +186,11 @@
       <artifactId>hscore-collections</artifactId>
       <version>${core.version}</version>
     </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-task</artifactId>
+      <version>${core.version}</version>
+    </dependency>
   </dependencies>
 
   <distributionManagement>

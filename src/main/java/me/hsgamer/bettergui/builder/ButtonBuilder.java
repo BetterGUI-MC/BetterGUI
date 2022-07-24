@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.builder;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.button.TemplateButton;
 import me.hsgamer.hscore.builder.MassBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
@@ -23,6 +24,7 @@ public class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, WrappedButto
   public static final ButtonBuilder INSTANCE = new ButtonBuilder();
 
   private ButtonBuilder() {
+    register(TemplateButton::new, "template");
   }
 
   /**
