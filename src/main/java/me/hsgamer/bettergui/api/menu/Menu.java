@@ -1,12 +1,11 @@
 package me.hsgamer.bettergui.api.menu;
 
+import me.hsgamer.hscore.common.interfaces.StringReplacer;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The menu
@@ -15,6 +14,7 @@ public abstract class Menu {
 
   protected final Config config;
   private final Map<UUID, Menu> parentMenu = new HashMap<>();
+  private final List<StringReplacer> stringReplacers = new ArrayList<>();
 
   /**
    * Create a new menu
@@ -23,6 +23,8 @@ public abstract class Menu {
    */
   protected Menu(Config config) {
     this.config = config;
+    stringReplacers.add((original, uuid) -> original.replace("{current_menu}", getName()));
+    stringReplacers.add(VariableManager::setVariables);
   }
 
   /**
@@ -41,6 +43,15 @@ public abstract class Menu {
    */
   public Config getConfig() {
     return config;
+  }
+
+  /**
+   * Get the mutable string replacers
+   *
+   * @return the string replacers
+   */
+  public List<StringReplacer> getStringReplacers() {
+    return stringReplacers;
   }
 
   /**
@@ -99,5 +110,17 @@ public abstract class Menu {
    */
   public void setParentMenu(UUID uuid, Menu menu) {
     parentMenu.put(uuid, menu);
+  }
+
+  /**
+   * Replace the string
+   *
+   * @param string the string
+   * @param uuid   the unique id
+   *
+   * @return the replaced string
+   */
+  public String replace(String string, UUID uuid) {
+    return StringReplacer.replace(string, uuid, stringReplacers);
   }
 }
