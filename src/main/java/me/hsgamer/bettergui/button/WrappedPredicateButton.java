@@ -21,10 +21,49 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 public class WrappedPredicateButton extends BaseWrappedButton {
   private final Set<UUID> checked = new ConcurrentSkipListSet<>();
-  private boolean checkOnlyOnCreation = false;
 
   public WrappedPredicateButton(ButtonBuilder.Input input) {
     super(input);
+  }
+
+  public static void applyRequirement(Map<String, Object> section, WrappedButton wrappedButton, Set<UUID> checked, PredicateButton predicateButton) {
+    boolean checkOnlyOnCreation = Optional.ofNullable(section.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
+
+    Optional.ofNullable(section.get("view-requirement"))
+      .filter(Map.class::isInstance)
+      .<Map<String, Object>>map(Map.class::cast)
+      .ifPresent(subsection -> {
+        RequirementApplier requirementApplier = new RequirementApplier(wrappedButton.getMenu(), wrappedButton.getName() + "_view", subsection);
+        predicateButton.setViewPredicate(uuid -> {
+          if (checkOnlyOnCreation && checked.contains(uuid)) {
+            return true;
+          }
+          Requirement.Result result = requirementApplier.getResult(uuid);
+          if (result.isSuccess) {
+            checked.add(uuid);
+          }
+          BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+            result.applier.accept(uuid, process);
+            process.next();
+          }));
+          return result.isSuccess;
+        });
+      });
+    Optional.ofNullable(section.get("click-requirement"))
+      .filter(Map.class::isInstance)
+      .<Map<String, Object>>map(Map.class::cast)
+      .ifPresent(subsection -> {
+        Map<AdvancedClickType, RequirementApplier> clickRequirements = RequirementApplier.convertClickRequirementAppliers(subsection, wrappedButton);
+        predicateButton.setClickPredicate((uuid, event) -> {
+          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(event, BetterGUI.getInstance().getMainConfig().modernClickType));
+          Requirement.Result result = clickRequirement.getResult(uuid);
+          BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+            result.applier.accept(uuid, process);
+            process.next();
+          }));
+          return result.isSuccess;
+        });
+      });
   }
 
   @Override
@@ -44,43 +83,8 @@ public class WrappedPredicateButton extends BaseWrappedButton {
       .<Map<String, Object>>map(Map.class::cast)
       .flatMap(subsection -> ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName() + "_fallback", subsection)))
       .ifPresent(predicateButton::setFallbackButton);
-    this.checkOnlyOnCreation = Optional.ofNullable(keys.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.checkOnlyOnCreation);
 
-    Optional.ofNullable(keys.get("view-requirement"))
-      .filter(Map.class::isInstance)
-      .<Map<String, Object>>map(Map.class::cast)
-      .ifPresent(subsection -> {
-        RequirementApplier requirementApplier = new RequirementApplier(getMenu(), getName() + "_view", subsection);
-        predicateButton.setViewPredicate(uuid -> {
-          if (checkOnlyOnCreation && checked.contains(uuid)) {
-            return true;
-          }
-          Requirement.Result result = requirementApplier.getResult(uuid);
-          if (result.isSuccess) {
-            checked.add(uuid);
-          }
-          BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
-            result.applier.accept(uuid, process);
-            process.next();
-          }));
-          return result.isSuccess;
-        });
-      });
-    Optional.ofNullable(keys.get("click-requirement"))
-      .filter(Map.class::isInstance)
-      .<Map<String, Object>>map(Map.class::cast)
-      .ifPresent(subsection -> {
-        Map<AdvancedClickType, RequirementApplier> clickRequirements = RequirementApplier.convertClickRequirementAppliers(subsection, this);
-        predicateButton.setClickPredicate((uuid, event) -> {
-          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(event, BetterGUI.getInstance().getMainConfig().modernClickType));
-          Requirement.Result result = clickRequirement.getResult(uuid);
-          BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
-            result.applier.accept(uuid, process);
-            process.next();
-          }));
-          return result.isSuccess;
-        });
-      });
+    applyRequirement(keys, this, checked, predicateButton);
     return predicateButton;
   }
 

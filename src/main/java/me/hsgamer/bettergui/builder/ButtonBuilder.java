@@ -28,11 +28,15 @@ public final class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, Wrappe
     register(WrappedDummyButton::new, "dummy");
     register(EmptyButton::new, "empty", "raw");
     register(WrappedAirButton::new, "air");
-    register(WrappedNullButton::new, "null");
-    register(WrappedSimpleButton::new, "simple");
     register(WrappedPredicateButton::new, "predicate", "requirement");
     register(WrappedListButton::new, "list");
     register(WrappedAnimatedButton::new, "animated", "animate", "anim");
+    register(input ->
+        BetterGUI.getInstance().getMainConfig().useLegacyButton
+          ? new LegacyMenuButton(input)
+          : new WrappedSimpleButton(input),
+      "simple"
+    );
   }
 
   /**

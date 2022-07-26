@@ -14,6 +14,7 @@ public class MainConfig extends AnnotatedConfig {
   public final @ConfigPath("default-button-type") String defaultButtonType;
   public final @ConfigPath("replace-all-variables-each-check") boolean replaceAllVariables;
   public final @ConfigPath("use-modern-click-type") boolean modernClickType;
+  public final @ConfigPath("use-legacy-button") boolean useLegacyButton;
   public final @ConfigPath(value = "alternative-command-manager", converter = AlternativeCommandListener.SettingConverter.class) AlternativeCommandListener.Setting alternativeCommandManager;
 
   public MainConfig(Plugin plugin) {
@@ -23,6 +24,7 @@ public class MainConfig extends AnnotatedConfig {
     defaultButtonType = "simple";
     replaceAllVariables = true;
     modernClickType = false;
+    useLegacyButton = true;
     alternativeCommandManager = new AlternativeCommandListener.Setting();
   }
 }
