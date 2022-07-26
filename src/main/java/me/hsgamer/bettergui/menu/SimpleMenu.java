@@ -102,18 +102,15 @@ public class SimpleMenu extends Menu {
 
       if (key.equalsIgnoreCase("menu-settings")) {
 
-        tempOpenActionApplier = Optional.ofNullable(values.get("open-action")).map(o -> new ActionApplier(this, o)).orElse(tempOpenActionApplier);
+        tempOpenActionApplier = Optional.ofNullable(values.get("open-action"))
+          .map(o -> new ActionApplier(this, o)).
+          orElse(tempOpenActionApplier);
 
-        tempCloseActionApplier = Optional.ofNullable(values.get("close-action")).map(o -> new ActionApplier(this, o)).orElse(tempCloseActionApplier);
+        tempCloseActionApplier = Optional.ofNullable(values.get("close-action"))
+          .map(o -> new ActionApplier(this, o))
+          .orElse(tempCloseActionApplier);
 
-        Optional.ofNullable(values.get("inventory-type")).ifPresent(o -> {
-          try {
-            this.guiHolder.setInventoryType(InventoryType.valueOf(String.valueOf(o).toUpperCase(Locale.ROOT)));
-          } catch (IllegalArgumentException e) {
-            getInstance().getLogger().warning(() -> "The menu \"" + getName() + "\" contains an illegal inventory type");
-          }
-        });
-        Optional.ofNullable(values.get("inventory")).ifPresent(o -> {
+        Optional.ofNullable(MapUtil.getIfFound(values, "inventory-type", "inventory")).ifPresent(o -> {
           try {
             this.guiHolder.setInventoryType(InventoryType.valueOf(String.valueOf(o).toUpperCase(Locale.ROOT)));
           } catch (IllegalArgumentException e) {
@@ -132,7 +129,11 @@ public class SimpleMenu extends Menu {
           return Validate.getNumber(slots).map(BigDecimal::intValue).map(i -> Math.max(1, i)).orElse(9);
         }));
 
-        this.ticks = Optional.ofNullable(MapUtil.getIfFound(values, "auto-refresh", "ticks")).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::longValue).orElse(this.ticks);
+        this.ticks = Optional.ofNullable(MapUtil.getIfFound(values, "auto-refresh", "ticks"))
+          .map(String::valueOf)
+          .flatMap(Validate::getNumber)
+          .map(BigDecimal::longValue)
+          .orElse(this.ticks);
 
         tempViewRequirementApplier = Optional.ofNullable(values.get("view-requirement"))
           .filter(Map.class::isInstance)
@@ -146,7 +147,10 @@ public class SimpleMenu extends Menu {
           .map(m -> new RequirementApplier(this, getName() + "_close", m))
           .orElse(tempCloseRequirementApplier);
 
-        this.permission = Optional.ofNullable(values.get("permission")).map(String::valueOf).map(Permission::new).orElse(this.permission);
+        this.permission = Optional.ofNullable(values.get("permission"))
+          .map(String::valueOf)
+          .map(Permission::new)
+          .orElse(this.permission);
 
         Optional.ofNullable(values.get("command"))
           .map(o -> CollectionUtils.createStringListFromObject(o, true))
@@ -160,7 +164,9 @@ public class SimpleMenu extends Menu {
             }
           });
 
-        Optional.ofNullable(MapUtil.getIfFound(values, "name", "title")).map(String::valueOf).ifPresent(s -> guiHolder.setTitleFunction(uuid -> StringReplacerApplier.replace(s, uuid, this)));
+        Optional.ofNullable(MapUtil.getIfFound(values, "name", "title"))
+          .map(String::valueOf)
+          .ifPresent(s -> guiHolder.setTitleFunction(uuid -> StringReplacerApplier.replace(s, uuid, this)));
       } else if (key.equalsIgnoreCase("default-icon") || key.equalsIgnoreCase("default-button")) {
         ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "menu_" + getName() + "_button_" + key, values)).ifPresent(button -> {
           button.init();
