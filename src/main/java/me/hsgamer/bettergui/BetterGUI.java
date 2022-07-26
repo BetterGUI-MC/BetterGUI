@@ -13,7 +13,11 @@ import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.task.BatchRunnable;
 import me.hsgamer.hscore.variable.VariableManager;
+import org.bukkit.Bukkit;
+
+import java.util.function.Consumer;
 
 /**
  * The main class of the plugin
@@ -33,6 +37,26 @@ public final class BetterGUI extends BasePlugin {
    */
   public static BetterGUI getInstance() {
     return instance;
+  }
+
+  /**
+   * Run the batch runnable
+   *
+   * @param runnable the runnable
+   */
+  public static void runBatchRunnable(BatchRunnable runnable) {
+    Bukkit.getScheduler().runTaskAsynchronously(getInstance(), runnable);
+  }
+
+  /**
+   * Run the batch runnable
+   *
+   * @param batchRunnableConsumer the batch runnable consumer
+   */
+  public static void runBatchRunnable(Consumer<BatchRunnable> batchRunnableConsumer) {
+    BatchRunnable runnable = new BatchRunnable();
+    batchRunnableConsumer.accept(runnable);
+    runBatchRunnable(runnable);
   }
 
   @Override

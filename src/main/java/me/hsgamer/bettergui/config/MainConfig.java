@@ -13,6 +13,7 @@ public class MainConfig extends AnnotatedConfig {
   public final @ConfigPath("default-menu-type") String defaultMenuType;
   public final @ConfigPath("default-button-type") String defaultButtonType;
   public final @ConfigPath("replace-all-variables-each-check") boolean replaceAllVariables;
+  public final @ConfigPath("use-modern-click-type") boolean modernClickType;
   public final @ConfigPath(value = "alternative-command-manager", converter = AlternativeCommandListener.SettingConverter.class) AlternativeCommandListener.Setting alternativeCommandManager;
 
   public MainConfig(Plugin plugin) {
@@ -21,6 +22,7 @@ public class MainConfig extends AnnotatedConfig {
     defaultMenuType = "simple";
     defaultButtonType = "simple";
     replaceAllVariables = true;
+    modernClickType = false;
     alternativeCommandManager = new AlternativeCommandListener.Setting();
   }
 }

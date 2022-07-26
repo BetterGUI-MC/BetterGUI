@@ -86,4 +86,12 @@ public abstract class BaseWrappedButton implements WrappedButton {
       button.stop();
     }
   }
+
+  @Override
+  public boolean forceSetAction(UUID uuid) {
+    if (button != null) {
+      return button.forceSetAction(uuid);
+    }
+    return false;
+  }
 }
