@@ -45,4 +45,23 @@ public final class MapUtil {
   public static <K, V> V getIfFound(Map<K, V> map, K... key) {
     return getIfFoundOrDefault(map, null, key);
   }
+
+  /**
+   * Check if the map contains any of the keys
+   *
+   * @param map the map
+   * @param key the key
+   * @param <K> the key type
+   *
+   * @return true if it does
+   */
+  @SafeVarargs
+  public static <K> boolean containsAnyKey(Map<K, ?> map, K... key) {
+    for (K k : key) {
+      if (map.containsKey(k)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
