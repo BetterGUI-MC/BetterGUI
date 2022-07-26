@@ -1,14 +1,14 @@
 package me.hsgamer.bettergui.button;
 
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.button.WrappedButton;
+import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
 import java.util.*;
 
-public class TemplateButton extends WrappedButton {
+public class TemplateButton extends BaseWrappedButton {
   /**
    * Create a new button
    *
