@@ -20,8 +20,8 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public abstract class ActionOnlyButton extends BaseWrappedButton {
-  public ActionOnlyButton(ButtonBuilder.Input input) {
+public abstract class ActionButton extends BaseWrappedButton {
+  public ActionButton(ButtonBuilder.Input input) {
     super(input);
   }
 

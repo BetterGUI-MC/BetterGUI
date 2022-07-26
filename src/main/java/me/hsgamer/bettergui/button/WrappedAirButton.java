@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class WrappedAirButton extends ActionOnlyButton {
+public class WrappedAirButton extends ActionButton {
   public WrappedAirButton(ButtonBuilder.Input input) {
     super(input);
   }

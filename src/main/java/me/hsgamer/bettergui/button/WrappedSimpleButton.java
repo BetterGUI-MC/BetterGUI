@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class WrappedSimpleButton extends ActionOnlyButton {
+public class WrappedSimpleButton extends ActionButton {
   public WrappedSimpleButton(ButtonBuilder.Input input) {
     super(input);
   }

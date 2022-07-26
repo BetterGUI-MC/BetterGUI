@@ -34,12 +34,22 @@ public class ActionApplier implements ProcessApplier {
     this(ActionBuilder.INSTANCE.build(menu, value));
   }
 
-  @Override
-  public void accept(UUID uuid, BatchRunnable.Process process) {
+  /**
+   * Apply the action to the process without the next action
+   *
+   * @param uuid    the unique id
+   * @param process the process
+   */
+  public void acceptWithoutNext(UUID uuid, BatchRunnable.Process process) {
     BatchRunnable.TaskPool currentPool = process.getCurrentTaskPool();
     for (Action action : actions) {
       currentPool.addLast(subProcess -> action.accept(uuid, subProcess));
     }
+  }
+
+  @Override
+  public void accept(UUID uuid, BatchRunnable.Process process) {
+    acceptWithoutNext(uuid, process);
     process.next();
   }
 }

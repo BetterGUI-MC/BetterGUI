@@ -110,9 +110,10 @@ public class RequirementApplier implements ProcessApplier {
     taskPool.addLast(process1 -> {
       result.applier.accept(uuid, process1);
       if (!result.isSuccess) {
-        failActionApplier.accept(uuid, process1);
+        failActionApplier.acceptWithoutNext(uuid, process1);
         process1.getCurrentTaskPool().addLast(BatchRunnable.Process::complete);
       }
+      process1.next();
     });
     process.next();
   }

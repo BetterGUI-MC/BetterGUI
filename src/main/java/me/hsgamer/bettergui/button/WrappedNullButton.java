@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class WrappedNullButton extends ActionOnlyButton {
+public class WrappedNullButton extends ActionButton {
   public WrappedNullButton(ButtonBuilder.Input input) {
     super(input);
   }
