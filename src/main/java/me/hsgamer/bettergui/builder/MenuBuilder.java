@@ -2,6 +2,8 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.menu.ArgumentMenu;
+import me.hsgamer.bettergui.menu.SimpleMenu;
 import me.hsgamer.hscore.builder.MassBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.config.Config;
@@ -20,7 +22,8 @@ public final class MenuBuilder extends MassBuilder<Config, Menu> {
   public static final MenuBuilder INSTANCE = new MenuBuilder();
 
   private MenuBuilder() {
-
+    register(SimpleMenu::new, "simple");
+    register(ArgumentMenu::new, "argument", "args", "arguments");
   }
 
   /**

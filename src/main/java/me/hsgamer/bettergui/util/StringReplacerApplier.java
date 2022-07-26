@@ -7,6 +7,7 @@ import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
 
 import java.util.LinkedHashMap;
+import java.util.UUID;
 
 /**
  * A utility class to apply StringReplacer
@@ -55,5 +56,35 @@ public final class StringReplacerApplier {
    */
   public static ItemBuilder apply(ItemBuilder itemBuilder, MenuElement menuElement) {
     return apply(itemBuilder, menuElement.getMenu());
+  }
+
+  /**
+   * Apply the string replacers to the string
+   *
+   * @param string the string
+   * @param uuid   the unique id
+   * @param menu   the menu
+   *
+   * @return the replaced string
+   */
+  public static String replace(String string, UUID uuid, Menu menu) {
+    String replaced = menu.replace(string, uuid);
+    for (StringReplacer replacer : STRING_REPLACER_MAP.values()) {
+      replaced = replacer.replace(replaced, uuid);
+    }
+    return replaced;
+  }
+
+  /**
+   * Apply the string replacers to the string
+   *
+   * @param string      the string
+   * @param uuid        the unique id
+   * @param menuElement the menu element
+   *
+   * @return the replaced string
+   */
+  public static String replace(String string, UUID uuid, MenuElement menuElement) {
+    return replace(string, uuid, menuElement.getMenu());
   }
 }

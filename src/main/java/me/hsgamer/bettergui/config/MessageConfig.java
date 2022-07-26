@@ -16,6 +16,7 @@ public class MessageConfig extends AnnotatedConfig {
   public final @ConfigPath("menu-required") String menuRequired;
   public final @ConfigPath("menu-not-found") String menuNotFound;
   public final @ConfigPath("player-not-found") String playerNotFound;
+  public final @ConfigPath("empty-arg-value") String emptyArgValue;
 
   public MessageConfig(Plugin plugin) {
     super(new BukkitConfig(plugin, "messages.yml"));
@@ -27,5 +28,6 @@ public class MessageConfig extends AnnotatedConfig {
     menuRequired = "&cYou should specify a menu";
     menuNotFound = "&cThat menu does not exist";
     playerNotFound = "&cThe player is not found. Maybe he is offline or didn't join your server";
+    emptyArgValue = "/empty/";
   }
 }
