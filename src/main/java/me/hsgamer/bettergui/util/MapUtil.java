@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.util;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * The utility class for {@link Map}
@@ -63,5 +64,20 @@ public final class MapUtil {
       }
     }
     return false;
+  }
+
+  /**
+   * Cast to the optional string-object map
+   *
+   * @param object the object
+   *
+   * @return the map
+   */
+  public static Optional<Map<String, Object>> castOptionalStringObjectMap(Object object) {
+    if (object instanceof Map) {
+      // noinspection unchecked
+      return Optional.of((Map<String, Object>) object);
+    }
+    return Optional.empty();
   }
 }

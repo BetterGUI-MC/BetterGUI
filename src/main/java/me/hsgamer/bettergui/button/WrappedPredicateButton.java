@@ -6,6 +6,7 @@ import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
+import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
@@ -30,8 +31,7 @@ public class WrappedPredicateButton extends BaseWrappedButton {
     boolean checkOnlyOnCreation = Optional.ofNullable(section.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
 
     Optional.ofNullable(section.get("view-requirement"))
-      .filter(Map.class::isInstance)
-      .<Map<String, Object>>map(Map.class::cast)
+      .flatMap(MapUtil::castOptionalStringObjectMap)
       .ifPresent(subsection -> {
         RequirementApplier requirementApplier = new RequirementApplier(wrappedButton.getMenu(), wrappedButton.getName() + "_view", subsection);
         predicateButton.setViewPredicate(uuid -> {
@@ -50,8 +50,7 @@ public class WrappedPredicateButton extends BaseWrappedButton {
         });
       });
     Optional.ofNullable(section.get("click-requirement"))
-      .filter(Map.class::isInstance)
-      .<Map<String, Object>>map(Map.class::cast)
+      .flatMap(MapUtil::castOptionalStringObjectMap)
       .ifPresent(subsection -> {
         Map<AdvancedClickType, RequirementApplier> clickRequirements = RequirementApplier.convertClickRequirementAppliers(subsection, wrappedButton);
         predicateButton.setClickPredicate((uuid, event) -> {
@@ -72,15 +71,13 @@ public class WrappedPredicateButton extends BaseWrappedButton {
 
     PredicateButton predicateButton = new PredicateButton(
       Optional.ofNullable(keys.get("button"))
-        .filter(Map.class::isInstance)
-        .<Map<String, Object>>map(Map.class::cast)
+        .flatMap(MapUtil::castOptionalStringObjectMap)
         .map(subsection -> new ButtonBuilder.Input(getMenu(), getName() + "_button", subsection))
         .<Button>map(input -> ButtonBuilder.INSTANCE.build(input).orElseGet(() -> new EmptyButton(input)))
         .orElse(Button.EMPTY)
     );
     Optional.ofNullable(keys.get("fallback"))
-      .filter(Map.class::isInstance)
-      .<Map<String, Object>>map(Map.class::cast)
+      .flatMap(MapUtil::castOptionalStringObjectMap)
       .flatMap(subsection -> ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName() + "_fallback", subsection)))
       .ifPresent(predicateButton::setFallbackButton);
 

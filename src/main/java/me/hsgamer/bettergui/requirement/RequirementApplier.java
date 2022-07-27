@@ -57,13 +57,14 @@ public class RequirementApplier implements ProcessApplier {
     RequirementApplier defaultSetting = new RequirementApplier(
       button.getMenu(),
       button.getName() + "_click_default",
-      Optional.ofNullable(keys.get("default")).filter(Map.class::isInstance).<Map<String, Object>>map(Map.class::cast).orElse(Collections.emptyMap())
+      Optional.ofNullable(keys.get("default"))
+        .flatMap(MapUtil::castOptionalStringObjectMap)
+        .orElse(Collections.emptyMap())
     );
 
     clickTypeMap.forEach((clickTypeName, clickType) ->
       clickRequirements.put(clickType, Optional.ofNullable(keys.get(clickTypeName))
-        .filter(Map.class::isInstance)
-        .<Map<String, Object>>map(Map.class::cast)
+        .flatMap(MapUtil::castOptionalStringObjectMap)
         .map(subsection -> new RequirementApplier(button.getMenu(), button.getName() + "_click_" + clickTypeName.toLowerCase(Locale.ROOT), subsection))
         .orElse(defaultSetting))
     );

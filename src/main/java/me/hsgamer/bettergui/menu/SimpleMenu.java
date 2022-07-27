@@ -136,14 +136,12 @@ public class SimpleMenu extends Menu {
           .orElse(this.ticks);
 
         tempViewRequirementApplier = Optional.ofNullable(values.get("view-requirement"))
-          .filter(Map.class::isInstance)
-          .<Map<String, Object>>map(Map.class::cast)
+          .flatMap(MapUtil::castOptionalStringObjectMap)
           .map(m -> new RequirementApplier(this, getName() + "_view", m))
           .orElse(tempViewRequirementApplier);
 
         tempCloseRequirementApplier = Optional.ofNullable(values.get("close-requirement"))
-          .filter(Map.class::isInstance)
-          .<Map<String, Object>>map(Map.class::cast)
+          .flatMap(MapUtil::castOptionalStringObjectMap)
           .map(m -> new RequirementApplier(this, getName() + "_close", m))
           .orElse(tempCloseRequirementApplier);
 
