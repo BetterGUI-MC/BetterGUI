@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.api.action;
 
 import me.hsgamer.bettergui.builder.ActionBuilder;
+import me.hsgamer.bettergui.util.CommandUtil;
 
 import java.util.UUID;
 
@@ -25,7 +26,6 @@ public abstract class CommandAction extends BaseAction {
    * @return the final command
    */
   protected String getFinalCommand(UUID uuid) {
-    String command = getReplacedString(uuid);
-    return command.startsWith("/") ? command : "/" + command;
+    return CommandUtil.normalizeCommand(getReplacedString(uuid));
   }
 }

@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.builder;
 
+import me.hsgamer.bettergui.action.type.*;
 import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.hscore.builder.MassBuilder;
@@ -20,6 +21,18 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
   public static final ActionBuilder INSTANCE = new ActionBuilder();
 
   private ActionBuilder() {
+    register(ConsoleAction::new, "console");
+    register(OpAction::new, "op");
+    register(PlayerAction::new, "player");
+    register(DelayAction::new, "delay");
+    register(OpenMenuAction::new, "open-menu", "open", "menu", "open-menu");
+    register(input -> new BackAction(input.menu), "back-menu", "backmenu");
+    register(TellAction::new, "tell");
+    register(BroadcastAction::new, "broadcast");
+    register(input -> new CloseMenuAction(input.menu), "close-menu", "closemenu");
+    register(input -> new UpdateMenuAction(input.menu), "update-menu", "updatemenu");
+    register(PermissionAction::new, "permission");
+    register(SoundAction::new, "sound");
   }
 
   /**

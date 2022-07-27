@@ -13,10 +13,14 @@ import java.util.UUID;
  * A utility class to apply StringReplacer
  */
 public final class StringReplacerApplier {
+  /**
+   * A replacer to colorize the string
+   */
+  public static final StringReplacer COLORIZE = (original, uuid) -> MessageUtils.colorize(original);
   private static final LinkedHashMap<String, StringReplacer> STRING_REPLACER_MAP = new LinkedHashMap<>();
 
   static {
-    STRING_REPLACER_MAP.put("colorize", (original, uuid) -> MessageUtils.colorize(original));
+    STRING_REPLACER_MAP.put("colorize", COLORIZE);
   }
 
   private StringReplacerApplier() {
