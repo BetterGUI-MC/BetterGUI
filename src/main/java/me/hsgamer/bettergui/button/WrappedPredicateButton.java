@@ -21,7 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class WrappedPredicateButton extends BaseWrappedButton {
-  private final Set<UUID> checked = new ConcurrentSkipListSet<>();
+  private Set<UUID> checked;
 
   public WrappedPredicateButton(ButtonBuilder.Input input) {
     super(input);
@@ -81,6 +81,7 @@ public class WrappedPredicateButton extends BaseWrappedButton {
       .flatMap(subsection -> ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName() + "_fallback", subsection)))
       .ifPresent(predicateButton::setFallbackButton);
 
+    checked = new ConcurrentSkipListSet<>();
     applyRequirement(keys, this, checked, predicateButton);
     return predicateButton;
   }

@@ -28,4 +28,9 @@ public abstract class CommandAction extends BaseAction {
   protected String getFinalCommand(UUID uuid) {
     return CommandUtil.normalizeCommand(getReplacedString(uuid));
   }
+
+  @Override
+  protected boolean shouldBeTrimmed() {
+    return true;
+  }
 }

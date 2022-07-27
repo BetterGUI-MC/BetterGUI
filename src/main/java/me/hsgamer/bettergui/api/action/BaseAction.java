@@ -20,7 +20,7 @@ public abstract class BaseAction implements Action {
    */
   protected BaseAction(ActionBuilder.Input input) {
     this.menu = input.menu;
-    this.string = input.name;
+    this.string = input.value;
     this.canBeReplaced = menu.canBeReplaced(string);
   }
 
@@ -32,7 +32,20 @@ public abstract class BaseAction implements Action {
    * @return the replaced string
    */
   protected String getReplacedString(UUID uuid) {
-    return canBeReplaced ? menu.replace(string, uuid) : string;
+    String replaced = canBeReplaced ? menu.replace(string, uuid) : string;
+    if (shouldBeTrimmed()) {
+      replaced = replaced.trim();
+    }
+    return replaced;
+  }
+
+  /**
+   * Check if the string should be trimmed
+   *
+   * @return true if it should
+   */
+  protected boolean shouldBeTrimmed() {
+    return false;
   }
 
   @Override

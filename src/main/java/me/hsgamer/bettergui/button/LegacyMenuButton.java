@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class LegacyMenuButton extends BaseWrappedButton {
-  private final Set<UUID> checked = new ConcurrentSkipListSet<>();
+  private Set<UUID> checked;
 
   public LegacyMenuButton(ButtonBuilder.Input input) {
     super(input);
@@ -24,6 +24,7 @@ public class LegacyMenuButton extends BaseWrappedButton {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
     WrappedSimpleButton simpleButton = new WrappedSimpleButton(new ButtonBuilder.Input(getMenu(), getName(), section));
     PredicateButton predicateButton = new PredicateButton(simpleButton);
+    checked = new ConcurrentSkipListSet<>();
     WrappedPredicateButton.applyRequirement(keys, this, checked, predicateButton);
     return predicateButton;
   }
