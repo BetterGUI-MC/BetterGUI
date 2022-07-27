@@ -14,9 +14,11 @@ public class MessageConfig extends AnnotatedConfig {
   public final @ConfigPath("player-only") String playerOnly;
   public final @ConfigPath("success") String success;
   public final @ConfigPath("menu-required") String menuRequired;
+  public final @ConfigPath("invalid-number") String invalidNumber;
   public final @ConfigPath("menu-not-found") String menuNotFound;
   public final @ConfigPath("player-not-found") String playerNotFound;
   public final @ConfigPath("empty-arg-value") String emptyArgValue;
+  public final @ConfigPath("have-met-requirement-placeholder") String haveMetRequirementPlaceholder;
 
   public MessageConfig(Plugin plugin) {
     super(new BukkitConfig(plugin, "messages.yml"));
@@ -26,8 +28,10 @@ public class MessageConfig extends AnnotatedConfig {
     playerOnly = "&cYou must be a player to do this";
     success = "&aSuccess";
     menuRequired = "&cYou should specify a menu";
+    invalidNumber = "&cError converting! {input} is not a valid number";
     menuNotFound = "&cThat menu does not exist";
     playerNotFound = "&cThe player is not found. Maybe he is offline or didn't join your server";
     emptyArgValue = "/empty/";
+    haveMetRequirementPlaceholder = "Yes";
   }
 }

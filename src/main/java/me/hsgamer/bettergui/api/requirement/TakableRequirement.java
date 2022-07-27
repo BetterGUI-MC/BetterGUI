@@ -6,6 +6,8 @@ import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * The requirement that can take something
@@ -52,6 +54,20 @@ public abstract class TakableRequirement<V> extends BaseRequirement<V> {
       } else {
         process.next();
       }
+    });
+  }
+
+  /**
+   * Get the success result with the conditional "take" state
+   *
+   * @param applier the applier
+   *
+   * @return the success result
+   */
+  public Result successConditional(Consumer<UUID> applier) {
+    return successConditional((uuid, process) -> {
+      applier.accept(uuid);
+      process.next();
     });
   }
 

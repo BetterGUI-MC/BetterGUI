@@ -2,6 +2,9 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
+import me.hsgamer.bettergui.requirement.type.CooldownRequirement;
+import me.hsgamer.bettergui.requirement.type.LevelRequirement;
+import me.hsgamer.bettergui.requirement.type.PermissionRequirement;
 import me.hsgamer.hscore.builder.MassBuilder;
 
 import java.util.function.Function;
@@ -16,6 +19,9 @@ public final class RequirementBuilder extends MassBuilder<RequirementBuilder.Inp
    * The instance of the requirement builder
    */
   private RequirementBuilder() {
+    register(LevelRequirement::new, "level");
+    register(PermissionRequirement::new, "permission");
+    register(CooldownRequirement::new, "cooldown");
   }
 
   /**

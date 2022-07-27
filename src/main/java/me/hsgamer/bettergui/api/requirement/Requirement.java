@@ -4,6 +4,7 @@ import me.hsgamer.bettergui.api.menu.MenuElement;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * The requirement
@@ -61,6 +62,29 @@ public interface Requirement extends MenuElement {
     }
 
     /**
+     * Create a success result
+     *
+     * @param applier the action if the requirement is met
+     *
+     * @return the result
+     */
+    public static Result success(Consumer<UUID> applier) {
+      return new Result(true, (uuid, process) -> {
+        applier.accept(uuid);
+        process.next();
+      });
+    }
+
+    /**
+     * Create a success result
+     *
+     * @return the result
+     */
+    public static Result success() {
+      return new Result(true, (uuid, process) -> process.next());
+    }
+
+    /**
      * Create a failure result
      *
      * @param applier the action if the requirement is not met
@@ -72,12 +96,17 @@ public interface Requirement extends MenuElement {
     }
 
     /**
-     * Create a success result
+     * Create a failure result
+     *
+     * @param applier the action if the requirement is not met
      *
      * @return the result
      */
-    public static Result success() {
-      return new Result(true, (uuid, process) -> process.next());
+    public static Result fail(Consumer<UUID> applier) {
+      return new Result(false, (uuid, process) -> {
+        applier.accept(uuid);
+        process.next();
+      });
     }
 
     /**
