@@ -160,17 +160,6 @@ permission:
       - 'message will be displayed.'
     ID: iron bars
 
-condition:
-  NAME: '&aCondition'
-  LORE:
-    - 'The command will run when the level is higher than 5.'
-  ID: grass
-  COMMAND:
-    - "condition: {level} > 5"
-    - "tell: &aYou did it"
-  POSITION-X: 3
-  POSITION-Y: 3
-
 test-per-click-command:
   COMMAND:
     LEFT: 'tell: &cYou left-clicked'
@@ -266,33 +255,6 @@ advanced_cooldown:
       fail-command:
         - "tell: &cCalm down"
 
-list-icon:
-  type: list
-  position-x: 9
-  position-y: 3
-  child:
-    world:
-      type: predicate
-      button:
-        id: grass
-        name: "&aYou are in {world}"
-      view-requirement:
-        condition:
-          condition: STREQIC("{world_env}", "normal")
-    nether:
-      type: predicate
-      button:
-        id: netherrack
-        name: "&cYou are in {world}"
-      view-requirement:
-        condition:
-          condition: STREQIC("{world_env}", "nether")
-    unknown:
-      id: bedrock
-      name: "&cYou are in {world}"
-      lore:
-        - "&cUnknown world"
-
 test-view-requirement:
   type: predicate
   position-x: 1
@@ -330,39 +292,6 @@ animated-icon:
       lore:
         - "This is part of an animated icon"
 
-requirement-set:
-  position-x: 3
-  position-y: 4
-  type: predicate
-  button:
-    id: paper
-    name: "&eRequirement Set"
-    lore:
-      - "&aYou can use this icon if you meets one of the requirements: "
-      - "&f- In the overworld"
-      - "&f- In the nether and the level is higher than 10"
-      - "&f- Have the permission 'bettergui.testset'"
-    command: "tell: &aYou did it"
-  click-requirement:
-    default:
-      world:
-        condition: STREQIC("{world_env}", "normal")
-        success-command:
-          - "tell: &aYou are in the overworld"
-      nether_world:
-        condition: STREQIC("{world_env}", "nether")
-        level:
-          value: 10
-          take: false
-        success-command:
-          - "tell: &aYou are in nether"
-      permission:
-        permission: bettergui.testset
-        success-command:
-          - "tell: &aYou have the permission"
-      fail-command:
-        - "tell: &cTry again later"
-
 skull:
   position-x: 4
   position-y: 4
@@ -370,8 +299,6 @@ skull:
   id: player_head
   skull: "HSGamer"
   #skull: "7acc67dc-8b84-4f8d-b7ad-ec81e758f5a1"
-  #skull: "http://textures.minecraft.net/texture/ffcdae586b52403b92b1857ee4331bac636af08bab92ba5750a54a83331a6353"
-  #skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmZjZGFlNTg2YjUyNDAzYjkyYjE4NTdlZTQzMzFiYWM2MzZhZjA4YmFiOTJiYTU3NTBhNTRhODMzMzFhNjM1MyJ9fX0="
 
 per-player-skull:
   position-x: 5
