@@ -71,6 +71,7 @@ public final class BetterGUI extends BasePlugin {
     PluginVariableManager.registerDefaultVariables();
     mainConfig.setup();
     messageConfig.setup();
+    templateButtonConfig.setup();
   }
 
   @Override
