@@ -19,7 +19,7 @@ public class PlayerAction extends CommandAction {
     Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
-        player.chat(getReplacedString(uuid));
+        player.chat(getFinalCommand(uuid));
       }
       process.next();
     });
