@@ -1,4 +1,5 @@
 menu-settings:
+  menu-type: addon
   name: '&c&lAddon Downloader'
   rows: 3
   command:
