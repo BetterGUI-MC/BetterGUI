@@ -14,10 +14,16 @@ import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
 import me.hsgamer.hscore.task.BatchRunnable;
 import me.hsgamer.hscore.variable.VariableManager;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.DrilldownPie;
 import org.bukkit.Bukkit;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -65,6 +71,23 @@ public final class BetterGUI extends BasePlugin {
   public void preLoad() {
     instance = this;
     MessageUtils.setPrefix(() -> messageConfig.prefix);
+
+    if (getDescription().getVersion().contains("SNAPSHOT")) {
+      getLogger().warning("You are using the development version");
+      getLogger().warning("This is not ready for production");
+      getLogger().warning("Use in your own risk");
+    } else {
+      new SpigotVersionChecker(75620).getVersion().thenAccept(output -> {
+        if (output.startsWith("Error when getting version:")) {
+          getLogger().warning(output);
+        } else if (this.getDescription().getVersion().equalsIgnoreCase(output)) {
+          getLogger().info("You are using the latest version");
+        } else {
+          getLogger().warning("There is an available update");
+          getLogger().warning("New Version: " + output);
+        }
+      });
+    }
   }
 
   @Override
@@ -102,6 +125,17 @@ public final class BetterGUI extends BasePlugin {
     addonManager.enableAddons();
     menuManager.loadMenuConfig();
     addonManager.callPostEnable();
+
+    if (mainConfig.metrics) {
+      Metrics metrics = new Metrics(this, 6609);
+      metrics.addCustomChart(new DrilldownPie("addon", () -> {
+        Map<String, Map<String, Integer>> map = new HashMap<>();
+        Map<String, Integer> addons = addonManager.getAddonCount();
+        map.put(String.valueOf(addons.size()), addons);
+        return map;
+      }));
+      metrics.addCustomChart(new AdvancedPie("addon_count", addonManager::getAddonCount));
+    }
   }
 
   @Override

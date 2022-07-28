@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 public class MainConfig extends AnnotatedConfig {
   public final @ConfigPath("default-menu-type") String defaultMenuType;
   public final @ConfigPath("default-button-type") String defaultButtonType;
+  public final @ConfigPath("metrics") boolean metrics;
   public final @ConfigPath("replace-all-variables-each-check") boolean replaceAllVariables;
   public final @ConfigPath("forced-update-inventory") boolean forcedUpdateInventory;
   public final @ConfigPath("use-modern-click-type") boolean modernClickType;
@@ -23,6 +24,7 @@ public class MainConfig extends AnnotatedConfig {
 
     defaultMenuType = "simple";
     defaultButtonType = "simple";
+    metrics = true;
     replaceAllVariables = true;
     forcedUpdateInventory = false;
     modernClickType = false;

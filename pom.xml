@@ -61,6 +61,12 @@
                   <pattern>me.hsgamer.hscore</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.core</shadedPattern>
                 </relocation>
+
+                <!-- bStats -->
+                <relocation>
+                  <pattern>org.bstats</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.bstats</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>
@@ -206,6 +212,11 @@
       <artifactId>hscore-bukkit-addon</artifactId>
       <version>${core.version}</version>
     </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-checker-spigotmc</artifactId>
+      <version>${core.version}</version>
+    </dependency>
 
     <!-- Annotations -->
     <dependency>
@@ -213,6 +224,14 @@
       <artifactId>annotations</artifactId>
       <version>23.0.0</version>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- bStats -->
+    <dependency>
+      <groupId>org.bstats</groupId>
+      <artifactId>bstats-bukkit</artifactId>
+      <version>3.0.0</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
