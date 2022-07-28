@@ -10,7 +10,7 @@ public class AddonDownloader extends Downloader {
     super(
       new JsonDownloadInfoLoader("https://raw.githubusercontent.com/BetterGUI-MC/Addon-List/master/addons.json"),
       new WebInputStreamLoader(),
-      plugin.getAddonDownloader().getFolder()
+      plugin.getAddonManager().getAddonsDir()
     );
   }
 }
