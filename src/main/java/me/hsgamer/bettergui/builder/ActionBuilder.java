@@ -74,9 +74,16 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
       .stream()
       .flatMap(string -> {
         String[] split = string.split(":", 2);
-        String name = split[0];
-        String value = split.length > 1 ? split[1] : "";
-        value = value.startsWith(" ") ? value.substring(1) : value;
+        String name;
+        String value;
+        if (split.length > 1) {
+          name = split[0];
+          value = split[1];
+          value = value.startsWith(" ") ? value.substring(1) : value;
+        } else {
+          name = "player";
+          value = split[0];
+        }
         return build(new Input(menu, name.trim(), value)).map(Stream::of).orElseGet(Stream::empty);
       })
       .collect(Collectors.toList());
