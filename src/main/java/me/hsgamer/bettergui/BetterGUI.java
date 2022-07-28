@@ -7,6 +7,7 @@ import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.config.TemplateButtonConfig;
 import me.hsgamer.bettergui.listener.AlternativeCommandListener;
+import me.hsgamer.bettergui.manager.ExtraAddonManager;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginVariableManager;
@@ -29,6 +30,7 @@ public final class BetterGUI extends BasePlugin {
   private final TemplateButtonConfig templateButtonConfig = new TemplateButtonConfig(this);
   private final MenuManager menuManager = new MenuManager(this);
   private final MenuCommandManager menuCommandManager = new MenuCommandManager(this);
+  private final ExtraAddonManager addonManager = new ExtraAddonManager(this);
 
   /**
    * Get the instance of the plugin
@@ -85,8 +87,11 @@ public final class BetterGUI extends BasePlugin {
       registerListener(new AlternativeCommandListener(this));
     }
 
+    addonManager.loadAddons();
+
     registerCommand(new OpenCommand(this));
     registerCommand(new MainCommand(this));
+    registerCommand(new GetAddonsCommand(this));
     registerCommand(new ReloadCommand(this));
     registerCommand(new GetVariablesCommand());
     registerCommand(new GetTemplateButtonsCommand(this));
@@ -94,7 +99,9 @@ public final class BetterGUI extends BasePlugin {
 
   @Override
   public void postEnable() {
+    addonManager.enableAddons();
     menuManager.loadMenuConfig();
+    addonManager.callPostEnable();
   }
 
   @Override
@@ -156,5 +163,14 @@ public final class BetterGUI extends BasePlugin {
    */
   public MenuCommandManager getMenuCommandManager() {
     return menuCommandManager;
+  }
+
+  /**
+   * Get the addon manager
+   *
+   * @return the addon manager
+   */
+  public ExtraAddonManager getAddonManager() {
+    return addonManager;
   }
 }

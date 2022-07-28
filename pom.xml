@@ -201,6 +201,19 @@
       <artifactId>hscore-bukkit-clicktype</artifactId>
       <version>${core.version}</version>
     </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-bukkit-addon</artifactId>
+      <version>${core.version}</version>
+    </dependency>
+
+    <!-- Annotations -->
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>23.0.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <distributionManagement>
