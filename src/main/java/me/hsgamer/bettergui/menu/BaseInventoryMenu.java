@@ -237,5 +237,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
 
   protected abstract B createButtonMap(Config config);
 
-  protected abstract void refreshButtonMapOnCreate(B buttonMap, UUID uuid);
+  protected void refreshButtonMapOnCreate(B buttonMap, UUID uuid) {
+    // EMPTY
+  }
 }

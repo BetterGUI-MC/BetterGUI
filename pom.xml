@@ -14,7 +14,7 @@
   <description>Yet Another GUI plugin</description>
   <properties>
     <java.version>1.8</java.version>
-    <core.version>4.1.9</core.version>
+    <core.version>4.1.10</core.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.mainClass>me.hsgamer.bettergui.BetterGUI</project.mainClass>
   </properties>
@@ -215,6 +215,33 @@
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-checker-spigotmc</artifactId>
+      <version>${core.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.googlecode.json-simple</groupId>
+          <artifactId>json-simple</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-downloader-core</artifactId>
+      <version>${core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-downloader-json</artifactId>
+      <version>${core.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.googlecode.json-simple</groupId>
+          <artifactId>json-simple</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-downloader-web-stream</artifactId>
       <version>${core.version}</version>
     </dependency>
 

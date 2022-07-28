@@ -6,6 +6,7 @@ import me.hsgamer.bettergui.command.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.config.TemplateButtonConfig;
+import me.hsgamer.bettergui.downloader.AddonDownloader;
 import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.bettergui.manager.ExtraAddonManager;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
@@ -37,6 +38,7 @@ public final class BetterGUI extends BasePlugin {
   private final MenuManager menuManager = new MenuManager(this);
   private final MenuCommandManager menuCommandManager = new MenuCommandManager(this);
   private final ExtraAddonManager addonManager = new ExtraAddonManager(this);
+  private final AddonDownloader addonDownloader = new AddonDownloader(this);
 
   /**
    * Get the instance of the plugin
@@ -97,6 +99,7 @@ public final class BetterGUI extends BasePlugin {
     mainConfig.setup();
     messageConfig.setup();
     templateButtonConfig.setup();
+    addonDownloader.setup();
   }
 
   @Override
@@ -206,5 +209,14 @@ public final class BetterGUI extends BasePlugin {
    */
   public ExtraAddonManager getAddonManager() {
     return addonManager;
+  }
+
+  /**
+   * Get the addon downloader
+   *
+   * @return the addon downloader
+   */
+  public AddonDownloader getAddonDownloader() {
+    return addonDownloader;
   }
 }

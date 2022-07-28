@@ -1,0 +1,18 @@
+menu-settings:
+  name: '&c&lAddon Downloader'
+  rows: 3
+  command:
+    - addondownloader
+    - addondl
+  auto-refresh: 5
+
+button:
+  material: redstone
+  name: "&f{name} &c- &4{version}"
+  lore:
+    - "&f{description}"
+    - "&fAuthors: &e{author}"
+    - ""
+    - "&bLeft click &fto download"
+    - "&bRight click &fto get the source code"
+    - "&bMiddle click &fto see the wiki"

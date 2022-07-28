@@ -17,7 +17,6 @@ public final class Permissions {
   public static final Permission VARIABLE = new Permission(PREFIX + ".variable", PermissionDefault.OP);
   public static final Permission TEMPLATE_BUTTON = new Permission(PREFIX + ".templatebuttons", PermissionDefault.OP);
   public static final Permission OPEN_MENU_BYPASS = new Permission(PREFIX + ".openmenu.bypass", PermissionDefault.OP);
-  public static final Permission ADDON_DOWNLOADER = new Permission(PREFIX + ".addons.downloader", PermissionDefault.OP);
 
   private Permissions() {
 
@@ -31,7 +30,6 @@ public final class Permissions {
     getPluginManager().addPermission(VARIABLE);
     getPluginManager().addPermission(TEMPLATE_BUTTON);
     getPluginManager().addPermission(OPEN_MENU_BYPASS);
-    getPluginManager().addPermission(ADDON_DOWNLOADER);
   }
 
   public static void unregister() {
@@ -42,6 +40,5 @@ public final class Permissions {
     getPluginManager().removePermission(VARIABLE);
     getPluginManager().removePermission(TEMPLATE_BUTTON);
     getPluginManager().removePermission(OPEN_MENU_BYPASS);
-    getPluginManager().removePermission(ADDON_DOWNLOADER);
   }
 }
