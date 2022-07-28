@@ -53,6 +53,7 @@ public final class MenuManager {
     File menusFolder = new File(plugin.getDataFolder(), "menu");
     if (!menusFolder.exists() && menusFolder.mkdirs()) {
       plugin.saveResource("menu" + File.separator + "example.yml", false);
+      plugin.saveResource("menu" + File.separator + "addondownloader.yml", false);
     }
     LinkedList<File> files = new LinkedList<>();
     files.add(menusFolder);
