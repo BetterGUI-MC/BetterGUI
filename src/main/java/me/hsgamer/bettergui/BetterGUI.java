@@ -2,7 +2,7 @@ package me.hsgamer.bettergui;
 
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
-import me.hsgamer.bettergui.command.OpenCommand;
+import me.hsgamer.bettergui.command.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.config.TemplateButtonConfig;
@@ -86,6 +86,10 @@ public final class BetterGUI extends BasePlugin {
     }
 
     registerCommand(new OpenCommand(this));
+    registerCommand(new MainCommand(this));
+    registerCommand(new ReloadCommand(this));
+    registerCommand(new GetVariablesCommand());
+    registerCommand(new GetTemplateButtonsCommand(this));
   }
 
   @Override
