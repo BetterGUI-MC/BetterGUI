@@ -35,7 +35,7 @@ default-icon:
 ######################
 # Note that the nodes is case-insensitive (except some sub-nodes)
 # You can use lowercase or uppercase whatever you want
-spawncmd:
+spawn-cmd:
   COMMAND: 'spawn'
   NAME: '&u/spawn'
   LORE:
