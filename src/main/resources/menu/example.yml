@@ -176,7 +176,7 @@ test-per-click-command:
     - 'You middle-click'
     - 'And you get different messages.'
   ID: redstone_block
-  POSITION-X: 4
+  POSITION-X: 3
   POSITION-Y: 3
 
 test-delay-command:
@@ -188,7 +188,7 @@ test-delay-command:
   LORE:
     - 'This is a test of delay command.'
   ID: clock
-  POSITION-X: 5
+  POSITION-X: 4
   POSITION-Y: 3
 
 # Simple Cooldown Example
@@ -206,7 +206,7 @@ cooldown:
         cooldown: 10
       fail-command:
         - "tell: &cWait until the cooldown is finished"
-  POSITION-X: 6
+  POSITION-X: 5
   POSITION-Y: 3
 
 enchanted-sword-flag:
@@ -218,12 +218,12 @@ enchanted-sword-flag:
     - "durability, 1"
   FLAG:
     - HIDE_ENCHANTS
-  POSITION-X: 7
+  POSITION-X: 6
   POSITION-Y: 3
 
 # Advanced Cooldown Example
 advanced_cooldown:
-  POSITION-X: 8
+  POSITION-X: 7
   POSITION-Y: 3
   type: predicate
   button:
@@ -257,8 +257,8 @@ advanced_cooldown:
 
 test-view-requirement:
   type: predicate
-  position-x: 1
-  position-y: 4
+  position-x: 8
+  position-y: 3
   button:
     id: exp_bottle
     name: "&cA exp bottle"
@@ -271,8 +271,8 @@ test-view-requirement:
         take: false
 
 animated-icon:
-  position-x: 2
-  position-y: 4
+  position-x: 9
+  position-y: 3
   type: animated
   update: 5
   child:
@@ -293,7 +293,7 @@ animated-icon:
         - "This is part of an animated icon"
 
 skull:
-  position-x: 4
+  position-x: 1
   position-y: 4
   name: "&bSkull"
   id: player_head
@@ -301,14 +301,14 @@ skull:
   #skull: "7acc67dc-8b84-4f8d-b7ad-ec81e758f5a1"
 
 per-player-skull:
-  position-x: 5
+  position-x: 2
   position-y: 4
   name: "&bPer Player Skulls"
   id: player_head
   skull: "{player}"
 
 potion:
-  position-x: 6
+  position-x: 3
   position-y: 4
   name: "&bPotion"
   id: potion
@@ -318,7 +318,7 @@ potion:
 
 test-xp-template:
   type: template
-  position-x: 7
+  position-x: 4
   position-y: 4
   template: test-xp
   variable:
@@ -326,7 +326,7 @@ test-xp-template:
 
 test-xp-list-template:
   type: list
-  position-x: 8
+  position-x: 5
   position-y: 4
   child:
     test-xp-50:
@@ -364,6 +364,30 @@ test-xp-list-template:
       template: test-xp
       variable:
         xp: 10
+
+colored-leather-chestplate:
+  id: leather_chestplate
+  name: "&aColored Leather Chestplate"
+  lore:
+    - "This is a colored leather chestplate"
+  nbt:
+    display:
+      color: 16175144
+  #nbt: "{display:{color:16175144}}"
+  position-x: 6
+  position-y: 4
+
+custom-model-chestplate:
+  id: leather_chestplate
+  name: "&aCustom Model Chestplate"
+  lore:
+    - "This is a custom model chestplate"
+  nbt:
+    CustomModelData: 104230
+  #nbt: "{CustomModelData:104230}"
+  position-x: 7
+  position-y: 4
+
 
 multi-slot:
   slot: 0-8,45,46,47-52
