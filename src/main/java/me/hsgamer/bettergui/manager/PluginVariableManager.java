@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.manager;
 
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
@@ -144,5 +146,17 @@ public class PluginVariableManager {
 
     // UUID
     register("uuid", (original, uuid) -> !original.isEmpty() ? null : uuid.toString());
+
+    // Menu Variables
+    register("menu_", (original, uuid) -> {
+      String[] split = original.split("_", 2);
+      String menuName = split[0].trim();
+      String variable = split.length > 1 ? split[1].trim() : "";
+      Menu menu = BetterGUI.getInstance().getMenuManager().getMenu(menuName);
+      if (menu == null) {
+        return null;
+      }
+      return menu.getVariableManager().setVariables("{" + variable + "}", uuid);
+    });
   }
 }

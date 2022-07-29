@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.api.menu;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.ExternalStringReplacer;
+import me.hsgamer.hscore.variable.InstanceVariableManager;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
 
@@ -15,6 +16,7 @@ public abstract class Menu {
 
   protected final Config config;
   private final Map<UUID, Menu> parentMenu = new HashMap<>();
+  private final InstanceVariableManager variableManager = new InstanceVariableManager();
   private final List<ExternalStringReplacer> stringReplacers = new ArrayList<>();
 
   /**
@@ -24,37 +26,24 @@ public abstract class Menu {
    */
   protected Menu(Config config) {
     this.config = config;
-    stringReplacers.add(new ExternalStringReplacer() {
-      private static final String CURRENT_MENU_VARIABLE = "{current-menu}";
+    variableManager.register("current-menu", (original, uuid) -> getName());
+    variableManager.register("parent-menu", (original, uuid) -> getParentMenu(uuid).map(Menu::getName).orElse(""));
 
+    stringReplacers.add(new ExternalStringReplacer() {
       @Override
       public boolean canBeReplaced(String string) {
-        return string.contains(CURRENT_MENU_VARIABLE);
+        return variableManager.hasVariables(string);
       }
 
       @Override
       public String replace(String original, UUID uuid) {
-        return original.replace(CURRENT_MENU_VARIABLE, getName());
-      }
-    });
-    stringReplacers.add(new ExternalStringReplacer() {
-      private static final String PARENT_NAME_VARIABLE = "{parent-menu}";
-
-      @Override
-      public boolean canBeReplaced(String string) {
-        return string.contains(PARENT_NAME_VARIABLE);
-      }
-
-      @Override
-      public String replace(String original, UUID uuid) {
-        String parentMenuName = getParentMenu(uuid).map(Menu::getName).orElse("");
-        return original.replace(PARENT_NAME_VARIABLE, parentMenuName);
+        return variableManager.setVariables(original, uuid);
       }
     });
     stringReplacers.add(new ExternalStringReplacer() {
       @Override
       public boolean canBeReplaced(String string) {
-        return VariableManager.hasVariables(string);
+        return variableManager.hasVariables(string);
       }
 
       @Override
@@ -80,6 +69,15 @@ public abstract class Menu {
    */
   public Config getConfig() {
     return config;
+  }
+
+  /**
+   * Get the variable manager
+   *
+   * @return the variable manager
+   */
+  public InstanceVariableManager getVariableManager() {
+    return variableManager;
   }
 
   /**
