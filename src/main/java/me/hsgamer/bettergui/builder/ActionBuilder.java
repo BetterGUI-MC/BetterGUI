@@ -45,7 +45,7 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
     register(new Element<Input, Action>() {
       @Override
       public boolean canBuild(Input input) {
-        String action = input.name;
+        String action = input.type;
         for (String s : type) {
           if (action.equalsIgnoreCase(s)) {
             return true;
@@ -74,29 +74,29 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
       .stream()
       .flatMap(string -> {
         String[] split = string.split(":", 2);
-        String name;
+        String type;
         String value;
         if (split.length > 1) {
-          name = split[0];
+          type = split[0];
           value = split[1];
           value = value.startsWith(" ") ? value.substring(1) : value;
         } else {
-          name = "player";
+          type = "player";
           value = split[0];
         }
-        return build(new Input(menu, name.trim(), value)).map(Stream::of).orElseGet(Stream::empty);
+        return build(new Input(menu, type.trim(), value)).map(Stream::of).orElseGet(Stream::empty);
       })
       .collect(Collectors.toList());
   }
 
   public static class Input {
     public final Menu menu;
-    public final String name;
+    public final String type;
     public final String value;
 
-    public Input(Menu menu, String name, String value) {
+    public Input(Menu menu, String type, String value) {
       this.menu = menu;
-      this.name = name;
+      this.type = type;
       this.value = value;
     }
   }
