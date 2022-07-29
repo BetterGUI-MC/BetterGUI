@@ -89,11 +89,21 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
       .collect(Collectors.toList());
   }
 
+  /**
+   * The input for the action builder
+   */
   public static class Input {
     public final Menu menu;
     public final String type;
     public final String value;
 
+    /**
+     * Create a new input
+     *
+     * @param menu  the menu
+     * @param type  the type of the action
+     * @param value the value of the action
+     */
     public Input(Menu menu, String type, String value) {
       this.menu = menu;
       this.type = type;

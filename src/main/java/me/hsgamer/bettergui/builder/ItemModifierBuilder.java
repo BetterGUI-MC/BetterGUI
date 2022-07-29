@@ -17,14 +17,14 @@ public class ItemModifierBuilder extends MassBuilder<Map.Entry<String, Object>, 
   /**
    * The instance of the item modifier builder
    */
-  public static ItemModifierBuilder INSTANCE = new ItemModifierBuilder();
+  public static final ItemModifierBuilder INSTANCE = new ItemModifierBuilder();
 
   private ItemModifierBuilder() {
     register(NameModifier::new, "name");
     register(LoreModifier::new, "lore");
     register(AmountModifier::new, "amount");
     register(DurabilityModifier::new, "durability", "damage");
-    register(MaterialModifier::new, "material", "id", "mat");
+    register(MaterialModifier::new, "material", "id", "mat", "raw-material", "raw-id", "raw-mat");
     register(EnchantmentModifier::new, "enchantment", "enchant", "enc");
     register(ItemFlagModifier::new, "flag", "item-flags", "itemflag", "itemflags", "item-flag");
     register(SkullModifier::new, "skull", "head", "skull-owner");

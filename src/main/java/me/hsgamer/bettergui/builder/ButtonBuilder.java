@@ -88,11 +88,21 @@ public final class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, Wrappe
       .collect(Collectors.toList());
   }
 
+  /**
+   * The input for the button builder
+   */
   public static class Input {
     public final Menu menu;
     public final String name;
     public final Map<String, Object> options;
 
+    /**
+     * Create a new input
+     *
+     * @param menu    the menu
+     * @param name    the name of the button
+     * @param options the options of the button
+     */
     public Input(Menu menu, String name, Map<String, Object> options) {
       this.menu = menu;
       this.name = name;
