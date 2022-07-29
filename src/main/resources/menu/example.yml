@@ -230,10 +230,10 @@ advanced_cooldown:
     id: paper
     name: '&cCooldown'
     lore:
-      - '&eLEFT: &f{menu_{current-menu}_button_advanced_cooldown_click_left_reqset_test_cooldown}'
-      - '&eRIGHT: &f{menu_{current-menu}_button_advanced_cooldown_click_right_reqset_test_cooldown}'
-      - '&eMIDDLE: &f{menu_{current-menu}_button_advanced_cooldown_click_middle_reqset_test_cooldown}'
-      - '&eDEFAULT: &f{menu_{current-menu}_button_advanced_cooldown_click_default_reqset_test_cooldown}'
+      - '&eLEFT: &f{button_advanced_cooldown_click_left_reqset_test_cooldown}'
+      - '&eRIGHT: &f{button_advanced_cooldown_click_right_reqset_test_cooldown}'
+      - '&eMIDDLE: &f{button_advanced_cooldown_click_middle_reqset_test_cooldown}'
+      - '&eDEFAULT: &f{button_advanced_cooldown_click_default_reqset_test_cooldown}'
     command:
       LEFT: 'tell: &cYou left-clicked'
       RIGHT: 'tell: &cYou right-clicked'
