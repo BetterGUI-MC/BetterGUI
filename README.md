@@ -7,8 +7,6 @@
 * From Simple to Complex
 * Many types of buttons
 * Many types of item modifiers
-* Support for custom requirements
-* Support for PlaceholderAPI
 * Arguments in menus
 * Addons and Addon Downloader
 
