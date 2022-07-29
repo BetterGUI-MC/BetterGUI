@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  * @param <V> the type of the final value
  */
 public abstract class TakableRequirement<V> extends BaseRequirement<V> {
-  private boolean take = getDefaultTake();
+  private boolean take;
 
   /**
    * Create a new requirement
@@ -24,6 +24,19 @@ public abstract class TakableRequirement<V> extends BaseRequirement<V> {
    */
   protected TakableRequirement(RequirementBuilder.Input input) {
     super(input);
+  }
+
+  @Override
+  protected Object handleValue(Object inputValue) {
+    if (inputValue instanceof Map) {
+      //noinspection unchecked
+      Map<String, Object> keys = new CaseInsensitiveStringMap<>((Map<String, Object>) inputValue);
+      this.take = Optional.ofNullable(keys.get("take")).map(String::valueOf).map(Boolean::parseBoolean).orElse(getDefaultTake());
+      return super.handleValue(Optional.ofNullable(keys.get("value")).orElse(getDefaultValue()));
+    } else {
+      this.take = getDefaultTake();
+      return super.handleValue(inputValue);
+    }
   }
 
   /**
@@ -69,17 +82,5 @@ public abstract class TakableRequirement<V> extends BaseRequirement<V> {
       applier.accept(uuid);
       process.next();
     });
-  }
-
-  @Override
-  protected Object handleValue(Object inputValue) {
-    if (inputValue instanceof Map) {
-      //noinspection unchecked
-      Map<String, Object> keys = new CaseInsensitiveStringMap<>((Map<String, Object>) inputValue);
-      this.take = Optional.ofNullable(keys.get("take")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.take);
-      return Optional.ofNullable(keys.get("value")).orElse(getDefaultValue());
-    } else {
-      return super.handleValue(inputValue);
-    }
   }
 }
