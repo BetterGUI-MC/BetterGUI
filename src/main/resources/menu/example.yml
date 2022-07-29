@@ -307,18 +307,9 @@ per-player-skull:
   id: player_head
   skull: "{player}"
 
-potion:
-  position-x: 3
-  position-y: 4
-  name: "&bPotion"
-  id: potion
-  potion:
-    - "SPEED"
-    - "WEAKNESS, 30, 1"
-
 test-xp-template:
   type: template
-  position-x: 4
+  position-x: 3
   position-y: 4
   template: test-xp
   variable:
@@ -326,7 +317,7 @@ test-xp-template:
 
 test-xp-list-template:
   type: list
-  position-x: 5
+  position-x: 4
   position-y: 4
   child:
     test-xp-50:
@@ -374,7 +365,7 @@ colored-leather-chestplate:
     display:
       color: 16175144
   #nbt: "{display:{color:16175144}}"
-  position-x: 6
+  position-x: 5
   position-y: 4
 
 custom-model-chestplate:
