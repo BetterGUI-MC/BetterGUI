@@ -73,23 +73,6 @@ public final class BetterGUI extends BasePlugin {
   public void preLoad() {
     instance = this;
     MessageUtils.setPrefix(() -> messageConfig.prefix);
-
-    if (getDescription().getVersion().contains("SNAPSHOT")) {
-      getLogger().warning("You are using the development version");
-      getLogger().warning("This is not ready for production");
-      getLogger().warning("Use in your own risk");
-    } else {
-      new SpigotVersionChecker(75620).getVersion().thenAccept(output -> {
-        if (output.startsWith("Error when getting version:")) {
-          getLogger().warning(output);
-        } else if (this.getDescription().getVersion().equalsIgnoreCase(output)) {
-          getLogger().info("You are using the latest version");
-        } else {
-          getLogger().warning("There is an available update");
-          getLogger().warning("New Version: " + output);
-        }
-      });
-    }
   }
 
   @Override
@@ -138,6 +121,23 @@ public final class BetterGUI extends BasePlugin {
         return map;
       }));
       metrics.addCustomChart(new AdvancedPie("addon_count", addonManager::getAddonCount));
+    }
+
+    if (getDescription().getVersion().contains("SNAPSHOT")) {
+      getLogger().warning("You are using the development version");
+      getLogger().warning("This is not ready for production");
+      getLogger().warning("Use in your own risk");
+    } else {
+      new SpigotVersionChecker(75620).getVersion().thenAccept(output -> {
+        if (output.startsWith("Error when getting version:")) {
+          getLogger().warning(output);
+        } else if (this.getDescription().getVersion().equalsIgnoreCase(output)) {
+          getLogger().info("You are using the latest version");
+        } else {
+          getLogger().warning("There is an available update");
+          getLogger().warning("New Version: " + output);
+        }
+      });
     }
   }
 
