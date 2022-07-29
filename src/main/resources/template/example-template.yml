@@ -7,7 +7,14 @@ test-xp:
     - ""
     - "&fThis is a test template button"
     - "&fLevel: {level}"
-  command: "console: xp {xp} {player}"
+  click-requirement:
+    default:
+      old-version:
+        version: 13
+        success-action:
+          - "console: xp add {player} {xp} points"
+        fail-action:
+          - "console: xp {xp} {player}"
 
 test-xp-predicate:
   type: predicate
