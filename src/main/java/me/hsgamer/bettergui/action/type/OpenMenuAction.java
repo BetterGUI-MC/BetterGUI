@@ -44,7 +44,7 @@ public class OpenMenuAction extends BaseAction {
       } else {
         runnable = () -> getInstance().getMenuManager().openMenu(menu, player, finalArgs, false);
       }
-      getInstance().getServer().getScheduler().scheduleSyncDelayedTask(getInstance(), () -> {
+      getInstance().getServer().getScheduler().runTask(getInstance(), () -> {
         runnable.run();
         process.next();
       });

@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.action;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
@@ -75,7 +76,12 @@ public class ClickActionHandler {
     if (closeOnClick) {
       Optional.ofNullable(Bukkit.getPlayer(uuid))
         .ifPresent(player ->
-          batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(() -> menu.close(player))
+          batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process ->
+            Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
+              menu.close(player);
+              process.next();
+            })
+          )
         );
     }
   }
