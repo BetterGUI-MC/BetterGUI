@@ -2,7 +2,6 @@ package me.hsgamer.bettergui.menu;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
-import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
@@ -59,8 +58,8 @@ public class ArgumentMenu extends SimpleMenu {
     }
     this.minArgActionApplier = tempMinArgActionApplier;
 
-    PluginVariableManager.register("menu_" + getName() + "_merged_args", (original, uuid) -> Optional.ofNullable(argsPerPlayer.get(uuid)).map(args -> String.join(" ", args)).orElse(""));
-    PluginVariableManager.register("menu_" + getName() + "_arg_", (original, uuid) -> {
+    variableManager.register("merged_args", (original, uuid) -> Optional.ofNullable(argsPerPlayer.get(uuid)).map(args -> String.join(" ", args)).orElse(""));
+    variableManager.register("arg_", (original, uuid) -> {
       int index = argToIndexMap.getOrDefault(original, -1);
       if (argsPerPlayer.containsKey(uuid)) {
         String[] playerArgs = argsPerPlayer.get(uuid);

@@ -15,9 +15,9 @@ import java.util.*;
 public abstract class Menu {
 
   protected final Config config;
+  protected final InstanceVariableManager variableManager = new InstanceVariableManager();
+  protected final List<ExternalStringReplacer> stringReplacers = new ArrayList<>();
   private final Map<UUID, Menu> parentMenu = new HashMap<>();
-  private final InstanceVariableManager variableManager = new InstanceVariableManager();
-  private final List<ExternalStringReplacer> stringReplacers = new ArrayList<>();
 
   /**
    * Create a new menu

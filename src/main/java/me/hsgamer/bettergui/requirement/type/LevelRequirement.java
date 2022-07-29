@@ -3,7 +3,6 @@ package me.hsgamer.bettergui.requirement.type;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.requirement.TakableRequirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
-import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.Validate;
@@ -16,7 +15,7 @@ import java.util.UUID;
 public class LevelRequirement extends TakableRequirement<Integer> {
   public LevelRequirement(RequirementBuilder.Input input) {
     super(input);
-    PluginVariableManager.register(getName(), (original, uuid) -> {
+    getMenu().getVariableManager().register(getName(), (original, uuid) -> {
       Player player = Bukkit.getPlayer(uuid);
       if (player == null) {
         return "";

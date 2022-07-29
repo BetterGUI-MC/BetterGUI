@@ -27,12 +27,12 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMap> {
       //noinspection unchecked
       Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
       if (key.equalsIgnoreCase("default-icon") || key.equalsIgnoreCase("default-button")) {
-        ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "menu_" + getName() + "_button_" + key, values)).ifPresent(button -> {
+        ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "button_" + key, values)).ifPresent(button -> {
           button.init();
           buttonMap.setDefaultButton(button);
         });
       } else {
-        ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "menu_" + getName() + "_button_" + key, values)).ifPresent(button -> {
+        ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "button_" + key, values)).ifPresent(button -> {
           button.init();
           SlotUtil.getSlots(values).forEach(slot -> buttonMap.setButton(slot, button));
         });

@@ -3,7 +3,6 @@ package me.hsgamer.bettergui.requirement.type;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.requirement.BaseRequirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
-import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.Validate;
@@ -21,7 +20,7 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
 
   public CooldownRequirement(RequirementBuilder.Input input) {
     super(input);
-    PluginVariableManager.register(getName(), (original, uuid) -> {
+    getMenu().getVariableManager().register(getName(), (original, uuid) -> {
       long millis = getCooldown(uuid);
       millis = millis > 0 ? millis : 0;
 
