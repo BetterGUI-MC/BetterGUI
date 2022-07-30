@@ -4,3 +4,5 @@ main: ${project.mainClass}
 authors: [ HSGamer ]
 api-version: "1.13"
 description: ${project.description}
+softdepend:
+  - PlaceholderAPI

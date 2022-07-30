@@ -12,6 +12,7 @@ import me.hsgamer.bettergui.manager.ExtraAddonManager;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginVariableManager;
+import me.hsgamer.bettergui.papi.ExtraPlaceholderExpansion;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.gui.GUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
@@ -104,6 +105,12 @@ public final class BetterGUI extends BasePlugin {
     registerCommand(new ReloadCommand(this));
     registerCommand(new GetVariablesCommand());
     registerCommand(new GetTemplateButtonsCommand(this));
+
+    if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+      ExtraPlaceholderExpansion expansion = new ExtraPlaceholderExpansion();
+      expansion.register();
+      addDisableFunction(expansion::unregister);
+    }
   }
 
   @Override

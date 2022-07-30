@@ -8,6 +8,7 @@
 * Many types of buttons
 * Many types of item modifiers
 * Arguments in menus
+* Support for PlaceholderAPI
 * Addons and Addon Downloader
 
 ## Building
