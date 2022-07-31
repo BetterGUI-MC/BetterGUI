@@ -4,8 +4,8 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.requirement.BaseRequirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
-import me.hsgamer.hscore.bukkit.item.helper.VersionHelper;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.bukkit.utils.VersionUtils;
 import me.hsgamer.hscore.common.Validate;
 
 import java.math.BigDecimal;
@@ -29,6 +29,6 @@ public class VersionRequirement extends BaseRequirement<Integer> {
 
   @Override
   public Result check(UUID uuid) {
-    return VersionHelper.isAtLeast(getFinalValue(uuid)) ? Result.success() : Result.fail();
+    return VersionUtils.isAtLeast(getFinalValue(uuid)) ? Result.success() : Result.fail();
   }
 }
