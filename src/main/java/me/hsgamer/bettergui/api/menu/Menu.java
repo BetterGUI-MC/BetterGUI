@@ -43,7 +43,7 @@ public abstract class Menu {
     stringReplacers.add(new ExternalStringReplacer() {
       @Override
       public boolean canBeReplaced(String string) {
-        return variableManager.hasVariables(string);
+        return VariableManager.hasVariables(string);
       }
 
       @Override
