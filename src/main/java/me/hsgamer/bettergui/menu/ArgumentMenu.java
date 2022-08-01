@@ -19,12 +19,14 @@ public class ArgumentMenu extends SimpleMenu {
   private static final String ARGS = "args";
   private static final String MIN_ARGS_ACTION = "min-args-action";
   private static final String DEFAULT_ARGS = "default-args";
+  private static final String CLEAR_ARGS_ON_CLOSE = "clear-args-on-close";
 
   private final Map<UUID, String[]> argsPerPlayer = new ConcurrentHashMap<>();
   private final Map<String, Integer> argToIndexMap = new CaseInsensitiveStringHashMap<>();
   private final ActionApplier minArgActionApplier;
   private int minArgs = 0;
   private int registeredArgs = 0;
+  private boolean clearArgsOnClose = false;
   private String[] defaultArgs;
 
   public ArgumentMenu(Config config) {
@@ -47,6 +49,7 @@ public class ArgumentMenu extends SimpleMenu {
 
       this.minArgs = Optional.ofNullable(settings.get(MIN_ARGS)).map(String::valueOf).flatMap(Validate::getNumber).map(BigDecimal::intValue).orElse(this.minArgs);
       this.defaultArgs = Optional.ofNullable(settings.get(DEFAULT_ARGS)).map(String::valueOf).map(s -> s.split(" ")).orElse(this.defaultArgs);
+      this.clearArgsOnClose = Optional.ofNullable(settings.get(CLEAR_ARGS_ON_CLOSE)).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.clearArgsOnClose);
 
       Optional.ofNullable(settings.get(ARGS)).map(o -> CollectionUtils.createStringListFromObject(o, true)).ifPresent(list -> {
         this.registeredArgs = list.size();
@@ -100,7 +103,16 @@ public class ArgumentMenu extends SimpleMenu {
   }
 
   @Override
+  public void close(Player player) {
+    super.close(player);
+    if (clearArgsOnClose) {
+      argsPerPlayer.remove(player.getUniqueId());
+    }
+  }
+
+  @Override
   public void closeAll() {
+    super.closeAll();
     argsPerPlayer.clear();
     argToIndexMap.clear();
   }
