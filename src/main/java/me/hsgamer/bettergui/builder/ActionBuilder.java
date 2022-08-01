@@ -32,7 +32,7 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
     register(input -> new CloseMenuAction(input.menu), "close-menu", "closemenu");
     register(input -> new UpdateMenuAction(input.menu), "update-menu", "updatemenu");
     register(PermissionAction::new, "permission");
-    register(SoundAction::new, "sound");
+    register(SoundAction::new, "sound", "raw-sound");
   }
 
   /**

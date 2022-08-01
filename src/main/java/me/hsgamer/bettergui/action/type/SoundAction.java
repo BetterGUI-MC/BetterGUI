@@ -5,6 +5,7 @@ import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -46,7 +47,12 @@ public class SoundAction extends BaseAction {
     float finalVolume = volume;
     float finalPitch = pitch;
     Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
-      player.playSound(player.getLocation(), sound, finalVolume, finalPitch);
+      try {
+        Sound soundEnum = Sound.valueOf(sound.replace(" ", "_").toUpperCase());
+        player.playSound(player.getLocation(), soundEnum, finalVolume, finalPitch);
+      } catch (Exception exception) {
+        player.playSound(player.getLocation(), sound, finalVolume, finalPitch);
+      }
       process.next();
     });
   }
