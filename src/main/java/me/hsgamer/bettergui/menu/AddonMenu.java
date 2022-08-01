@@ -20,30 +20,27 @@ import java.util.logging.Level;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
-  private String upToDateMessage = "&cIt's already up-to-date";
-  private String downloadingMessage = "&eDownloading {addon}";
-  private String stillDownloadingMessage = "&cIt's still downloading";
-  private String downloadFinishedMessage = "&aDownload finished";
-
-  private String upToDateStatus = "&aUp-to-date";
-  private String availableStatus = "&aAvailable";
-  private String outdatedStatus = "&cOutdated";
+  private final String upToDateMessage;
+  private final String downloadingMessage;
+  private final String stillDownloadingMessage;
+  private final String downloadFinishedMessage;
+  private final String upToDateStatus;
+  private final String availableStatus;
+  private final String outdatedStatus;
 
   public AddonMenu(Config config) {
     super(config);
+    upToDateMessage = Objects.toString(config.get("message.up-to-date"), "&cIt's already up-to-date");
+    downloadingMessage = Objects.toString(config.get("message.downloading"), "&eDownloading {addon}");
+    stillDownloadingMessage = Objects.toString(config.get("message.still-downloading"), "&cIt's still downloading");
+    downloadFinishedMessage = Objects.toString(config.get("message.download-finished"), "&aDownload finished");
+    upToDateStatus = Objects.toString(config.get("status.up-to-date"), "&aUp-to-date");
+    availableStatus = Objects.toString(config.get("status.available"), "&aAvailable");
+    outdatedStatus = Objects.toString(config.get("status.outdated"), "&cOutdated");
   }
 
   @Override
   protected ButtonMap createButtonMap(Config config) {
-    upToDateMessage = Objects.toString(config.get("message.up-to-date"), upToDateMessage);
-    downloadingMessage = Objects.toString(config.get("message.downloading"), downloadingMessage);
-    stillDownloadingMessage = Objects.toString(config.get("message.still-downloading"), stillDownloadingMessage);
-    downloadFinishedMessage = Objects.toString(config.get("message.download-finished"), downloadFinishedMessage);
-
-    upToDateStatus = Objects.toString(config.get("status.up-to-date"), upToDateStatus);
-    availableStatus = Objects.toString(config.get("status.available"), availableStatus);
-    outdatedStatus = Objects.toString(config.get("status.outdated"), outdatedStatus);
-
     Map<String, Object> itemMap = config.getNormalizedValues("button", false);
     return uuid -> {
       Collection<DownloadInfo> downloadInfos = getInstance().getAddonDownloader().getLoadedDownloadInfo().values();

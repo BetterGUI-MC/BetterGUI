@@ -40,8 +40,8 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   private final B buttonMap;
   private final Set<UUID> forceClose = new ConcurrentSkipListSet<>();
   private final Map<UUID, BukkitTask> updateTasks = new ConcurrentHashMap<>();
-  private long ticks = 0;
-  private Permission permission = new Permission(getInstance().getName().toLowerCase() + "." + getName());
+  private final long ticks;
+  private final Permission permission;
 
   protected BaseInventoryMenu(Config config) {
     super(config);
@@ -86,6 +86,8 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     ActionApplier tempCloseActionApplier = new ActionApplier(Collections.emptyList());
     RequirementApplier tempViewRequirementApplier = new RequirementApplier(this, getName(), Collections.emptyMap());
     RequirementApplier tempCloseRequirementApplier = new RequirementApplier(this, getName(), Collections.emptyMap());
+    long tempTicks = 0;
+    Permission tempPermission = new Permission(getInstance().getName().toLowerCase() + "." + getName());
     for (Map.Entry<String, Object> entry : config.getNormalizedValues(false).entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
@@ -124,11 +126,11 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
           return Validate.getNumber(slots).map(BigDecimal::intValue).map(i -> Math.max(1, i)).orElse(9);
         }));
 
-        this.ticks = Optional.ofNullable(MapUtil.getIfFound(values, "auto-refresh", "ticks"))
+        tempTicks = Optional.ofNullable(MapUtil.getIfFound(values, "auto-refresh", "ticks"))
           .map(String::valueOf)
           .flatMap(Validate::getNumber)
           .map(BigDecimal::longValue)
-          .orElse(this.ticks);
+          .orElse(tempTicks);
 
         tempViewRequirementApplier = Optional.ofNullable(values.get("view-requirement"))
           .flatMap(MapUtil::castOptionalStringObjectMap)
@@ -140,10 +142,10 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
           .map(m -> new RequirementApplier(this, getName() + "_close", m))
           .orElse(tempCloseRequirementApplier);
 
-        this.permission = Optional.ofNullable(values.get("permission"))
+        tempPermission = Optional.ofNullable(values.get("permission"))
           .map(String::valueOf)
           .map(Permission::new)
-          .orElse(this.permission);
+          .orElse(tempPermission);
 
         Optional.ofNullable(values.get("command"))
           .map(o -> CollectionUtils.createStringListFromObject(o, true))
@@ -167,6 +169,8 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     this.closeActionApplier = tempCloseActionApplier;
     this.viewRequirementApplier = tempViewRequirementApplier;
     this.closeRequirementApplier = tempCloseRequirementApplier;
+    this.ticks = tempTicks;
+    this.permission = tempPermission;
 
     buttonMap = createButtonMap(config);
     guiHolder.setButtonMap(buttonMap);
