@@ -22,11 +22,17 @@ default-icon:
   type: animated
   child:
     frame1:
-      id: RED_STAINED_GLASS_PANE
+      id:
+        - RED_STAINED_GLASS_PANE
+        - STAINED_GLASS_PANE:14
     frame2:
-      id: GREEN_STAINED_GLASS_PANE
+      id:
+        - GREEN_STAINED_GLASS_PANE
+        - STAINED_GLASS_PANE:13
     frame3:
-      id: BLUE_STAINED_GLASS_PANE
+      id:
+        - BLUE_STAINED_GLASS_PANE
+        - STAINED_GLASS_PANE:11
 
 ######################
 #+                  +#
@@ -78,7 +84,9 @@ test-from-console:
   NAME: '&cRuns command from the console.'
   LORE:
     - 'It broadcasts your name with the command /say.'
-  ID: command_block
+  ID:
+    - command_block
+    - command
   POSITION-X: 5
   POSITION-Y: 2
 
@@ -88,7 +96,9 @@ test-as-op:
   LORE:
     - 'Be careful with this type of commands.'
     - 'It will ignore nearly all the permissions.'
-  ID: command_block
+  ID:
+    - command_block
+    - command
   POSITION-X: 6
   POSITION-Y: 2
 
@@ -158,7 +168,9 @@ permission:
       - 'permission "bettergui.test".'
       - 'Otherwise, a configurable error'
       - 'message will be displayed.'
-    ID: iron bars
+    ID:
+      - iron bars
+      - IRON_FENCE
 
 test-per-click-command:
   COMMAND:
@@ -187,7 +199,9 @@ test-delay-command:
   NAME: '&eDelay Command'
   LORE:
     - 'This is a test of delay command.'
-  ID: clock
+  ID:
+    - clock
+    - WATCH
   POSITION-X: 4
   POSITION-Y: 3
 
@@ -260,7 +274,9 @@ test-view-requirement:
   position-x: 8
   position-y: 3
   button:
-    id: exp_bottle
+    id:
+      - EXPERIENCE_BOTTLE
+      - EXP_BOTTLE
     name: "&cA exp bottle"
     lore:
       - "You will see this icon when the level is higher than 5"
@@ -278,17 +294,23 @@ animated-icon:
   child:
     frame_icon1:
       name: "&cFrame 1"
-      id: red_wool
+      id:
+        - red_wool
+        - WOOL:14
       lore:
         - "This is part of an animated icon"
     frame_icon2:
       name: "&aFrame 2"
-      id: green_wool
+      id:
+        - green_wool
+        - WOOL:13
       lore:
         - "This is part of an animated icon"
     frame_icon3:
       name: "&bFrame 3"
-      id: light_blue_wool
+      id:
+        - light_blue_wool
+        - WOOL:3
       lore:
         - "This is part of an animated icon"
 
@@ -296,7 +318,9 @@ skull:
   position-x: 1
   position-y: 4
   name: "&bSkull"
-  id: player_head
+  id:
+    - player_head
+    - skull_item:3
   skull: "HSGamer"
   #skull: "7acc67dc-8b84-4f8d-b7ad-ec81e758f5a1"
 
@@ -304,7 +328,9 @@ per-player-skull:
   position-x: 2
   position-y: 4
   name: "&bPer Player Skulls"
-  id: player_head
+  id:
+    - player_head
+    - skull_item:3
   skull: "{player}"
 
 test-xp-template:
@@ -356,27 +382,27 @@ test-xp-list-template:
       variable:
         xp: 10
 
-colored-leather-chestplate:
+colored-leather-chestplate: # The order is important: Material (ID) -> NBT -> others
   id: leather_chestplate
-  name: "&aColored Leather Chestplate"
-  lore:
-    - "This is a colored leather chestplate"
   nbt:
     display:
       color: 16175144
   #nbt: "{display:{color:16175144}}"
+  name: "&aColored Leather Chestplate"
+  lore:
+    - "This is a colored leather chestplate"
   position-x: 5
   position-y: 4
 
-custom-model-chestplate:
+custom-model-chestplate: # The order is important: Material (ID) -> NBT -> others
   id: leather_chestplate
-  name: "&aCustom Model Chestplate"
-  lore:
-    - "This is a custom model chestplate"
   nbt:
     CustomModelData: 104230
   #nbt: "{CustomModelData:104230}"
-  position-x: 7
+  name: "&aCustom Model Chestplate"
+  lore:
+    - "This is a custom model chestplate"
+  position-x: 6
   position-y: 4
 
 
@@ -387,13 +413,19 @@ multi-slot:
   child:
     frame1:
       name: ' '
-      id: black stained glass pane
+      id:
+        - black stained glass pane
+        - STAINED_GLASS_PANE:15
     frame2:
       name: ' '
-      id: gray stained glass pane
+      id:
+        - gray stained glass pane
+        - STAINED_GLASS_PANE:7
     frame3:
       name: ' '
-      id: white stained glass pane
+      id:
+        - white stained glass pane
+        - STAINED_GLASS_PANE
 
 close-the-menu:
   id: BARRIER

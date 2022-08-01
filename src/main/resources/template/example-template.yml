@@ -1,7 +1,9 @@
 # This is an example of a file containing template buttons used in the example menu
 
 test-xp:
-  id: EXPERIENCE_BOTTLE
+  id:
+    - EXPERIENCE_BOTTLE
+    - EXP_BOTTLE
   name: "&eGive &f{xp} XP"
   lore:
     - ""

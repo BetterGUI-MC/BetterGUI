@@ -8,11 +8,14 @@ menu-settings:
   auto-refresh: 5
 
 button:
-  material: redstone
-  name: "&f{name} &c- &4{version}"
+  material:
+    - LIGHT_BLUE_STAINED_GLASS_PANE
+    - STAINED_GLASS_PANE:3
+  name: "&f{name} &c- &4{status}"
   lore:
     - "&f{description}"
     - "&fAuthors: &e{author}"
+    - "&fVersion: &e{version}"
     - ""
     - "&bLeft click &fto download"
     - "&bRight click &fto get the source code"
