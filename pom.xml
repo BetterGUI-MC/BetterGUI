@@ -43,7 +43,6 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <createDependencyReducedPom>true</createDependencyReducedPom>
               <shadedClassifierName>shaded</shadedClassifierName>
               <createDependencyReducedPom>false</createDependencyReducedPom>
               <shadeSourcesContent>true</shadeSourcesContent>
