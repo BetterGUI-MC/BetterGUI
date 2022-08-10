@@ -119,12 +119,12 @@
 
   <repositories>
     <repository>
-      <id>CodeMC</id>
-      <url>https://repo.codemc.org/repository/maven-public</url>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
     <repository>
-      <id>papermc-repo</id>
-      <url>https://papermc.io/repo/repository/maven-public/</url>
+      <id>CodeMC</id>
+      <url>https://repo.codemc.org/repository/maven-public</url>
     </repository>
     <repository>
       <id>sonatype</id>
@@ -141,10 +141,10 @@
   </repositories>
 
   <dependencies>
-    <!-- PaperMC -->
+    <!-- SpigotMC -->
     <dependency>
-      <groupId>com.destroystokyo.paper</groupId>
-      <artifactId>paper-api</artifactId>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
       <version>1.12.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
