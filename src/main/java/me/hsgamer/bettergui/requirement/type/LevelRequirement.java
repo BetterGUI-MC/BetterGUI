@@ -54,7 +54,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
       if (player1 == null) {
         return;
       }
-      player1.setLevel(player1.getLevel() + -levels);
+      player1.setLevel(player1.getLevel() - levels);
     });
   }
 

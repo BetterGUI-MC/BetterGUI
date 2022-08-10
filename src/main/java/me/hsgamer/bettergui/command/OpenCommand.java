@@ -30,7 +30,7 @@ public final class OpenCommand extends BukkitCommand {
     if (!testPermission(commandSender)) {
       return false;
     }
-    if (strings.length <= 0) {
+    if (strings.length == 0) {
       sendMessage(commandSender, plugin.getMessageConfig().menuRequired);
       return false;
     }
