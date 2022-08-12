@@ -28,7 +28,7 @@ public class VersionRequirement extends BaseRequirement<Integer> {
   }
 
   @Override
-  public Result check(UUID uuid) {
-    return VersionUtils.isAtLeast(getFinalValue(uuid)) ? Result.success() : Result.fail();
+  protected Result checkConverted(UUID uuid, Integer value) {
+    return VersionUtils.isAtLeast(value) ? Result.success() : Result.fail();
   }
 }

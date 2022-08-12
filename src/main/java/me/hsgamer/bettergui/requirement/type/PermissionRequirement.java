@@ -23,12 +23,12 @@ public class PermissionRequirement extends BaseRequirement<List<String>> {
   }
 
   @Override
-  public Result check(UUID uuid) {
+  protected Result checkConverted(UUID uuid, List<String> value) {
     Player player = Bukkit.getPlayer(uuid);
     if (player == null) {
       return Result.success();
     }
-    if (getFinalValue(uuid).parallelStream().allMatch(s -> hasPermission(player, s))) {
+    if (value.parallelStream().allMatch(s -> hasPermission(player, s))) {
       return Result.success();
     } else {
       return Result.fail();

@@ -47,14 +47,29 @@ public abstract class BaseRequirement<V> implements Requirement {
   protected abstract V convert(Object value, UUID uuid);
 
   /**
+   * Check the requirement for the unique id with the converted value
+   *
+   * @param uuid  the unique id
+   * @param value the converted value
+   *
+   * @return the result
+   */
+  protected abstract Result checkConverted(UUID uuid, V value);
+
+  /**
    * Get the final value
    *
    * @param uuid the unique id
    *
    * @return the final value
    */
-  public V getFinalValue(UUID uuid) {
+  public final V getFinalValue(UUID uuid) {
     return convert(value, uuid);
+  }
+
+  @Override
+  public Result check(UUID uuid) {
+    return checkConverted(uuid, getFinalValue(uuid));
   }
 
   @Override

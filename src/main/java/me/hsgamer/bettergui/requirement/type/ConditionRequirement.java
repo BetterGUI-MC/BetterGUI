@@ -23,9 +23,8 @@ public class ConditionRequirement extends BaseRequirement<List<String>> {
   }
 
   @Override
-  public Result check(UUID uuid) {
-    List<String> list = getFinalValue(uuid);
-    return list.parallelStream().allMatch(this::isTrueCondition)
+  protected Result checkConverted(UUID uuid, List<String> value) {
+    return value.parallelStream().allMatch(this::isTrueCondition)
       ? Result.success()
       : Result.fail();
   }

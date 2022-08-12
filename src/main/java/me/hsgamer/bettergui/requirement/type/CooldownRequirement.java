@@ -56,12 +56,11 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
   }
 
   @Override
-  public Result check(UUID uuid) {
+  protected Result checkConverted(UUID uuid, Duration value) {
     if (getCooldown(uuid) <= 0) {
       return Result.success(uuid1 -> {
-        Duration cooldownTime = getFinalValue(uuid);
-        if (!cooldownTime.isNegative() && !cooldownTime.isZero()) {
-          cooldownMap.put(uuid, Instant.now().plus(cooldownTime));
+        if (!value.isNegative() && !value.isZero()) {
+          cooldownMap.put(uuid, Instant.now().plus(value));
         }
       });
     } else {

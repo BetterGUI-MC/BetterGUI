@@ -40,13 +40,12 @@ public class LevelRequirement extends TakableRequirement<Integer> {
   }
 
   @Override
-  public Result check(UUID uuid) {
+  protected Result checkConverted(UUID uuid, Integer value) {
     Player player = Bukkit.getPlayer(uuid);
     if (player == null) {
       return Result.success();
     }
-    int levels = getFinalValue(uuid);
-    if (levels > 0 && player.getLevel() < levels) {
+    if (value > 0 && player.getLevel() < value) {
       return Result.fail();
     }
     return successConditional(uuid1 -> {
@@ -54,7 +53,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
       if (player1 == null) {
         return;
       }
-      player1.setLevel(player1.getLevel() - levels);
+      player1.setLevel(player1.getLevel() - value);
     });
   }
 
