@@ -29,6 +29,7 @@ public class ItemModifierBuilder extends MassBuilder<Map.Entry<String, Object>, 
     register(ItemFlagModifier::new, "flag", "item-flags", "itemflag", "itemflags", "item-flag");
     register(SkullModifier::new, "skull", "head", "skull-owner");
     register(NBTModifier::new, "nbt", "nbt-data");
+    register(PotionEffectModifier::new, "potion-effect", "potion", "effect");
   }
 
   /**

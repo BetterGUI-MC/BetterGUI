@@ -405,6 +405,14 @@ custom-model-chestplate: # The order is important: Material (ID) -> NBT -> other
   position-x: 6
   position-y: 4
 
+potion:
+  position-x: 7
+  position-y: 4
+  name: "&bPotion"
+  id: potion
+  potion:
+    - "SPEED"
+    - "WEAKNESS, 30, 1"
 
 multi-slot:
   slot: 0-8,45,46,47-52
