@@ -187,7 +187,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
         result.applier.accept(uuid, process);
         process.next();
       }));
-      return true;
+      return result.isSuccess;
     });
   }
 
