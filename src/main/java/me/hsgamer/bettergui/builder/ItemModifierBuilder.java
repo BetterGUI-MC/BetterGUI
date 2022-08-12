@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.builder;
 
-import me.hsgamer.bettergui.modifier.*;
-import me.hsgamer.hscore.builder.Builder;
+import me.hsgamer.hscore.builder.MassBuilder;
 import me.hsgamer.hscore.bukkit.item.ItemModifier;
 import me.hsgamer.hscore.bukkit.item.modifier.*;
 
@@ -14,57 +13,65 @@ import java.util.stream.Stream;
 /**
  * The item modifier builder
  */
-public class ItemModifierBuilder extends Builder<Object, ItemModifier> {
-
+public class ItemModifierBuilder extends MassBuilder<Map.Entry<String, Object>, ItemModifier> {
   /**
    * The instance of the item modifier builder
    */
   public static final ItemModifierBuilder INSTANCE = new ItemModifierBuilder();
 
   private ItemModifierBuilder() {
-    registerDefaultItemModifiers();
-  }
-
-  private void registerDefaultItemModifiers() {
     register(NameModifier::new, "name");
     register(LoreModifier::new, "lore");
     register(AmountModifier::new, "amount");
     register(DurabilityModifier::new, "durability", "damage");
-    register(XMaterialModifier::new, "material", "id", "mat");
-    register(MaterialModifier::new, "raw-material", "raw-id", "raw-mat");
+    register(MaterialModifier::new, "material", "id", "mat", "raw-material", "raw-id", "raw-mat");
     register(EnchantmentModifier::new, "enchantment", "enchant", "enc");
     register(ItemFlagModifier::new, "flag", "item-flags", "itemflag", "itemflags", "item-flag");
-    register(PotionModifier::new, "potion", "effect");
     register(SkullModifier::new, "skull", "head", "skull-owner");
     register(NBTModifier::new, "nbt", "nbt-data");
+    register(PotionEffectModifier::new, "potion-effect", "potion", "effect");
   }
 
   /**
-   * Register the item modifier
+   * Register a new modifier creator
    *
-   * @param itemModifierSupplier the item modifier factory
-   * @param name                 the name of the item modifier
-   * @param aliases              the aliases of the item modifier
+   * @param creator the creator
+   * @param type    the type
    */
-  public void register(Supplier<ItemModifier> itemModifierSupplier, String name, String... aliases) {
-    register(o -> {
-      ItemModifier itemModifier = itemModifierSupplier.get();
-      itemModifier.loadFromObject(o);
-      return itemModifier;
-    }, name, aliases);
+  public void register(Supplier<ItemModifier> creator, String... type) {
+    register(new Element<Map.Entry<String, Object>, ItemModifier>() {
+      @Override
+      public boolean canBuild(Map.Entry<String, Object> input) {
+        String modifier = input.getKey();
+        for (String s : type) {
+          if (modifier.equalsIgnoreCase(s)) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      @Override
+      public ItemModifier build(Map.Entry<String, Object> input) {
+        ItemModifier itemModifier = creator.get();
+        Object value = input.getValue();
+        itemModifier.loadFromObject(value);
+        return itemModifier;
+      }
+    });
   }
 
   /**
-   * Build the list of item modifiers
+   * Build all modifiers from a case-insensitive map
    *
-   * @param section the section
+   * @param map the map
    *
-   * @return the list of the modifiers
+   * @return the modifiers
    */
-  public List<ItemModifier> getItemModifiers(Map<String, Object> section) {
-    return section.entrySet()
+  public List<ItemModifier> build(Map<String, Object> map) {
+    return map.entrySet()
       .stream()
-      .flatMap(entry -> build(entry.getKey(), entry.getValue()).map(Stream::of).orElse(Stream.empty()))
+      .flatMap(entry -> build(entry).map(Stream::of).orElse(Stream.empty()))
       .collect(Collectors.toList());
   }
 }

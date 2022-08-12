@@ -1,8 +1,7 @@
 package me.hsgamer.bettergui.command;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.bettergui.manager.MenuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -15,16 +14,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
 import static me.hsgamer.hscore.bukkit.utils.MessageUtils.sendMessage;
 
 public final class OpenCommand extends BukkitCommand {
+  private final BetterGUI plugin;
 
-  private final MenuManager menuManager = getInstance().getMenuManager();
-
-  public OpenCommand() {
+  public OpenCommand(BetterGUI plugin) {
     super("openmenu", "Open the specific menu", "/openmenu <menu_name> [player] [args...]", Collections.singletonList("om"));
     setPermission(Permissions.OPEN_MENU.getName());
+    this.plugin = plugin;
   }
 
   @Override
@@ -32,34 +30,35 @@ public final class OpenCommand extends BukkitCommand {
     if (!testPermission(commandSender)) {
       return false;
     }
-    if (strings.length <= 0) {
-      sendMessage(commandSender, MessageConfig.MENU_REQUIRED.getValue());
+    if (strings.length == 0) {
+      sendMessage(commandSender, plugin.getMessageConfig().menuRequired);
       return false;
     }
-    if (!menuManager.contains(strings[0])) {
-      sendMessage(commandSender, MessageConfig.MENU_NOT_FOUND.getValue());
+    if (!plugin.getMenuManager().contains(strings[0])) {
+      sendMessage(commandSender, plugin.getMessageConfig().menuNotFound);
       return false;
     }
 
-    if (strings.length == 1) {
+    Player player;
+    String menuName = strings[0];
+    String[] args = new String[0];
+
+    if (strings.length > 1) {
+      player = Bukkit.getPlayer(strings[1]);
+      if (player == null || !player.isOnline()) {
+        sendMessage(commandSender, plugin.getMessageConfig().playerNotFound);
+        return false;
+      }
+      args = Arrays.copyOfRange(strings, 2, strings.length);
+    } else {
       if (commandSender instanceof Player) {
-        menuManager.openMenu(strings[0], (Player) commandSender, new String[0], false);
-        return true;
+        player = (Player) commandSender;
       } else {
-        sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
+        sendMessage(commandSender, plugin.getMessageConfig().playerOnly);
         return false;
       }
     }
-
-    Player player = Bukkit.getPlayer(strings[1]);
-    if (player == null || !player.isOnline()) {
-      sendMessage(commandSender, MessageConfig.PLAYER_NOT_FOUND.getValue());
-      return false;
-    }
-
-    String[] args = strings.length > 2 ? Arrays.copyOfRange(strings, 2, strings.length) : new String[0];
-
-    menuManager.openMenu(strings[0], player, args, true);
+    plugin.getMenuManager().openMenu(menuName, player, args, true);
     return true;
   }
 
@@ -67,7 +66,7 @@ public final class OpenCommand extends BukkitCommand {
   public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
     List<String> list = new ArrayList<>();
     if (args.length == 1) {
-      list.addAll(getInstance().getMenuManager().getMenuNames());
+      list.addAll(plugin.getMenuManager().getMenuNames());
     } else if (args.length == 2) {
       list.addAll(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList()));
     }

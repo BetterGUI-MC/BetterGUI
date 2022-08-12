@@ -2,83 +2,76 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
-import me.hsgamer.bettergui.requirement.RequirementSet;
-import me.hsgamer.bettergui.requirement.type.ConditionRequirement;
-import me.hsgamer.bettergui.requirement.type.CooldownRequirement;
-import me.hsgamer.bettergui.requirement.type.LevelRequirement;
-import me.hsgamer.bettergui.requirement.type.PermissionRequirement;
-import me.hsgamer.hscore.builder.Builder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.bettergui.requirement.type.*;
+import me.hsgamer.hscore.builder.MassBuilder;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.function.Function;
 
 /**
  * The requirement builder
  */
-public class RequirementBuilder extends Builder<String, Requirement> {
+public final class RequirementBuilder extends MassBuilder<RequirementBuilder.Input, Requirement> {
+  public static final RequirementBuilder INSTANCE = new RequirementBuilder();
 
   /**
    * The instance of the requirement builder
    */
-  public static final RequirementBuilder INSTANCE = new RequirementBuilder();
-
   private RequirementBuilder() {
-    registerDefaultRequirements();
-  }
-
-  private void registerDefaultRequirements() {
-    register(ConditionRequirement::new, "condition");
     register(LevelRequirement::new, "level");
     register(PermissionRequirement::new, "permission");
     register(CooldownRequirement::new, "cooldown");
+    register(VersionRequirement::new, "version");
+    register(ConditionRequirement::new, "condition");
   }
 
   /**
-   * Build the requirement
+   * Register a new requirement creator
    *
-   * @param menu  the menu
-   * @param type  the type of the requirement
-   * @param name  the name of the requirement
-   * @param value the value
-   *
-   * @return the requirement
+   * @param creator the creator
+   * @param type    the type
    */
-  public Optional<Requirement> getRequirement(Menu menu, String type, String name, Object value) {
-    return build(type, name).map(requirement -> {
-      requirement.setMenu(menu);
-      requirement.setValue(value);
-      return requirement;
+  public void register(Function<Input, Requirement> creator, String... type) {
+    register(new Element<Input, Requirement>() {
+      @Override
+      public boolean canBuild(Input input) {
+        String requirement = input.type;
+        for (String s : type) {
+          if (requirement.equalsIgnoreCase(s)) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      @Override
+      public Requirement build(Input input) {
+        return creator.apply(input);
+      }
     });
   }
 
   /**
-   * Build the requirement set
-   *
-   * @param menu    the menu
-   * @param name    the name of the set
-   * @param section the section
-   *
-   * @return the requirement set
+   * The input of the requirement builder
    */
-  public RequirementSet getRequirementSet(Menu menu, String name, Map<String, Object> section) {
-    List<Requirement> requirements = section.entrySet().stream().flatMap(entry -> {
-      String type = entry.getKey();
-      Object value = entry.getValue();
-      return getRequirement(menu, type, name + "_" + type, value).map(Stream::of).orElse(Stream.empty());
-    }).collect(Collectors.toList());
+  public static class Input {
+    public final Menu menu;
+    public final String type;
+    public final String name;
+    public final Object value;
 
-    RequirementSet requirementSet = new RequirementSet(name, menu, requirements);
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
-
-    Optional.ofNullable(keys.get("success-command")).ifPresent(o -> requirementSet.setSuccessActions(ActionBuilder.INSTANCE.getActions(menu, o)));
-    Optional.ofNullable(keys.get("success-action")).ifPresent(o -> requirementSet.setSuccessActions(ActionBuilder.INSTANCE.getActions(menu, o)));
-    Optional.ofNullable(keys.get("fail-command")).ifPresent(o -> requirementSet.setFailActions(ActionBuilder.INSTANCE.getActions(menu, o)));
-    Optional.ofNullable(keys.get("fail-action")).ifPresent(o -> requirementSet.setFailActions(ActionBuilder.INSTANCE.getActions(menu, o)));
-
-    return requirementSet;
+    /**
+     * Create a new input
+     *
+     * @param menu  the menu
+     * @param type  the type of the requirement
+     * @param name  the name of the requirement
+     * @param value the value of the requirement
+     */
+    public Input(Menu menu, String type, String name, Object value) {
+      this.menu = menu;
+      this.type = type;
+      this.name = name;
+      this.value = value;
+    }
   }
 }

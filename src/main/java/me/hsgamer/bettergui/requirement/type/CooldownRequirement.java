@@ -1,11 +1,11 @@
 package me.hsgamer.bettergui.requirement.type;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.requirement.BaseRequirement;
-import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.bettergui.manager.PluginVariableManager;
+import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.hscore.expression.ExpressionUtils;
-import me.hsgamer.hscore.variable.VariableManager;
+import me.hsgamer.hscore.common.Validate;
 import org.apache.commons.lang.time.DurationFormatUtils;
 
 import java.time.Duration;
@@ -13,15 +13,14 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public class CooldownRequirement extends BaseRequirement<Duration> {
   private final Map<UUID, Instant> cooldownMap = new HashMap<>();
 
-  public CooldownRequirement(String name) {
-    super(name);
-    PluginVariableManager.register(name, (original, uuid) -> {
+  public CooldownRequirement(RequirementBuilder.Input input) {
+    super(input);
+    getMenu().getVariableManager().register(getName(), (original, uuid) -> {
       long millis = getCooldown(uuid);
       millis = millis > 0 ? millis : 0;
 
@@ -46,26 +45,26 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
   }
 
   @Override
-  public Duration getParsedValue(UUID uuid) {
-    String parsed = VariableManager.setVariables(String.valueOf(value).trim(), uuid);
-    return Optional.ofNullable(ExpressionUtils.getResult(parsed))
+  protected Duration convert(Object value, UUID uuid) {
+    String replaced = StringReplacerApplier.replace(String.valueOf(value).trim(), uuid, this);
+    return Validate.getNumber(replaced)
       .map(bigDecimal -> Duration.ofMillis((long) bigDecimal.doubleValue() * 1000))
       .orElseGet(() -> {
-        MessageUtils.sendMessage(uuid, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed));
+        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().getMessageConfig().invalidNumber.replace("{input}", replaced));
         return Duration.ZERO;
       });
   }
 
   @Override
-  public boolean check(UUID uuid) {
-    return getCooldown(uuid) <= 0;
-  }
-
-  @Override
-  public void take(UUID uuid) {
-    Duration cooldownTime = getParsedValue(uuid);
-    if (!cooldownTime.isNegative() && !cooldownTime.isZero()) {
-      cooldownMap.put(uuid, Instant.now().plus(cooldownTime));
+  protected Result checkConverted(UUID uuid, Duration value) {
+    if (getCooldown(uuid) <= 0) {
+      return Result.success(uuid1 -> {
+        if (!value.isNegative() && !value.isZero()) {
+          cooldownMap.put(uuid, Instant.now().plus(value));
+        }
+      });
+    } else {
+      return Result.fail();
     }
   }
 

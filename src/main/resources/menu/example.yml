@@ -22,11 +22,17 @@ default-icon:
   type: animated
   child:
     frame1:
-      id: RED_STAINED_GLASS_PANE
+      id:
+        - RED_STAINED_GLASS_PANE
+        - STAINED_GLASS_PANE:14
     frame2:
-      id: GREEN_STAINED_GLASS_PANE
+      id:
+        - GREEN_STAINED_GLASS_PANE
+        - STAINED_GLASS_PANE:13
     frame3:
-      id: BLUE_STAINED_GLASS_PANE
+      id:
+        - BLUE_STAINED_GLASS_PANE
+        - STAINED_GLASS_PANE:11
 
 ######################
 #+                  +#
@@ -35,7 +41,7 @@ default-icon:
 ######################
 # Note that the nodes is case-insensitive (except some sub-nodes)
 # You can use lowercase or uppercase whatever you want
-spawncmd:
+spawn-cmd:
   COMMAND: 'spawn'
   NAME: '&u/spawn'
   LORE:
@@ -78,7 +84,9 @@ test-from-console:
   NAME: '&cRuns command from the console.'
   LORE:
     - 'It broadcasts your name with the command /say.'
-  ID: command_block
+  ID:
+    - command_block
+    - command
   POSITION-X: 5
   POSITION-Y: 2
 
@@ -88,7 +96,9 @@ test-as-op:
   LORE:
     - 'Be careful with this type of commands.'
     - 'It will ignore nearly all the permissions.'
-  ID: command_block
+  ID:
+    - command_block
+    - command
   POSITION-X: 6
   POSITION-Y: 2
 
@@ -158,18 +168,9 @@ permission:
       - 'permission "bettergui.test".'
       - 'Otherwise, a configurable error'
       - 'message will be displayed.'
-    ID: iron bars
-
-condition:
-  NAME: '&aCondition'
-  LORE:
-    - 'The command will run when the level is higher than 5.'
-  ID: grass
-  COMMAND:
-    - "condition: {level} > 5"
-    - "tell: &aYou did it"
-  POSITION-X: 3
-  POSITION-Y: 3
+    ID:
+      - iron bars
+      - IRON_FENCE
 
 test-per-click-command:
   COMMAND:
@@ -187,7 +188,7 @@ test-per-click-command:
     - 'You middle-click'
     - 'And you get different messages.'
   ID: redstone_block
-  POSITION-X: 4
+  POSITION-X: 3
   POSITION-Y: 3
 
 test-delay-command:
@@ -198,8 +199,10 @@ test-delay-command:
   NAME: '&eDelay Command'
   LORE:
     - 'This is a test of delay command.'
-  ID: clock
-  POSITION-X: 5
+  ID:
+    - clock
+    - WATCH
+  POSITION-X: 4
   POSITION-Y: 3
 
 # Simple Cooldown Example
@@ -217,7 +220,7 @@ cooldown:
         cooldown: 10
       fail-command:
         - "tell: &cWait until the cooldown is finished"
-  POSITION-X: 6
+  POSITION-X: 5
   POSITION-Y: 3
 
 enchanted-sword-flag:
@@ -229,22 +232,22 @@ enchanted-sword-flag:
     - "durability, 1"
   FLAG:
     - HIDE_ENCHANTS
-  POSITION-X: 7
+  POSITION-X: 6
   POSITION-Y: 3
 
 # Advanced Cooldown Example
 advanced_cooldown:
-  POSITION-X: 8
+  POSITION-X: 7
   POSITION-Y: 3
   type: predicate
   button:
     id: paper
     name: '&cCooldown'
     lore:
-      - '&eLEFT: &f{menu_example.yml_button_advanced_cooldown_click_left_reqset_test_cooldown}'
-      - '&eRIGHT: &f{menu_example.yml_button_advanced_cooldown_click_right_reqset_test_cooldown}'
-      - '&eMIDDLE: &f{menu_example.yml_button_advanced_cooldown_click_middle_reqset_test_cooldown}'
-      - '&eDEFAULT: &f{menu_example.yml_button_advanced_cooldown_click_default_reqset_test_cooldown}'
+      - '&eLEFT: &f{button_advanced_cooldown_click_left_reqset_test_cooldown}'
+      - '&eRIGHT: &f{button_advanced_cooldown_click_right_reqset_test_cooldown}'
+      - '&eMIDDLE: &f{button_advanced_cooldown_click_middle_reqset_test_cooldown}'
+      - '&eDEFAULT: &f{button_advanced_cooldown_click_default_reqset_test_cooldown}'
     command:
       LEFT: 'tell: &cYou left-clicked'
       RIGHT: 'tell: &cYou right-clicked'
@@ -266,39 +269,14 @@ advanced_cooldown:
       fail-command:
         - "tell: &cCalm down"
 
-list-icon:
-  type: list
-  position-x: 9
-  position-y: 3
-  child:
-    world:
-      type: predicate
-      button:
-        id: grass
-        name: "&aYou are in {world}"
-      view-requirement:
-        condition:
-          condition: STREQIC("{world_env}", "normal")
-    nether:
-      type: predicate
-      button:
-        id: netherrack
-        name: "&cYou are in {world}"
-      view-requirement:
-        condition:
-          condition: STREQIC("{world_env}", "nether")
-    unknown:
-      id: bedrock
-      name: "&cYou are in {world}"
-      lore:
-        - "&cUnknown world"
-
 test-view-requirement:
   type: predicate
-  position-x: 1
-  position-y: 4
+  position-x: 8
+  position-y: 3
   button:
-    id: exp_bottle
+    id:
+      - EXPERIENCE_BOTTLE
+      - EXP_BOTTLE
     name: "&cA exp bottle"
     lore:
       - "You will see this icon when the level is higher than 5"
@@ -309,89 +287,55 @@ test-view-requirement:
         take: false
 
 animated-icon:
-  position-x: 2
-  position-y: 4
+  position-x: 9
+  position-y: 3
   type: animated
   update: 5
   child:
     frame_icon1:
       name: "&cFrame 1"
-      id: red_wool
+      id:
+        - red_wool
+        - WOOL:14
       lore:
         - "This is part of an animated icon"
     frame_icon2:
       name: "&aFrame 2"
-      id: green_wool
+      id:
+        - green_wool
+        - WOOL:13
       lore:
         - "This is part of an animated icon"
     frame_icon3:
       name: "&bFrame 3"
-      id: light_blue_wool
+      id:
+        - light_blue_wool
+        - WOOL:3
       lore:
         - "This is part of an animated icon"
 
-requirement-set:
-  position-x: 3
-  position-y: 4
-  type: predicate
-  button:
-    id: paper
-    name: "&eRequirement Set"
-    lore:
-      - "&aYou can use this icon if you meets one of the requirements: "
-      - "&f- In the overworld"
-      - "&f- In the nether and the level is higher than 10"
-      - "&f- Have the permission 'bettergui.testset'"
-    command: "tell: &aYou did it"
-  click-requirement:
-    default:
-      world:
-        condition: STREQIC("{world_env}", "normal")
-        success-command:
-          - "tell: &aYou are in the overworld"
-      nether_world:
-        condition: STREQIC("{world_env}", "nether")
-        level:
-          value: 10
-          take: false
-        success-command:
-          - "tell: &aYou are in nether"
-      permission:
-        permission: bettergui.testset
-        success-command:
-          - "tell: &aYou have the permission"
-      fail-command:
-        - "tell: &cTry again later"
-
 skull:
-  position-x: 4
+  position-x: 1
   position-y: 4
   name: "&bSkull"
-  id: player_head
+  id:
+    - player_head
+    - skull_item:3
   skull: "HSGamer"
   #skull: "7acc67dc-8b84-4f8d-b7ad-ec81e758f5a1"
-  #skull: "http://textures.minecraft.net/texture/ffcdae586b52403b92b1857ee4331bac636af08bab92ba5750a54a83331a6353"
-  #skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmZjZGFlNTg2YjUyNDAzYjkyYjE4NTdlZTQzMzFiYWM2MzZhZjA4YmFiOTJiYTU3NTBhNTRhODMzMzFhNjM1MyJ9fX0="
 
 per-player-skull:
-  position-x: 5
+  position-x: 2
   position-y: 4
   name: "&bPer Player Skulls"
-  id: player_head
+  id:
+    - player_head
+    - skull_item:3
   skull: "{player}"
-
-potion:
-  position-x: 6
-  position-y: 4
-  name: "&bPotion"
-  id: potion
-  potion:
-    - "SPEED"
-    - "WEAKNESS, 30, 1"
 
 test-xp-template:
   type: template
-  position-x: 7
+  position-x: 3
   position-y: 4
   template: test-xp
   variable:
@@ -399,7 +343,7 @@ test-xp-template:
 
 test-xp-list-template:
   type: list
-  position-x: 8
+  position-x: 4
   position-y: 4
   child:
     test-xp-50:
@@ -438,6 +382,38 @@ test-xp-list-template:
       variable:
         xp: 10
 
+colored-leather-chestplate: # The order is important: Material (ID) -> NBT -> others
+  id: leather_chestplate
+  nbt:
+    display:
+      color: 16175144
+  #nbt: "{display:{color:16175144}}"
+  name: "&aColored Leather Chestplate"
+  lore:
+    - "This is a colored leather chestplate"
+  position-x: 5
+  position-y: 4
+
+custom-model-chestplate: # The order is important: Material (ID) -> NBT -> others
+  id: leather_chestplate
+  nbt:
+    CustomModelData: 104230
+  #nbt: "{CustomModelData:104230}"
+  name: "&aCustom Model Chestplate"
+  lore:
+    - "This is a custom model chestplate"
+  position-x: 6
+  position-y: 4
+
+potion:
+  position-x: 7
+  position-y: 4
+  name: "&bPotion"
+  id: potion
+  potion:
+    - "SPEED"
+    - "WEAKNESS, 30, 1"
+
 multi-slot:
   slot: 0-8,45,46,47-52
   type: animated
@@ -445,13 +421,19 @@ multi-slot:
   child:
     frame1:
       name: ' '
-      id: black stained glass pane
+      id:
+        - black stained glass pane
+        - STAINED_GLASS_PANE:15
     frame2:
       name: ' '
-      id: gray stained glass pane
+      id:
+        - gray stained glass pane
+        - STAINED_GLASS_PANE:7
     frame3:
       name: ' '
-      id: white stained glass pane
+      id:
+        - white stained glass pane
+        - STAINED_GLASS_PANE
 
 close-the-menu:
   id: BARRIER

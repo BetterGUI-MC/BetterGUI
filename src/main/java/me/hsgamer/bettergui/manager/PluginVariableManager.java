@@ -1,16 +1,16 @@
 package me.hsgamer.bettergui.manager;
 
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
-import me.hsgamer.hscore.expression.ExpressionUtils;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -144,10 +144,19 @@ public class PluginVariableManager {
       return null;
     });
 
-    // Condition
-    register("condition_", (original, uuid) -> Optional.ofNullable(ExpressionUtils.getResult(original)).map(BigDecimal::toString).orElse(null));
-
     // UUID
     register("uuid", (original, uuid) -> !original.isEmpty() ? null : uuid.toString());
+
+    // Menu Variables
+    register("menu_", (original, uuid) -> {
+      String[] split = original.split("_", 2);
+      String menuName = split[0].trim();
+      String variable = split.length > 1 ? split[1].trim() : "";
+      Menu menu = BetterGUI.getInstance().getMenuManager().getMenu(menuName);
+      if (menu == null) {
+        return null;
+      }
+      return menu.getVariableManager().setVariables("{" + variable + "}", uuid);
+    });
   }
 }

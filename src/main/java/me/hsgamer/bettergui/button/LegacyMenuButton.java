@@ -2,88 +2,30 @@ package me.hsgamer.bettergui.button;
 
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
-import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.config.MainConfig;
-import me.hsgamer.bettergui.requirement.RequirementSetting;
-import me.hsgamer.bettergui.utils.ButtonUtils;
-import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
-import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
+import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.bukkit.gui.button.impl.PredicateButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class LegacyMenuButton extends BaseWrappedButton {
-  private final Set<UUID> checked = new ConcurrentSkipListSet<>();
-  private boolean checkOnlyOnCreation = false;
+  private Set<UUID> checked;
 
-  /**
-   * Create a new button
-   *
-   * @param menu the menu
-   */
-  public LegacyMenuButton(Menu menu) {
-    super(menu);
+  public LegacyMenuButton(ButtonBuilder.Input input) {
+    super(input);
   }
 
   @Override
   protected Button createButton(Map<String, Object> section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
-
-    MenuButton menuButton = new MenuButton(getMenu());
-    menuButton.setName(getName());
-    menuButton.setFromSection(section);
-
-    PredicateButton predicateButton = new PredicateButton(menuButton);
-
-    this.checkOnlyOnCreation = Optional.ofNullable(keys.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.checkOnlyOnCreation);
-
-    Optional.ofNullable(keys.get("view-requirement"))
-      .filter(Map.class::isInstance)
-      .<Map<String, Object>>map(Map.class::cast)
-      .ifPresent(subsection -> {
-        RequirementSetting viewRequirement = new RequirementSetting(getMenu(), getName() + "_view");
-        viewRequirement.loadFromSection(subsection);
-        predicateButton.setViewPredicate(uuid -> {
-          if (checkOnlyOnCreation && checked.contains(uuid)) {
-            return true;
-          }
-          if (!viewRequirement.check(uuid)) {
-            viewRequirement.sendFailActions(uuid);
-            return false;
-          }
-          viewRequirement.getCheckedRequirement(uuid).ifPresent(requirementSet -> {
-            requirementSet.take(uuid);
-            requirementSet.sendSuccessActions(uuid);
-          });
-          checked.add(uuid);
-          return true;
-        });
-      });
-    Optional.ofNullable(keys.get("click-requirement"))
-      .filter(Map.class::isInstance)
-      .<Map<String, Object>>map(Map.class::cast)
-      .ifPresent(subsection -> {
-        Map<AdvancedClickType, RequirementSetting> clickRequirements = ButtonUtils.convertClickRequirements(subsection, this);
-        predicateButton.setClickPredicate((uuid, event) -> {
-          RequirementSetting clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(event, Boolean.TRUE.equals(MainConfig.MODERN_CLICK_TYPE.getValue())));
-          if (!clickRequirement.check(uuid)) {
-            clickRequirement.sendFailActions(uuid);
-            return false;
-          }
-          clickRequirement.getCheckedRequirement(uuid).ifPresent(requirementSet -> {
-            requirementSet.take(uuid);
-            requirementSet.sendSuccessActions(uuid);
-          });
-          return true;
-        });
-      });
-
+    WrappedSimpleButton simpleButton = new WrappedSimpleButton(new ButtonBuilder.Input(getMenu(), getName(), section));
+    PredicateButton predicateButton = new PredicateButton(simpleButton);
+    checked = new ConcurrentSkipListSet<>();
+    WrappedPredicateButton.applyRequirement(keys, this, checked, predicateButton);
     return predicateButton;
   }
 

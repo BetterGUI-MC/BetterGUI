@@ -1,37 +1,23 @@
 package me.hsgamer.bettergui.api.requirement;
 
-import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.menu.MenuElement;
+import me.hsgamer.bettergui.api.process.ProcessApplier;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * The requirement
  */
 public interface Requirement extends MenuElement {
-
   /**
-   * Called when checking a unique id
+   * Check the requirement for the unique id
    *
    * @param uuid the unique id
    *
-   * @return true if the unique id meets the requirement, otherwise false
+   * @return the result
    */
-  boolean check(UUID uuid);
-
-  /**
-   * Called when taking the requirements from unique id
-   *
-   * @param uuid the unique id
-   */
-  void take(UUID uuid);
-
-  /**
-   * Set the value
-   *
-   * @param value the value
-   */
-  void setValue(Object value);
+  Result check(UUID uuid);
 
   /**
    * Get the name of the requirement
@@ -41,9 +27,95 @@ public interface Requirement extends MenuElement {
   String getName();
 
   /**
-   * Set the menu involved in
-   *
-   * @param menu the menu
+   * The result of the requirement
    */
-  void setMenu(Menu menu);
+  class Result {
+    /**
+     * Whether the requirement is met
+     */
+    public final boolean isSuccess;
+    /**
+     * The action if the requirement is met
+     */
+    public final ProcessApplier applier;
+
+    /**
+     * Create a new result
+     *
+     * @param success whether the requirement is met
+     * @param applier the action if the requirement is met
+     */
+    public Result(boolean success, ProcessApplier applier) {
+      this.isSuccess = success;
+      this.applier = applier;
+    }
+
+    /**
+     * Create a success result
+     *
+     * @param applier the action if the requirement is met
+     *
+     * @return the result
+     */
+    public static Result success(ProcessApplier applier) {
+      return new Result(true, applier);
+    }
+
+    /**
+     * Create a success result
+     *
+     * @param applier the action if the requirement is met
+     *
+     * @return the result
+     */
+    public static Result success(Consumer<UUID> applier) {
+      return new Result(true, (uuid, process) -> {
+        applier.accept(uuid);
+        process.next();
+      });
+    }
+
+    /**
+     * Create a success result
+     *
+     * @return the result
+     */
+    public static Result success() {
+      return new Result(true, (uuid, process) -> process.next());
+    }
+
+    /**
+     * Create a failure result
+     *
+     * @param applier the action if the requirement is not met
+     *
+     * @return the result
+     */
+    public static Result fail(ProcessApplier applier) {
+      return new Result(false, applier);
+    }
+
+    /**
+     * Create a failure result
+     *
+     * @param applier the action if the requirement is not met
+     *
+     * @return the result
+     */
+    public static Result fail(Consumer<UUID> applier) {
+      return new Result(false, (uuid, process) -> {
+        applier.accept(uuid);
+        process.next();
+      });
+    }
+
+    /**
+     * Create a failure result
+     *
+     * @return the result
+     */
+    public static Result fail() {
+      return new Result(false, (uuid, process) -> process.next());
+    }
+  }
 }

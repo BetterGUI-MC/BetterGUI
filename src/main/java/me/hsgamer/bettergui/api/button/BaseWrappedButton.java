@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.api.button;
 
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -9,20 +10,24 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The base wrapped button
+ * The base class of wrapped button
  */
 public abstract class BaseWrappedButton implements WrappedButton {
-  private final Menu menu;
-  protected Button button;
-  private String name = "";
+  protected final Menu menu;
+  protected final String name;
+  protected final Map<String, Object> options;
+  protected final Button button;
 
   /**
-   * Create a new button
+   * Create a new wrapped button
    *
-   * @param menu the menu
+   * @param input the input
    */
-  protected BaseWrappedButton(Menu menu) {
-    this.menu = menu;
+  protected BaseWrappedButton(ButtonBuilder.Input input) {
+    this.menu = input.menu;
+    this.name = input.name;
+    this.options = input.options;
+    this.button = createButton(options);
   }
 
   /**
@@ -34,19 +39,18 @@ public abstract class BaseWrappedButton implements WrappedButton {
    */
   protected abstract Button createButton(Map<String, Object> section);
 
-  @Override
-  public void setFromSection(Map<String, Object> section) {
-    this.button = createButton(section);
+  /**
+   * Get the options of the button
+   *
+   * @return the options
+   */
+  public Map<String, Object> getOptions() {
+    return options;
   }
 
   @Override
   public String getName() {
     return name;
-  }
-
-  @Override
-  public void setName(String name) {
-    this.name = name;
   }
 
   @Override
@@ -81,5 +85,13 @@ public abstract class BaseWrappedButton implements WrappedButton {
     if (button != null) {
       button.stop();
     }
+  }
+
+  @Override
+  public boolean forceSetAction(UUID uuid) {
+    if (button != null) {
+      return button.forceSetAction(uuid);
+    }
+    return false;
   }
 }

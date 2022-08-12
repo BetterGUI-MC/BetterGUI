@@ -53,6 +53,7 @@ public final class MenuManager {
     File menusFolder = new File(plugin.getDataFolder(), "menu");
     if (!menusFolder.exists() && menusFolder.mkdirs()) {
       plugin.saveResource("menu" + File.separator + "example.yml", false);
+      plugin.saveResource("menu" + File.separator + "addondownloader.yml", false);
     }
     LinkedList<File> files = new LinkedList<>();
     files.add(menusFolder);
@@ -78,7 +79,7 @@ public final class MenuManager {
     if (menuMap.containsKey(name)) {
       plugin.getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
     } else {
-      Optional.ofNullable(MenuBuilder.INSTANCE.getMenu(name, config)).ifPresent(menu -> menuMap.put(name, menu));
+      MenuBuilder.INSTANCE.build(config).ifPresent(menu -> menuMap.put(name, menu));
     }
   }
 
@@ -110,7 +111,7 @@ public final class MenuManager {
    * @param bypass whether the plugin ignores the permission check
    */
   public void openMenu(String name, Player player, String[] args, boolean bypass) {
-    menuMap.get(name).createInventory(player, args, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
+    menuMap.get(name).create(player, args, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
   }
 
   /**
@@ -125,7 +126,7 @@ public final class MenuManager {
   public void openMenu(String name, Player player, String[] args, Menu parentMenu, boolean bypass) {
     Menu menu = menuMap.get(name);
     menu.setParentMenu(player.getUniqueId(), parentMenu);
-    menu.createInventory(player, args, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
+    menu.create(player, args, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
   }
 
   /**

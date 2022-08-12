@@ -1,8 +1,8 @@
 package me.hsgamer.bettergui.manager;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.command.Command;
@@ -18,6 +18,11 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 public class MenuCommandManager {
   private final Map<String, Command> registeredMenuCommand = new HashMap<>();
+  private final BetterGUI plugin;
+
+  public MenuCommandManager(BetterGUI plugin) {
+    this.plugin = plugin;
+  }
 
   /**
    * Register the command that opens the menu
@@ -30,9 +35,9 @@ public class MenuCommandManager {
       @Override
       public boolean execute(CommandSender commandSender, String s, String[] strings) {
         if (commandSender instanceof Player) {
-          menu.createInventory((Player) commandSender, strings, commandSender.hasPermission(Permissions.OPEN_MENU_BYPASS));
+          menu.create((Player) commandSender, strings, commandSender.hasPermission(Permissions.OPEN_MENU_BYPASS));
         } else {
-          MessageUtils.sendMessage(commandSender, MessageConfig.PLAYER_ONLY.getValue());
+          MessageUtils.sendMessage(commandSender, plugin.getMessageConfig().playerOnly);
         }
         return true;
       }

@@ -1,10 +1,13 @@
 package me.hsgamer.bettergui.api.requirement;
 
+import me.hsgamer.bettergui.api.process.ProcessApplier;
+import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * The requirement that can take something
@@ -12,10 +15,28 @@ import java.util.UUID;
  * @param <V> the type of the final value
  */
 public abstract class TakableRequirement<V> extends BaseRequirement<V> {
-  private boolean take = getDefaultTake();
+  private boolean take;
 
-  protected TakableRequirement(String name) {
-    super(name);
+  /**
+   * Create a new requirement
+   *
+   * @param input the input
+   */
+  protected TakableRequirement(RequirementBuilder.Input input) {
+    super(input);
+  }
+
+  @Override
+  protected Object handleValue(Object inputValue) {
+    if (inputValue instanceof Map) {
+      //noinspection unchecked
+      Map<String, Object> keys = new CaseInsensitiveStringMap<>((Map<String, Object>) inputValue);
+      this.take = Optional.ofNullable(keys.get("take")).map(String::valueOf).map(Boolean::parseBoolean).orElse(getDefaultTake());
+      return super.handleValue(Optional.ofNullable(keys.get("value")).orElse(getDefaultValue()));
+    } else {
+      this.take = getDefaultTake();
+      return super.handleValue(inputValue);
+    }
   }
 
   /**
@@ -33,35 +54,33 @@ public abstract class TakableRequirement<V> extends BaseRequirement<V> {
   protected abstract Object getDefaultValue();
 
   /**
-   * Take something if the "take" state is true
+   * Get the success result with the conditional "take" state
    *
-   * @param uuid the unique id
+   * @param applier the applier
+   *
+   * @return the success result
    */
-  protected abstract void takeChecked(UUID uuid);
-
-  @Override
-  public void setValue(Object value) {
-    if (value instanceof Map) {
-      Map<String, Object> keys = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
-      setFromMap(keys);
-    } else {
-      super.setValue(value);
-    }
+  public Result successConditional(ProcessApplier applier) {
+    return new Result(true, (uuid, process) -> {
+      if (take) {
+        applier.accept(uuid, process);
+      } else {
+        process.next();
+      }
+    });
   }
 
-  private void setFromMap(Map<String, Object> map) {
-    this.take = Optional.ofNullable(map.get("take")).map(String::valueOf).map(Boolean::parseBoolean).orElse(this.take);
-    super.setValue(Optional.ofNullable(map.get("value")).orElse(getDefaultValue()));
-  }
-
-  @Override
-  public void take(UUID uuid) {
-    if (isTake()) {
-      takeChecked(uuid);
-    }
-  }
-
-  public boolean isTake() {
-    return take;
+  /**
+   * Get the success result with the conditional "take" state
+   *
+   * @param applier the applier
+   *
+   * @return the success result
+   */
+  public Result successConditional(Consumer<UUID> applier) {
+    return successConditional((uuid, process) -> {
+      applier.accept(uuid);
+      process.next();
+    });
   }
 }

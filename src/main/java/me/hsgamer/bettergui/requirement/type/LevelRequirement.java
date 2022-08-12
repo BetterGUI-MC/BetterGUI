@@ -1,59 +1,60 @@
 package me.hsgamer.bettergui.requirement.type;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.requirement.TakableRequirement;
-import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.bettergui.manager.PluginVariableManager;
+import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.hscore.expression.ExpressionUtils;
-import me.hsgamer.hscore.variable.VariableManager;
+import me.hsgamer.hscore.common.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public class LevelRequirement extends TakableRequirement<Integer> {
-  private final Map<UUID, Integer> checked = new HashMap<>();
-
-  public LevelRequirement(String name) {
-    super(name);
-    PluginVariableManager.register(name, (original, uuid) -> {
+  public LevelRequirement(RequirementBuilder.Input input) {
+    super(input);
+    getMenu().getVariableManager().register(getName(), (original, uuid) -> {
       Player player = Bukkit.getPlayer(uuid);
       if (player == null) {
         return "";
       }
-      int level = getParsedValue(uuid);
+      int level = getFinalValue(uuid);
       if (level > 0 && player.getLevel() < level) {
         return String.valueOf(level);
       }
-      return MessageConfig.HAVE_MET_REQUIREMENT_PLACEHOLDER.getValue();
+      return BetterGUI.getInstance().getMessageConfig().haveMetRequirementPlaceholder;
     });
   }
 
   @Override
-  public Integer getParsedValue(UUID uuid) {
-    String parsed = VariableManager.setVariables(String.valueOf(value).trim(), uuid);
-    return Optional.ofNullable(ExpressionUtils.getResult(parsed)).map(BigDecimal::intValue).orElseGet(() -> {
-      MessageUtils.sendMessage(uuid, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed));
-      return 0;
-    });
+  protected Integer convert(Object value, UUID uuid) {
+    String replaced = StringReplacerApplier.replace(String.valueOf(value).trim(), uuid, this);
+    return Validate.getNumber(replaced)
+      .map(BigDecimal::intValue)
+      .orElseGet(() -> {
+        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().getMessageConfig().invalidNumber.replace("{input}", replaced));
+        return 0;
+      });
   }
 
   @Override
-  public boolean check(UUID uuid) {
+  protected Result checkConverted(UUID uuid, Integer value) {
     Player player = Bukkit.getPlayer(uuid);
     if (player == null) {
-      return true;
+      return Result.success();
     }
-    int levels = getParsedValue(uuid);
-    if (levels > 0 && player.getLevel() < levels) {
-      return false;
+    if (value > 0 && player.getLevel() < value) {
+      return Result.fail();
     }
-    checked.put(player.getUniqueId(), levels);
-    return true;
+    return successConditional(uuid1 -> {
+      Player player1 = Bukkit.getPlayer(uuid);
+      if (player1 == null) {
+        return;
+      }
+      player1.setLevel(player1.getLevel() - value);
+    });
   }
 
   @Override
@@ -64,14 +65,5 @@ public class LevelRequirement extends TakableRequirement<Integer> {
   @Override
   protected Object getDefaultValue() {
     return "0";
-  }
-
-  @Override
-  protected void takeChecked(UUID uuid) {
-    Player player = Bukkit.getPlayer(uuid);
-    if (player == null) {
-      return;
-    }
-    player.setLevel(player.getLevel() + -checked.remove(player.getUniqueId()));
   }
 }

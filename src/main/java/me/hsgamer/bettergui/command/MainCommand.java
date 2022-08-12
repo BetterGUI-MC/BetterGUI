@@ -16,8 +16,11 @@ import java.util.List;
 import static me.hsgamer.hscore.bukkit.utils.MessageUtils.sendMessage;
 
 public class MainCommand extends BukkitCommand {
-  public MainCommand(String name) {
-    super(name, "Show all available commands", "/" + name, new ArrayList<>());
+  private final BetterGUI plugin;
+
+  public MainCommand(BetterGUI plugin) {
+    super(plugin.getName().toLowerCase(), "Show all available commands", "/" + plugin.getName().toLowerCase(), new ArrayList<>());
+    this.plugin = plugin;
     setPermission(Permissions.HELP.getName());
   }
 
@@ -27,10 +30,10 @@ public class MainCommand extends BukkitCommand {
       return false;
     }
 
-    CommandManager manager = BetterGUI.getInstance().getCommandManager();
+    CommandManager manager = plugin.getCommandManager();
     sendMessage(commandSender, "");
-    sendMessage(commandSender, "&e&lAuthor: &f" + Arrays.toString(BetterGUI.getInstance().getDescription().getAuthors().toArray()));
-    sendMessage(commandSender, "&e&lVersion: &f" + BetterGUI.getInstance().getDescription().getVersion());
+    sendMessage(commandSender, "&e&lAuthor: &f" + Arrays.toString(plugin.getDescription().getAuthors().toArray()));
+    sendMessage(commandSender, "&e&lVersion: &f" + plugin.getDescription().getVersion());
     sendMessage(commandSender, "");
     sendMessage(commandSender, "&b&lCommand: ");
     for (Command command : manager.getRegistered().values()) {
@@ -49,7 +52,7 @@ public class MainCommand extends BukkitCommand {
     sendMessage(commandSender, "");
 
 
-    MenuCommandManager menuCommandManager = BetterGUI.getInstance().getMenuCommandManager();
+    MenuCommandManager menuCommandManager = plugin.getMenuCommandManager();
     sendMessage(commandSender, "&b&lMenu Command: ");
     for (Command command : menuCommandManager.getRegisteredMenuCommand().values()) {
       sendMessage(commandSender, "  &6" + command.getUsage());

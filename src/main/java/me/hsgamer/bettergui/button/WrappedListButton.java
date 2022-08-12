@@ -2,8 +2,8 @@ package me.hsgamer.bettergui.button;
 
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
-import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.bukkit.gui.button.impl.ListButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
@@ -14,14 +14,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class WrappedListButton extends BaseWrappedButton {
-
-  /**
-   * Create a new button
-   *
-   * @param menu the menu
-   */
-  public WrappedListButton(Menu menu) {
-    super(menu);
+  public WrappedListButton(ButtonBuilder.Input input) {
+    super(input);
   }
 
   @Override
@@ -29,8 +23,7 @@ public class WrappedListButton extends BaseWrappedButton {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
     boolean keepCurrentIndex = Optional.ofNullable(keys.get("keep-current-index")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     return Optional.ofNullable(keys.get("child"))
-      .filter(Map.class::isInstance)
-      .<Map<String, Object>>map(Map.class::cast)
+      .flatMap(MapUtil::castOptionalStringObjectMap)
       .map(o -> new LinkedList<Button>(ButtonBuilder.INSTANCE.getChildButtons(this, o)))
       .map(list -> {
         ListButton button = new ListButton(list);

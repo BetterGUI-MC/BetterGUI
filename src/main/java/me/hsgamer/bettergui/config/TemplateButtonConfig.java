@@ -22,7 +22,7 @@ public class TemplateButtonConfig {
   }
 
   /**
-   * Setup the list
+   * Set up the list
    */
   public void setup() {
     if (!templateFolder.isDirectory()) {

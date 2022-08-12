@@ -10,8 +10,11 @@ import java.util.Arrays;
 import static me.hsgamer.hscore.bukkit.utils.MessageUtils.sendMessage;
 
 public class GetTemplateButtonsCommand extends BukkitCommand {
-  public GetTemplateButtonsCommand() {
+  private final BetterGUI plugin;
+
+  public GetTemplateButtonsCommand(BetterGUI plugin) {
     super("gettemplatebuttons", "Get the registered template buttons", "/gettemplatebuttons", Arrays.asList("templates", "templatebuttons"));
+    this.plugin = plugin;
     setPermission(Permissions.TEMPLATE_BUTTON.getName());
   }
 
@@ -21,7 +24,7 @@ public class GetTemplateButtonsCommand extends BukkitCommand {
       return false;
     }
     sendMessage(sender, "&bRegistered Template Buttons:");
-    BetterGUI.getInstance().getTemplateButtonConfig().getAllTemplateButtonNames().stream().sorted().forEach(prefix -> sendMessage(sender, "&f- &e" + prefix));
+    plugin.getTemplateButtonConfig().getAllTemplateButtonNames().stream().sorted().forEach(prefix -> sendMessage(sender, "&f- &e" + prefix));
     return true;
   }
 }

@@ -1,8 +1,9 @@
 package me.hsgamer.bettergui.requirement.type;
 
 import me.hsgamer.bettergui.api.requirement.BaseRequirement;
+import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.common.CollectionUtils;
-import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -10,24 +11,28 @@ import java.util.List;
 import java.util.UUID;
 
 public class PermissionRequirement extends BaseRequirement<List<String>> {
-  public PermissionRequirement(String name) {
-    super(name);
+  public PermissionRequirement(RequirementBuilder.Input input) {
+    super(input);
   }
 
   @Override
-  public List<String> getParsedValue(UUID uuid) {
+  protected List<String> convert(Object value, UUID uuid) {
     List<String> list = CollectionUtils.createStringListFromObject(value, true);
-    list.replaceAll(s -> VariableManager.setVariables(s, uuid));
+    list.replaceAll(s -> StringReplacerApplier.replace(s, uuid, this));
     return list;
   }
 
   @Override
-  public boolean check(UUID uuid) {
+  protected Result checkConverted(UUID uuid, List<String> value) {
     Player player = Bukkit.getPlayer(uuid);
     if (player == null) {
-      return true;
+      return Result.success();
     }
-    return getParsedValue(uuid).parallelStream().allMatch(s -> hasPermission(player, s));
+    if (value.parallelStream().allMatch(s -> hasPermission(player, s))) {
+      return Result.success();
+    } else {
+      return Result.fail();
+    }
   }
 
   private boolean hasPermission(Player player, String permission) {
@@ -36,10 +41,5 @@ public class PermissionRequirement extends BaseRequirement<List<String>> {
     } else {
       return player.hasPermission(permission);
     }
-  }
-
-  @Override
-  public void take(UUID uuid) {
-    // EMPTY
   }
 }

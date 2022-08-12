@@ -1,7 +1,7 @@
 package me.hsgamer.bettergui.api.action;
 
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.hscore.variable.VariableManager;
+import me.hsgamer.bettergui.builder.ActionBuilder;
 
 import java.util.UUID;
 
@@ -9,19 +9,19 @@ import java.util.UUID;
  * The base action
  */
 public abstract class BaseAction implements Action {
-
-  private final boolean hasVariables;
+  private final Menu menu;
   private final String string;
-  private Menu menu;
+  private final boolean canBeReplaced;
 
   /**
    * Create a new action
    *
-   * @param string the action string
+   * @param input the input
    */
-  protected BaseAction(String string) {
-    this.string = string;
-    this.hasVariables = VariableManager.hasVariables(string);
+  protected BaseAction(ActionBuilder.Input input) {
+    this.menu = input.menu;
+    this.string = input.value;
+    this.canBeReplaced = menu.canBeReplaced(string);
   }
 
   /**
@@ -32,16 +32,24 @@ public abstract class BaseAction implements Action {
    * @return the replaced string
    */
   protected String getReplacedString(UUID uuid) {
-    return hasVariables ? VariableManager.setVariables(string, uuid) : string;
+    String replaced = canBeReplaced ? menu.replace(string, uuid) : string;
+    if (shouldBeTrimmed()) {
+      replaced = replaced.trim();
+    }
+    return replaced;
+  }
+
+  /**
+   * Check if the string should be trimmed
+   *
+   * @return true if it should
+   */
+  protected boolean shouldBeTrimmed() {
+    return false;
   }
 
   @Override
   public Menu getMenu() {
     return menu;
-  }
-
-  @Override
-  public void setMenu(Menu menu) {
-    this.menu = menu;
   }
 }

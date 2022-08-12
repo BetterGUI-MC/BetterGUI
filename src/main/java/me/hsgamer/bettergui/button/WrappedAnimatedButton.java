@@ -3,8 +3,8 @@ package me.hsgamer.bettergui.button;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
-import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.bukkit.gui.button.impl.AnimatedButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
@@ -15,13 +15,8 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class WrappedAnimatedButton extends BaseWrappedButton {
-  /**
-   * Create a new button
-   *
-   * @param menu the menu
-   */
-  public WrappedAnimatedButton(Menu menu) {
-    super(menu);
+  public WrappedAnimatedButton(ButtonBuilder.Input input) {
+    super(input);
   }
 
   @Override
@@ -48,8 +43,7 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
       .orElse(false);
 
     List<WrappedButton> frames = Optional.ofNullable(keys.get("child"))
-      .filter(Map.class::isInstance)
-      .<Map<String, Object>>map(Map.class::cast)
+      .flatMap(MapUtil::castOptionalStringObjectMap)
       .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, o))
       .orElse(Collections.emptyList());
     frames = CollectionUtils.rotate(frames, shift);

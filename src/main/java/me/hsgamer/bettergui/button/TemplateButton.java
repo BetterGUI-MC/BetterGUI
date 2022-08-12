@@ -2,7 +2,6 @@ package me.hsgamer.bettergui.button;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
-import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
@@ -13,10 +12,10 @@ public class TemplateButton extends BaseWrappedButton {
   /**
    * Create a new button
    *
-   * @param menu the menu
+   * @param input the input
    */
-  public TemplateButton(Menu menu) {
-    super(menu);
+  public TemplateButton(ButtonBuilder.Input input) {
+    super(input);
   }
 
   @Override
@@ -57,7 +56,7 @@ public class TemplateButton extends BaseWrappedButton {
       finalMap.replaceAll((s, o) -> replaceVariables(o, variableMap));
     }
 
-    return ButtonBuilder.INSTANCE.getButton(getMenu(), getName(), finalMap);
+    return ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName(), finalMap)).orElse(null);
   }
 
   private Object replaceVariables(Object obj, Map<String, String> variableMap) {
@@ -72,7 +71,7 @@ public class TemplateButton extends BaseWrappedButton {
       ((Collection<?>) obj).forEach(o -> replaceList.add(replaceVariables(o, variableMap)));
       return replaceList;
     } else if (obj instanceof Map) {
-      // noinspection unchecked
+      // noinspection unchecked, rawtypes
       ((Map) obj).replaceAll((k, v) -> replaceVariables(v, variableMap));
     }
     return obj;

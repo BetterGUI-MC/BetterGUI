@@ -1,35 +1,34 @@
 package me.hsgamer.bettergui.config;
 
+import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
-import me.hsgamer.hscore.common.CollectionUtils;
-import me.hsgamer.hscore.config.BaseConfigPath;
-import me.hsgamer.hscore.config.ConfigPath;
-import me.hsgamer.hscore.config.PathableConfig;
-import me.hsgamer.hscore.config.path.BooleanConfigPath;
-import me.hsgamer.hscore.config.path.StringConfigPath;
+import me.hsgamer.hscore.config.annotated.AnnotatedConfig;
+import me.hsgamer.hscore.config.annotation.ConfigPath;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
- * The main config of the plugin
+ * The main class of the plugin
  */
-public final class MainConfig extends PathableConfig {
-
-  public static final StringConfigPath DEFAULT_MENU_TYPE = new StringConfigPath("default-menu-type", "simple");
-  public static final StringConfigPath DEFAULT_BUTTON_TYPE = new StringConfigPath("default-button-type", "simple");
-  public static final BooleanConfigPath METRICS = new BooleanConfigPath("metrics", true);
-  public static final BooleanConfigPath MODERN_CLICK_TYPE = new BooleanConfigPath("use-modern-click-type", false);
-  public static final BooleanConfigPath REPLACE_ALL_VARIABLES = new BooleanConfigPath("replace-all-variables-each-check", true);
-  public static final BooleanConfigPath FORCED_UPDATE_INVENTORY = new BooleanConfigPath("forced-update-inventory", false);
-  public static final BooleanConfigPath ENABLE_ALTERNATIVE_COMMAND_MANAGER = new BooleanConfigPath("alternative-command-manager.enable", false);
-  public static final BooleanConfigPath ALTERNATIVE_COMMAND_MANAGER_CASE_INSENSITIVE = new BooleanConfigPath("alternative-command-manager.case-insensitive", true);
-  public static final BooleanConfigPath ALTERNATIVE_COMMAND_MANAGER_SHOULD_IGNORE = new BooleanConfigPath("alternative-command-manager.should-ignore", true);
-  public static final BooleanConfigPath USE_LEGACY_BUTTON = new BooleanConfigPath("use-legacy-button", true);
-  public static final ConfigPath<List<String>> ALTERNATIVE_COMMAND_MANAGER_IGNORED_COMMANDS = new BaseConfigPath<>("alternative-command-manager.ignored-commands", Collections.singletonList("warp test"), o -> CollectionUtils.createStringListFromObject(o, true));
+public class MainConfig extends AnnotatedConfig {
+  public final @ConfigPath("default-menu-type") String defaultMenuType;
+  public final @ConfigPath("default-button-type") String defaultButtonType;
+  public final @ConfigPath("metrics") boolean metrics;
+  public final @ConfigPath("replace-all-variables-each-check") boolean replaceAllVariables;
+  public final @ConfigPath("forced-update-inventory") boolean forcedUpdateInventory;
+  public final @ConfigPath("use-modern-click-type") boolean modernClickType;
+  public final @ConfigPath("use-legacy-button") boolean useLegacyButton;
+  public final @ConfigPath(value = "alternative-command-manager", converter = AlternativeCommandListener.SettingConverter.class) AlternativeCommandListener.Setting alternativeCommandManager;
 
   public MainConfig(Plugin plugin) {
     super(new BukkitConfig(plugin, "config.yml"));
+
+    defaultMenuType = "simple";
+    defaultButtonType = "simple";
+    metrics = true;
+    replaceAllVariables = true;
+    forcedUpdateInventory = false;
+    modernClickType = false;
+    useLegacyButton = true;
+    alternativeCommandManager = new AlternativeCommandListener.Setting();
   }
 }

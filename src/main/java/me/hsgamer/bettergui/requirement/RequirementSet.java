@@ -1,30 +1,47 @@
 package me.hsgamer.bettergui.requirement;
 
-import co.aikar.taskchain.TaskChain;
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.action.Action;
+import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.api.menu.MenuElement;
+import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.api.requirement.Requirement;
+import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.util.MapUtil;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.task.BatchRunnable;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The requirement set
  */
-public class RequirementSet implements MenuElement {
+public class RequirementSet implements Requirement {
   private final String name;
-  private final List<Requirement> requirements;
-  private final List<Action> successActions = new LinkedList<>();
-  private final List<Action> failActions = new LinkedList<>();
   private final Menu menu;
+  private final List<Requirement> requirements;
+  private final ActionApplier successActionApplier;
+  private final ActionApplier failActionApplier;
 
-  public RequirementSet(String name, Menu menu, List<Requirement> requirements) {
+  /**
+   * Create a new requirement set
+   *
+   * @param menu    the menu
+   * @param name    the name
+   * @param section the section
+   */
+  public RequirementSet(Menu menu, String name, Map<String, Object> section) {
     this.name = name;
     this.menu = menu;
-    this.requirements = requirements;
+    this.requirements = section.entrySet().stream().flatMap(entry -> {
+      String type = entry.getKey();
+      Object value = entry.getValue();
+      return RequirementBuilder.INSTANCE.build(new RequirementBuilder.Input(menu, type, name + "_" + type, value)).map(Stream::of).orElse(Stream.empty());
+    }).collect(Collectors.toList());
+
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
+    this.successActionApplier = new ActionApplier(menu, MapUtil.getIfFoundOrDefault(keys, Collections.emptyList(), "success-command", "success-action"));
+    this.failActionApplier = new ActionApplier(menu, MapUtil.getIfFoundOrDefault(keys, Collections.emptyList(), "fail-command", "fail-action"));
   }
 
   /**
@@ -37,69 +54,48 @@ public class RequirementSet implements MenuElement {
   }
 
   /**
-   * Set the success actions
+   * Get the success action applier
    *
-   * @param actions the actions
+   * @return the success action applier
    */
-  public void setSuccessActions(List<Action> actions) {
-    this.successActions.addAll(actions);
+  public ActionApplier getSuccessActionApplier() {
+    return successActionApplier;
   }
 
   /**
-   * Set the fail commands
+   * Get the fail action applier
    *
-   * @param actions the commands
+   * @return the fail action applier
    */
-  public void setFailActions(List<Action> actions) {
-    this.failActions.addAll(actions);
+  public ActionApplier getFailActionApplier() {
+    return failActionApplier;
   }
 
-  /**
-   * Check if the unique id meets all requirements
-   *
-   * @param uuid the unique id
-   *
-   * @return true if it does
-   */
-  public boolean check(UUID uuid) {
+  @Override
+  public Result check(UUID uuid) {
+    List<ProcessApplier> processAppliers = new ArrayList<>();
+    boolean success = true;
     for (Requirement requirement : requirements) {
-      if (!requirement.check(uuid)) {
-        TaskChain<?> taskChain = BetterGUI.newChain();
-        failActions.forEach(command -> command.addToTaskChain(uuid, taskChain));
-        taskChain.execute();
-        return false;
+      Result result = requirement.check(uuid);
+      if (result.isSuccess) {
+        processAppliers.add(result.applier);
+      } else {
+        success = false;
+        break;
       }
     }
-    return true;
-  }
-
-  /**
-   * Run the "take" action of the requirement
-   *
-   * @param uuid the id to "take"
-   */
-  public void take(UUID uuid) {
-    for (Requirement requirement : requirements) {
-      requirement.take(uuid);
+    if (success) {
+      return Result.success((uuid1, process) -> {
+        BatchRunnable.TaskPool taskPool = process.getCurrentTaskPool();
+        processAppliers.forEach(processApplier -> taskPool.addLast(subProcess -> processApplier.accept(uuid1, subProcess)));
+        successActionApplier.accept(uuid1, process);
+      });
+    } else {
+      return Result.fail(failActionApplier);
     }
   }
 
-  /**
-   * Run success actions
-   *
-   * @param uuid the player
-   */
-  public void sendSuccessActions(UUID uuid) {
-    TaskChain<?> taskChain = BetterGUI.newChain();
-    successActions.forEach(command -> command.addToTaskChain(uuid, taskChain));
-    taskChain.execute();
-  }
-
-  /**
-   * Get the name of the set
-   *
-   * @return the name
-   */
+  @Override
   public String getName() {
     return name;
   }
