@@ -120,13 +120,6 @@ public abstract class Menu {
   public abstract void closeAll();
 
   /**
-   * Get the original
-   *
-   * @return the original
-   */
-  public abstract Object getOriginal();
-
-  /**
    * Get the former menu that opened this menu
    *
    * @param uuid the unique id

@@ -234,11 +234,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     guiHolder.stop();
   }
 
-  @Override
-  public GUIHolder getOriginal() {
-    return guiHolder;
-  }
-
   protected abstract B createButtonMap(Config config);
 
   protected void refreshButtonMapOnCreate(B buttonMap, UUID uuid) {
