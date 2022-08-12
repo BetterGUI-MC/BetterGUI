@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ build ]
     environment: "build_environment"
-    if: "contains(github.event.head_commit.message, '[UPDATE-DOCS]')"
+#    if: "contains(github.event.head_commit.message, '[UPDATE-DOCS]')"
     steps:
       - name: Generate Javadocs
         run: mvn -B install javadoc:javadoc
