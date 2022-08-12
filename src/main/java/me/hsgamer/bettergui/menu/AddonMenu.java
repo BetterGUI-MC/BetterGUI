@@ -9,6 +9,7 @@ import me.hsgamer.hscore.bukkit.item.ItemBuilder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.downloader.core.object.DownloadInfo;
+import me.hsgamer.hscore.ui.property.Initializable;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -42,16 +43,31 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
   @Override
   protected ButtonMap createButtonMap(Config config) {
     Map<String, Object> itemMap = config.getNormalizedValues("button", false);
-    return uuid -> {
-      Collection<DownloadInfo> downloadInfos = getInstance().getAddonDownloader().getLoadedDownloadInfo().values();
-      Map<Button, List<Integer>> buttonMap = new HashMap<>();
-      int slot = 0;
-      for (DownloadInfo info : downloadInfos) {
-        ItemBuilder itemBuilder = new ItemBuilder();
-        ItemModifierBuilder.INSTANCE.build(itemMap).forEach(itemBuilder::addItemModifier);
-        buttonMap.put(new AddonButton(info, itemBuilder), Collections.singletonList(slot++));
+    return new ButtonMap() {
+      private final Map<Button, List<Integer>> buttonMap = new HashMap<>();
+
+      @Override
+      public Map<Button, List<Integer>> getButtons(UUID uuid) {
+        Collection<DownloadInfo> downloadInfos = getInstance().getAddonDownloader().getLoadedDownloadInfo().values();
+        int slot = 0;
+        for (DownloadInfo info : downloadInfos) {
+          ItemBuilder itemBuilder = new ItemBuilder();
+          ItemModifierBuilder.INSTANCE.build(itemMap).forEach(itemBuilder::addItemModifier);
+          buttonMap.put(new AddonButton(info, itemBuilder), Collections.singletonList(slot++));
+        }
+        return buttonMap;
       }
-      return buttonMap;
+
+      @Override
+      public void init() {
+        buttonMap.keySet().forEach(Initializable::init);
+      }
+
+      @Override
+      public void stop() {
+        buttonMap.keySet().forEach(Initializable::stop);
+        buttonMap.clear();
+      }
     };
   }
 
