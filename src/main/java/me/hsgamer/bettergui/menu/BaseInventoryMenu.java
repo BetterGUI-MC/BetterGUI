@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.stream.Collectors;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
@@ -41,7 +42,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   private final Set<UUID> forceClose = new ConcurrentSkipListSet<>();
   private final Map<UUID, BukkitTask> updateTasks = new ConcurrentHashMap<>();
   private final long ticks;
-  private final Permission permission;
+  private final List<Permission> permissions;
 
   protected BaseInventoryMenu(Config config) {
     super(config);
@@ -87,7 +88,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     RequirementApplier tempViewRequirementApplier = new RequirementApplier(this, getName(), Collections.emptyMap());
     RequirementApplier tempCloseRequirementApplier = new RequirementApplier(this, getName(), Collections.emptyMap());
     long tempTicks = 0;
-    Permission tempPermission = new Permission(getInstance().getName().toLowerCase() + "." + getName());
+    List<Permission> tempPermissions = Collections.singletonList(new Permission(getInstance().getName().toLowerCase() + "." + getName()));
     for (Map.Entry<String, Object> entry : config.getNormalizedValues(false).entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
@@ -142,10 +143,10 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
           .map(m -> new RequirementApplier(this, getName() + "_close", m))
           .orElse(tempCloseRequirementApplier);
 
-        tempPermission = Optional.ofNullable(values.get("permission"))
-          .map(String::valueOf)
-          .map(Permission::new)
-          .orElse(tempPermission);
+        tempPermissions = Optional.ofNullable(values.get("permission"))
+          .map(o -> CollectionUtils.createStringListFromObject(o, true))
+          .map(l -> l.stream().map(Permission::new).collect(Collectors.toList()))
+          .orElse(tempPermissions);
 
         Optional.ofNullable(values.get("command"))
           .map(o -> CollectionUtils.createStringListFromObject(o, true))
@@ -170,7 +171,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     this.viewRequirementApplier = tempViewRequirementApplier;
     this.closeRequirementApplier = tempCloseRequirementApplier;
     this.ticks = tempTicks;
-    this.permission = tempPermission;
+    this.permissions = tempPermissions;
 
     buttonMap = createButtonMap(config);
     guiHolder.setButtonMap(buttonMap);
@@ -190,13 +191,22 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     });
   }
 
+  private boolean hasPermission(Player player) {
+    for (Permission permission : permissions) {
+      if (player.hasPermission(permission)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Override
   public boolean create(Player player, String[] args, boolean bypass) {
     UUID uuid = player.getUniqueId();
 
     refreshButtonMapOnCreate(buttonMap, uuid);
 
-    if (!bypass && !player.hasPermission(permission)) {
+    if (!bypass && !hasPermission(player)) {
       MessageUtils.sendMessage(player, getInstance().getMessageConfig().noPermission);
       return false;
     }
