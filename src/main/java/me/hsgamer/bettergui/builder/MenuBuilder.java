@@ -4,6 +4,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.menu.AddonMenu;
 import me.hsgamer.bettergui.menu.ArgumentMenu;
+import me.hsgamer.bettergui.menu.PredicateMenu;
 import me.hsgamer.bettergui.menu.SimpleMenu;
 import me.hsgamer.hscore.builder.MassBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
@@ -26,6 +27,7 @@ public final class MenuBuilder extends MassBuilder<Config, Menu> {
     register(SimpleMenu::new, "simple");
     register(ArgumentMenu::new, "argument", "args", "arguments");
     register(AddonMenu::new, "addon");
+    register(PredicateMenu::new, "predicate");
   }
 
   /**

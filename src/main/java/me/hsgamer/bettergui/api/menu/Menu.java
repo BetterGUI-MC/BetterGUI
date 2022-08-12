@@ -137,7 +137,11 @@ public abstract class Menu {
    * @param menu the former menu
    */
   public void setParentMenu(UUID uuid, Menu menu) {
-    parentMenu.put(uuid, menu);
+    if (menu == null) {
+      parentMenu.remove(uuid);
+    } else {
+      parentMenu.put(uuid, menu);
+    }
   }
 
   /**

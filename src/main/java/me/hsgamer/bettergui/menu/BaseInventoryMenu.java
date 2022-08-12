@@ -6,6 +6,7 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.MapUtil;
+import me.hsgamer.bettergui.util.PlayerUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.gui.GUIDisplay;
@@ -191,22 +192,13 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     });
   }
 
-  private boolean hasPermission(Player player) {
-    for (Permission permission : permissions) {
-      if (player.hasPermission(permission)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   @Override
   public boolean create(Player player, String[] args, boolean bypass) {
     UUID uuid = player.getUniqueId();
 
     refreshButtonMapOnCreate(buttonMap, uuid);
 
-    if (!bypass && !hasPermission(player)) {
+    if (!bypass && !PlayerUtil.hasAnyPermission(player, permissions)) {
       MessageUtils.sendMessage(player, getInstance().getMessageConfig().noPermission);
       return false;
     }
