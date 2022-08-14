@@ -54,20 +54,40 @@ public class RequirementApplier implements ProcessApplier {
     Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
 
+    boolean simpleInput = true;
+    List<AdvancedClickType> remainingClickTypes = new ArrayList<>();
+
+    for (Map.Entry<String, AdvancedClickType> entry : clickTypeMap.entrySet()) {
+      String clickTypeName = entry.getKey();
+      AdvancedClickType clickType = entry.getValue();
+      Optional<Map<String, Object>> optionalSubSection = Optional.ofNullable(keys.get(clickTypeName)).flatMap(MapUtil::castOptionalStringObjectMap);
+      if (!optionalSubSection.isPresent()) {
+        remainingClickTypes.add(clickType);
+        continue;
+      }
+      simpleInput = false;
+      clickRequirements.put(clickType, new RequirementApplier(
+        button.getMenu(),
+        button.getName() + "_click_" + clickTypeName.toLowerCase(Locale.ROOT),
+        optionalSubSection.get()
+      ));
+    }
+
     RequirementApplier defaultSetting = new RequirementApplier(
       button.getMenu(),
       button.getName() + "_click_default",
-      Optional.ofNullable(keys.get("default"))
-        .flatMap(MapUtil::castOptionalStringObjectMap)
-        .orElse(Collections.emptyMap())
+      simpleInput
+        ? section
+        : (
+        Optional.ofNullable(keys.get("default"))
+          .flatMap(MapUtil::castOptionalStringObjectMap)
+          .orElse(Collections.emptyMap())
+      )
     );
 
-    clickTypeMap.forEach((clickTypeName, clickType) ->
-      clickRequirements.put(clickType, Optional.ofNullable(keys.get(clickTypeName))
-        .flatMap(MapUtil::castOptionalStringObjectMap)
-        .map(subsection -> new RequirementApplier(button.getMenu(), button.getName() + "_click_" + clickTypeName.toLowerCase(Locale.ROOT), subsection))
-        .orElse(defaultSetting))
-    );
+    for (AdvancedClickType clickType : remainingClickTypes) {
+      clickRequirements.put(clickType, defaultSetting);
+    }
 
     return clickRequirements;
   }

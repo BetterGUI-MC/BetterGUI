@@ -156,10 +156,9 @@ permission:
   POSITION-Y: 3
   type: predicate
   CLICK-REQUIREMENT:
-    default:
-      permission:
-        PERMISSION: bettergui.test
-        fail-command: 'tell: &cYou don''t have the correct permission!'
+    permission:
+      PERMISSION: bettergui.test
+      fail-command: 'tell: &cYou don''t have the correct permission!'
   button:
     COMMAND: 'tell: &a[v] You have the correct permission!'
     NAME: '&8Permission test'
@@ -215,11 +214,10 @@ cooldown:
       - 'This is a example of icon with cooldown'
     ID: paper
   click-requirement:
-    default:
-      test-cooldown:
-        cooldown: 10
-      fail-command:
-        - "tell: &cWait until the cooldown is finished"
+    test-cooldown:
+      cooldown: 10
+    fail-command:
+      - "tell: &cWait until the cooldown is finished"
   POSITION-X: 5
   POSITION-Y: 3
 
