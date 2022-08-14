@@ -19,7 +19,7 @@ jobs:
       - name: Build with Maven
         run: mvn -B package
       - name: Upload artifact
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v3
         with:
           name: "BetterGUI"
-          path: ./target/**/*.jar
+          path: "./target/bettergui*.jar"
