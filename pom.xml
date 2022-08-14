@@ -21,7 +21,6 @@
 
   <build>
     <defaultGoal>clean package</defaultGoal>
-    <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -44,7 +43,6 @@
             </goals>
             <configuration>
               <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>shaded</shadedClassifierName>
               <createDependencyReducedPom>false</createDependencyReducedPom>
               <shadeSourcesContent>true</shadeSourcesContent>
               <filters>
