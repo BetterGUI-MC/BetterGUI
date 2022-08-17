@@ -45,7 +45,9 @@ public final class StringReplacerApplier {
    * @return the item builder
    */
   public static ItemBuilder apply(ItemBuilder itemBuilder, Menu menu) {
-    itemBuilder.addStringReplacer(menu.getName() + "menu-replacer", menu::replace);
+    if (menu != null) {
+      itemBuilder.addStringReplacer(menu.getName() + "menu-replacer", menu::replace);
+    }
     STRING_REPLACER_MAP.forEach(itemBuilder::addStringReplacer);
     return itemBuilder;
   }
@@ -72,7 +74,10 @@ public final class StringReplacerApplier {
    * @return the replaced string
    */
   public static String replace(String string, UUID uuid, Menu menu) {
-    String replaced = menu.replace(string, uuid);
+    String replaced = string;
+    if (menu != null) {
+      replaced = menu.replace(replaced, uuid);
+    }
     for (StringReplacer replacer : STRING_REPLACER_MAP.values()) {
       replaced = replacer.replace(replaced, uuid);
     }
