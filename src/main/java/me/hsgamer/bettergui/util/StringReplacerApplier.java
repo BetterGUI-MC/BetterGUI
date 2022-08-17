@@ -40,19 +40,29 @@ public final class StringReplacerApplier {
   /**
    * Apply the string replacers to the item builder
    *
-   * @param itemBuilder the item builder
-   * @param menu        the menu, or null if it is not in a menu
+   * @param itemBuilder              the item builder
+   * @param useGlobalVariableManager whether to use the global variable manager
    *
    * @return the item builder
    */
-  public static ItemBuilder apply(ItemBuilder itemBuilder, Menu menu) {
-    if (menu != null) {
-      itemBuilder.addStringReplacer(menu.getName() + "menu-replacer", menu::replace);
-    } else {
+  public static ItemBuilder apply(ItemBuilder itemBuilder, boolean useGlobalVariableManager) {
+    if (useGlobalVariableManager) {
       itemBuilder.addStringReplacer("variable-replacer", VariableManager::setVariables);
     }
     STRING_REPLACER_MAP.forEach(itemBuilder::addStringReplacer);
     return itemBuilder;
+  }
+
+  /**
+   * Apply the string replacers to the item builder
+   *
+   * @param itemBuilder the item builder
+   * @param menu        the menu
+   *
+   * @return the item builder
+   */
+  public static ItemBuilder apply(ItemBuilder itemBuilder, Menu menu) {
+    return apply(itemBuilder.addStringReplacer(menu.getName() + "menu-replacer", menu::replace), false);
   }
 
   /**
@@ -70,23 +80,34 @@ public final class StringReplacerApplier {
   /**
    * Apply the string replacers to the string
    *
-   * @param string the string
-   * @param uuid   the unique id
-   * @param menu   the menu, or null if it is not in a menu
+   * @param string                   the string
+   * @param uuid                     the unique id
+   * @param useGlobalVariableManager whether to use the global variable manager
    *
    * @return the replaced string
    */
-  public static String replace(String string, UUID uuid, Menu menu) {
+  public static String replace(String string, UUID uuid, boolean useGlobalVariableManager) {
     String replaced = string;
-    if (menu != null) {
-      replaced = menu.replace(replaced, uuid);
-    } else {
+    if (useGlobalVariableManager) {
       replaced = VariableManager.setVariables(replaced, uuid);
     }
     for (StringReplacer replacer : STRING_REPLACER_MAP.values()) {
       replaced = replacer.replace(replaced, uuid);
     }
     return replaced;
+  }
+
+  /**
+   * Apply the string replacers to the string
+   *
+   * @param string the string
+   * @param uuid   the unique id
+   * @param menu   the menu
+   *
+   * @return the replaced string
+   */
+  public static String replace(String string, UUID uuid, Menu menu) {
+    return replace(menu.replace(string, uuid), uuid, false);
   }
 
   /**
