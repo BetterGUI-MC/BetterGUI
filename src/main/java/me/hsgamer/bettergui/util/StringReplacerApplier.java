@@ -5,6 +5,7 @@ import me.hsgamer.bettergui.api.menu.MenuElement;
 import me.hsgamer.hscore.bukkit.item.ItemBuilder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
+import me.hsgamer.hscore.variable.VariableManager;
 
 import java.util.LinkedHashMap;
 import java.util.UUID;
@@ -40,13 +41,15 @@ public final class StringReplacerApplier {
    * Apply the string replacers to the item builder
    *
    * @param itemBuilder the item builder
-   * @param menu        the menu
+   * @param menu        the menu, or null if it is not in a menu
    *
    * @return the item builder
    */
   public static ItemBuilder apply(ItemBuilder itemBuilder, Menu menu) {
     if (menu != null) {
       itemBuilder.addStringReplacer(menu.getName() + "menu-replacer", menu::replace);
+    } else {
+      itemBuilder.addStringReplacer("variable-replacer", VariableManager::setVariables);
     }
     STRING_REPLACER_MAP.forEach(itemBuilder::addStringReplacer);
     return itemBuilder;
@@ -69,7 +72,7 @@ public final class StringReplacerApplier {
    *
    * @param string the string
    * @param uuid   the unique id
-   * @param menu   the menu
+   * @param menu   the menu, or null if it is not in a menu
    *
    * @return the replaced string
    */
@@ -77,6 +80,8 @@ public final class StringReplacerApplier {
     String replaced = string;
     if (menu != null) {
       replaced = menu.replace(replaced, uuid);
+    } else {
+      replaced = VariableManager.setVariables(replaced, uuid);
     }
     for (StringReplacer replacer : STRING_REPLACER_MAP.values()) {
       replaced = replacer.replace(replaced, uuid);
