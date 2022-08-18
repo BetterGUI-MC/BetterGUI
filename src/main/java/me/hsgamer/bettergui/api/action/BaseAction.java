@@ -11,7 +11,6 @@ import java.util.UUID;
 public abstract class BaseAction implements Action {
   private final Menu menu;
   private final String string;
-  private final boolean canBeReplaced;
 
   /**
    * Create a new action
@@ -21,7 +20,6 @@ public abstract class BaseAction implements Action {
   protected BaseAction(ActionBuilder.Input input) {
     this.menu = input.menu;
     this.string = input.value;
-    this.canBeReplaced = menu.canBeReplaced(string);
   }
 
   /**
@@ -32,7 +30,7 @@ public abstract class BaseAction implements Action {
    * @return the replaced string
    */
   protected String getReplacedString(UUID uuid) {
-    String replaced = canBeReplaced ? menu.replace(string, uuid) : string;
+    String replaced = menu.replace(string, uuid);
     if (shouldBeTrimmed()) {
       replaced = replaced.trim();
     }
