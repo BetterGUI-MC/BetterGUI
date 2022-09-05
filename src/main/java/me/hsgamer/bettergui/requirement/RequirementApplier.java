@@ -113,6 +113,9 @@ public class RequirementApplier implements ProcessApplier {
         }
       }
     }
+    if (!success) {
+      appliers.add(failActionApplier);
+    }
     return new Requirement.Result(success, (uuid1, process) -> {
       for (ProcessApplier applier : appliers) {
         process.getCurrentTaskPool().addLast(process1 -> applier.accept(uuid1, process1));
@@ -124,14 +127,7 @@ public class RequirementApplier implements ProcessApplier {
   public void accept(UUID uuid, BatchRunnable.Process process) {
     Requirement.Result result = getResult(uuid);
     BatchRunnable.TaskPool taskPool = process.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE);
-    taskPool.addLast(process1 -> {
-      result.applier.accept(uuid, process1);
-      if (!result.isSuccess) {
-        failActionApplier.acceptWithoutNext(uuid, process1);
-        process1.getCurrentTaskPool().addLast(BatchRunnable.Process::complete);
-      }
-      process1.next();
-    });
+    taskPool.addLast(process1 -> result.applier.accept(uuid, process1));
     process.next();
   }
 }
