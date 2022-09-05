@@ -14,7 +14,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 1.8
+          java-version: 8
       - name: Unshallow
         run: git fetch --unshallow --quiet
       - name: Build with Maven
@@ -37,7 +37,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 1.8
+          java-version: 8
       - name: Unshallow
         run: git fetch --unshallow --quiet
       - name: Generate Javadocs
