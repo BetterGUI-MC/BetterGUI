@@ -117,12 +117,10 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
           }
         });
 
-        Optional.ofNullable(values.get("rows"))
-          .map(String::valueOf)
-          .flatMap(Validate::getNumber)
-          .map(BigDecimal::intValue)
-          .map(i -> i * 9)
-          .ifPresent(this.guiHolder::setSize);
+        Optional.ofNullable(values.get("rows")).map(String::valueOf).ifPresent(s -> guiHolder.setSizeFunction(uuid -> {
+          String slots = StringReplacerApplier.replace(s, uuid, this);
+          return Validate.getNumber(slots).map(BigDecimal::intValue).map(i -> Math.max(1, i)).map(i -> i * 9).orElse(9);
+        }));
         Optional.ofNullable(values.get("slots")).map(String::valueOf).ifPresent(s -> guiHolder.setSizeFunction(uuid -> {
           String slots = StringReplacerApplier.replace(s, uuid, this);
           return Validate.getNumber(slots).map(BigDecimal::intValue).map(i -> Math.max(1, i)).orElse(9);
