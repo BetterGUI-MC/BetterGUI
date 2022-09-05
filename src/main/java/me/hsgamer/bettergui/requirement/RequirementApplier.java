@@ -76,13 +76,9 @@ public class RequirementApplier implements ProcessApplier {
     RequirementApplier defaultSetting = new RequirementApplier(
       button.getMenu(),
       button.getName() + "_click_default",
-      simpleInput
-        ? section
-        : (
-        Optional.ofNullable(keys.get("default"))
-          .flatMap(MapUtil::castOptionalStringObjectMap)
-          .orElse(Collections.emptyMap())
-      )
+      Optional.ofNullable(keys.get("default"))
+        .flatMap(MapUtil::castOptionalStringObjectMap)
+        .orElse(simpleInput ? section : Collections.emptyMap())
     );
 
     for (AdvancedClickType clickType : remainingClickTypes) {
