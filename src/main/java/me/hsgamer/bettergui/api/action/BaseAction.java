@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.api.action;
 
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public abstract class BaseAction implements Action {
    * @return the replaced string
    */
   protected String getReplacedString(UUID uuid) {
-    String replaced = menu.replace(string, uuid);
+    String replaced = StringReplacerApplier.replace(string, uuid, menu);
     if (shouldBeTrimmed()) {
       replaced = replaced.trim();
     }

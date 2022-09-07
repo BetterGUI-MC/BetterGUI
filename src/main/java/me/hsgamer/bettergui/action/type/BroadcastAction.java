@@ -2,7 +2,6 @@ package me.hsgamer.bettergui.action.type;
 
 import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
-import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.Bukkit;
 
@@ -15,7 +14,7 @@ public class BroadcastAction extends BaseAction {
 
   @Override
   public void accept(UUID uuid, BatchRunnable.Process process) {
-    Bukkit.broadcastMessage(StringReplacerApplier.COLORIZE.replace(getReplacedString(uuid)));
+    Bukkit.broadcastMessage(getReplacedString(uuid));
     process.next();
   }
 }
