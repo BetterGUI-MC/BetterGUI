@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui;
 
-import me.hsgamer.bettergui.builder.ButtonBuilder;
-import me.hsgamer.bettergui.builder.MenuBuilder;
+import me.hsgamer.bettergui.builder.*;
 import me.hsgamer.bettergui.command.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
@@ -159,8 +158,11 @@ public final class BetterGUI extends BasePlugin {
   @Override
   public void postDisable() {
     Permissions.unregister();
+    ActionBuilder.INSTANCE.clear();
     ButtonBuilder.INSTANCE.clear();
+    ItemModifierBuilder.INSTANCE.clear();
     MenuBuilder.INSTANCE.clear();
+    RequirementBuilder.INSTANCE.clear();
     PluginVariableManager.unregisterAll();
     VariableManager.clearExternalReplacers();
   }
