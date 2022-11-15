@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class WrappedPredicateButton extends BaseWrappedButton {
@@ -29,7 +30,9 @@ public class WrappedPredicateButton extends BaseWrappedButton {
 
   public static void applyRequirement(Map<String, Object> section, WrappedButton wrappedButton, Set<UUID> checked, PredicateButton predicateButton) {
     boolean checkOnlyOnCreation = Optional.ofNullable(section.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
+    boolean preventSpamClick = Optional.ofNullable(section.get("prevent-spam-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(true);
 
+    predicateButton.setPreventSpamClick(preventSpamClick);
     Optional.ofNullable(section.get("view-requirement"))
       .flatMap(MapUtil::castOptionalStringObjectMap)
       .ifPresent(subsection -> {
@@ -53,14 +56,16 @@ public class WrappedPredicateButton extends BaseWrappedButton {
       .flatMap(MapUtil::castOptionalStringObjectMap)
       .ifPresent(subsection -> {
         Map<AdvancedClickType, RequirementApplier> clickRequirements = RequirementApplier.convertClickRequirementAppliers(subsection, wrappedButton);
-        predicateButton.setClickPredicate((uuid, event) -> {
+        predicateButton.setClickFuturePredicate((uuid, event) -> {
           RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(event, BetterGUI.getInstance().getMainConfig().modernClickType));
-          Requirement.Result result = clickRequirement.getResult(uuid);
-          BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
-            result.applier.accept(uuid, process);
-            process.next();
-          }));
-          return result.isSuccess;
+          return CompletableFuture.supplyAsync(() -> clickRequirement.getResult(uuid))
+            .thenApply(result -> {
+              BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+                result.applier.accept(uuid, process);
+                process.next();
+              }));
+              return result.isSuccess;
+            });
         });
       });
   }
