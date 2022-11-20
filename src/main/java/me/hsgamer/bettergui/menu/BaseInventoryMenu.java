@@ -18,6 +18,7 @@ import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -49,8 +50,9 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     super(config);
     guiHolder = new GUIHolder(getInstance()) {
       @Override
-      public GUIDisplay createDisplay(UUID uuid) {
-        GUIDisplay guiDisplay = super.createDisplay(uuid);
+      protected GUIDisplay newDisplay(UUID uuid) {
+        GUIDisplay guiDisplay = super.newDisplay(uuid);
+        guiDisplay.setForceUpdate(getInstance().getMainConfig().forcedUpdateInventory);
         if (ticks >= 0) {
           updateTasks.put(uuid, Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), guiDisplay::update, ticks, ticks));
         }
@@ -81,6 +83,16 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
               closeActionApplier.accept(event.getPlayer().getUniqueId(), process)
             )
         );
+      }
+
+      @Override
+      protected void onOwnerRemoveDisplay(UUID uuid, GUIDisplay display, InventoryCloseEvent event) {
+        for (HumanEntity viewer : display.getInventory().getViewers()) {
+          if (viewer.getUniqueId().equals(uuid)) {
+            continue;
+          }
+          forceClose.add(viewer.getUniqueId());
+        }
       }
     };
 
@@ -162,6 +174,13 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
         Optional.ofNullable(MapUtil.getIfFound(values, "name", "title"))
           .map(String::valueOf)
           .ifPresent(s -> guiHolder.setTitleFunction(uuid -> StringReplacerApplier.replace(s, uuid, this)));
+
+        boolean removeOnClose = Optional.ofNullable(values.get("cached"))
+          .map(String::valueOf)
+          .map(Boolean::parseBoolean)
+          .map(b -> !b)
+          .orElse(false);
+        guiHolder.setRemoveDisplayOnClose(removeOnClose);
       }
     }
 
@@ -213,8 +232,8 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       }
     }
 
-    // Create Inventory
-    guiHolder.createDisplay(uuid).setForceUpdate(getInstance().getMainConfig().forcedUpdateInventory).init();
+    // Open Inventory
+    guiHolder.createDisplay(uuid).open();
     return true;
   }
 
