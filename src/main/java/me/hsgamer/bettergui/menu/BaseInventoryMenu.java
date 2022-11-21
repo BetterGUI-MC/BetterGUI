@@ -175,12 +175,11 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
           .map(String::valueOf)
           .ifPresent(s -> guiHolder.setTitleFunction(uuid -> StringReplacerApplier.replace(s, uuid, this)));
 
-        boolean removeOnClose = Optional.ofNullable(values.get("cached"))
+        Optional.ofNullable(values.get("cached"))
           .map(String::valueOf)
           .map(Boolean::parseBoolean)
           .map(b -> !b)
-          .orElse(false);
-        guiHolder.setRemoveDisplayOnClose(removeOnClose);
+          .ifPresent(guiHolder::setRemoveDisplayOnClose);
       }
     }
 
