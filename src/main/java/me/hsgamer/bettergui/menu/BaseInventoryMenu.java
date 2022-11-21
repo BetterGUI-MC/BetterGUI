@@ -60,12 +60,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       }
 
       @Override
-      public void removeDisplay(UUID uuid) {
-        super.removeDisplay(uuid);
-        Optional.ofNullable(updateTasks.remove(uuid)).ifPresent(BukkitTask::cancel);
-      }
-
-      @Override
       protected void onOpen(InventoryOpenEvent event) {
         BetterGUI.runBatchRunnable(batchRunnable ->
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
@@ -87,6 +81,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
 
       @Override
       protected void onOwnerRemoveDisplay(UUID uuid, GUIDisplay display, InventoryCloseEvent event) {
+        Optional.ofNullable(updateTasks.remove(uuid)).ifPresent(BukkitTask::cancel);
         for (HumanEntity viewer : display.getInventory().getViewers()) {
           if (viewer.getUniqueId().equals(uuid)) {
             continue;
