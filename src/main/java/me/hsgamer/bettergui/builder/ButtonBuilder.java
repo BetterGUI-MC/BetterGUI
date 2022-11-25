@@ -25,8 +25,8 @@ public final class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, Wrappe
 
   private ButtonBuilder() {
     register(TemplateButton::new, "template");
-    register(WrappedDummyButton::new, "dummy");
-    register(EmptyButton::new, "empty", "raw");
+    register(WrappedDummyButton::new, "dummy", "raw");
+    register(EmptyButton::new, "empty");
     register(WrappedAirButton::new, "air");
     register(WrappedPredicateButton::new, "predicate", "requirement");
     register(WrappedListButton::new, "list");
