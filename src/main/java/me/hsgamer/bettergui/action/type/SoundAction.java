@@ -26,7 +26,13 @@ public class SoundAction extends BaseAction {
     String sound;
     float volume = 1f;
     float pitch = 1f;
-    String[] split = getReplacedString(uuid).split(",", 3);
+    String replaced = getReplacedString(uuid);
+    String[] split;
+    if (replaced.indexOf(',') != -1) {
+      split = replaced.split(",");
+    } else {
+      split = replaced.split(" ");
+    }
 
     sound = split[0].trim();
     if (split.length > 1) {
@@ -55,5 +61,10 @@ public class SoundAction extends BaseAction {
       }
       process.next();
     });
+  }
+
+  @Override
+  protected boolean shouldBeTrimmed() {
+    return true;
   }
 }
