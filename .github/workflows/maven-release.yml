@@ -40,8 +40,5 @@ jobs:
             spigot
             paper
             purpur
-          files-primary: |
-            target/bettergui-*-shaded.jar
-          files-secondary: |
-            target/bettergui-*-sources.jar
-            target/bettergui-*-javadoc.jar
+          files-primary: target/bettergui-*-shaded.jar
+          files-secondary: target/bettergui-*-@(sources|javadoc).jar
