@@ -14,7 +14,7 @@ public class TellAction extends BaseAction {
 
   @Override
   public void accept(UUID uuid, BatchRunnable.Process process) {
-    MessageUtils.sendMessage(uuid, getReplacedString(uuid));
+    MessageUtils.sendMessage(uuid, getReplacedString(uuid), "");
     process.next();
   }
 }
