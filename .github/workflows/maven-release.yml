@@ -31,8 +31,8 @@ jobs:
         with:
           name: "BetterGUI"
           path: |
-            "./target/bettergui*.jar"
-            "CHANGELOG.md"
+            ./target/bettergui*.jar
+            CHANGELOG.md
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
