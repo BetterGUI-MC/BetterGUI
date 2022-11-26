@@ -60,3 +60,4 @@ jobs:
           name: ${{ steps.git-message.outputs.title }}
           changelog: ${{ steps.git-message.outputs.body }}
           github-generate-changelog: true
+          version: ${{ github.ref_name }}
