@@ -44,29 +44,33 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
   protected ButtonMap createButtonMap(Config config) {
     Map<String, Object> itemMap = config.getNormalizedValues("button", false);
     return new ButtonMap() {
-      private final Map<Button, List<Integer>> buttonMap = new HashMap<>();
+      private Map<Button, List<Integer>> buttonMap;
+      private final Object lock = new Object();
 
       @Override
       public Map<Button, List<Integer>> getButtons(UUID uuid) {
-        Collection<DownloadInfo> downloadInfos = getInstance().getAddonDownloader().getLoadedDownloadInfo().values();
-        int slot = 0;
-        for (DownloadInfo info : downloadInfos) {
-          ItemBuilder itemBuilder = new ItemBuilder();
-          ItemModifierBuilder.INSTANCE.build(itemMap).forEach(itemBuilder::addItemModifier);
-          buttonMap.put(new AddonButton(info, itemBuilder), Collections.singletonList(slot++));
+        synchronized (lock) {
+          if (buttonMap == null) {
+            buttonMap = new HashMap<>();
+            Collection<DownloadInfo> downloadInfos = getInstance().getAddonDownloader().getLoadedDownloadInfo().values();
+            int slot = 0;
+            for (DownloadInfo info : downloadInfos) {
+              ItemBuilder itemBuilder = new ItemBuilder();
+              ItemModifierBuilder.INSTANCE.build(itemMap).forEach(itemBuilder::addItemModifier);
+              buttonMap.put(new AddonButton(info, itemBuilder), Collections.singletonList(slot++));
+            }
+            buttonMap.keySet().forEach(Initializable::init);
+          }
         }
         return buttonMap;
       }
 
       @Override
-      public void init() {
-        buttonMap.keySet().forEach(Initializable::init);
-      }
-
-      @Override
       public void stop() {
-        buttonMap.keySet().forEach(Initializable::stop);
-        buttonMap.clear();
+        if (buttonMap != null) {
+          buttonMap.keySet().forEach(Initializable::stop);
+          buttonMap.clear();
+        }
       }
     };
   }
@@ -89,8 +93,15 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
       itemBuilder.addStringReplacer("colorize", StringReplacerApplier.COLORIZE);
     }
 
+    private void updateStatus() {
+      status = Optional.ofNullable(getInstance().getAddonManager().getAddon(downloadInfo.getName()))
+        .map(addon -> addon.getDescription().getVersion().equals(downloadInfo.getVersion()) ? upToDateStatus : outdatedStatus)
+        .orElse(availableStatus);
+    }
+
     @Override
     public ItemStack getItemStack(UUID uuid) {
+      updateStatus();
       return itemBuilder.build(uuid);
     }
 
@@ -127,9 +138,7 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
 
     @Override
     public void init() {
-      status = Optional.ofNullable(getInstance().getAddonManager().getAddon(downloadInfo.getName()))
-        .map(addon -> addon.getDescription().getVersion().equals(downloadInfo.getVersion()) ? upToDateStatus : outdatedStatus)
-        .orElse(availableStatus);
+      updateStatus();
     }
   }
 }
