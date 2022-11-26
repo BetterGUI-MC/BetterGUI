@@ -59,3 +59,4 @@ jobs:
           files-secondary: target/bettergui-*-@(sources|javadoc).jar
           name: ${{ steps.git-message.outputs.title }}
           changelog: ${{ steps.git-message.outputs.body }}
+          github-generate-changelog: true
