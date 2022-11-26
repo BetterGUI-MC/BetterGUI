@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Set up JDK 1.8
         uses: actions/setup-java@v3
         with:
@@ -63,6 +61,6 @@ jobs:
           version-resolver: releases
           files-primary: target/bettergui-*-shaded.jar
           files-secondary: target/bettergui-*-@(sources|javadoc).jar
-          name: ${{ steps.git-message.outputs.title }}
+          name: ${{ github.ref_name }}
           changelog: ${{ steps.changelog.outputs.changelog }}
           version: ${{ github.ref_name }}
