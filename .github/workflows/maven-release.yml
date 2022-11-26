@@ -28,9 +28,13 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/site/apidocs
-      - name: Get Git message
-        uses: kceb/git-message-action@v2
-        id: git-message
+
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v4.0.1
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Release
         uses: Kir-Antipov/mc-publish@v3.2
         with:
@@ -56,10 +60,9 @@ jobs:
             1.10
             1.9
             1.8
-          version-resolver: latest
+          version-resolver: releases
           files-primary: target/bettergui-*-shaded.jar
           files-secondary: target/bettergui-*-@(sources|javadoc).jar
           name: ${{ steps.git-message.outputs.title }}
-          changelog: ${{ steps.git-message.outputs.body }}
-          github-generate-changelog: true
+          changelog: ${{ steps.changelog.outputs.changelog }}
           version: ${{ github.ref_name }}
