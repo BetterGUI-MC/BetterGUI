@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Set up JDK 1.8
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 8
-      - name: Unshallow
-        run: git fetch --unshallow --quiet
       - name: Build with Maven
         run: mvn -B install javadoc:javadoc
       - name: Upload artifact
@@ -28,6 +28,9 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/site/apidocs
+      - name: Get Git message
+        uses: kceb/git-message-action@v2
+        id: git-message
       - name: Release
         uses: Kir-Antipov/mc-publish@v3.2
         with:
@@ -54,3 +57,5 @@ jobs:
           version-resolver: latest
           files-primary: target/bettergui-*-shaded.jar
           files-secondary: target/bettergui-*-@(sources|javadoc).jar
+          name: ${{ steps.git-message.outputs.title }}
+          changelog: ${{ steps.git-message.outputs.body }}
