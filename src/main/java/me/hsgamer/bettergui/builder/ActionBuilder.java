@@ -74,6 +74,7 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
       .stream()
       .flatMap(string -> {
         String[] split = string.split(":", 2);
+
         String type;
         String value;
         if (split.length > 1) {
@@ -81,10 +82,15 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
           value = split[1];
           value = value.startsWith(" ") ? value.substring(1) : value;
         } else {
-          type = "player";
-          value = split[0];
+          type = split[0];
+          value = "";
         }
-        return build(new Input(menu, type.trim(), value)).map(Stream::of).orElseGet(Stream::empty);
+        type = type.trim();
+
+        return Stream.of(
+          build(new Input(menu, type, value))
+            .orElse(new PlayerAction(new Input(menu, "player", split[0])))
+        );
       })
       .collect(Collectors.toList());
   }
