@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class PermissionAction extends BaseAction {
       return;
     }
 
-    List<String> permissions = Arrays.asList(replacedString.substring(0, spaceIndex).split(";"));
+    List<String> permissions = new ArrayList<>(Arrays.asList(replacedString.substring(0, spaceIndex).split(";")));
     permissions.removeIf(player::hasPermission);
     String command = replacedString.substring(spaceIndex + 1).trim();
 
