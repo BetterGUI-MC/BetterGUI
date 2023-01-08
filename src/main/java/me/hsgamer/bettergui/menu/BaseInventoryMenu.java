@@ -180,7 +180,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
 
         Optional.ofNullable(values.get("creator"))
           .map(String::valueOf)
-          .flatMap(s -> InventoryBuilder.INSTANCE.build(s, null))
+          .flatMap(s -> InventoryBuilder.INSTANCE.build(s, values))
           .ifPresent(guiHolder::setInventoryFunction);
       }
     }

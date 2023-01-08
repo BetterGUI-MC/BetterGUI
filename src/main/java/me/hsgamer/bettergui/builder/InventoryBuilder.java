@@ -8,13 +8,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
 /**
  * A builder to get the creator to build the {@link Inventory} for any {@link me.hsgamer.bettergui.menu.BaseInventoryMenu} implementation
  */
-public class InventoryBuilder extends Builder<Void, BiFunction<GUIDisplay, UUID, Inventory>> {
+public class InventoryBuilder extends Builder<Map<String, Object>, BiFunction<GUIDisplay, UUID, Inventory>> {
   /**
    * The singleton instance
    */
