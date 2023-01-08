@@ -44,8 +44,8 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
   protected ButtonMap createButtonMap(Config config) {
     Map<String, Object> itemMap = config.getNormalizedValues("button", false);
     return new ButtonMap() {
-      private Map<Button, List<Integer>> buttonMap;
       private final Object lock = new Object();
+      private Map<Button, List<Integer>> buttonMap;
 
       @Override
       public Map<Button, List<Integer>> getButtons(UUID uuid) {

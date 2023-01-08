@@ -4,6 +4,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
+import me.hsgamer.bettergui.builder.InventoryBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.bettergui.util.PlayerUtil;
@@ -60,6 +61,18 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       }
 
       @Override
+      protected void onRemoveDisplay(GUIDisplay display) {
+        Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(BukkitTask::cancel);
+        for (HumanEntity humanEntity : display.getInventory().getViewers()) {
+          UUID uuid = humanEntity.getUniqueId();
+          if (uuid != display.getUniqueId()) {
+            forceClose.add(uuid);
+          }
+        }
+        super.onRemoveDisplay(display);
+      }
+
+      @Override
       protected void onOpen(InventoryOpenEvent event) {
         BetterGUI.runBatchRunnable(batchRunnable ->
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
@@ -77,17 +90,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
               closeActionApplier.accept(event.getPlayer().getUniqueId(), process)
             )
         );
-      }
-
-      @Override
-      protected void onOwnerRemoveDisplay(UUID uuid, GUIDisplay display, InventoryCloseEvent event) {
-        Optional.ofNullable(updateTasks.remove(uuid)).ifPresent(BukkitTask::cancel);
-        for (HumanEntity viewer : display.getInventory().getViewers()) {
-          if (viewer.getUniqueId().equals(uuid)) {
-            continue;
-          }
-          forceClose.add(viewer.getUniqueId());
-        }
       }
     };
 
@@ -175,6 +177,11 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
           .map(Boolean::parseBoolean)
           .map(b -> !b)
           .ifPresent(guiHolder::setRemoveDisplayOnClose);
+
+        Optional.ofNullable(values.get("creator"))
+          .map(String::valueOf)
+          .flatMap(s -> InventoryBuilder.INSTANCE.build(s, null))
+          .ifPresent(guiHolder::setInventoryFunction);
       }
     }
 
