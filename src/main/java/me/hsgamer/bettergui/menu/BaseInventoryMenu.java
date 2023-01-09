@@ -16,6 +16,7 @@ import me.hsgamer.hscore.bukkit.gui.button.ButtonMap;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
+import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
 import org.bukkit.Bukkit;
@@ -180,7 +181,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
 
         Optional.ofNullable(values.get("creator"))
           .map(String::valueOf)
-          .flatMap(s -> InventoryBuilder.INSTANCE.build(s, values))
+          .flatMap(s -> InventoryBuilder.INSTANCE.build(s, Pair.of(this, values)))
           .ifPresent(guiHolder::setInventoryFunction);
       }
     }

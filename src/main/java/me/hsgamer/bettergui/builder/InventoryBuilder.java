@@ -1,9 +1,11 @@
 package me.hsgamer.bettergui.builder;
 
+import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.bukkit.gui.GUIDisplay;
 import me.hsgamer.hscore.bukkit.gui.GUIHolder;
 import me.hsgamer.hscore.bukkit.gui.GUIUtils;
+import me.hsgamer.hscore.common.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -15,7 +17,7 @@ import java.util.function.BiFunction;
 /**
  * A builder to get the creator to build the {@link Inventory} for any {@link me.hsgamer.bettergui.menu.BaseInventoryMenu} implementation
  */
-public class InventoryBuilder extends Builder<Map<String, Object>, BiFunction<GUIDisplay, UUID, Inventory>> {
+public class InventoryBuilder extends Builder<Pair<Menu, Map<String, Object>>, BiFunction<GUIDisplay, UUID, Inventory>> {
   /**
    * The singleton instance
    */
