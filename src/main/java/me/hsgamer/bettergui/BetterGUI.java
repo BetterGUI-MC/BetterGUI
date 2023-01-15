@@ -101,7 +101,7 @@ public final class BetterGUI extends BasePlugin {
     registerCommand(new MainCommand(this));
     registerCommand(new GetAddonsCommand(this));
     registerCommand(new ReloadCommand(this));
-    registerCommand(new GetVariablesCommand());
+    registerCommand(new GetVariablesCommand(this));
     registerCommand(new GetTemplateButtonsCommand(this));
 
     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
