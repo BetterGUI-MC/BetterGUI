@@ -260,4 +260,12 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   protected void refreshButtonMapOnCreate(B buttonMap, UUID uuid) {
     // EMPTY
   }
+
+  public B getButtonMap() {
+    return buttonMap;
+  }
+
+  public GUIHolder getGUIHolder() {
+    return guiHolder;
+  }
 }
