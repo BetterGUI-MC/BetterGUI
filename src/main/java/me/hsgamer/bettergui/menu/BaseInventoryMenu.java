@@ -4,6 +4,8 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
+import me.hsgamer.bettergui.argument.ArgumentHandler;
+import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.builder.InventoryBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.MapUtil;
@@ -47,9 +49,11 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   private final Map<UUID, BukkitTask> updateTasks = new ConcurrentHashMap<>();
   private final long ticks;
   private final List<Permission> permissions;
+  private final ArgumentHandler argumentHandler;
 
   protected BaseInventoryMenu(Config config) {
     super(config);
+    argumentHandler = new ArgumentHandler(this);
     guiHolder = new GUIHolder(getInstance()) {
       @Override
       protected GUIDisplay newDisplay(UUID uuid) {
@@ -63,6 +67,8 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
 
       @Override
       protected void onRemoveDisplay(GUIDisplay display) {
+        argumentHandler.onClear(display.getUniqueId());
+
         Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(BukkitTask::cancel);
         for (HumanEntity humanEntity : display.getInventory().getViewers()) {
           UUID uuid = humanEntity.getUniqueId();
@@ -183,6 +189,14 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
           .map(String::valueOf)
           .flatMap(s -> InventoryBuilder.INSTANCE.build(s, Pair.of(this, values)))
           .ifPresent(guiHolder::setInventoryFunction);
+
+        Optional.ofNullable(MapUtil.getIfFound(values, "argument-processor", "arg-processor"))
+          .map(o -> CollectionUtils.createStringListFromObject(o, true))
+          .ifPresent(list -> {
+            for (String s : list) {
+              ArgumentProcessorBuilder.INSTANCE.build(s, this).ifPresent(argumentHandler::addProcessor);
+            }
+          });
       }
     }
 
@@ -215,8 +229,15 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   public boolean create(Player player, String[] args, boolean bypass) {
     UUID uuid = player.getUniqueId();
 
+    // Check Argument
+    if (!argumentHandler.process(uuid, args).isPresent()) {
+      return false;
+    }
+
+    // Refresh Button Map
     refreshButtonMapOnCreate(buttonMap, uuid);
 
+    // Check Permission
     if (!bypass && !PlayerUtil.hasAnyPermission(player, permissions)) {
       MessageUtils.sendMessage(player, getInstance().getMessageConfig().noPermission);
       return false;
@@ -253,6 +274,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   @Override
   public void closeAll() {
     guiHolder.stop();
+    argumentHandler.clearProcessors();
   }
 
   protected abstract B createButtonMap(Config config);
@@ -267,5 +289,9 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
 
   public GUIHolder getGUIHolder() {
     return guiHolder;
+  }
+
+  public ArgumentHandler getArgumentHandler() {
+    return argumentHandler;
   }
 }
