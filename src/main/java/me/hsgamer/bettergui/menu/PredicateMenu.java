@@ -3,6 +3,8 @@ package me.hsgamer.bettergui.menu;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
+import me.hsgamer.bettergui.argument.ArgumentHandler;
+import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.bettergui.util.PlayerUtil;
@@ -22,9 +24,11 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 public class PredicateMenu extends Menu {
   private final List<Pair<RequirementApplier, String>> menuPredicateList;
   private final List<Permission> permissions;
+  private final ArgumentHandler argumentHandler;
 
   public PredicateMenu(Config config) {
     super(config);
+    argumentHandler = new ArgumentHandler(this);
     menuPredicateList = new ArrayList<>();
 
     List<Permission> tempPermissions = Collections.singletonList(new Permission(getInstance().getName().toLowerCase() + "." + getName()));
@@ -54,6 +58,14 @@ public class PredicateMenu extends Menu {
               }
             }
           });
+
+        Optional.ofNullable(MapUtil.getIfFound(values, "argument-processor", "arg-processor"))
+          .map(o -> CollectionUtils.createStringListFromObject(o, true))
+          .ifPresent(list -> {
+            for (String s : list) {
+              ArgumentProcessorBuilder.INSTANCE.build(s, this).ifPresent(argumentHandler::addProcessor);
+            }
+          });
       } else {
         String menu = Objects.toString(values.get("menu"), null);
         Object requirementValue = values.get("requirement");
@@ -72,10 +84,16 @@ public class PredicateMenu extends Menu {
   @Override
   public boolean create(Player player, String[] args, boolean bypass) {
     UUID uuid = player.getUniqueId();
+
+    if (!argumentHandler.process(uuid, args).isPresent()) {
+      return false;
+    }
+
     if (!bypass && !PlayerUtil.hasAnyPermission(player, permissions)) {
       return false;
     }
 
+    boolean isSuccessful = false;
     for (Pair<RequirementApplier, String> pair : menuPredicateList) {
       Requirement.Result result = pair.getKey().getResult(uuid);
       BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
@@ -84,10 +102,12 @@ public class PredicateMenu extends Menu {
       }));
       if (result.isSuccess) {
         BetterGUI.getInstance().getMenuManager().openMenu(pair.getValue(), player, args, getParentMenu(uuid).orElse(null), bypass);
-        return true;
+        isSuccessful = true;
+        break;
       }
     }
-    return false;
+    argumentHandler.onClear(uuid);
+    return isSuccessful;
   }
 
   @Override
@@ -102,6 +122,6 @@ public class PredicateMenu extends Menu {
 
   @Override
   public void closeAll() {
-    // EMPTY
+    argumentHandler.clearProcessors();
   }
 }
