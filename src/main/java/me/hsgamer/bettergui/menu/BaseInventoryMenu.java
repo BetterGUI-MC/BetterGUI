@@ -261,6 +261,11 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   }
 
   @Override
+  public List<String> tabComplete(Player player, String[] args) {
+    return argumentHandler.handleTabComplete(player.getUniqueId(), args);
+  }
+
+  @Override
   public void update(Player player) {
     guiHolder.getDisplay(player.getUniqueId()).ifPresent(GUIDisplay::update);
   }

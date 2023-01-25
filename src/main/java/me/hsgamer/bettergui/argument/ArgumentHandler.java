@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.argument;
 
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.hscore.common.Pair;
 
 import java.util.*;
 
@@ -67,6 +68,32 @@ public class ArgumentHandler implements ArgumentProcessor {
       }
     }
     return Optional.of(args);
+  }
+
+  @Override
+  public Pair<Optional<List<String>>, String[]> tabComplete(UUID uuid, String[] args) {
+    for (ArgumentProcessor processor : processors) {
+      Pair<Optional<List<String>>, String[]> pair = processor.tabComplete(uuid, args);
+      Optional<List<String>> optional = pair.getKey();
+      if (optional.isPresent()) {
+        return pair;
+      } else {
+        args = pair.getValue();
+      }
+    }
+    return Pair.of(Optional.empty(), args);
+  }
+
+  /**
+   * Get the tab complete for the arguments
+   *
+   * @param uuid the UUID of the player
+   * @param args the arguments
+   *
+   * @return the suggestions
+   */
+  public List<String> handleTabComplete(UUID uuid, String[] args) {
+    return tabComplete(uuid, args).getKey().orElse(Collections.emptyList());
   }
 
   @Override

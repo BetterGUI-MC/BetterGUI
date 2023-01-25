@@ -111,6 +111,11 @@ public class PredicateMenu extends Menu {
   }
 
   @Override
+  public List<String> tabComplete(Player player, String[] args) {
+    return argumentHandler.handleTabComplete(player.getUniqueId(), args);
+  }
+
+  @Override
   public void update(Player player) {
     // EMPTY
   }
