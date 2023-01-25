@@ -8,6 +8,7 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
+import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
 
@@ -115,6 +116,20 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
   public void onClearAll() {
     argsPerPlayer.clear();
     argToIndexMap.clear();
+  }
+
+  @Override
+  public Pair<Optional<List<String>>, String[]> tabComplete(UUID uuid, String[] args) {
+    if (args.length == 0) {
+      return Pair.of(Optional.empty(), args);
+    }
+    int lastArgIndex = args.length - 1;
+    for (Map.Entry<String, Integer> entry : argToIndexMap.entrySet()) {
+      if (entry.getValue() == lastArgIndex) {
+        return Pair.of(Optional.of(Collections.singletonList(entry.getKey())), new String[0]);
+      }
+    }
+    return Pair.of(Optional.empty(), args);
   }
 
   @Override
