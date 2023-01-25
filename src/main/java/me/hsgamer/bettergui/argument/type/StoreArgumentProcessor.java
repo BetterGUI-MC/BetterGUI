@@ -129,7 +129,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
         return Pair.of(Optional.of(Collections.singletonList(entry.getKey())), new String[0]);
       }
     }
-    return Pair.of(Optional.empty(), args);
+    return Pair.of(Optional.of(Collections.emptyList()), new String[0]);
   }
 
   @Override
