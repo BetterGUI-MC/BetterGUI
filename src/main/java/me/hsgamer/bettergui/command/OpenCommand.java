@@ -69,6 +69,11 @@ public final class OpenCommand extends BukkitCommand {
       list.addAll(plugin.getMenuManager().getMenuNames());
     } else if (args.length == 2) {
       list.addAll(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList()));
+    } else if (args.length > 2 && plugin.getMenuManager().contains(args[0])) {
+      Player player = Bukkit.getPlayer(args[1]);
+      if (player != null && player.isOnline()) {
+        list.addAll(plugin.getMenuManager().tabCompleteMenu(args[0], player, Arrays.copyOfRange(args, 2, args.length)));
+      }
     }
     return list;
   }

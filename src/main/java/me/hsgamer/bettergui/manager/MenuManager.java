@@ -130,6 +130,19 @@ public final class MenuManager {
   }
 
   /**
+   * Get the list of the tab complete
+   *
+   * @param name   the menu name
+   * @param player the player
+   * @param args   the arguments from the open command
+   *
+   * @return the list of the tab complete
+   */
+  public List<String> tabCompleteMenu(String name, Player player, String[] args) {
+    return menuMap.get(name).tabComplete(player, args);
+  }
+
+  /**
    * Get the name of all menus
    *
    * @return the list of the names
