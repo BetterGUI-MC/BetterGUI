@@ -92,6 +92,7 @@ public final class BetterGUI extends BasePlugin {
 
     if (mainConfig.alternativeCommandManager.enable) {
       getLogger().info("Enabled alternative command manager");
+      getLogger().warning("This is deprecated and will be moved to an addon in the future");
       registerListener(new AlternativeCommandListener(this));
     }
 

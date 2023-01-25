@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import java.util.*;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class AlternativeCommandListener implements Listener {
   private static final Pattern SPACE_PATTERN = Pattern.compile("\\s");
   private final BetterGUI plugin;

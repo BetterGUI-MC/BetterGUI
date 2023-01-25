@@ -17,6 +17,7 @@ public class MainConfig extends AnnotatedConfig {
   public final @ConfigPath("forced-update-inventory") boolean forcedUpdateInventory;
   public final @ConfigPath("use-modern-click-type") boolean modernClickType;
   public final @ConfigPath("use-legacy-button") boolean useLegacyButton;
+  @Deprecated
   public final @ConfigPath(value = "alternative-command-manager", converter = AlternativeCommandListener.SettingConverter.class) AlternativeCommandListener.Setting alternativeCommandManager;
 
   public MainConfig(Plugin plugin) {
