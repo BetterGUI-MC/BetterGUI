@@ -10,7 +10,9 @@ import org.bukkit.plugin.Plugin;
  * The main class of the plugin
  */
 public class MainConfig extends AnnotatedConfig {
+  @Deprecated
   public final @ConfigPath("default-menu-type") String defaultMenuType;
+  @Deprecated
   public final @ConfigPath("default-button-type") String defaultButtonType;
   public final @ConfigPath("metrics") boolean metrics;
   public final @ConfigPath("replace-all-variables-each-check") boolean replaceAllVariables;
