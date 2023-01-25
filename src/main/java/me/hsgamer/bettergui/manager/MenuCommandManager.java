@@ -10,7 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -36,10 +38,19 @@ public class MenuCommandManager {
       public boolean execute(CommandSender commandSender, String s, String[] strings) {
         if (commandSender instanceof Player) {
           menu.create((Player) commandSender, strings, commandSender.hasPermission(Permissions.OPEN_MENU_BYPASS));
+          return true;
         } else {
           MessageUtils.sendMessage(commandSender, plugin.getMessageConfig().playerOnly);
+          return false;
         }
-        return true;
+      }
+
+      @Override
+      public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        if (sender instanceof Player) {
+          return menu.tabComplete((Player) sender, args);
+        }
+        return Collections.emptyList();
       }
     });
   }

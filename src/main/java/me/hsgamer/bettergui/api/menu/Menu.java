@@ -101,6 +101,18 @@ public abstract class Menu {
   public abstract boolean create(Player player, String[] args, boolean bypass);
 
   /**
+   * Called when the player hit TAB when typing the command to open the menu
+   *
+   * @param player the player involved in
+   * @param args   the arguments from the open command
+   *
+   * @return the list of suggestions
+   */
+  public List<String> tabComplete(Player player, String[] args) {
+    return Collections.emptyList();
+  }
+
+  /**
    * Called when updating the menu
    *
    * @param player the player involved in
