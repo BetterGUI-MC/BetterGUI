@@ -12,23 +12,24 @@ import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.bettergui.util.PlayerUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
-import me.hsgamer.hscore.bukkit.gui.GUIDisplay;
-import me.hsgamer.hscore.bukkit.gui.GUIHolder;
-import me.hsgamer.hscore.bukkit.gui.button.ButtonMap;
+import me.hsgamer.hscore.bukkit.gui.BukkitGUIDisplay;
+import me.hsgamer.hscore.bukkit.gui.BukkitGUIHolder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.minecraft.gui.button.ButtonMap;
+import me.hsgamer.hscore.minecraft.gui.event.CloseEvent;
+import me.hsgamer.hscore.minecraft.gui.event.OpenEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.permissions.Permission;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -43,7 +44,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   private final ActionApplier closeActionApplier;
   private final RequirementApplier viewRequirementApplier;
   private final RequirementApplier closeRequirementApplier;
-  private final GUIHolder guiHolder;
+  private final BukkitGUIHolder guiHolder;
   private final B buttonMap;
   private final Set<UUID> forceClose = new ConcurrentSkipListSet<>();
   private final Map<UUID, BukkitTask> updateTasks = new ConcurrentHashMap<>();
@@ -54,10 +55,10 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   protected BaseInventoryMenu(Config config) {
     super(config);
     argumentHandler = new ArgumentHandler(this);
-    guiHolder = new GUIHolder(getInstance()) {
+    guiHolder = new BukkitGUIHolder(getInstance()) {
       @Override
-      private GUIDisplay newDisplay(UUID uuid) {
-        GUIDisplay guiDisplay = super.newDisplay(uuid);
+      protected @NotNull BukkitGUIDisplay newDisplay(UUID uuid) {
+        BukkitGUIDisplay guiDisplay = super.newDisplay(uuid);
         guiDisplay.setForceUpdate(getInstance().getMainConfig().forcedUpdateInventory);
         if (ticks >= 0) {
           updateTasks.put(uuid, Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), guiDisplay::update, ticks, ticks));
@@ -66,7 +67,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       }
 
       @Override
-      private void onRemoveDisplay(GUIDisplay display) {
+      protected void onRemoveDisplay(@NotNull BukkitGUIDisplay display) {
         argumentHandler.onClear(display.getUniqueId());
 
         Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(BukkitTask::cancel);
@@ -80,21 +81,21 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       }
 
       @Override
-      private void onOpen(InventoryOpenEvent event) {
+      protected void onOpen(@NotNull OpenEvent event) {
         BetterGUI.runBatchRunnable(batchRunnable ->
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
             .addLast(process ->
-              openActionApplier.accept(event.getPlayer().getUniqueId(), process)
+              openActionApplier.accept(event.getViewerID(), process)
             )
         );
       }
 
       @Override
-      private void onClose(InventoryCloseEvent event) {
+      protected void onClose(@NotNull CloseEvent event) {
         BetterGUI.runBatchRunnable(batchRunnable ->
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
             .addLast(process ->
-              closeActionApplier.accept(event.getPlayer().getUniqueId(), process)
+              closeActionApplier.accept(event.getViewerID(), process)
             )
         );
       }
@@ -267,7 +268,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
 
   @Override
   public void update(Player player) {
-    guiHolder.getDisplay(player.getUniqueId()).ifPresent(GUIDisplay::update);
+    guiHolder.getDisplay(player.getUniqueId()).ifPresent(BukkitGUIDisplay::update);
   }
 
   @Override
@@ -292,7 +293,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     return buttonMap;
   }
 
-  public GUIHolder getGUIHolder() {
+  public BukkitGUIHolder getGUIHolder() {
     return guiHolder;
   }
 
