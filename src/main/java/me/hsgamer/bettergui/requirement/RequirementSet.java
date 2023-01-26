@@ -7,7 +7,7 @@ import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
-import me.hsgamer.hscore.task.BatchRunnable;
+import me.hsgamer.hscore.task.element.TaskPool;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,7 +86,7 @@ public class RequirementSet implements Requirement {
     }
     if (success) {
       return Result.success((uuid1, process) -> {
-        BatchRunnable.TaskPool taskPool = process.getCurrentTaskPool();
+        TaskPool taskPool = process.getCurrentTaskPool();
         processAppliers.forEach(processApplier -> taskPool.addLast(subProcess -> processApplier.accept(uuid1, subProcess)));
         successActionApplier.accept(uuid1, process);
       });

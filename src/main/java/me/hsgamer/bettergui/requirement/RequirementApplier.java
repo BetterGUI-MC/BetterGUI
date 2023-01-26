@@ -10,7 +10,8 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
-import me.hsgamer.hscore.task.BatchRunnable;
+import me.hsgamer.hscore.task.element.TaskPool;
+import me.hsgamer.hscore.task.element.TaskProcess;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -124,9 +125,9 @@ public class RequirementApplier implements ProcessApplier {
   }
 
   @Override
-  public void accept(UUID uuid, BatchRunnable.Process process) {
+  public void accept(UUID uuid, TaskProcess process) {
     Requirement.Result result = getResult(uuid);
-    BatchRunnable.TaskPool taskPool = process.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE);
+    TaskPool taskPool = process.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE);
     taskPool.addLast(process1 -> result.applier.accept(uuid, process1));
     process.next();
   }

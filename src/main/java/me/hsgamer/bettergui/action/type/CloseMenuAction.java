@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.action.type;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.hscore.task.BatchRunnable;
+import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -17,7 +17,7 @@ public class CloseMenuAction implements Action {
   }
 
   @Override
-  public void accept(UUID uuid, BatchRunnable.Process process) {
+  public void accept(UUID uuid, TaskProcess process) {
     Player player = Bukkit.getPlayer(uuid);
     if (menu == null || player == null) {
       process.next();

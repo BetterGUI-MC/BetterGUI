@@ -107,13 +107,7 @@ public final class StringReplacerApplier {
    * @return the replaced string
    */
   public static String replace(String string, UUID uuid, Menu menu) {
-    return replace(
-      menu.canBeReplaced(string)
-        ? menu.replace(string, uuid)
-        : string,
-      uuid,
-      false
-    );
+    return replace(menu.replace(string, uuid), uuid, false);
   }
 
   /**

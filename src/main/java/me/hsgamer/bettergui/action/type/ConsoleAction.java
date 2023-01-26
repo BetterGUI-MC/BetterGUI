@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.action.type;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
-import me.hsgamer.hscore.task.BatchRunnable;
+import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;
@@ -14,7 +14,7 @@ public class ConsoleAction extends BaseAction {
   }
 
   @Override
-  public void accept(UUID uuid, BatchRunnable.Process process) {
+  public void accept(UUID uuid, TaskProcess process) {
     Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getReplacedString(uuid));
       process.next();

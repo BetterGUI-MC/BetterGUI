@@ -4,7 +4,8 @@ import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.builder.ActionBuilder;
-import me.hsgamer.hscore.task.BatchRunnable;
+import me.hsgamer.hscore.task.element.TaskPool;
+import me.hsgamer.hscore.task.element.TaskProcess;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,15 +41,15 @@ public class ActionApplier implements ProcessApplier {
    * @param uuid    the unique id
    * @param process the process
    */
-  public void acceptWithoutNext(UUID uuid, BatchRunnable.Process process) {
-    BatchRunnable.TaskPool currentPool = process.getCurrentTaskPool();
+  public void acceptWithoutNext(UUID uuid, TaskProcess process) {
+    TaskPool currentPool = process.getCurrentTaskPool();
     for (Action action : actions) {
       currentPool.addLast(subProcess -> action.accept(uuid, subProcess));
     }
   }
 
   @Override
-  public void accept(UUID uuid, BatchRunnable.Process process) {
+  public void accept(UUID uuid, TaskProcess process) {
     acceptWithoutNext(uuid, process);
     process.next();
   }

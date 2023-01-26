@@ -4,7 +4,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.hscore.common.Validate;
-import me.hsgamer.hscore.task.BatchRunnable;
+import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -17,7 +17,7 @@ public class DelayAction extends BaseAction {
   }
 
   @Override
-  public void accept(UUID uuid, BatchRunnable.Process process) {
+  public void accept(UUID uuid, TaskProcess process) {
     String value = getReplacedString(uuid);
     if (Validate.isValidPositiveNumber(value)) {
       Bukkit.getScheduler().runTaskLater(BetterGUI.getInstance(), process::next, Long.parseLong(value));

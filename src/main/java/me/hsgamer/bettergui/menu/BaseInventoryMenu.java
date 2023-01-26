@@ -56,7 +56,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     argumentHandler = new ArgumentHandler(this);
     guiHolder = new GUIHolder(getInstance()) {
       @Override
-      protected GUIDisplay newDisplay(UUID uuid) {
+      private GUIDisplay newDisplay(UUID uuid) {
         GUIDisplay guiDisplay = super.newDisplay(uuid);
         guiDisplay.setForceUpdate(getInstance().getMainConfig().forcedUpdateInventory);
         if (ticks >= 0) {
@@ -66,7 +66,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       }
 
       @Override
-      protected void onRemoveDisplay(GUIDisplay display) {
+      private void onRemoveDisplay(GUIDisplay display) {
         argumentHandler.onClear(display.getUniqueId());
 
         Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(BukkitTask::cancel);
@@ -80,7 +80,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       }
 
       @Override
-      protected void onOpen(InventoryOpenEvent event) {
+      private void onOpen(InventoryOpenEvent event) {
         BetterGUI.runBatchRunnable(batchRunnable ->
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
             .addLast(process ->
@@ -90,7 +90,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       }
 
       @Override
-      protected void onClose(InventoryCloseEvent event) {
+      private void onClose(InventoryCloseEvent event) {
         BetterGUI.runBatchRunnable(batchRunnable ->
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
             .addLast(process ->
