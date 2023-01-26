@@ -6,7 +6,6 @@ import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.config.TemplateButtonConfig;
 import me.hsgamer.bettergui.downloader.AddonDownloader;
-import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.bettergui.manager.ExtraAddonManager;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
@@ -89,12 +88,6 @@ public final class BetterGUI extends BasePlugin {
     Permissions.register();
 
     GUIListener.init(this);
-
-    if (mainConfig.alternativeCommandManager.enable) {
-      getLogger().info("Enabled alternative command manager");
-      getLogger().warning("This is deprecated and will be moved to an addon in the future");
-      registerListener(new AlternativeCommandListener(this));
-    }
 
     addonManager.loadAddons();
 
