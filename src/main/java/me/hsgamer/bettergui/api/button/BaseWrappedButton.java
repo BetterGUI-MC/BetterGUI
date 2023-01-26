@@ -2,9 +2,10 @@ package me.hsgamer.bettergui.api.button;
 
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
-import me.hsgamer.hscore.bukkit.gui.button.Button;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
+import me.hsgamer.hscore.minecraft.gui.button.Button;
+import me.hsgamer.hscore.minecraft.gui.event.ClickEvent;
+import me.hsgamer.hscore.minecraft.gui.object.Item;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.UUID;
@@ -16,7 +17,7 @@ public abstract class BaseWrappedButton implements WrappedButton {
   protected final Menu menu;
   protected final String name;
   protected final Map<String, Object> options;
-  protected final Button button;
+  protected Button button;
 
   /**
    * Create a new wrapped button
@@ -27,7 +28,6 @@ public abstract class BaseWrappedButton implements WrappedButton {
     this.menu = input.menu;
     this.name = input.name;
     this.options = input.options;
-    this.button = createButton(options);
   }
 
   /**
@@ -59,22 +59,23 @@ public abstract class BaseWrappedButton implements WrappedButton {
   }
 
   @Override
-  public ItemStack getItemStack(UUID uuid) {
+  public Item getItem(@NotNull UUID uuid) {
     if (button != null) {
-      return button.getItemStack(uuid);
+      return button.getItem(uuid);
     }
     return null;
   }
 
   @Override
-  public void handleAction(UUID uuid, InventoryClickEvent event) {
+  public void handleAction(@NotNull ClickEvent event) {
     if (button != null) {
-      button.handleAction(uuid, event);
+      button.handleAction(event);
     }
   }
 
   @Override
   public void init() {
+    this.button = createButton(options);
     if (button != null) {
       button.init();
     }
@@ -88,7 +89,7 @@ public abstract class BaseWrappedButton implements WrappedButton {
   }
 
   @Override
-  public boolean forceSetAction(UUID uuid) {
+  public boolean forceSetAction(@NotNull UUID uuid) {
     if (button != null) {
       return button.forceSetAction(uuid);
     }
