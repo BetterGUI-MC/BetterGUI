@@ -3,9 +3,9 @@ package me.hsgamer.bettergui.menu;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.util.SlotUtil;
-import me.hsgamer.hscore.bukkit.gui.simple.SimpleButtonMap;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.minecraft.gui.simple.SimpleButtonMap;
 
 import java.util.Map;
 import java.util.UUID;
