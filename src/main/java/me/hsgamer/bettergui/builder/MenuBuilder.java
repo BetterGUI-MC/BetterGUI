@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.builder;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.menu.AddonMenu;
 import me.hsgamer.bettergui.menu.PredicateMenu;
@@ -39,7 +38,7 @@ public final class MenuBuilder extends MassBuilder<Config, Menu> {
       @Override
       public boolean canBuild(Config input) {
         Map<String, Object> keys = new CaseInsensitiveStringMap<>(input.getNormalizedValues(true));
-        String menu = Objects.toString(keys.get("menu-settings.menu-type"), BetterGUI.getInstance().getMainConfig().defaultMenuType);
+        String menu = Objects.toString(keys.get("menu-settings.menu-type"), "simple");
         for (String s : type) {
           if (menu.equalsIgnoreCase(s)) {
             return true;

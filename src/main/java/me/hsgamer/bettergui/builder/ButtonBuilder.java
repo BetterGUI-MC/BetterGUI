@@ -50,7 +50,7 @@ public final class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, Wrappe
       @Override
       public boolean canBuild(Input input) {
         Map<String, Object> keys = new CaseInsensitiveStringMap<>(input.options);
-        String button = Objects.toString(keys.get("type"), BetterGUI.getInstance().getMainConfig().defaultButtonType);
+        String button = Objects.toString(keys.get("type"), "simple");
         for (String s : type) {
           if (button.equalsIgnoreCase(s)) {
             return true;
