@@ -3,17 +3,20 @@ package me.hsgamer.bettergui.menu;
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
 import me.hsgamer.bettergui.downloader.AdditionalInfoKeys;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
-import me.hsgamer.hscore.bukkit.gui.button.Button;
-import me.hsgamer.hscore.bukkit.gui.button.ButtonMap;
+import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
+import me.hsgamer.hscore.bukkit.gui.object.BukkitItem;
 import me.hsgamer.hscore.bukkit.item.ItemBuilder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.downloader.core.object.DownloadInfo;
+import me.hsgamer.hscore.minecraft.gui.button.Button;
+import me.hsgamer.hscore.minecraft.gui.button.ButtonMap;
+import me.hsgamer.hscore.minecraft.gui.event.ClickEvent;
 import me.hsgamer.hscore.ui.property.Initializable;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -45,10 +48,10 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
     Map<String, Object> itemMap = config.getNormalizedValues("button", false);
     return new ButtonMap() {
       private final Object lock = new Object();
-      private Map<Button, List<Integer>> buttonMap;
+      private Map<Button, Collection<Integer>> buttonMap;
 
       @Override
-      public Map<Button, List<Integer>> getButtons(UUID uuid) {
+      public @NotNull Map<Button, Collection<Integer>> getButtons(@NotNull UUID uuid) {
         synchronized (lock) {
           if (buttonMap == null) {
             buttonMap = new HashMap<>();
@@ -100,13 +103,15 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
     }
 
     @Override
-    public ItemStack getItemStack(UUID uuid) {
+    public BukkitItem getItem(@NotNull UUID uuid) {
       updateStatus();
-      return itemBuilder.build(uuid);
+      return new BukkitItem(itemBuilder.build(uuid));
     }
 
     @Override
-    public void handleAction(UUID uuid, InventoryClickEvent event) {
+    public void handleAction(@NotNull ClickEvent clickEvent) {
+      if (!(clickEvent instanceof BukkitClickEvent)) return;
+      InventoryClickEvent event = ((BukkitClickEvent) clickEvent).getEvent();
       HumanEntity humanEntity = event.getWhoClicked();
       ClickType clickType = event.getClick();
       if (clickType.isLeftClick()) {
