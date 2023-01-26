@@ -1,7 +1,7 @@
 package me.hsgamer.bettergui.api.button;
 
 import me.hsgamer.bettergui.api.menu.MenuElement;
-import me.hsgamer.hscore.bukkit.gui.button.Button;
+import me.hsgamer.hscore.minecraft.gui.button.Button;
 
 import java.util.UUID;
 
