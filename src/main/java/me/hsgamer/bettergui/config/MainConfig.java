@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.config;
 
-import me.hsgamer.bettergui.listener.AlternativeCommandListener;
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.config.annotated.AnnotatedConfig;
 import me.hsgamer.hscore.config.annotation.ConfigPath;
@@ -19,8 +18,6 @@ public class MainConfig extends AnnotatedConfig {
   public final @ConfigPath("forced-update-inventory") boolean forcedUpdateInventory;
   public final @ConfigPath("use-modern-click-type") boolean modernClickType;
   public final @ConfigPath("use-legacy-button") boolean useLegacyButton;
-  @Deprecated
-  public final @ConfigPath(value = "alternative-command-manager", converter = AlternativeCommandListener.SettingConverter.class) AlternativeCommandListener.Setting alternativeCommandManager;
 
   public MainConfig(Plugin plugin) {
     super(new BukkitConfig(plugin, "config.yml"));
@@ -32,6 +29,5 @@ public class MainConfig extends AnnotatedConfig {
     forcedUpdateInventory = false;
     modernClickType = false;
     useLegacyButton = true;
-    alternativeCommandManager = new AlternativeCommandListener.Setting();
   }
 }
