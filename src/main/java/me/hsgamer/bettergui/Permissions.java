@@ -3,12 +3,11 @@ package me.hsgamer.bettergui;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
 import static org.bukkit.Bukkit.getPluginManager;
 
 public final class Permissions {
 
-  public static final String PREFIX = getInstance().getName().toLowerCase();
+  public static final String PREFIX = "bettergui";
 
   public static final Permission OPEN_MENU = new Permission(PREFIX + ".openmenu", PermissionDefault.OP);
   public static final Permission RELOAD = new Permission(PREFIX + ".reload", PermissionDefault.OP);
