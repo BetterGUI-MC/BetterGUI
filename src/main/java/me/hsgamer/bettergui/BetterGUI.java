@@ -12,7 +12,7 @@ import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.bettergui.papi.ExtraPlaceholderExpansion;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
-import me.hsgamer.hscore.bukkit.gui.GUIListener;
+import me.hsgamer.hscore.bukkit.gui.BukkitGUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
 import me.hsgamer.hscore.task.BatchRunnable;
@@ -87,7 +87,7 @@ public final class BetterGUI extends BasePlugin {
 
   @Override
   public void enable() {
-    GUIListener.init(this);
+    BukkitGUIListener.init(this);
 
     addonManager.loadAddons();
 
