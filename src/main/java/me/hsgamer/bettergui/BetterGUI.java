@@ -22,7 +22,9 @@ import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.DrilldownPie;
 import org.bukkit.Bukkit;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -76,7 +78,7 @@ public final class BetterGUI extends BasePlugin {
 
   @Override
   public void load() {
-    VariableManager.setReplaceAll(() -> mainConfig.replaceAllVariables);
+    VariableManager.getGlobalVariableManager().setReplaceAll(() -> mainConfig.replaceAllVariables);
     PluginVariableManager.registerDefaultVariables();
     mainConfig.setup();
     messageConfig.setup();
@@ -85,8 +87,6 @@ public final class BetterGUI extends BasePlugin {
 
   @Override
   public void enable() {
-    Permissions.register();
-
     GUIListener.init(this);
 
     addonManager.loadAddons();
@@ -151,7 +151,6 @@ public final class BetterGUI extends BasePlugin {
 
   @Override
   public void postDisable() {
-    Permissions.unregister();
     ActionBuilder.INSTANCE.clear();
     ButtonBuilder.INSTANCE.clear();
     ItemModifierBuilder.INSTANCE.clear();
@@ -159,6 +158,11 @@ public final class BetterGUI extends BasePlugin {
     RequirementBuilder.INSTANCE.clear();
     PluginVariableManager.unregisterAll();
     VariableManager.clearExternalReplacers();
+  }
+
+  @Override
+  protected List<Class<?>> getPermissionClasses() {
+    return Collections.singletonList(Permissions.class);
   }
 
   /**
