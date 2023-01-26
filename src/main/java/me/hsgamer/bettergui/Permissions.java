@@ -3,8 +3,6 @@ package me.hsgamer.bettergui;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import static org.bukkit.Bukkit.getPluginManager;
-
 public final class Permissions {
 
   public static final String PREFIX = "bettergui";
@@ -19,25 +17,5 @@ public final class Permissions {
 
   private Permissions() {
 
-  }
-
-  public static void register() {
-    getPluginManager().addPermission(OPEN_MENU);
-    getPluginManager().addPermission(RELOAD);
-    getPluginManager().addPermission(ADDONS);
-    getPluginManager().addPermission(HELP);
-    getPluginManager().addPermission(VARIABLE);
-    getPluginManager().addPermission(TEMPLATE_BUTTON);
-    getPluginManager().addPermission(OPEN_MENU_BYPASS);
-  }
-
-  public static void unregister() {
-    getPluginManager().removePermission(OPEN_MENU);
-    getPluginManager().removePermission(RELOAD);
-    getPluginManager().removePermission(ADDONS);
-    getPluginManager().removePermission(HELP);
-    getPluginManager().removePermission(VARIABLE);
-    getPluginManager().removePermission(TEMPLATE_BUTTON);
-    getPluginManager().removePermission(OPEN_MENU_BYPASS);
   }
 }
