@@ -31,6 +31,7 @@ public final class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, Wrappe
     register(WrappedPredicateButton::new, "predicate", "requirement");
     register(WrappedListButton::new, "list");
     register(WrappedAnimatedButton::new, "animated", "animate", "anim");
+    register(WrappedNullButton::new, "null", "none");
     register(input ->
         BetterGUI.getInstance().getMainConfig().useLegacyButton
           ? new LegacyMenuButton(input)
