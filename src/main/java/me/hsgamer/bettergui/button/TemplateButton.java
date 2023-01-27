@@ -3,12 +3,12 @@ package me.hsgamer.bettergui.button;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
-import me.hsgamer.hscore.bukkit.gui.button.Button;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.minecraft.gui.button.Button;
 
 import java.util.*;
 
-public class TemplateButton extends BaseWrappedButton {
+public class TemplateButton extends BaseWrappedButton<Button> {
   /**
    * Create a new button
    *

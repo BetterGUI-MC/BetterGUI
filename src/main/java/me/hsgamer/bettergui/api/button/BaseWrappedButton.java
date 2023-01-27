@@ -13,11 +13,11 @@ import java.util.UUID;
 /**
  * The base class of wrapped button
  */
-public abstract class BaseWrappedButton implements WrappedButton {
+public abstract class BaseWrappedButton<B extends Button> implements WrappedButton {
   protected final Menu menu;
   protected final String name;
   protected final Map<String, Object> options;
-  protected Button button;
+  protected B button;
 
   /**
    * Create a new wrapped button
@@ -37,7 +37,7 @@ public abstract class BaseWrappedButton implements WrappedButton {
    *
    * @return the button
    */
-  protected abstract Button createButton(Map<String, Object> section);
+  protected abstract B createButton(Map<String, Object> section);
 
   /**
    * Get the options of the button

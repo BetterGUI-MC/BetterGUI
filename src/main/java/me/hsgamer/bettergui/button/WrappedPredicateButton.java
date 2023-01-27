@@ -10,9 +10,10 @@ import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.bukkit.gui.button.Button;
-import me.hsgamer.hscore.bukkit.gui.button.impl.PredicateButton;
+import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.minecraft.gui.button.Button;
+import me.hsgamer.hscore.minecraft.gui.button.impl.PredicateButton;
 
 import java.util.Map;
 import java.util.Optional;
@@ -21,7 +22,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class WrappedPredicateButton extends BaseWrappedButton {
+public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
   private Set<UUID> checked;
 
   public WrappedPredicateButton(ButtonBuilder.Input input) {
@@ -56,12 +57,14 @@ public class WrappedPredicateButton extends BaseWrappedButton {
       .flatMap(MapUtil::castOptionalStringObjectMap)
       .ifPresent(subsection -> {
         Map<AdvancedClickType, RequirementApplier> clickRequirements = RequirementApplier.convertClickRequirementAppliers(subsection, wrappedButton);
-        predicateButton.setClickFuturePredicate((uuid, event) -> {
-          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(event, BetterGUI.getInstance().getMainConfig().modernClickType));
-          return CompletableFuture.supplyAsync(() -> clickRequirement.getResult(uuid))
+        predicateButton.setClickFuturePredicate(clickEvent -> {
+          if (!(clickEvent instanceof BukkitClickEvent)) return CompletableFuture.completedFuture(false);
+          BukkitClickEvent bukkitClickEvent = (BukkitClickEvent) clickEvent;
+          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), BetterGUI.getInstance().getMainConfig().modernClickType));
+          return CompletableFuture.supplyAsync(() -> clickRequirement.getResult(clickEvent.getViewerID()))
             .thenApply(result -> {
               BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
-                result.applier.accept(uuid, process);
+                result.applier.accept(clickEvent.getViewerID(), process);
                 process.next();
               }));
               return result.isSuccess;
@@ -71,16 +74,14 @@ public class WrappedPredicateButton extends BaseWrappedButton {
   }
 
   @Override
-  protected Button createButton(Map<String, Object> section) {
+  protected PredicateButton createButton(Map<String, Object> section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
 
-    PredicateButton predicateButton = new PredicateButton(
-      Optional.ofNullable(keys.get("button"))
-        .flatMap(MapUtil::castOptionalStringObjectMap)
-        .map(subsection -> new ButtonBuilder.Input(getMenu(), getName() + "_button", subsection))
-        .<Button>map(input -> ButtonBuilder.INSTANCE.build(input).orElseGet(() -> new EmptyButton(input)))
-        .orElse(Button.EMPTY)
-    );
+    PredicateButton predicateButton = new PredicateButton();
+    Optional.ofNullable(keys.get("button"))
+      .flatMap(MapUtil::castOptionalStringObjectMap)
+      .flatMap(subsection -> ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName() + "_button", subsection)))
+      .ifPresent(predicateButton::setButton);
     Optional.ofNullable(keys.get("fallback"))
       .flatMap(MapUtil::castOptionalStringObjectMap)
       .flatMap(subsection -> ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName() + "_fallback", subsection)))
@@ -94,14 +95,14 @@ public class WrappedPredicateButton extends BaseWrappedButton {
   @Override
   public void refresh(UUID uuid) {
     checked.remove(uuid);
-    if (!(this.button instanceof PredicateButton)) {
+    if (this.button == null) {
       return;
     }
-    Button tempButton = ((PredicateButton) this.button).getButton();
+    Button tempButton = this.button.getButton();
     if (tempButton instanceof WrappedButton) {
       ((WrappedButton) tempButton).refresh(uuid);
     }
-    tempButton = ((PredicateButton) this.button).getFallbackButton();
+    tempButton = this.button.getFallbackButton();
     if (tempButton instanceof WrappedButton) {
       ((WrappedButton) tempButton).refresh(uuid);
     }
