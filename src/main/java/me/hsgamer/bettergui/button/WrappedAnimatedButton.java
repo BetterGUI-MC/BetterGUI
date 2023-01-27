@@ -1,26 +1,24 @@
 package me.hsgamer.bettergui.button;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.util.MapUtil;
-import me.hsgamer.hscore.bukkit.gui.button.Button;
-import me.hsgamer.hscore.bukkit.gui.button.impl.AnimatedButton;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
+import me.hsgamer.hscore.minecraft.gui.button.impl.AnimatedButton;
 
 import java.math.BigDecimal;
 import java.util.*;
 
-public class WrappedAnimatedButton extends BaseWrappedButton {
+public class WrappedAnimatedButton extends BaseWrappedButton<AnimatedButton> {
   public WrappedAnimatedButton(ButtonBuilder.Input input) {
     super(input);
   }
 
   @Override
-  protected Button createButton(Map<String, Object> section) {
+  protected AnimatedButton createButton(Map<String, Object> section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
     long update = Optional.ofNullable(keys.get("update"))
       .map(String::valueOf)
@@ -28,10 +26,6 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
       .filter(bigDecimal -> bigDecimal.compareTo(BigDecimal.ZERO) > 0)
       .map(BigDecimal::longValue)
       .orElse(0L);
-    boolean async = Optional.ofNullable(keys.get("async"))
-      .map(String::valueOf)
-      .map(Boolean::parseBoolean)
-      .orElse(true);
     int shift = Optional.ofNullable(keys.get("shift"))
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
@@ -51,15 +45,13 @@ public class WrappedAnimatedButton extends BaseWrappedButton {
       frames = CollectionUtils.reverse(frames);
     }
 
-    AnimatedButton animatedButton = new AnimatedButton(BetterGUI.getInstance(), update, async);
-    frames.forEach(animatedButton::addChildButtons);
-    return animatedButton;
+    return new AnimatedButton().addButton(frames).setPeriodTicks(update);
   }
 
   @Override
   public void refresh(UUID uuid) {
-    if (this.button instanceof AnimatedButton) {
-      ((AnimatedButton) this.button).getButtons().stream().filter(WrappedButton.class::isInstance).forEach(button -> ((WrappedButton) button).refresh(uuid));
+    if (this.button != null) {
+      this.button.getButtons().stream().filter(WrappedButton.class::isInstance).forEach(button -> ((WrappedButton) button).refresh(uuid));
     }
   }
 }

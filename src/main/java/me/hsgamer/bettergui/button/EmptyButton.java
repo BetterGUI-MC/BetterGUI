@@ -2,11 +2,11 @@ package me.hsgamer.bettergui.button;
 
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
-import me.hsgamer.hscore.bukkit.gui.button.Button;
+import me.hsgamer.hscore.minecraft.gui.button.Button;
 
 import java.util.Map;
 
-public class EmptyButton extends BaseWrappedButton {
+public class EmptyButton extends BaseWrappedButton<Button> {
   public EmptyButton(ButtonBuilder.Input input) {
     super(input);
   }
