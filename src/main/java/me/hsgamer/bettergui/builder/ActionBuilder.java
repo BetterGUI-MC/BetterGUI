@@ -28,6 +28,7 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
    * The pattern for the action.
    * The format is: {@code <type>(<option>): <value>}. Note that the {@code <option>} and {@code <value>} are optional.
    * Also, the allowed characters of the {@code <type>} are alphanumeric, {@code _}, {@code -} and {@code $}.
+   * To get the {@code <type>}, {@code <option>} and {@code <value>}, use {@link Matcher#group(int)} with the index 1, 3 and 5 respectively.
    */
   public static final Pattern ACTION_PATTERN = Pattern.compile("\\s*([\\w\\-$]+)\\s*(\\((.*)\\))?\\s*(:\\s*(.*)\\s*)?");
 
