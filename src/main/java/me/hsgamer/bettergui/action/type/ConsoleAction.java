@@ -20,9 +20,4 @@ public class ConsoleAction extends BaseAction {
       process.next();
     });
   }
-
-  @Override
-  protected boolean shouldBeTrimmed() {
-    return true;
-  }
 }

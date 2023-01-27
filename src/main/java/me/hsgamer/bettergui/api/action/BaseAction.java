@@ -10,8 +10,7 @@ import java.util.UUID;
  * The base action
  */
 public abstract class BaseAction implements Action {
-  private final Menu menu;
-  private final String string;
+  protected final ActionBuilder.Input input;
 
   /**
    * Create a new action
@@ -19,8 +18,7 @@ public abstract class BaseAction implements Action {
    * @param input the input
    */
   protected BaseAction(ActionBuilder.Input input) {
-    this.menu = input.menu;
-    this.string = input.value;
+    this.input = input;
   }
 
   /**
@@ -31,24 +29,11 @@ public abstract class BaseAction implements Action {
    * @return the replaced string
    */
   protected String getReplacedString(UUID uuid) {
-    String replaced = StringReplacerApplier.replace(string, uuid, menu);
-    if (shouldBeTrimmed()) {
-      replaced = replaced.trim();
-    }
-    return replaced;
-  }
-
-  /**
-   * Check if the string should be trimmed
-   *
-   * @return true if it should
-   */
-  protected boolean shouldBeTrimmed() {
-    return false;
+    return StringReplacerApplier.replace(input.value, uuid, getMenu());
   }
 
   @Override
   public Menu getMenu() {
-    return menu;
+    return input.menu;
   }
 }

@@ -62,9 +62,4 @@ public class SoundAction extends BaseAction {
       process.next();
     });
   }
-
-  @Override
-  protected boolean shouldBeTrimmed() {
-    return true;
-  }
 }
