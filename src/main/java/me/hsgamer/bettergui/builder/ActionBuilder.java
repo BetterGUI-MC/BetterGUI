@@ -24,7 +24,7 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
    * The instance of the action builder
    */
   public static final ActionBuilder INSTANCE = new ActionBuilder();
-  private static final Pattern ACTION_PATTERN = Pattern.compile("\\s*(\\S+)\\s*(\\((.*)\\))?\\s*(:\\s*(.*)\\s*)?");
+  private static final Pattern ACTION_PATTERN = Pattern.compile("\\s*([\\w\\-$]+)\\s*(\\((.*)\\))?\\s*(:\\s*(.*)\\s*)?");
 
   private ActionBuilder() {
     register(ConsoleAction::new, "console");
