@@ -26,9 +26,4 @@ public class DelayAction extends BaseAction {
       process.next();
     }
   }
-
-  @Override
-  protected boolean shouldBeTrimmed() {
-    return true;
-  }
 }

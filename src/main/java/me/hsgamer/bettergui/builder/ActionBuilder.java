@@ -6,8 +6,13 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.hscore.builder.MassBuilder;
 import me.hsgamer.hscore.common.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,6 +24,7 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
    * The instance of the action builder
    */
   public static final ActionBuilder INSTANCE = new ActionBuilder();
+  private static final Pattern ACTION_PATTERN = Pattern.compile("\\s*(\\S+)\\s*(\\((.*)\\))?\\s*(:\\s*(.*)\\s*)?");
 
   private ActionBuilder() {
     register(ConsoleAction::new, "console");
@@ -73,24 +79,15 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
     return CollectionUtils.createStringListFromObject(object, true)
       .stream()
       .flatMap(string -> {
-        String[] split = string.split(":", 2);
-
-        String type;
-        String value;
-        if (split.length > 1) {
-          type = split[0];
-          value = split[1];
-          value = value.startsWith(" ") ? value.substring(1) : value;
+        Matcher matcher = ACTION_PATTERN.matcher(string);
+        if (matcher.matches()) {
+          String type = matcher.group(1);
+          String option = Optional.ofNullable(matcher.group(3)).orElse("");
+          String value = Optional.ofNullable(matcher.group(5)).orElse("");
+          return Stream.of(build(new Input(menu, type, value, option)).orElseGet(() -> new PlayerAction(new Input(menu, "player", string.trim(), ""))));
         } else {
-          type = split[0];
-          value = "";
+          return Stream.of(new PlayerAction(new Input(menu, "player", string, "")));
         }
-        type = type.trim();
-
-        return Stream.of(
-          build(new Input(menu, type, value))
-            .orElse(new PlayerAction(new Input(menu, "player", split[0])))
-        );
       })
       .collect(Collectors.toList());
   }
@@ -102,18 +99,59 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
     public final Menu menu;
     public final String type;
     public final String value;
+    public final String option;
 
     /**
      * Create a new input
      *
-     * @param menu  the menu
-     * @param type  the type of the action
-     * @param value the value of the action
+     * @param menu   the menu
+     * @param type   the type of the action
+     * @param value  the value of the action
+     * @param option the option of the action
      */
-    public Input(Menu menu, String type, String value) {
+    public Input(Menu menu, String type, String value, String option) {
       this.menu = menu;
       this.type = type;
       this.value = value;
+      this.option = option;
+    }
+
+    /**
+     * Get the option as a list
+     *
+     * @param separator the separator
+     *
+     * @return the list
+     */
+    public List<String> getOptionAsList(String separator) {
+      if (option.isEmpty()) {
+        return Collections.emptyList();
+      }
+      return Stream.of(option.split(separator))
+        .map(String::trim)
+        .collect(Collectors.toList());
+    }
+
+    /**
+     * Get the option as a list.
+     * The format is {@code value,value}
+     *
+     * @return the list
+     */
+    public List<String> getOptionAsList() {
+      return getOptionAsList(",");
+    }
+
+    /**
+     * Get the option as a map.
+     * The format is {@code key=value,key=value}
+     *
+     * @return the map
+     */
+    public Map<String, String> getOptionAsMap() {
+      return getOptionAsList().stream()
+        .map(s -> s.split("="))
+        .collect(Collectors.toMap(strings -> strings[0].trim(), strings -> strings.length > 1 ? strings[1].trim() : ""));
     }
   }
 }

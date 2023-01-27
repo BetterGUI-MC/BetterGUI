@@ -1,21 +1,19 @@
 package me.hsgamer.bettergui.action.type;
 
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.action.BaseAction;
+import me.hsgamer.bettergui.api.action.CommandAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
-import me.hsgamer.bettergui.util.CommandUtil;
 import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class PermissionAction extends BaseAction {
+public class PermissionAction extends CommandAction {
   public PermissionAction(ActionBuilder.Input input) {
     super(input);
   }
@@ -28,37 +26,20 @@ public class PermissionAction extends BaseAction {
       return;
     }
 
-    String replacedString = getReplacedString(uuid);
-    int spaceIndex = replacedString.indexOf(' ');
-
-    // Simply a Player Command if there is no space
-    if (spaceIndex < 0) {
-      Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
-        player.chat(CommandUtil.normalizeCommand(replacedString));
-        process.next();
-      });
-      return;
-    }
-
-    List<String> permissions = new ArrayList<>(Arrays.asList(replacedString.substring(0, spaceIndex).split(";")));
+    List<String> permissions = new ArrayList<>(input.getOptionAsList());
     permissions.removeIf(player::hasPermission);
-    String command = replacedString.substring(spaceIndex + 1).trim();
+    String replacedString = getFinalCommand(uuid);
 
     Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
       List<PermissionAttachment> attachments = permissions.stream()
         .map(s -> player.addAttachment(BetterGUI.getInstance(), s, true))
         .collect(Collectors.toList());
       try {
-        player.chat(CommandUtil.normalizeCommand(command));
+        player.chat(replacedString);
       } finally {
         attachments.forEach(player::removeAttachment);
       }
       process.next();
     });
-  }
-
-  @Override
-  protected boolean shouldBeTrimmed() {
-    return true;
   }
 }
