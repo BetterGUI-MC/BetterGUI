@@ -24,7 +24,12 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
    * The instance of the action builder
    */
   public static final ActionBuilder INSTANCE = new ActionBuilder();
-  private static final Pattern ACTION_PATTERN = Pattern.compile("\\s*([\\w\\-$]+)\\s*(\\((.*)\\))?\\s*(:\\s*(.*)\\s*)?");
+  /**
+   * The pattern for the action.
+   * The format is: {@code <type>(<option>): <value>}. Note that the {@code <option>} and {@code <value>} are optional.
+   * Also, the allowed characters of the {@code <type>} are alphanumeric, {@code _}, {@code -} and {@code $}.
+   */
+  public static final Pattern ACTION_PATTERN = Pattern.compile("\\s*([\\w\\-$]+)\\s*(\\((.*)\\))?\\s*(:\\s*(.*)\\s*)?");
 
   private ActionBuilder() {
     register(ConsoleAction::new, "console");
