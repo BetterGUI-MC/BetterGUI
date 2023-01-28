@@ -1,13 +1,7 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.action.CommandAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
-import me.hsgamer.hscore.task.element.TaskProcess;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.util.UUID;
 
 public class PlayerAction extends CommandAction {
   public PlayerAction(ActionBuilder.Input input) {
@@ -15,13 +9,7 @@ public class PlayerAction extends CommandAction {
   }
 
   @Override
-  public void accept(UUID uuid, TaskProcess process) {
-    Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
-      Player player = Bukkit.getPlayer(uuid);
-      if (player != null) {
-        player.chat(getFinalCommand(uuid));
-      }
-      process.next();
-    });
+  protected void accept(Player player, String command) {
+    player.chat(command);
   }
 }
