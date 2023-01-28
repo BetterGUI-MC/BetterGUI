@@ -1,16 +1,11 @@
 package me.hsgamer.bettergui.action.type;
 
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.action.CommandAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
-import me.hsgamer.hscore.task.element.TaskProcess;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PermissionAction extends CommandAction {
@@ -19,27 +14,15 @@ public class PermissionAction extends CommandAction {
   }
 
   @Override
-  public void accept(UUID uuid, TaskProcess process) {
-    Player player = Bukkit.getPlayer(uuid);
-    if (player == null) {
-      process.next();
-      return;
+  protected void accept(Player player, String command) {
+    List<PermissionAttachment> attachments = input.getOptionAsList().stream()
+      .filter(s -> !player.hasPermission(s))
+      .map(s -> player.addAttachment(BetterGUI.getInstance(), s, true))
+      .collect(Collectors.toList());
+    try {
+      player.chat(command);
+    } finally {
+      attachments.forEach(player::removeAttachment);
     }
-
-    List<String> permissions = new ArrayList<>(input.getOptionAsList());
-    permissions.removeIf(player::hasPermission);
-    String replacedString = getFinalCommand(uuid);
-
-    Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
-      List<PermissionAttachment> attachments = permissions.stream()
-        .map(s -> player.addAttachment(BetterGUI.getInstance(), s, true))
-        .collect(Collectors.toList());
-      try {
-        player.chat(replacedString);
-      } finally {
-        attachments.forEach(player::removeAttachment);
-      }
-      process.next();
-    });
   }
 }
