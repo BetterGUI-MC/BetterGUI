@@ -29,4 +29,20 @@ public final class PlayerUtil {
     }
     return false;
   }
+
+  /**
+   * Check if the player has the permission
+   *
+   * @param player     the player
+   * @param permission the permission. If it starts with "-", it will check if the player doesn't have the permission
+   *
+   * @return true if the player does
+   */
+  public static boolean hasPermission(Player player, String permission) {
+    if (permission.startsWith("-")) {
+      return !player.hasPermission(permission.substring(1).trim());
+    } else {
+      return player.hasPermission(permission);
+    }
+  }
 }
