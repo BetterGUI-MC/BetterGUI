@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.requirement.type;
 
 import me.hsgamer.bettergui.api.requirement.BaseRequirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.util.PlayerUtil;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.common.CollectionUtils;
 import org.bukkit.Bukkit;
@@ -28,18 +29,10 @@ public class PermissionRequirement extends BaseRequirement<List<String>> {
     if (player == null) {
       return Result.success();
     }
-    if (value.parallelStream().allMatch(s -> hasPermission(player, s))) {
+    if (value.parallelStream().allMatch(s -> PlayerUtil.hasPermission(player, s))) {
       return Result.success();
     } else {
       return Result.fail();
-    }
-  }
-
-  private boolean hasPermission(Player player, String permission) {
-    if (permission.startsWith("-")) {
-      return !player.hasPermission(permission.substring(1).trim());
-    } else {
-      return player.hasPermission(permission);
     }
   }
 }
