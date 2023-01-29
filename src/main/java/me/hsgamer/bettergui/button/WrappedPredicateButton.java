@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
-  private Set<UUID> checked;
+  private final Set<UUID> checked = new ConcurrentSkipListSet<>();
 
   public WrappedPredicateButton(ButtonBuilder.Input input) {
     super(input);
@@ -87,7 +87,6 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
       .flatMap(subsection -> ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName() + "_fallback", subsection)))
       .ifPresent(predicateButton::setFallbackButton);
 
-    checked = new ConcurrentSkipListSet<>();
     applyRequirement(keys, this, checked, predicateButton);
     return predicateButton;
   }
