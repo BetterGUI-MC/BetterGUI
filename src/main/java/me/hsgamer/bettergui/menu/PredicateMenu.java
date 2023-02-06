@@ -9,6 +9,7 @@ import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.bettergui.util.PlayerUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Pair;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 public class PredicateMenu extends Menu {
-  private final List<Pair<RequirementApplier, String>> menuPredicateList;
+  private final List<Pair<RequirementApplier, MenuProcess>> menuPredicateList;
   private final List<Permission> permissions;
   private final ArgumentHandler argumentHandler;
 
@@ -68,13 +69,14 @@ public class PredicateMenu extends Menu {
           });
       } else {
         String menu = Objects.toString(values.get("menu"), null);
+        String args = Optional.ofNullable(MapUtil.getIfFound(values, "args", "arguments", "arg", "argument")).map(Object::toString).orElse("");
         Object requirementValue = values.get("requirement");
         if (menu == null || requirementValue == null) {
           continue;
         }
         MapUtil.castOptionalStringObjectMap(requirementValue)
           .map(m -> new RequirementApplier(this, getName() + "_" + key + "_requirement", m))
-          .ifPresent(requirementApplier -> menuPredicateList.add(Pair.of(requirementApplier, menu)));
+          .ifPresent(requirementApplier -> menuPredicateList.add(Pair.of(requirementApplier, new MenuProcess(menu, args))));
       }
     }
 
@@ -94,14 +96,16 @@ public class PredicateMenu extends Menu {
     }
 
     boolean isSuccessful = false;
-    for (Pair<RequirementApplier, String> pair : menuPredicateList) {
+    for (Pair<RequirementApplier, MenuProcess> pair : menuPredicateList) {
       Requirement.Result result = pair.getKey().getResult(uuid);
       BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
         result.applier.accept(uuid, process);
         process.next();
       }));
       if (result.isSuccess) {
-        BetterGUI.getInstance().getMenuManager().openMenu(pair.getValue(), player, args, getParentMenu(uuid).orElse(null), bypass);
+        MenuProcess menuProcess = pair.getValue();
+        String[] finalArgs = StringReplacerApplier.replace(menuProcess.args, uuid, this).split("\\s+");
+        BetterGUI.getInstance().getMenuManager().openMenu(menuProcess.menu, player, finalArgs, getParentMenu(uuid).orElse(null), bypass);
         isSuccessful = true;
         break;
       }
@@ -128,5 +132,15 @@ public class PredicateMenu extends Menu {
   @Override
   public void closeAll() {
     argumentHandler.clearProcessors();
+  }
+
+  private static final class MenuProcess {
+    private final String menu;
+    private final String args;
+
+    private MenuProcess(String menu, String args) {
+      this.menu = menu;
+      this.args = args;
+    }
   }
 }
