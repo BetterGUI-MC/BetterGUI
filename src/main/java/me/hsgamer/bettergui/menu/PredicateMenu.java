@@ -69,14 +69,15 @@ public class PredicateMenu extends Menu {
           });
       } else {
         String menu = Objects.toString(values.get("menu"), null);
-        String args = Optional.ofNullable(MapUtil.getIfFound(values, "args", "arguments", "arg", "argument")).map(Object::toString).orElse("");
-        Object requirementValue = values.get("requirement");
-        if (menu == null || requirementValue == null) {
+        if (menu == null) {
           continue;
         }
-        MapUtil.castOptionalStringObjectMap(requirementValue)
-          .map(m -> new RequirementApplier(this, getName() + "_" + key + "_requirement", m))
-          .ifPresent(requirementApplier -> menuPredicateList.add(Pair.of(requirementApplier, new MenuProcess(menu, args))));
+        String args = Optional.ofNullable(MapUtil.getIfFound(values, "args", "arguments", "arg", "argument")).map(Object::toString).orElse("");
+        Map<String, Object> requirementValue = MapUtil.castOptionalStringObjectMap(values.get("requirement")).orElseGet(Collections::emptyMap);
+        menuPredicateList.add(Pair.of(
+          new RequirementApplier(this, getName() + "_" + key + "_requirement", requirementValue),
+          new MenuProcess(menu, args)
+        ));
       }
     }
 
