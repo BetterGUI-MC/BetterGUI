@@ -14,7 +14,7 @@
   <description>Yet Another GUI plugin</description>
   <properties>
     <java.version>1.8</java.version>
-    <core.version>4.2.6</core.version>
+    <core.version>4.2.7</core.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.mainClass>me.hsgamer.bettergui.BetterGUI</project.mainClass>
   </properties>
@@ -225,8 +225,8 @@
       <version>${core.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>com.googlecode.json-simple</groupId>
-          <artifactId>json-simple</artifactId>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -241,8 +241,8 @@
       <version>${core.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>com.googlecode.json-simple</groupId>
-          <artifactId>json-simple</artifactId>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
