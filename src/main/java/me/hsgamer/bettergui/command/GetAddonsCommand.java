@@ -28,12 +28,13 @@ public final class GetAddonsCommand extends BukkitCommand {
     boolean shortMessage = args.length > 0 && args[0].equalsIgnoreCase("short");
 
     sendMessage(sender, "&b&lLoaded Addons:");
-    plugin.getAddonManager().getLoadedAddons().forEach((name, addon) -> {
+    plugin.getAddonManager().getClassLoaders().forEach((name, loader) -> {
       sendMessage(sender, "  &f- &a" + name);
       if (!shortMessage) {
-        sendMessage(sender, "    &eVersion: &f" + addon.getDescription().getVersion());
-        sendMessage(sender, "    &eAuthors: &f" + ExtraAddonManager.getAuthors(addon));
-        sendMessage(sender, "    &eDescription: &f" + ExtraAddonManager.getDescription(addon));
+        sendMessage(sender, "    &eVersion: &f" + loader.getDescription().getVersion());
+        sendMessage(sender, "    &eAuthors: &f" + ExtraAddonManager.getAuthors(loader));
+        sendMessage(sender, "    &eDescription: &f" + ExtraAddonManager.getDescription(loader));
+        sendMessage(sender, "    &eState: &f" + loader.getState());
       }
     });
     return true;

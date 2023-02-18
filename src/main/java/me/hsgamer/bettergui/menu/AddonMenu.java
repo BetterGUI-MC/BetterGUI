@@ -97,7 +97,7 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
     }
 
     private void updateStatus() {
-      status = Optional.ofNullable(getInstance().getAddonManager().getAddon(downloadInfo.getName()))
+      status = getInstance().getAddonManager().getExpansionClassLoader(downloadInfo.getName())
         .map(addon -> addon.getDescription().getVersion().equals(downloadInfo.getVersion()) ? upToDateStatus : outdatedStatus)
         .orElse(availableStatus);
     }

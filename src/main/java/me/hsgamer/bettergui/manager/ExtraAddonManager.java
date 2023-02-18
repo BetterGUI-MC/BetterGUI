@@ -5,6 +5,7 @@ import me.hsgamer.hscore.bukkit.addon.PluginAddonManager;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Validate;
+import me.hsgamer.hscore.expansion.common.ExpansionClassLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,16 +13,16 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class ExtraAddonManager extends PluginAddonManager {
-  private static final Comparator<Map.Entry<String, Addon>> dependComparator = (entry1, entry2) -> {
-    Addon addon1 = entry1.getValue();
+  private static final Comparator<Map.Entry<String, ExpansionClassLoader>> dependComparator = (entry1, entry2) -> {
+    ExpansionClassLoader loader1 = entry1.getValue();
     String name1 = entry1.getKey();
-    List<String> depends1 = getDepends(addon1);
-    List<String> softDepends1 = getSoftDepends(addon1);
+    List<String> depends1 = getDepends(loader1);
+    List<String> softDepends1 = getSoftDepends(loader1);
 
-    Addon addon2 = entry2.getValue();
+    ExpansionClassLoader loader2 = entry2.getValue();
     String name2 = entry2.getKey();
-    List<String> depends2 = getDepends(addon2);
-    List<String> softDepends2 = getSoftDepends(addon2);
+    List<String> depends2 = getDepends(loader2);
+    List<String> softDepends2 = getSoftDepends(loader2);
 
     depends1 = depends1 == null ? Collections.emptyList() : depends1;
     softDepends1 = softDepends1 == null ? Collections.emptyList() : softDepends1;
@@ -40,17 +41,18 @@ public class ExtraAddonManager extends PluginAddonManager {
 
   public ExtraAddonManager(JavaPlugin javaPlugin) {
     super(javaPlugin);
+    setSortAndFilterFunction(this::sortAndFilter);
   }
 
   /**
-   * Get the authors of the addon
+   * Get the authors of the loader
    *
-   * @param addon the addon
+   * @param loader the loader
    *
    * @return the authors
    */
-  public static List<String> getAuthors(Addon addon) {
-    Object value = addon.getDescription().getData().get("authors");
+  public static List<String> getAuthors(ExpansionClassLoader loader) {
+    Object value = loader.getDescription().getData().get("authors");
     if (value == null) {
       return Collections.emptyList();
     }
@@ -58,26 +60,26 @@ public class ExtraAddonManager extends PluginAddonManager {
   }
 
   /**
-   * Get the description of the addon
+   * Get the description of the loader
    *
-   * @param addon the addon
+   * @param loader the loader
    *
    * @return the description
    */
-  public static String getDescription(Addon addon) {
-    Object value = addon.getDescription().getData().get("description");
+  public static String getDescription(ExpansionClassLoader loader) {
+    Object value = loader.getDescription().getData().get("description");
     return Objects.toString(value, "");
   }
 
-  private static List<String> getDepends(Addon addon) {
-    Object value = addon.getDescription().getData().get("depend");
+  private static List<String> getDepends(ExpansionClassLoader loader) {
+    Object value = loader.getDescription().getData().get("depend");
     if (value == null) {
       return Collections.emptyList();
     }
     return CollectionUtils.createStringListFromObject(value, true);
   }
 
-  private static List<String> getSoftDepends(Addon addon) {
+  private static List<String> getSoftDepends(ExpansionClassLoader addon) {
     Object value = addon.getDescription().getData().get("soft-depend");
     if (value == null) {
       return Collections.emptyList();
@@ -93,14 +95,13 @@ public class ExtraAddonManager extends PluginAddonManager {
     return CollectionUtils.createStringListFromObject(value, true);
   }
 
-  @Override
-  protected @NotNull Map<String, Addon> sortAndFilter(@NotNull Map<String, Addon> original) {
-    Map<String, Addon> sorted = new LinkedHashMap<>();
-    Map<String, Addon> remaining = new HashMap<>();
+  private @NotNull Map<String, ExpansionClassLoader> sortAndFilter(@NotNull Map<String, ExpansionClassLoader> original) {
+    Map<String, ExpansionClassLoader> sorted = new LinkedHashMap<>();
+    Map<String, ExpansionClassLoader> remaining = new HashMap<>();
 
     // Start with addons with no dependency and get the remaining
-    Consumer<Map.Entry<String, Addon>> consumer = entry -> {
-      Addon addon = entry.getValue();
+    Consumer<Map.Entry<String, ExpansionClassLoader>> consumer = entry -> {
+      ExpansionClassLoader addon = entry.getValue();
       if (Validate.isNullOrEmpty(getDepends(addon)) && Validate.isNullOrEmpty(getSoftDepends(addon))) {
         sorted.put(entry.getKey(), entry.getValue());
       } else {
@@ -115,7 +116,7 @@ public class ExtraAddonManager extends PluginAddonManager {
     }
 
     remaining.entrySet().stream().filter(stringAddonEntry -> {
-      Addon addon = stringAddonEntry.getValue();
+      ExpansionClassLoader addon = stringAddonEntry.getValue();
       String name = stringAddonEntry.getKey();
 
       // Check if the required dependencies are loaded
@@ -160,7 +161,7 @@ public class ExtraAddonManager extends PluginAddonManager {
    */
   public Map<String, Integer> getAddonCount() {
     Map<String, Integer> map = new HashMap<>();
-    getLoadedAddons().keySet().forEach(s -> map.put(s, 1));
+    getEnabledExpansions().keySet().forEach(s -> map.put(s, 1));
     return map;
   }
 }

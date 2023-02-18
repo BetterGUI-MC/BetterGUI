@@ -89,7 +89,7 @@ public final class BetterGUI extends BasePlugin {
   public void enable() {
     BukkitGUIListener.init(this);
 
-    addonManager.loadAddons();
+    addonManager.loadExpansions();
 
     registerCommand(new OpenCommand(this));
     registerCommand(new MainCommand(this));
@@ -107,7 +107,7 @@ public final class BetterGUI extends BasePlugin {
 
   @Override
   public void postEnable() {
-    addonManager.enableAddons();
+    addonManager.enableExpansions();
     addonDownloader.setup();
     menuManager.loadMenuConfig();
     addonManager.callPostEnable();
@@ -146,7 +146,7 @@ public final class BetterGUI extends BasePlugin {
     menuCommandManager.clearMenuCommand();
     menuManager.clear();
     templateButtonConfig.clear();
-    addonManager.disableAddons();
+    addonManager.disableExpansions();
   }
 
   @Override
