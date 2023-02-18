@@ -128,7 +128,7 @@ public class ExtraAddonManager extends PluginAddonManager {
 
       for (String depend : depends) {
         if (!original.containsKey(depend)) {
-          getPlugin().getLogger().warning("Missing dependency for " + name + ": " + depend);
+          getLogger().warning("Missing dependency for " + name + ": " + depend);
           return false;
         }
       }
@@ -148,7 +148,7 @@ public class ExtraAddonManager extends PluginAddonManager {
 
     List<String> missing = BukkitUtils.getMissingDepends(requiredPlugins);
     if (!missing.isEmpty()) {
-      getPlugin().getLogger().warning(() -> "Missing plugin dependency for " + addon.getDescription().getName() + ": " + Arrays.toString(missing.toArray()));
+      getLogger().warning(() -> "Missing plugin dependency for " + addon.getDescription().getName() + ": " + Arrays.toString(missing.toArray()));
       return false;
     }
 
