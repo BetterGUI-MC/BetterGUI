@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.manager;
 
+import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.hscore.addon.object.Addon;
 import me.hsgamer.hscore.bukkit.addon.PluginAddonManager;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
@@ -52,7 +53,7 @@ public class ExtraAddonManager extends PluginAddonManager {
    * @return the authors
    */
   public static List<String> getAuthors(ExpansionClassLoader loader) {
-    Object value = loader.getDescription().getData().get("authors");
+    Object value = MapUtil.getIfFound(loader.getDescription().getData(), "authors", "author");
     if (value == null) {
       return Collections.emptyList();
     }
@@ -72,15 +73,15 @@ public class ExtraAddonManager extends PluginAddonManager {
   }
 
   private static List<String> getDepends(ExpansionClassLoader loader) {
-    Object value = loader.getDescription().getData().get("depend");
+    Object value = MapUtil.getIfFound(loader.getDescription().getData(), "depends", "depend");
     if (value == null) {
       return Collections.emptyList();
     }
     return CollectionUtils.createStringListFromObject(value, true);
   }
 
-  private static List<String> getSoftDepends(ExpansionClassLoader addon) {
-    Object value = addon.getDescription().getData().get("soft-depend");
+  private static List<String> getSoftDepends(ExpansionClassLoader loader) {
+    Object value = MapUtil.getIfFound(loader.getDescription().getData(), "soft-depend", "softdepend", "soft-depends", "softdepends");
     if (value == null) {
       return Collections.emptyList();
     }
@@ -88,7 +89,7 @@ public class ExtraAddonManager extends PluginAddonManager {
   }
 
   private static List<String> getPluginDepends(Addon addon) {
-    Object value = addon.getDescription().getData().get("plugin-depend");
+    Object value = MapUtil.getIfFound(addon.getDescription().getData(), "plugin-depend", "plugin", "plugin-depends", "plugins");
     if (value == null) {
       return Collections.emptyList();
     }
