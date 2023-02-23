@@ -9,7 +9,6 @@ import org.bukkit.plugin.Plugin;
  * The main class of the plugin
  */
 public class MainConfig extends AnnotatedConfig {
-  public final @ConfigPath("metrics") boolean metrics;
   public final @ConfigPath("replace-all-variables-each-check") boolean replaceAllVariables;
   public final @ConfigPath("forced-update-inventory") boolean forcedUpdateInventory;
   public final @ConfigPath("use-modern-click-type") boolean modernClickType;
@@ -18,7 +17,6 @@ public class MainConfig extends AnnotatedConfig {
   public MainConfig(Plugin plugin) {
     super(new BukkitConfig(plugin, "config.yml"));
 
-    metrics = true;
     replaceAllVariables = true;
     forcedUpdateInventory = false;
     modernClickType = false;

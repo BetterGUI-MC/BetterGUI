@@ -112,16 +112,14 @@ public final class BetterGUI extends BasePlugin {
     menuManager.loadMenuConfig();
     addonManager.callPostEnable();
 
-    if (mainConfig.metrics) {
-      Metrics metrics = new Metrics(this, 6609);
-      metrics.addCustomChart(new DrilldownPie("addon", () -> {
-        Map<String, Map<String, Integer>> map = new HashMap<>();
-        Map<String, Integer> addons = addonManager.getExpansionCount();
-        map.put(String.valueOf(addons.size()), addons);
-        return map;
-      }));
-      metrics.addCustomChart(new AdvancedPie("addon_count", addonManager::getExpansionCount));
-    }
+    Metrics metrics = new Metrics(this, 6609);
+    metrics.addCustomChart(new DrilldownPie("addon", () -> {
+      Map<String, Map<String, Integer>> map = new HashMap<>();
+      Map<String, Integer> addons = addonManager.getExpansionCount();
+      map.put(String.valueOf(addons.size()), addons);
+      return map;
+    }));
+    metrics.addCustomChart(new AdvancedPie("addon_count", addonManager::getExpansionCount));
 
     if (getDescription().getVersion().contains("SNAPSHOT")) {
       getLogger().warning("You are using the development version");
