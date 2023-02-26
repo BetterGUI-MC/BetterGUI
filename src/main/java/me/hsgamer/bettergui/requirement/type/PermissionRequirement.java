@@ -29,7 +29,7 @@ public class PermissionRequirement extends BaseRequirement<List<String>> {
     if (player == null) {
       return Result.success();
     }
-    if (value.parallelStream().allMatch(s -> PlayerUtil.hasPermission(player, s))) {
+    if (value.stream().allMatch(s -> PlayerUtil.hasPermission(player, s))) {
       return Result.success();
     } else {
       return Result.fail();
