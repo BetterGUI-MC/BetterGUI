@@ -2,9 +2,8 @@ package me.hsgamer.bettergui.manager;
 
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.builder.ConfigBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
-import me.hsgamer.hscore.bukkit.config.BukkitConfig;
-import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -61,10 +60,8 @@ public final class MenuManager {
       File file = files.pop();
       if (file.isDirectory()) {
         files.addAll(Arrays.asList(Objects.requireNonNull(file.listFiles())));
-      } else if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".yml")) {
-        Config pluginConfig = new BukkitConfig(file);
-        pluginConfig.setup();
-        this.registerMenu(pluginConfig);
+      } else if (file.isFile()) {
+        this.registerMenu(file);
       }
     }
   }
@@ -72,14 +69,17 @@ public final class MenuManager {
   /**
    * Register the menu
    *
-   * @param config the menu config
+   * @param file the menu file
    */
-  public void registerMenu(Config config) {
-    String name = config.getName();
+  public void registerMenu(File file) {
+    String name = file.getName();
     if (menuMap.containsKey(name)) {
       plugin.getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
     } else {
-      MenuBuilder.INSTANCE.build(config).ifPresent(menu -> menuMap.put(name, menu));
+      ConfigBuilder.INSTANCE.build(file).flatMap(config -> {
+        config.setup();
+        return MenuBuilder.INSTANCE.build(config);
+      }).ifPresent(menu -> menuMap.put(name, menu));
     }
   }
 
