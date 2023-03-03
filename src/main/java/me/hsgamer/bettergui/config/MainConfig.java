@@ -13,6 +13,8 @@ public class MainConfig extends AnnotatedConfig {
   public final @ConfigPath("forced-update-inventory") boolean forcedUpdateInventory;
   public final @ConfigPath("use-modern-click-type") boolean modernClickType;
   public final @ConfigPath("use-legacy-button") boolean useLegacyButton;
+  public final @ConfigPath("relative-menu-name") boolean relativeMenuName;
+  public final @ConfigPath("trim-menu-file-extension") boolean trimMenuFileExtension;
 
   public MainConfig(Plugin plugin) {
     super(new BukkitConfig(plugin, "config.yml"));
@@ -21,5 +23,7 @@ public class MainConfig extends AnnotatedConfig {
     forcedUpdateInventory = false;
     modernClickType = false;
     useLegacyButton = true;
+    relativeMenuName = false;
+    trimMenuFileExtension = false;
   }
 }

@@ -1,13 +1,14 @@
 package me.hsgamer.bettergui.manager;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.net.URI;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -17,10 +18,12 @@ import java.util.logging.Level;
 public final class MenuManager {
 
   private final Map<String, Menu> menuMap = new HashMap<>();
-  private final JavaPlugin plugin;
+  private final BetterGUI plugin;
+  private final File menusFolder;
 
-  public MenuManager(JavaPlugin plugin) {
+  public MenuManager(BetterGUI plugin) {
     this.plugin = plugin;
+    this.menusFolder = new File(plugin.getDataFolder(), "menu");
   }
 
   /**
@@ -49,7 +52,6 @@ public final class MenuManager {
    * Load the menu config
    */
   public void loadMenuConfig() {
-    File menusFolder = new File(plugin.getDataFolder(), "menu");
     if (!menusFolder.exists() && menusFolder.mkdirs()) {
       plugin.saveResource("menu" + File.separator + "example.yml", false);
       plugin.saveResource("menu" + File.separator + "addondownloader.yml", false);
@@ -66,13 +68,31 @@ public final class MenuManager {
     }
   }
 
+  private String getFileName(File file) {
+    String name;
+    if (plugin.getMainConfig().relativeMenuName) {
+      URI menusFolderURI = menusFolder.toURI();
+      URI fileURI = file.toURI();
+      name = menusFolderURI.relativize(fileURI).getPath();
+    } else {
+      name = file.getName();
+    }
+    if (plugin.getMainConfig().trimMenuFileExtension) {
+      int index = name.lastIndexOf('.');
+      if (index > 0) {
+        name = name.substring(0, index);
+      }
+    }
+    return name;
+  }
+
   /**
    * Register the menu
    *
    * @param file the menu file
    */
   public void registerMenu(File file) {
-    String name = file.getName();
+    String name = getFileName(file);
     if (menuMap.containsKey(name)) {
       plugin.getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
     } else {
