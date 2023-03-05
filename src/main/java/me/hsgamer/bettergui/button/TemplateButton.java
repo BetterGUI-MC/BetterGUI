@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.button;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.config.TemplateConfig;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.minecraft.gui.button.Button;
 
@@ -53,27 +54,9 @@ public class TemplateButton extends BaseWrappedButton<Button> {
       )
       .forEach(entry -> finalMap.put(entry.getKey(), entry.getValue()));
     if (!variableMap.isEmpty()) {
-      finalMap.replaceAll((s, o) -> replaceVariables(o, variableMap));
+      finalMap.replaceAll((s, o) -> TemplateConfig.replaceVariables(o, variableMap));
     }
 
     return ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName(), finalMap)).orElse(null);
-  }
-
-  private Object replaceVariables(Object obj, Map<String, String> variableMap) {
-    if (obj instanceof String) {
-      String string = (String) obj;
-      for (Map.Entry<String, String> entry : variableMap.entrySet()) {
-        string = string.replace("{" + entry.getKey() + "}", entry.getValue());
-      }
-      return string;
-    } else if (obj instanceof Collection) {
-      List<Object> replaceList = new ArrayList<>();
-      ((Collection<?>) obj).forEach(o -> replaceList.add(replaceVariables(o, variableMap)));
-      return replaceList;
-    } else if (obj instanceof Map) {
-      // noinspection unchecked, rawtypes
-      ((Map) obj).replaceAll((k, v) -> replaceVariables(v, variableMap));
-    }
-    return obj;
   }
 }

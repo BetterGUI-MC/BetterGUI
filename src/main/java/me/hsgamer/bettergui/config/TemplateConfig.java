@@ -7,17 +7,47 @@ import java.io.File;
 import java.util.*;
 
 /**
- * The list of template button configurations
+ * The list of template configurations
  */
-public class TemplateButtonConfig {
+public class TemplateConfig {
   private final File templateFolder;
   private final Map<String, Map<String, Object>> templateMap = new HashMap<>();
 
-  public TemplateButtonConfig(Plugin plugin) {
-    this.templateFolder = new File(plugin.getDataFolder(), "template");
+  public TemplateConfig(File templateFolder) {
+    this.templateFolder = templateFolder;
+  }
+
+  public TemplateConfig(Plugin plugin) {
+    this(new File(plugin.getDataFolder(), "template"));
     if (!templateFolder.exists() && templateFolder.mkdirs()) {
       plugin.saveResource("template" + File.separator + "example-template.yml", false);
     }
+  }
+
+  /**
+   * Replace the variables in the object
+   *
+   * @param obj         the object
+   * @param variableMap the variable map
+   *
+   * @return the replaced object
+   */
+  public static Object replaceVariables(Object obj, Map<String, String> variableMap) {
+    if (obj instanceof String) {
+      String string = (String) obj;
+      for (Map.Entry<String, String> entry : variableMap.entrySet()) {
+        string = string.replace("{" + entry.getKey() + "}", entry.getValue());
+      }
+      return string;
+    } else if (obj instanceof Collection) {
+      List<Object> replaceList = new ArrayList<>();
+      ((Collection<?>) obj).forEach(o -> replaceList.add(replaceVariables(o, variableMap)));
+      return replaceList;
+    } else if (obj instanceof Map) {
+      // noinspection unchecked, rawtypes
+      ((Map) obj).replaceAll((k, v) -> replaceVariables(v, variableMap));
+    }
+    return obj;
   }
 
   /**
@@ -49,9 +79,9 @@ public class TemplateButtonConfig {
   }
 
   /**
-   * Get the config values of a template button
+   * Get the config values of a template
    *
-   * @param name the name of the template button
+   * @param name the name of the template
    *
    * @return the values as map
    */
@@ -60,11 +90,11 @@ public class TemplateButtonConfig {
   }
 
   /**
-   * Get the names of all registered template buttons
+   * Get the names of all registered templates
    *
    * @return the names
    */
-  public Collection<String> getAllTemplateButtonNames() {
+  public Collection<String> getAllTemplateNames() {
     return this.templateMap.keySet();
   }
 }

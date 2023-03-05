@@ -24,7 +24,7 @@ public class GetTemplateButtonsCommand extends BukkitCommand {
       return false;
     }
     sendMessage(sender, "&bRegistered Template Buttons:");
-    plugin.getTemplateButtonConfig().getAllTemplateButtonNames().stream().sorted().forEach(prefix -> sendMessage(sender, "&f- &e" + prefix));
+    plugin.getTemplateButtonConfig().getAllTemplateNames().stream().sorted().forEach(prefix -> sendMessage(sender, "&f- &e" + prefix));
     return true;
   }
 }
