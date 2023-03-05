@@ -94,7 +94,6 @@ public final class BetterGUI extends BasePlugin {
     PluginVariableManager.registerDefaultVariables();
     mainConfig.setup();
     messageConfig.setup();
-    templateButtonConfig.setup();
   }
 
   @Override
@@ -121,6 +120,7 @@ public final class BetterGUI extends BasePlugin {
   public void postEnable() {
     addonManager.enableExpansions();
     addonDownloader.setup();
+    templateButtonConfig.setup();
     menuManager.loadMenuConfig();
     addonManager.callPostEnable();
 

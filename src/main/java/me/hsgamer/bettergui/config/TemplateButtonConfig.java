@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.config;
 
-import me.hsgamer.hscore.bukkit.config.BukkitConfig;
-import me.hsgamer.hscore.config.Config;
+import me.hsgamer.bettergui.builder.ConfigBuilder;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -12,7 +11,7 @@ import java.util.*;
  */
 public class TemplateButtonConfig {
   private final File templateFolder;
-  private final Map<String, Config> templateMap = new HashMap<>();
+  private final Map<String, Map<String, Object>> templateMap = new HashMap<>();
 
   public TemplateButtonConfig(Plugin plugin) {
     this.templateFolder = new File(plugin.getDataFolder(), "template");
@@ -29,14 +28,16 @@ public class TemplateButtonConfig {
       return;
     }
     for (File subFile : Objects.requireNonNull(templateFolder.listFiles())) {
-      if (!subFile.isFile() || !subFile.getName().toLowerCase(Locale.ROOT).endsWith(".yml")) {
+      if (!subFile.isFile()) {
         return;
       }
-      Config config = new BukkitConfig(subFile);
-      config.setup();
-      for (String key : config.getKeys(false)) {
-        templateMap.put(key, config);
-      }
+      ConfigBuilder.INSTANCE.build(subFile).ifPresent(config -> {
+        config.setup();
+        for (String key : config.getKeys(false)) {
+          Map<String, Object> values = config.getNormalizedValues(key, false);
+          templateMap.put(key, values);
+        }
+      });
     }
   }
 
@@ -48,14 +49,6 @@ public class TemplateButtonConfig {
   }
 
   /**
-   * Reload the list
-   */
-  public void reload() {
-    this.clear();
-    this.setup();
-  }
-
-  /**
    * Get the config values of a template button
    *
    * @param name the name of the template button
@@ -63,7 +56,7 @@ public class TemplateButtonConfig {
    * @return the values as map
    */
   public Optional<Map<String, Object>> get(String name) {
-    return Optional.ofNullable(this.templateMap.get(name)).map(config -> config.getNormalizedValues(name, false));
+    return Optional.ofNullable(this.templateMap.get(name));
   }
 
   /**
