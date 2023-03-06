@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.config;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import org.bukkit.plugin.Plugin;
@@ -13,6 +14,7 @@ import java.util.*;
 public class TemplateConfig {
   private final File templateFolder;
   private final Map<String, Map<String, Object>> templateMap = new HashMap<>();
+  private boolean includeMenuInTemplate = false;
 
   public TemplateConfig(File templateFolder) {
     this.templateFolder = templateFolder;
@@ -52,20 +54,36 @@ public class TemplateConfig {
   }
 
   /**
+   * Should the menu name be included in the template name?
+   *
+   * @param includeMenuInTemplate true if the menu name should be included
+   */
+  public void setIncludeMenuInTemplate(boolean includeMenuInTemplate) {
+    this.includeMenuInTemplate = includeMenuInTemplate;
+  }
+
+  /**
    * Set up the list
    */
   public void setup() {
-    if (!templateFolder.isDirectory()) {
+    setup(templateFolder);
+  }
+
+  private void setup(File file) {
+    if (file.isDirectory()) {
+      for (File subFile : Objects.requireNonNull(file.listFiles())) {
+        setup(subFile);
+      }
       return;
     }
-    for (File subFile : Objects.requireNonNull(templateFolder.listFiles())) {
-      if (!subFile.isFile()) {
-        return;
-      }
-      ConfigBuilder.INSTANCE.build(subFile).ifPresent(config -> {
+    if (file.isFile()) {
+      ConfigBuilder.INSTANCE.build(file).ifPresent(config -> {
         config.setup();
         for (String key : config.getKeys(false)) {
           Map<String, Object> values = config.getNormalizedValues(key, false);
+          if (includeMenuInTemplate) {
+            key = BetterGUI.getInstance().getMainConfig().getFileName(templateFolder, file) + "/" + key;
+          }
           templateMap.put(key, values);
         }
       });

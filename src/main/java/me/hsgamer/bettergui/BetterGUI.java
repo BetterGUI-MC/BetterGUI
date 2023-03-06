@@ -120,6 +120,7 @@ public final class BetterGUI extends BasePlugin {
   public void postEnable() {
     addonManager.enableExpansions();
     addonDownloader.setup();
+    templateButtonConfig.setIncludeMenuInTemplate(mainConfig.includeMenuInTemplate);
     templateButtonConfig.setup();
     menuManager.loadMenuConfig();
     addonManager.callPostEnable();

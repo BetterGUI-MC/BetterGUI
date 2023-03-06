@@ -18,6 +18,7 @@ public class MainConfig extends AnnotatedConfig {
   public final @ConfigPath("use-legacy-button") boolean useLegacyButton;
   public final @ConfigPath("relative-menu-name") boolean relativeMenuName;
   public final @ConfigPath("trim-menu-file-extension") boolean trimMenuFileExtension;
+  public final @ConfigPath("include-menu-in-template") boolean includeMenuInTemplate;
 
   public MainConfig(Plugin plugin) {
     super(new BukkitConfig(plugin, "config.yml"));
@@ -28,6 +29,7 @@ public class MainConfig extends AnnotatedConfig {
     useLegacyButton = true;
     relativeMenuName = false;
     trimMenuFileExtension = false;
+    includeMenuInTemplate = false;
   }
 
   /**
