@@ -5,7 +5,7 @@ final class PluginBuild {
   static final String VERSION = "${project.version}";
   static final String DESCRIPTION = "${project.description}";
   static final String AUTHOR = "HSGamer";
-  static final String WEBSITE = "https://github.com/BetterGUI-MC";
+  static final String WEBSITE = "${project.url}";
 
   private PluginBuild() {
     throw new IllegalStateException("Utility class");

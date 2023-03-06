@@ -10,13 +10,13 @@
   <packaging>jar</packaging>
 
   <name>BetterGUI</name>
-
   <description>Yet Another GUI plugin</description>
+  <url>https://github.com/BetterGUI-MC</url>
+
   <properties>
     <java.version>1.8</java.version>
     <core.version>4.2.10</core.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.mainClass>me.hsgamer.bettergui.BetterGUI</project.mainClass>
   </properties>
 
   <build>
