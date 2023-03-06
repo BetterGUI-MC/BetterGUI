@@ -5,6 +5,9 @@ import me.hsgamer.hscore.config.annotated.AnnotatedConfig;
 import me.hsgamer.hscore.config.annotation.ConfigPath;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+import java.net.URI;
+
 /**
  * The main class of the plugin
  */
@@ -25,5 +28,31 @@ public class MainConfig extends AnnotatedConfig {
     useLegacyButton = true;
     relativeMenuName = false;
     trimMenuFileExtension = false;
+  }
+
+  /**
+   * Get the file name
+   *
+   * @param rootFolder the root folder
+   * @param file       the file
+   *
+   * @return the file name
+   */
+  public String getFileName(File rootFolder, File file) {
+    String name;
+    if (relativeMenuName) {
+      URI menusFolderURI = rootFolder.toURI();
+      URI fileURI = file.toURI();
+      name = menusFolderURI.relativize(fileURI).getPath();
+    } else {
+      name = file.getName();
+    }
+    if (trimMenuFileExtension) {
+      int index = name.lastIndexOf('.');
+      if (index > 0) {
+        name = name.substring(0, index);
+      }
+    }
+    return name;
   }
 }

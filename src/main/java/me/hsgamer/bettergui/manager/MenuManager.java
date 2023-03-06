@@ -8,7 +8,6 @@ import me.hsgamer.bettergui.builder.MenuBuilder;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.net.URI;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -68,31 +67,13 @@ public final class MenuManager {
     }
   }
 
-  private String getFileName(File file) {
-    String name;
-    if (plugin.getMainConfig().relativeMenuName) {
-      URI menusFolderURI = menusFolder.toURI();
-      URI fileURI = file.toURI();
-      name = menusFolderURI.relativize(fileURI).getPath();
-    } else {
-      name = file.getName();
-    }
-    if (plugin.getMainConfig().trimMenuFileExtension) {
-      int index = name.lastIndexOf('.');
-      if (index > 0) {
-        name = name.substring(0, index);
-      }
-    }
-    return name;
-  }
-
   /**
    * Register the menu
    *
    * @param file the menu file
    */
   public void registerMenu(File file) {
-    String name = getFileName(file);
+    String name = plugin.getMainConfig().getFileName(menusFolder, file);
     if (menuMap.containsKey(name)) {
       plugin.getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
     } else {
