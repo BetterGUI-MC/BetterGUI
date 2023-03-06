@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.config;
 
 import me.hsgamer.bettergui.builder.ConfigBuilder;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -32,7 +33,7 @@ public class TemplateConfig {
    *
    * @return the replaced object
    */
-  public static Object replaceVariables(Object obj, Map<String, String> variableMap) {
+  private static Object replaceVariables(Object obj, Map<String, String> variableMap) {
     if (obj instanceof String) {
       String string = (String) obj;
       for (Map.Entry<String, String> entry : variableMap.entrySet()) {
@@ -69,6 +70,71 @@ public class TemplateConfig {
         }
       });
     }
+  }
+
+  /**
+   * Get the values of a template with the given setting map.
+   * The setting map includes the template name and the variables.
+   *
+   * @param settingMap the setting map
+   * @param ignoreKeys the keys to ignore when getting the values
+   *
+   * @return the values
+   */
+  public Map<String, Object> getValues(Map<String, Object> settingMap, List<String> ignoreKeys) {
+    Map<String, Object> finalMap = new LinkedHashMap<>();
+
+    List<String> ignoreKeyList = new ArrayList<>(ignoreKeys);
+    ignoreKeyList.replaceAll(String::toLowerCase);
+
+    Map<String, Object> keys = new CaseInsensitiveStringMap<>(settingMap);
+    Optional.ofNullable(keys.get("template"))
+      .map(String::valueOf)
+      .flatMap(this::get)
+      .ifPresent(finalMap::putAll);
+    Map<String, String> variableMap = new HashMap<>();
+    // noinspection unchecked
+    Optional.ofNullable(keys.get("variable"))
+      .filter(Map.class::isInstance)
+      .map(Map.class::cast)
+      .ifPresent(map -> map.forEach((k, v) -> {
+        String variable = String.valueOf(k);
+        String value;
+        if (v instanceof List) {
+          List<String> list = new ArrayList<>();
+          ((List<?>) v).forEach(o -> list.add(String.valueOf(o)));
+          value = String.join("\n", list);
+        } else {
+          value = String.valueOf(v);
+        }
+        variableMap.put(variable, value);
+      }));
+    keys.entrySet()
+      .stream()
+      .filter(entry ->
+        !entry.getKey().equalsIgnoreCase("variable")
+          && !entry.getKey().equalsIgnoreCase("template")
+          && !ignoreKeyList.contains(entry.getKey().toLowerCase())
+      )
+      .forEach(entry -> finalMap.put(entry.getKey(), entry.getValue()));
+    if (!variableMap.isEmpty()) {
+      finalMap.replaceAll((s, o) -> replaceVariables(o, variableMap));
+    }
+
+    return finalMap;
+  }
+
+  /**
+   * Get the values of a template with the given setting map.
+   * The setting map includes the template name and the variables.
+   *
+   * @param settingMap the setting map
+   * @param ignoreKeys the keys to ignore when getting the values
+   *
+   * @return the values
+   */
+  public Map<String, Object> getValues(Map<String, Object> settingMap, String... ignoreKeys) {
+    return getValues(settingMap, Arrays.asList(ignoreKeys));
   }
 
   /**
