@@ -59,7 +59,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       @Override
       protected @NotNull BukkitGUIDisplay newDisplay(UUID uuid) {
         BukkitGUIDisplay guiDisplay = super.newDisplay(uuid);
-        guiDisplay.setForceUpdate(getInstance().getMainConfig().forcedUpdateInventory);
         if (ticks >= 0) {
           updateTasks.put(uuid, Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), guiDisplay::update, ticks, ticks));
         }

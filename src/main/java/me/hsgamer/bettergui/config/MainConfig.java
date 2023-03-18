@@ -13,7 +13,6 @@ import java.net.URI;
  */
 public class MainConfig extends AnnotatedConfig {
   public final @ConfigPath("replace-all-variables-each-check") boolean replaceAllVariables;
-  public final @ConfigPath("forced-update-inventory") boolean forcedUpdateInventory;
   public final @ConfigPath("use-modern-click-type") boolean modernClickType;
   public final @ConfigPath("use-legacy-button") boolean useLegacyButton;
   public final @ConfigPath("relative-menu-name") boolean relativeMenuName;
@@ -24,7 +23,6 @@ public class MainConfig extends AnnotatedConfig {
     super(new BukkitConfig(plugin, "config.yml"));
 
     replaceAllVariables = true;
-    forcedUpdateInventory = false;
     modernClickType = false;
     useLegacyButton = true;
     relativeMenuName = false;
