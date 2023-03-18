@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.util;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.menu.MenuElement;
 import me.hsgamer.hscore.bukkit.item.ItemBuilder;
-import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 
@@ -17,7 +17,7 @@ public final class StringReplacerApplier {
   /**
    * A replacer to colorize the string
    */
-  public static final StringReplacer COLORIZE = (original, uuid) -> MessageUtils.colorize(original);
+  public static final StringReplacer COLORIZE = (original, uuid) -> ColorUtils.colorize(original);
   private static final LinkedHashMap<String, StringReplacer> STRING_REPLACER_MAP = new LinkedHashMap<>();
 
   static {
