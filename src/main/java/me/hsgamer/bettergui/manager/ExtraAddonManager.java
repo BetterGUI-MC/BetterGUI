@@ -8,45 +8,37 @@ import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.expansion.common.ExpansionClassLoader;
 import me.hsgamer.hscore.expansion.common.ExpansionState;
 import me.hsgamer.hscore.expansion.common.exception.InvalidExpansionDescriptionException;
+import me.hsgamer.hscore.expansion.extra.manager.DependableExpansionSortAndFilter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class ExtraAddonManager extends PluginAddonManager {
-  private static final Comparator<Map.Entry<String, ExpansionClassLoader>> dependComparator = (entry1, entry2) -> {
-    ExpansionClassLoader loader1 = entry1.getValue();
-    String name1 = entry1.getKey();
-    List<String> depends1 = getDepends(loader1);
-    List<String> softDepends1 = getSoftDepends(loader1);
-
-    ExpansionClassLoader loader2 = entry2.getValue();
-    String name2 = entry2.getKey();
-    List<String> depends2 = getDepends(loader2);
-    List<String> softDepends2 = getSoftDepends(loader2);
-
-    depends1 = depends1 == null ? Collections.emptyList() : depends1;
-    softDepends1 = softDepends1 == null ? Collections.emptyList() : softDepends1;
-
-    depends2 = depends2 == null ? Collections.emptyList() : depends2;
-    softDepends2 = softDepends2 == null ? Collections.emptyList() : softDepends2;
-
-    if (depends1.contains(name2) || softDepends1.contains(name2)) {
-      return 1;
-    } else if (depends2.contains(name1) || softDepends2.contains(name1)) {
-      return -1;
-    } else {
-      return 0;
-    }
-  };
-
   public ExtraAddonManager(JavaPlugin javaPlugin) {
     super(javaPlugin);
-    setSortAndFilterFunction(this::sortAndFilter);
     addStateListener((loader, state) -> {
       if (state == ExpansionState.LOADING) {
         onLoading(loader);
+      }
+    });
+    setSortAndFilterFunction(new DependableExpansionSortAndFilter() {
+      @Override
+      public List<String> getDependencies(ExpansionClassLoader loader) {
+        Object value = MapUtil.getIfFound(loader.getDescription().getData(), "depends", "depend");
+        if (value == null) {
+          return Collections.emptyList();
+        }
+        return CollectionUtils.createStringListFromObject(value, true);
+      }
+
+      @Override
+      public List<String> getSoftDependencies(ExpansionClassLoader loader) {
+        Object value = MapUtil.getIfFound(loader.getDescription().getData(), "plugin-depend", "plugin", "plugin-depends", "plugins");
+        if (value == null) {
+          return Collections.emptyList();
+        }
+        return CollectionUtils.createStringListFromObject(value, true);
       }
     });
   }
@@ -78,71 +70,12 @@ public class ExtraAddonManager extends PluginAddonManager {
     return Objects.toString(value, "");
   }
 
-  private static List<String> getDepends(ExpansionClassLoader loader) {
-    Object value = MapUtil.getIfFound(loader.getDescription().getData(), "depends", "depend");
-    if (value == null) {
-      return Collections.emptyList();
-    }
-    return CollectionUtils.createStringListFromObject(value, true);
-  }
-
-  private static List<String> getSoftDepends(ExpansionClassLoader loader) {
-    Object value = MapUtil.getIfFound(loader.getDescription().getData(), "soft-depend", "softdepend", "soft-depends", "softdepends");
-    if (value == null) {
-      return Collections.emptyList();
-    }
-    return CollectionUtils.createStringListFromObject(value, true);
-  }
-
   private static List<String> getPluginDepends(ExpansionClassLoader loader) {
     Object value = MapUtil.getIfFound(loader.getDescription().getData(), "plugin-depend", "plugin", "plugin-depends", "plugins");
     if (value == null) {
       return Collections.emptyList();
     }
     return CollectionUtils.createStringListFromObject(value, true);
-  }
-
-  private @NotNull Map<String, ExpansionClassLoader> sortAndFilter(@NotNull Map<String, ExpansionClassLoader> original) {
-    Map<String, ExpansionClassLoader> sorted = new LinkedHashMap<>();
-    Map<String, ExpansionClassLoader> remaining = new HashMap<>();
-
-    // Start with loaders with no dependency and get the remaining
-    Consumer<Map.Entry<String, ExpansionClassLoader>> consumer = entry -> {
-      ExpansionClassLoader loader = entry.getValue();
-      if (Validate.isNullOrEmpty(getDepends(loader)) && Validate.isNullOrEmpty(getSoftDepends(loader))) {
-        sorted.put(entry.getKey(), entry.getValue());
-      } else {
-        remaining.put(entry.getKey(), entry.getValue());
-      }
-    };
-    original.entrySet().forEach(consumer);
-
-    // Organize the remaining
-    if (remaining.isEmpty()) {
-      return sorted;
-    }
-
-    remaining.entrySet().stream().filter(entry -> {
-      ExpansionClassLoader loader = entry.getValue();
-      String name = entry.getKey();
-
-      // Check if the required dependencies are loaded
-      List<String> depends = getDepends(loader);
-      if (Validate.isNullOrEmpty(depends)) {
-        return true;
-      }
-
-      for (String depend : depends) {
-        if (!original.containsKey(depend)) {
-          getLogger().warning("Missing dependency for " + name + ": " + depend);
-          return false;
-        }
-      }
-
-      return true;
-    }).sorted(dependComparator).forEach(entry -> sorted.put(entry.getKey(), entry.getValue()));
-
-    return sorted;
   }
 
   private void onLoading(@NotNull ExpansionClassLoader loader) {
