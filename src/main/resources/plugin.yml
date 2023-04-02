@@ -1,0 +1,10 @@
+#file: noinspection YAMLSchemaValidation
+main: me.hsgamer.bettergui.BetterGUI
+name: "${project.name}"
+version: '${project.version}'
+description: "${project.description}"
+author: HSGamer
+website: "${project.url}"
+softdepend:
+  - PlaceholderAPI
+api-version: '1.13'

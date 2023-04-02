@@ -21,12 +21,6 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.DrilldownPie;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.annotation.dependency.SoftDependency;
-import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
-import org.bukkit.plugin.java.annotation.plugin.Description;
-import org.bukkit.plugin.java.annotation.plugin.Plugin;
-import org.bukkit.plugin.java.annotation.plugin.Website;
-import org.bukkit.plugin.java.annotation.plugin.author.Author;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,12 +31,6 @@ import java.util.function.Consumer;
 /**
  * The main class of the plugin
  */
-@Plugin(name = PluginBuild.NAME, version = PluginBuild.VERSION)
-@Description(PluginBuild.DESCRIPTION)
-@Author(PluginBuild.AUTHOR)
-@Website(PluginBuild.WEBSITE)
-@ApiVersion(ApiVersion.Target.v1_13)
-@SoftDependency("PlaceholderAPI")
 public final class BetterGUI extends BasePlugin {
   private static BetterGUI instance;
   private final MainConfig mainConfig = new MainConfig(this);
