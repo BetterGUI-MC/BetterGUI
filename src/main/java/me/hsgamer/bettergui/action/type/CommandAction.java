@@ -4,6 +4,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.util.CommandUtil;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -40,9 +41,6 @@ public abstract class CommandAction extends BaseAction {
     }
 
     String command = CommandUtil.normalizeCommand(getReplacedString(uuid));
-    Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
-      accept(player, command);
-      process.next();
-    });
+    Scheduler.CURRENT.runEntityTaskWithFinalizer(BetterGUI.getInstance(), player, () -> accept(player, command), process::next, false);
   }
 }

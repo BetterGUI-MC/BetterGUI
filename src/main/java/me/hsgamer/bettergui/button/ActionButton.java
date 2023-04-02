@@ -12,7 +12,6 @@ import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.minecraft.gui.button.Button;
 import me.hsgamer.hscore.minecraft.gui.event.ClickEvent;
 import me.hsgamer.hscore.task.BatchRunnable;
-import org.bukkit.Bukkit;
 
 import java.util.Collections;
 import java.util.Map;
@@ -41,7 +40,7 @@ public abstract class ActionButton<B extends Button> extends BaseWrappedButton<B
       AdvancedClickType clickType = ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), BetterGUI.getInstance().getMainConfig().modernClickType);
       BatchRunnable batchRunnable = new BatchRunnable();
       clickActionHandler.apply(clickEvent.getViewerID(), clickType, batchRunnable);
-      Bukkit.getScheduler().runTaskAsynchronously(BetterGUI.getInstance(), batchRunnable);
+      BetterGUI.runBatchRunnable(batchRunnable);
     });
   }
 }

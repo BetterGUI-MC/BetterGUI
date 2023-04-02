@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.action.type;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -23,10 +24,7 @@ public class CloseMenuAction implements Action {
       process.next();
       return;
     }
-    Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
-      menu.close(player);
-      process.next();
-    });
+    Scheduler.CURRENT.runEntityTaskWithFinalizer(BetterGUI.getInstance(), player, () -> menu.close(player), process::next, false);
   }
 
   @Override

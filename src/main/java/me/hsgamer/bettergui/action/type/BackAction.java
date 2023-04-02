@@ -4,6 +4,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,10 +28,7 @@ public class BackAction implements Action {
     Runnable runnable = menu.getParentMenu(uuid)
       .<Runnable>map(parentMenu -> () -> parentMenu.create(player, new String[0], player.hasPermission(Permissions.OPEN_MENU_BYPASS)))
       .orElse(player::closeInventory);
-    Bukkit.getScheduler().runTask(BetterGUI.getInstance(), () -> {
-      runnable.run();
-      process.next();
-    });
+    Scheduler.CURRENT.runEntityTaskWithFinalizer(BetterGUI.getInstance(), player, runnable, process::next, false);
   }
 
   @Override

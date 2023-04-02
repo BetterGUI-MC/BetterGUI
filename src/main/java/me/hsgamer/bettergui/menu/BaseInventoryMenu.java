@@ -14,6 +14,8 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIDisplay;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIHolder;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
+import me.hsgamer.hscore.bukkit.scheduler.Task;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
@@ -28,7 +30,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.permissions.Permission;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -47,7 +48,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   private final BukkitGUIHolder guiHolder;
   private final B buttonMap;
   private final Set<UUID> forceClose = new ConcurrentSkipListSet<>();
-  private final Map<UUID, BukkitTask> updateTasks = new ConcurrentHashMap<>();
+  private final Map<UUID, Task> updateTasks = new ConcurrentHashMap<>();
   private final long ticks;
   private final List<Permission> permissions;
   private final ArgumentHandler argumentHandler;
@@ -60,7 +61,8 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       protected @NotNull BukkitGUIDisplay newDisplay(UUID uuid) {
         BukkitGUIDisplay guiDisplay = super.newDisplay(uuid);
         if (ticks >= 0) {
-          updateTasks.put(uuid, Bukkit.getScheduler().runTaskTimerAsynchronously(getInstance(), guiDisplay::update, ticks, ticks));
+          Player player = Bukkit.getPlayer(uuid);
+          updateTasks.put(uuid, Scheduler.CURRENT.runEntityTaskTimer(getInstance(), player, guiDisplay::update, ticks, ticks, true));
         }
         return guiDisplay;
       }
@@ -69,7 +71,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       protected void onRemoveDisplay(@NotNull BukkitGUIDisplay display) {
         argumentHandler.onClear(display.getUniqueId());
 
-        Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(BukkitTask::cancel);
+        Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(Task::cancel);
         for (HumanEntity humanEntity : display.getInventory().getViewers()) {
           UUID uuid = humanEntity.getUniqueId();
           if (uuid != display.getUniqueId()) {

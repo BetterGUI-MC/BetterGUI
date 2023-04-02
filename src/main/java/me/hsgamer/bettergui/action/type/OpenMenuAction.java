@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.action.type;
 import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
@@ -44,10 +45,7 @@ public class OpenMenuAction extends BaseAction {
       } else {
         runnable = () -> getInstance().getMenuManager().openMenu(menu, player, finalArgs, false);
       }
-      getInstance().getServer().getScheduler().runTask(getInstance(), () -> {
-        runnable.run();
-        process.next();
-      });
+      Scheduler.CURRENT.runEntityTaskWithFinalizer(getInstance(), player, runnable, process::next, false);
     } else {
       MessageUtils.sendMessage(player, getInstance().getMessageConfig().menuNotFound);
       process.next();

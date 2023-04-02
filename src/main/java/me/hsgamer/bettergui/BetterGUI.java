@@ -13,6 +13,7 @@ import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.bettergui.papi.ExtraPlaceholderExpansion;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIListener;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
 import me.hsgamer.hscore.task.BatchRunnable;
@@ -56,7 +57,7 @@ public final class BetterGUI extends BasePlugin {
    * @param runnable the runnable
    */
   public static void runBatchRunnable(BatchRunnable runnable) {
-    Bukkit.getScheduler().runTaskAsynchronously(getInstance(), runnable);
+    Scheduler.CURRENT.runTask(getInstance(), runnable, true);
   }
 
   /**
