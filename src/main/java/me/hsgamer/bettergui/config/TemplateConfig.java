@@ -47,8 +47,9 @@ public class TemplateConfig {
       ((Collection<?>) obj).forEach(o -> replaceList.add(replaceVariables(o, variableMap)));
       return replaceList;
     } else if (obj instanceof Map) {
-      // noinspection unchecked, rawtypes
-      ((Map) obj).replaceAll((k, v) -> replaceVariables(v, variableMap));
+      Map<Object, Object> replaceMap = new LinkedHashMap<>();
+      ((Map<?, ?>) obj).forEach((k, v) -> replaceMap.put(k, replaceVariables(v, variableMap)));
+      return replaceMap;
     }
     return obj;
   }
