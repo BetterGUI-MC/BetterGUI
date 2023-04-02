@@ -146,6 +146,7 @@ public final class BetterGUI extends BasePlugin {
     menuManager.clear();
     templateButtonConfig.clear();
     addonManager.disableExpansions();
+    addonManager.clearExpansions();
   }
 
   @Override
