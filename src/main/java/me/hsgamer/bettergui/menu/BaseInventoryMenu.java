@@ -110,7 +110,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
         long delay = clickDelay.get();
         if (delay > 0) {
           long currentTime = System.currentTimeMillis();
-          long lastClick = lastClickMap.getOrDefault(event.getViewerID(), currentTime);
+          long lastClick = lastClickMap.getOrDefault(event.getViewerID(), 0L);
           if (currentTime - lastClick < delay) {
             event.setButtonExecute(false);
             return;
