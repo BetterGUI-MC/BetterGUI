@@ -23,6 +23,7 @@ import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.minecraft.gui.button.ButtonMap;
+import me.hsgamer.hscore.minecraft.gui.event.ClickEvent;
 import me.hsgamer.hscore.minecraft.gui.event.CloseEvent;
 import me.hsgamer.hscore.minecraft.gui.event.OpenEvent;
 import org.bukkit.Bukkit;
@@ -36,6 +37,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
@@ -52,6 +54,8 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   private final long ticks;
   private final List<Permission> permissions;
   private final ArgumentHandler argumentHandler;
+  private final AtomicLong clickDelay = new AtomicLong(50);
+  private final Map<UUID, Long> lastClickMap = new ConcurrentHashMap<>();
 
   protected BaseInventoryMenu(Config config) {
     super(config);
@@ -99,6 +103,20 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
               closeActionApplier.accept(event.getViewerID(), process)
             )
         );
+      }
+
+      @Override
+      protected void onClick(@NotNull ClickEvent event) {
+        long delay = clickDelay.get();
+        if (delay > 0) {
+          long currentTime = System.currentTimeMillis();
+          long lastClick = lastClickMap.getOrDefault(event.getViewerID(), currentTime);
+          if (currentTime - lastClick < delay) {
+            event.setButtonExecute(false);
+            return;
+          }
+          lastClickMap.put(event.getViewerID(), currentTime);
+        }
       }
     };
 
@@ -199,6 +217,12 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
               ArgumentProcessorBuilder.INSTANCE.build(s, this).ifPresent(argumentHandler::addProcessor);
             }
           });
+
+        Optional.ofNullable(MapUtil.getIfFound(values, "click-delay"))
+          .map(String::valueOf)
+          .flatMap(Validate::getNumber)
+          .map(BigDecimal::longValue)
+          .ifPresent(clickDelay::set);
       }
     }
 
