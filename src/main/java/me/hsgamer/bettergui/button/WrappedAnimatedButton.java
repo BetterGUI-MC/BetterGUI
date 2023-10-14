@@ -5,6 +5,7 @@ import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.minecraft.gui.button.impl.AnimatedButton;
 
@@ -36,7 +37,7 @@ public class WrappedAnimatedButton extends BaseWrappedButton<AnimatedButton> {
       .orElse(false);
 
     List<WrappedButton> frames = Optional.ofNullable(keys.get("child"))
-      .flatMap(MapUtil::castOptionalStringObjectMap)
+      .flatMap(MapUtils::castOptionalStringObjectMap)
       .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, o))
       .orElse(Collections.emptyList());
     frames = CollectionUtils.rotate(frames, shift);

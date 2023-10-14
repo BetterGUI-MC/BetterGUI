@@ -7,10 +7,11 @@ import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
-import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
+import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.minecraft.gui.button.Button;
 import me.hsgamer.hscore.minecraft.gui.button.impl.PredicateButton;
 
@@ -34,7 +35,7 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
 
     predicateButton.setPreventSpamClick(preventSpamClick);
     Optional.ofNullable(section.get("view-requirement"))
-      .flatMap(MapUtil::castOptionalStringObjectMap)
+      .flatMap(MapUtils::castOptionalStringObjectMap)
       .ifPresent(subsection -> {
         RequirementApplier requirementApplier = new RequirementApplier(wrappedButton.getMenu(), wrappedButton.getName() + "_view", subsection);
         predicateButton.setViewPredicate(uuid -> {
@@ -53,9 +54,9 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
         });
       });
     Optional.ofNullable(section.get("click-requirement"))
-      .flatMap(MapUtil::castOptionalStringObjectMap)
+      .flatMap(MapUtils::castOptionalStringObjectMap)
       .ifPresent(subsection -> {
-        Map<AdvancedClickType, RequirementApplier> clickRequirements = RequirementApplier.convertClickRequirementAppliers(subsection, wrappedButton);
+        Map<BukkitClickType, RequirementApplier> clickRequirements = RequirementApplier.convertClickRequirementAppliers(subsection, wrappedButton);
         predicateButton.setClickFuturePredicate(clickEvent -> {
           if (!(clickEvent instanceof BukkitClickEvent)) return CompletableFuture.completedFuture(false);
           BukkitClickEvent bukkitClickEvent = (BukkitClickEvent) clickEvent;
@@ -78,11 +79,11 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
 
     PredicateButton predicateButton = new PredicateButton();
     Optional.ofNullable(keys.get("button"))
-      .flatMap(MapUtil::castOptionalStringObjectMap)
+      .flatMap(MapUtils::castOptionalStringObjectMap)
       .flatMap(subsection -> ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName() + "_button", subsection)))
       .ifPresent(predicateButton::setButton);
     Optional.ofNullable(keys.get("fallback"))
-      .flatMap(MapUtil::castOptionalStringObjectMap)
+      .flatMap(MapUtils::castOptionalStringObjectMap)
       .flatMap(subsection -> ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName() + "_fallback", subsection)))
       .ifPresent(predicateButton::setFallbackButton);
 
