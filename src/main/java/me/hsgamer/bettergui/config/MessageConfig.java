@@ -1,37 +1,60 @@
 package me.hsgamer.bettergui.config;
 
-import me.hsgamer.hscore.bukkit.config.BukkitConfig;
-import me.hsgamer.hscore.config.annotated.AnnotatedConfig;
 import me.hsgamer.hscore.config.annotation.ConfigPath;
-import org.bukkit.plugin.Plugin;
 
 /**
  * The config for messages
  */
-public class MessageConfig extends AnnotatedConfig {
-  public final @ConfigPath("prefix") String prefix;
-  public final @ConfigPath("no-permission") String noPermission;
-  public final @ConfigPath("player-only") String playerOnly;
-  public final @ConfigPath("success") String success;
-  public final @ConfigPath("menu-required") String menuRequired;
-  public final @ConfigPath("invalid-number") String invalidNumber;
-  public final @ConfigPath("menu-not-found") String menuNotFound;
-  public final @ConfigPath("player-not-found") String playerNotFound;
-  public final @ConfigPath("empty-arg-value") String emptyArgValue;
-  public final @ConfigPath("have-met-requirement-placeholder") String haveMetRequirementPlaceholder;
-
-  public MessageConfig(Plugin plugin) {
-    super(new BukkitConfig(plugin, "messages.yml"));
-
-    prefix = "&f[&bBetterGUI&f] ";
-    noPermission = "&cYou don't have permission to do this";
-    playerOnly = "&cYou must be a player to do this";
-    success = "&aSuccess";
-    menuRequired = "&cYou should specify a menu";
-    invalidNumber = "&cError converting! {input} is not a valid number";
-    menuNotFound = "&cThat menu does not exist";
-    playerNotFound = "&cThe player is not found. Maybe he is offline or didn't join your server";
-    emptyArgValue = "/empty/";
-    haveMetRequirementPlaceholder = "Yes";
+public interface MessageConfig {
+  @ConfigPath("prefix")
+  default String getPrefix() {
+    return "&f[&bBetterGUI&f] ";
   }
+
+  @ConfigPath("no-permission")
+  default String getNoPermission() {
+    return "&cYou don't have permission to do this";
+  }
+
+  @ConfigPath("player-only")
+  default String getPlayerOnly() {
+    return "&cYou must be a player to do this";
+  }
+
+  @ConfigPath("success")
+  default String getSuccess() {
+    return "&aSuccess";
+  }
+
+  @ConfigPath("menu-required")
+  default String getMenuRequired() {
+    return "&cYou should specify a menu";
+  }
+
+  @ConfigPath("invalid-number")
+  default String getInvalidNumber() {
+    return "&cError converting! {input} is not a valid number";
+  }
+
+  @ConfigPath("menu-not-found")
+  default String getMenuNotFound() {
+    return "&cThat menu does not exist";
+  }
+
+  @ConfigPath("player-not-found")
+  default String getPlayerNotFound() {
+    return "&cThe player is not found. Maybe he is offline or didn't join your server";
+  }
+
+  @ConfigPath("empty-arg-value")
+  default String getEmptyArgValue() {
+    return "/empty/";
+  }
+
+  @ConfigPath("have-met-requirement-placeholder")
+  default String getHaveMetRequirementPlaceholder() {
+    return "Yes";
+  }
+
+  void reloadConfig();
 }

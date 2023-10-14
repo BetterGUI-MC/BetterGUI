@@ -12,11 +12,15 @@ import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.bettergui.papi.ExtraPlaceholderExpansion;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
+import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIListener;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.bukkit.variable.BukkitVariableBundle;
 import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
+import me.hsgamer.hscore.config.proxy.ConfigGenerator;
 import me.hsgamer.hscore.task.BatchRunnable;
+import me.hsgamer.hscore.variable.VariableBundle;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
@@ -34,13 +38,14 @@ import java.util.function.Consumer;
  */
 public final class BetterGUI extends BasePlugin {
   private static BetterGUI instance;
-  private final MainConfig mainConfig = new MainConfig(this);
-  private final MessageConfig messageConfig = new MessageConfig(this);
+  private final MainConfig mainConfig = ConfigGenerator.newInstance(MainConfig.class, new BukkitConfig(this, "config.yml"));
+  private final MessageConfig messageConfig = ConfigGenerator.newInstance(MessageConfig.class, new BukkitConfig(this, "messages.yml"));
   private final TemplateConfig templateButtonConfig = new TemplateConfig(this);
   private final MenuManager menuManager = new MenuManager(this);
   private final MenuCommandManager menuCommandManager = new MenuCommandManager(this);
   private final ExtraAddonManager addonManager = new ExtraAddonManager(this);
   private final AddonDownloader addonDownloader = new AddonDownloader(this);
+  private final VariableBundle variableBundle = new VariableBundle();
 
   /**
    * Get the instance of the plugin
@@ -57,7 +62,7 @@ public final class BetterGUI extends BasePlugin {
    * @param runnable the runnable
    */
   public static void runBatchRunnable(BatchRunnable runnable) {
-    Scheduler.CURRENT.runTask(getInstance(), runnable, true);
+    Scheduler.plugin(getInstance()).async().runTask(runnable);
   }
 
   /**
@@ -74,15 +79,12 @@ public final class BetterGUI extends BasePlugin {
   @Override
   public void preLoad() {
     instance = this;
-    MessageUtils.setPrefix(() -> messageConfig.prefix);
+    MessageUtils.setPrefix(messageConfig::getPrefix);
   }
 
   @Override
   public void load() {
-    VariableManager.getGlobalVariableManager().setReplaceAll(() -> mainConfig.replaceAllVariables);
-    PluginVariableManager.registerDefaultVariables();
-    mainConfig.setup();
-    messageConfig.setup();
+    BukkitVariableBundle.registerVariables(variableBundle);
   }
 
   @Override
@@ -109,7 +111,7 @@ public final class BetterGUI extends BasePlugin {
   public void postEnable() {
     addonManager.enableExpansions();
     addonDownloader.setup();
-    templateButtonConfig.setIncludeMenuInTemplate(mainConfig.includeMenuInTemplate);
+    templateButtonConfig.setIncludeMenuInTemplate(mainConfig.isIncludeMenuInTemplate());
     templateButtonConfig.setup();
     menuManager.loadMenuConfig();
     addonManager.callPostEnable();
@@ -227,5 +229,14 @@ public final class BetterGUI extends BasePlugin {
    */
   public AddonDownloader getAddonDownloader() {
     return addonDownloader;
+  }
+
+  /**
+   * Get the variable bundle
+   *
+   * @return the variable bundle
+   */
+  public VariableBundle getVariableBundle() {
+    return variableBundle;
   }
 }
