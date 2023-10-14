@@ -26,7 +26,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
         return String.valueOf(level);
       }
       return BetterGUI.getInstance().getMessageConfig().getHaveMetRequirementPlaceholder();
-    }));
+    }), true);
   }
 
   @Override

@@ -67,7 +67,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
     }
     this.minArgActionApplier = tempMinArgActionApplier;
 
-    menu.getVariableManager().register("merged_args", StringReplacer.of((original, uuid) -> Optional.ofNullable(argsPerPlayer.get(uuid)).map(args -> String.join(" ", args)).orElse("")));
+    menu.getVariableManager().register("merged_args", StringReplacer.of((original, uuid) -> Optional.ofNullable(argsPerPlayer.get(uuid)).map(args -> String.join(" ", args)).orElse("")), true);
     menu.getVariableManager().register("arg_", StringReplacer.of((original, uuid) -> {
       int index = argToIndexMap.getOrDefault(original, -1);
       if (argsPerPlayer.containsKey(uuid)) {
