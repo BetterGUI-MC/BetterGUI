@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.manager;
 
-import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.hscore.bukkit.addon.PluginAddonManager;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.common.CollectionUtils;

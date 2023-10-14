@@ -4,7 +4,6 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ClickActionHandler;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
-import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;

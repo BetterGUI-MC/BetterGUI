@@ -14,8 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static me.hsgamer.hscore.bukkit.utils.MessageUtils.sendMessage;
-
 public final class OpenCommand extends BukkitCommand {
   private final BetterGUI plugin;
 

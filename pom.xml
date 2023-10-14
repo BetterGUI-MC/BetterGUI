@@ -186,12 +186,17 @@
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-config-annotated</artifactId>
+      <artifactId>hscore-bukkit-variable</artifactId>
       <version>${core.version}</version>
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-variable</artifactId>
+      <artifactId>hscore-config-proxy</artifactId>
+      <version>${core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-extra</artifactId>
       <version>${core.version}</version>
     </dependency>
     <dependency>
