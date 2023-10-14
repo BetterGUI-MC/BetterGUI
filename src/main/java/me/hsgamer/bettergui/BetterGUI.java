@@ -79,11 +79,12 @@ public final class BetterGUI extends BasePlugin {
   @Override
   public void preLoad() {
     instance = this;
-    MessageUtils.setPrefix(messageConfig::getPrefix);
   }
 
   @Override
   public void load() {
+    MessageUtils.setPrefix(messageConfig::getPrefix);
+
     BukkitVariableBundle.registerVariables(variableBundle);
     variableBundle.register("menu_", StringReplacer.of((original, uuid) -> {
       String[] split = original.split("_", 2);
