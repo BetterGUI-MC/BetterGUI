@@ -84,7 +84,7 @@ public class TemplateConfig {
         config.setup();
         for (PathString pathString : config.getKeys(false)) {
           Map<String, Object> values = PathStringUtil.asStringMap(config.getNormalizedValues(pathString, false));
-          String key = PathStringUtil.asString(pathString);
+          String key = pathString.getLastPath();
           if (includeMenuInTemplate) {
             key = BetterGUI.getInstance().getMainConfig().getFileName(templateFolder, file) + "/" + key;
           }
