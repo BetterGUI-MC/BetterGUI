@@ -38,14 +38,12 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
-  private final ActionApplier openActionApplier;
-  private final ActionApplier closeActionApplier;
   private final RequirementApplier viewRequirementApplier;
   private final BukkitGUIHolder guiHolder;
   private final B buttonMap;
@@ -54,8 +52,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
   private final long ticks;
   private final List<Permission> permissions;
   private final ArgumentHandler argumentHandler;
-  private final AtomicLong clickDelay = new AtomicLong(50);
-  private final Map<UUID, Long> lastClickMap = new ConcurrentHashMap<>();
 
   protected BaseInventoryMenu(Config config) {
     super(config);
@@ -84,47 +80,12 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
         }
         super.onRemoveDisplay(display);
       }
-
-      @Override
-      protected void onOpen(@NotNull OpenEvent event) {
-        BetterGUI.runBatchRunnable(batchRunnable ->
-          batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
-            .addLast(process ->
-              openActionApplier.accept(event.getViewerID(), process)
-            )
-        );
-      }
-
-      @Override
-      protected void onClose(@NotNull CloseEvent event) {
-        BetterGUI.runBatchRunnable(batchRunnable ->
-          batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
-            .addLast(process ->
-              closeActionApplier.accept(event.getViewerID(), process)
-            )
-        );
-      }
-
-      @Override
-      protected void onClick(@NotNull ClickEvent event) {
-        long delay = clickDelay.get();
-        if (delay > 0) {
-          long currentTime = System.currentTimeMillis();
-          long lastClick = lastClickMap.getOrDefault(event.getViewerID(), 0L);
-          if (currentTime - lastClick < delay) {
-            event.setButtonExecute(false);
-            return;
-          }
-          lastClickMap.put(event.getViewerID(), currentTime);
-        }
-      }
     };
 
-    ActionApplier tempOpenActionApplier = new ActionApplier(Collections.emptyList());
-    ActionApplier tempCloseActionApplier = new ActionApplier(Collections.emptyList());
-    RequirementApplier tempViewRequirementApplier = new RequirementApplier(this, getName(), Collections.emptyMap());
+    List<Consumer<BukkitGUIHolder>> postInitActions = new ArrayList<>();
     long tempTicks = 0;
     List<Permission> tempPermissions = Collections.singletonList(new Permission(getInstance().getName().toLowerCase() + "." + getName()));
+    RequirementApplier tempViewRequirementApplier = new RequirementApplier(this, getName(), Collections.emptyMap());
     for (Map.Entry<String, Object> entry : PathStringUtil.asStringMap(config.getNormalizedValues(false)).entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
@@ -136,13 +97,29 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
 
       if (key.equalsIgnoreCase("menu-settings")) {
 
-        tempOpenActionApplier = Optional.ofNullable(values.get("open-action"))
-          .map(o -> new ActionApplier(this, o)).
-          orElse(tempOpenActionApplier);
-
-        tempCloseActionApplier = Optional.ofNullable(values.get("close-action"))
+        Optional.ofNullable(values.get("open-action"))
           .map(o -> new ActionApplier(this, o))
-          .orElse(tempCloseActionApplier);
+          .ifPresent(actionApplier -> postInitActions.add(holder -> holder.addEventConsumer(OpenEvent.class, openEvent -> {
+            UUID uuid = openEvent.getViewerID();
+            BetterGUI.runBatchRunnable(batchRunnable ->
+              batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
+                .addLast(process ->
+                  actionApplier.accept(uuid, process)
+                )
+            );
+          })));
+
+        Optional.ofNullable(values.get("close-action"))
+          .map(o -> new ActionApplier(this, o))
+          .ifPresent(actionApplier -> postInitActions.add(holder -> holder.addEventConsumer(CloseEvent.class, openEvent -> {
+            UUID uuid = openEvent.getViewerID();
+            BetterGUI.runBatchRunnable(batchRunnable ->
+              batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
+                .addLast(process ->
+                  actionApplier.accept(uuid, process)
+                )
+            );
+          })));
 
         Optional.ofNullable(MapUtils.getIfFound(values, "inventory-type", "inventory")).ifPresent(o -> {
           try {
@@ -245,24 +222,39 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
             }
           });
 
-        Optional.ofNullable(MapUtils.getIfFound(values, "click-delay"))
+        long clickDelay = Optional.ofNullable(MapUtils.getIfFound(values, "click-delay"))
           .map(String::valueOf)
           .flatMap(Validate::getNumber)
           .map(BigDecimal::longValue)
-          .ifPresent(clickDelay::set);
+          .orElse(50L);
+        if (clickDelay > 0) {
+          guiHolder.addEventConsumer(ClickEvent.class, new Consumer<ClickEvent>() {
+            private final Map<UUID, Long> lastClickMap = new ConcurrentHashMap<>();
+
+            @Override
+            public void accept(ClickEvent clickEvent) {
+              long currentTime = System.currentTimeMillis();
+              long lastClick = lastClickMap.getOrDefault(clickEvent.getViewerID(), 0L);
+              if (currentTime - lastClick < clickDelay) {
+                clickEvent.setButtonExecute(false);
+                return;
+              }
+              lastClickMap.put(clickEvent.getViewerID(), currentTime);
+            }
+          });
+        }
       }
     }
 
-    this.openActionApplier = tempOpenActionApplier;
-    this.closeActionApplier = tempCloseActionApplier;
-    this.viewRequirementApplier = tempViewRequirementApplier;
     this.ticks = tempTicks;
     this.permissions = tempPermissions;
+    this.viewRequirementApplier = tempViewRequirementApplier;
 
     buttonMap = createButtonMap(config);
     guiHolder.setButtonMap(buttonMap);
 
     guiHolder.init();
+    postInitActions.forEach(action -> action.accept(guiHolder));
   }
 
   @Override
