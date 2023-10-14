@@ -62,7 +62,7 @@ public final class BetterGUI extends BasePlugin {
    * @param runnable the runnable
    */
   public static void runBatchRunnable(BatchRunnable runnable) {
-    Scheduler.plugin(getInstance()).async().runTask(runnable);
+    Scheduler.current().async().runTask(runnable);
   }
 
   /**
@@ -90,7 +90,7 @@ public final class BetterGUI extends BasePlugin {
       String[] split = original.split("_", 2);
       String menuName = split[0].trim();
       String variable = split.length > 1 ? split[1].trim() : "";
-      Menu menu = BetterGUI.getInstance().getMenuManager().getMenu(menuName);
+      Menu menu = menuManager.getMenu(menuName);
       if (menu == null) {
         return null;
       }

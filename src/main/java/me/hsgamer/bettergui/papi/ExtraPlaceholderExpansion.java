@@ -39,7 +39,7 @@ public class ExtraPlaceholderExpansion extends PlaceholderExpansion {
           try {
             return PlaceholderAPI.setPlaceholders(null, original);
           } catch (Throwable throwable) {
-            BetterGUI.getInstance().getLogger().log(Level.WARNING, "Error while replacing placeholders", throwable);
+            plugin.getLogger().log(Level.WARNING, "Error while replacing placeholders", throwable);
             return original;
           }
         },
@@ -47,7 +47,7 @@ public class ExtraPlaceholderExpansion extends PlaceholderExpansion {
           try {
             return PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(uuid), original);
           } catch (Throwable throwable) {
-            BetterGUI.getInstance().getLogger().log(Level.WARNING, "Error while replacing placeholders", throwable);
+            plugin.getLogger().log(Level.WARNING, "Error while replacing placeholders", throwable);
             return original;
           }
         }
