@@ -2,7 +2,6 @@ package me.hsgamer.bettergui.command;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.command.CommandSender;

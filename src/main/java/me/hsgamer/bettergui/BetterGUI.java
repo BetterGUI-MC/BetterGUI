@@ -1,15 +1,15 @@
 package me.hsgamer.bettergui;
 
+import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.*;
 import me.hsgamer.bettergui.command.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.config.TemplateConfig;
 import me.hsgamer.bettergui.downloader.AddonDownloader;
-import me.hsgamer.bettergui.manager.ExtraAddonManager;
+import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
-import me.hsgamer.bettergui.manager.PluginVariableManager;
 import me.hsgamer.bettergui.papi.ExtraPlaceholderExpansion;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
@@ -18,10 +18,10 @@ import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.bukkit.variable.BukkitVariableBundle;
 import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.proxy.ConfigGenerator;
 import me.hsgamer.hscore.task.BatchRunnable;
 import me.hsgamer.hscore.variable.VariableBundle;
-import me.hsgamer.hscore.variable.VariableManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.DrilldownPie;
@@ -43,7 +43,7 @@ public final class BetterGUI extends BasePlugin {
   private final TemplateConfig templateButtonConfig = new TemplateConfig(this);
   private final MenuManager menuManager = new MenuManager(this);
   private final MenuCommandManager menuCommandManager = new MenuCommandManager(this);
-  private final ExtraAddonManager addonManager = new ExtraAddonManager(this);
+  private final AddonManager addonManager = new AddonManager(this);
   private final AddonDownloader addonDownloader = new AddonDownloader(this);
   private final VariableBundle variableBundle = new VariableBundle();
 
@@ -85,6 +85,16 @@ public final class BetterGUI extends BasePlugin {
   @Override
   public void load() {
     BukkitVariableBundle.registerVariables(variableBundle);
+    variableBundle.register("menu_", StringReplacer.of((original, uuid) -> {
+      String[] split = original.split("_", 2);
+      String menuName = split[0].trim();
+      String variable = split.length > 1 ? split[1].trim() : "";
+      Menu menu = BetterGUI.getInstance().getMenuManager().getMenu(menuName);
+      if (menu == null) {
+        return null;
+      }
+      return menu.getVariableManager().setVariables("{" + variable + "}", uuid);
+    }));
   }
 
   @Override
@@ -114,7 +124,6 @@ public final class BetterGUI extends BasePlugin {
     templateButtonConfig.setIncludeMenuInTemplate(mainConfig.isIncludeMenuInTemplate());
     templateButtonConfig.setup();
     menuManager.loadMenuConfig();
-    addonManager.callPostEnable();
 
     Metrics metrics = new Metrics(this, 6609);
     metrics.addCustomChart(new DrilldownPie("addon", () -> {
@@ -159,8 +168,7 @@ public final class BetterGUI extends BasePlugin {
     ItemModifierBuilder.INSTANCE.clear();
     MenuBuilder.INSTANCE.clear();
     RequirementBuilder.INSTANCE.clear();
-    PluginVariableManager.unregisterAll();
-    VariableManager.clearExternalReplacers();
+    variableBundle.unregisterAll();
   }
 
   @Override
@@ -218,7 +226,7 @@ public final class BetterGUI extends BasePlugin {
    *
    * @return the addon manager
    */
-  public ExtraAddonManager getAddonManager() {
+  public AddonManager getAddonManager() {
     return addonManager;
   }
 

@@ -226,6 +226,11 @@
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-expansion-extra</artifactId>
+      <version>${core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
       <artifactId>hscore-checker-spigotmc</artifactId>
       <version>${core.version}</version>
       <exclusions>

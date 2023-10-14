@@ -1,43 +1,38 @@
 package me.hsgamer.bettergui.manager;
 
-import me.hsgamer.hscore.bukkit.addon.PluginAddonManager;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.hscore.bukkit.expansion.BukkitConfigExpansionDescriptionLoader;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.expansion.common.ExpansionClassLoader;
+import me.hsgamer.hscore.expansion.common.ExpansionManager;
 import me.hsgamer.hscore.expansion.common.ExpansionState;
 import me.hsgamer.hscore.expansion.common.exception.InvalidExpansionDescriptionException;
 import me.hsgamer.hscore.expansion.extra.manager.DependableExpansionSortAndFilter;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.*;
 
-public class ExtraAddonManager extends PluginAddonManager {
-  public ExtraAddonManager(JavaPlugin javaPlugin) {
-    super(javaPlugin);
-    addStateListener((loader, state) -> {
-      if (state == ExpansionState.LOADING) {
-        onLoading(loader);
-      }
-    });
+public class AddonManager extends ExpansionManager {
+  public AddonManager(BetterGUI plugin) {
+    super(new File(plugin.getDataFolder(), "addon"), new BukkitConfigExpansionDescriptionLoader("addon.yml"), plugin.getClass().getClassLoader());
     setSortAndFilterFunction(new DependableExpansionSortAndFilter() {
       @Override
       public List<String> getDependencies(ExpansionClassLoader loader) {
-        Object value = MapUtil.getIfFound(loader.getDescription().getData(), "depends", "depend");
-        if (value == null) {
-          return Collections.emptyList();
-        }
-        return CollectionUtils.createStringListFromObject(value, true);
+        return CollectionUtils.createStringListFromObject(MapUtils.getIfFound(loader.getDescription().getData(), "depend", "depends", "dependencies"));
       }
 
       @Override
       public List<String> getSoftDependencies(ExpansionClassLoader loader) {
-        Object value = MapUtil.getIfFound(loader.getDescription().getData(), "plugin-depend", "plugin", "plugin-depends", "plugins");
-        if (value == null) {
-          return Collections.emptyList();
-        }
-        return CollectionUtils.createStringListFromObject(value, true);
+        return CollectionUtils.createStringListFromObject(MapUtils.getIfFound(loader.getDescription().getData(), "softdepend", "softdepends", "soft-dependencies"));
+      }
+    });
+    addStateListener((loader, state) -> {
+      if (state == ExpansionState.LOADING) {
+        checkPluginDepends(loader);
       }
     });
   }
@@ -49,11 +44,9 @@ public class ExtraAddonManager extends PluginAddonManager {
    *
    * @return the authors
    */
-  public static List<String> getAuthors(ExpansionClassLoader loader) {
-    Object value = MapUtil.getIfFound(loader.getDescription().getData(), "authors", "author");
-    if (value == null) {
-      return Collections.emptyList();
-    }
+  @NotNull
+  public static List<@NotNull String> getAuthors(@NotNull ExpansionClassLoader loader) {
+    Object value = MapUtils.getIfFound(loader.getDescription().getData(), "authors", "author");
     return CollectionUtils.createStringListFromObject(value, true);
   }
 
@@ -64,20 +57,19 @@ public class ExtraAddonManager extends PluginAddonManager {
    *
    * @return the description
    */
-  public static String getDescription(ExpansionClassLoader loader) {
+  @NotNull
+  public static String getDescription(@NotNull ExpansionClassLoader loader) {
     Object value = loader.getDescription().getData().get("description");
     return Objects.toString(value, "");
   }
 
-  private static List<String> getPluginDepends(ExpansionClassLoader loader) {
-    Object value = MapUtil.getIfFound(loader.getDescription().getData(), "plugin-depend", "plugin", "plugin-depends", "plugins");
-    if (value == null) {
-      return Collections.emptyList();
-    }
+  @NotNull
+  private static List<@NotNull String> getPluginDepends(@NotNull ExpansionClassLoader loader) {
+    Object value = MapUtils.getIfFound(loader.getDescription().getData(), "plugin-depend", "plugin", "plugin-depends", "plugins");
     return CollectionUtils.createStringListFromObject(value, true);
   }
 
-  private void onLoading(@NotNull ExpansionClassLoader loader) {
+  private void checkPluginDepends(@NotNull ExpansionClassLoader loader) {
     List<String> requiredPlugins = getPluginDepends(loader);
     if (Validate.isNullOrEmpty(requiredPlugins)) return;
 
