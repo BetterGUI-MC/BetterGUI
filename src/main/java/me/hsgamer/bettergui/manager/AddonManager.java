@@ -17,8 +17,11 @@ import java.io.File;
 import java.util.*;
 
 public class AddonManager extends ExpansionManager {
+  private final BetterGUI plugin;
+
   public AddonManager(BetterGUI plugin) {
     super(new File(plugin.getDataFolder(), "addon"), new BukkitConfigExpansionDescriptionLoader("addon.yml"), plugin.getClass().getClassLoader());
+    this.plugin = plugin;
     setSortAndFilterFunction(new DependableExpansionSortAndFilter() {
       @Override
       public List<String> getDependencies(ExpansionClassLoader loader) {
@@ -88,5 +91,14 @@ public class AddonManager extends ExpansionManager {
     Map<String, Integer> map = new HashMap<>();
     getEnabledExpansions().keySet().forEach(s -> map.put(s, 1));
     return map;
+  }
+
+  /**
+   * Get the plugin
+   *
+   * @return the plugin
+   */
+  public BetterGUI getPlugin() {
+    return plugin;
   }
 }

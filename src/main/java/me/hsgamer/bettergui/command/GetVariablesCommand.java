@@ -31,12 +31,12 @@ public class GetVariablesCommand extends BukkitCommand {
     if (args.length > 0) {
       Menu menu = plugin.getMenuManager().getMenu(args[0]);
       if (menu == null) {
-        sendMessage(sender, plugin.getMessageConfig().menuNotFound);
+        sendMessage(sender, plugin.getMessageConfig().getMenuNotFound());
         return false;
       }
       variables.addAll(menu.getVariableManager().getVariables().keySet());
     } else {
-      variables.addAll(VariableManager.getVariables().keySet());
+      variables.addAll(VariableManager.GLOBAL.getVariables().keySet());
       for (String menuName : plugin.getMenuManager().getMenuNames()) {
         Menu menu = plugin.getMenuManager().getMenu(menuName);
         if (menu == null) continue;
