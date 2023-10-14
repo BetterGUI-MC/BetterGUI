@@ -2,12 +2,13 @@ package me.hsgamer.bettergui.util;
 
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.menu.MenuElement;
-import me.hsgamer.hscore.bukkit.item.ItemBuilder;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
-import me.hsgamer.hscore.common.interfaces.StringReplacer;
+import me.hsgamer.hscore.common.StringReplacer;
+import me.hsgamer.hscore.minecraft.item.ItemBuilder;
 import me.hsgamer.hscore.variable.VariableManager;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,11 +18,11 @@ public final class StringReplacerApplier {
   /**
    * A replacer to colorize the string
    */
-  public static final StringReplacer COLORIZE = (original, uuid) -> ColorUtils.colorize(original);
-  private static final LinkedHashMap<String, StringReplacer> STRING_REPLACER_MAP = new LinkedHashMap<>();
+  public static final StringReplacer COLORIZE = ColorUtils::colorize;
+  private static final List<StringReplacer> STRING_REPLACERS = new ArrayList<>();
 
   static {
-    STRING_REPLACER_MAP.put("colorize", COLORIZE);
+    STRING_REPLACERS.add(COLORIZE);
   }
 
   private StringReplacerApplier() {
@@ -29,12 +30,12 @@ public final class StringReplacerApplier {
   }
 
   /**
-   * Get a mutable map of string replacers
+   * Get the mutable list of string replacers
    *
-   * @return the map
+   * @return the mutable list of string replacers
    */
-  public static LinkedHashMap<String, StringReplacer> getStringReplacerMap() {
-    return STRING_REPLACER_MAP;
+  public static List<StringReplacer> getStringReplacers() {
+    return STRING_REPLACERS;
   }
 
   /**
@@ -45,11 +46,11 @@ public final class StringReplacerApplier {
    *
    * @return the item builder
    */
-  public static ItemBuilder apply(ItemBuilder itemBuilder, boolean useGlobalVariableManager) {
+  public static ItemBuilder<?> apply(ItemBuilder<?> itemBuilder, boolean useGlobalVariableManager) {
     if (useGlobalVariableManager) {
-      itemBuilder.addStringReplacer("variable-replacer", VariableManager::setVariables);
+      itemBuilder.addStringReplacer(VariableManager.GLOBAL);
     }
-    STRING_REPLACER_MAP.forEach(itemBuilder::addStringReplacer);
+    STRING_REPLACERS.forEach(itemBuilder::addStringReplacer);
     return itemBuilder;
   }
 
@@ -61,8 +62,8 @@ public final class StringReplacerApplier {
    *
    * @return the item builder
    */
-  public static ItemBuilder apply(ItemBuilder itemBuilder, Menu menu) {
-    return apply(itemBuilder.addStringReplacer(menu.getName() + "menu-replacer", menu::replace), false);
+  public static ItemBuilder<?> apply(ItemBuilder<?> itemBuilder, Menu menu) {
+    return apply(itemBuilder.addStringReplacer(menu.getVariableManager()), false);
   }
 
   /**
@@ -73,7 +74,7 @@ public final class StringReplacerApplier {
    *
    * @return the item builder
    */
-  public static ItemBuilder apply(ItemBuilder itemBuilder, MenuElement menuElement) {
+  public static ItemBuilder<?> apply(ItemBuilder<?> itemBuilder, MenuElement menuElement) {
     return apply(itemBuilder, menuElement.getMenu());
   }
 
@@ -89,10 +90,17 @@ public final class StringReplacerApplier {
   public static String replace(String string, UUID uuid, boolean useGlobalVariableManager) {
     String replaced = string;
     if (useGlobalVariableManager) {
-      replaced = VariableManager.setVariables(replaced, uuid);
+      replaced = VariableManager.GLOBAL.tryReplace(replaced, uuid);
+      if (replaced == null) {
+        return string;
+      }
     }
-    for (StringReplacer replacer : STRING_REPLACER_MAP.values()) {
-      replaced = replacer.replace(replaced, uuid);
+
+    for (StringReplacer replacer : STRING_REPLACERS) {
+      String newString = replacer.tryReplace(replaced, uuid);
+      if (newString != null) {
+        replaced = newString;
+      }
     }
     return replaced;
   }
@@ -107,7 +115,11 @@ public final class StringReplacerApplier {
    * @return the replaced string
    */
   public static String replace(String string, UUID uuid, Menu menu) {
-    return replace(menu.replace(string, uuid), uuid, false);
+    String replaced = menu.getVariableManager().tryReplace(string, uuid);
+    if (replaced == null) {
+      return string;
+    }
+    return replace(replaced, uuid, false);
   }
 
   /**
