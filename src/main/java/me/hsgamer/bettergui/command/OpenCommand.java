@@ -31,11 +31,11 @@ public final class OpenCommand extends BukkitCommand {
       return false;
     }
     if (strings.length == 0) {
-      sendMessage(commandSender, plugin.getMessageConfig().menuRequired);
+      sendMessage(commandSender, plugin.getMessageConfig().getMenuRequired());
       return false;
     }
     if (!plugin.getMenuManager().contains(strings[0])) {
-      sendMessage(commandSender, plugin.getMessageConfig().menuNotFound);
+      sendMessage(commandSender, plugin.getMessageConfig().getMenuNotFound());
       return false;
     }
 
@@ -46,7 +46,7 @@ public final class OpenCommand extends BukkitCommand {
     if (strings.length > 1) {
       player = Bukkit.getPlayer(strings[1]);
       if (player == null || !player.isOnline()) {
-        sendMessage(commandSender, plugin.getMessageConfig().playerNotFound);
+        sendMessage(commandSender, plugin.getMessageConfig().getPlayerNotFound());
         return false;
       }
       args = Arrays.copyOfRange(strings, 2, strings.length);
@@ -54,7 +54,7 @@ public final class OpenCommand extends BukkitCommand {
       if (commandSender instanceof Player) {
         player = (Player) commandSender;
       } else {
-        sendMessage(commandSender, plugin.getMessageConfig().playerOnly);
+        sendMessage(commandSender, plugin.getMessageConfig().getPlayerOnly());
         return false;
       }
     }

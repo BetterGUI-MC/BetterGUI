@@ -5,8 +5,8 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
-import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.task.element.TaskPool;
 
 import java.util.*;
@@ -40,8 +40,8 @@ public class RequirementSet implements Requirement {
     }).collect(Collectors.toList());
 
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
-    this.successActionApplier = new ActionApplier(menu, MapUtil.getIfFoundOrDefault(keys, Collections.emptyList(), "success-command", "success-action"));
-    this.failActionApplier = new ActionApplier(menu, MapUtil.getIfFoundOrDefault(keys, Collections.emptyList(), "fail-command", "fail-action"));
+    this.successActionApplier = new ActionApplier(menu, MapUtils.getIfFoundOrDefault(keys, Collections.emptyList(), "success-command", "success-action"));
+    this.failActionApplier = new ActionApplier(menu, MapUtils.getIfFoundOrDefault(keys, Collections.emptyList(), "fail-command", "fail-action"));
   }
 
   /**

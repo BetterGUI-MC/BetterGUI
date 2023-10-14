@@ -10,6 +10,7 @@ import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,7 +34,7 @@ public final class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, Wrappe
     register(WrappedAnimatedButton::new, "animated", "animate", "anim");
     register(WrappedNullButton::new, "null", "none");
     register(input ->
-        BetterGUI.getInstance().getMainConfig().useLegacyButton
+        BetterGUI.getInstance().getMainConfig().isUseLegacyButton()
           ? new LegacyMenuButton(input)
           : new WrappedSimpleButton(input),
       "simple"
@@ -47,23 +48,15 @@ public final class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, Wrappe
    * @param type    the type
    */
   public void register(Function<Input, WrappedButton> creator, String... type) {
-    register(new Element<Input, WrappedButton>() {
-      @Override
-      public boolean canBuild(Input input) {
-        Map<String, Object> keys = new CaseInsensitiveStringMap<>(input.options);
-        String button = Objects.toString(keys.get("type"), "simple");
-        for (String s : type) {
-          if (button.equalsIgnoreCase(s)) {
-            return true;
-          }
+    register(input -> {
+      Map<String, Object> keys = new CaseInsensitiveStringMap<>(input.options);
+      String button = Objects.toString(keys.get("type"), "simple");
+      for (String s : type) {
+        if (button.equalsIgnoreCase(s)) {
+          return Optional.of(creator.apply(input));
         }
-        return false;
       }
-
-      @Override
-      public WrappedButton build(Input input) {
-        return creator.apply(input);
-      }
+      return Optional.empty();
     });
   }
 

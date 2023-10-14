@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.command;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.manager.PluginVariableManager;
+import me.hsgamer.bettergui.api.addon.Reloadable;
 import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.command.CommandSender;
@@ -28,18 +28,16 @@ public class ReloadCommand extends BukkitCommand {
     plugin.getMenuCommandManager().clearMenuCommand();
     plugin.getMenuManager().clear();
     plugin.getTemplateButtonConfig().clear();
-    PluginVariableManager.unregisterAll();
-    plugin.getMainConfig().reload();
-    plugin.getMessageConfig().reload();
-    PluginVariableManager.registerDefaultVariables();
+    plugin.getMainConfig().reloadConfig();
+    plugin.getMessageConfig().reloadConfig();
     if (commandLabel.equalsIgnoreCase("reloadplugin") || commandLabel.equalsIgnoreCase("rlplugin")) {
-      plugin.getAddonManager().callReload();
+      plugin.getAddonManager().call(Reloadable.class, Reloadable::onReload);
     }
-    plugin.getTemplateButtonConfig().setIncludeMenuInTemplate(plugin.getMainConfig().includeMenuInTemplate);
+    plugin.getTemplateButtonConfig().setIncludeMenuInTemplate(plugin.getMainConfig().isIncludeMenuInTemplate());
     plugin.getTemplateButtonConfig().setup();
     plugin.getMenuManager().loadMenuConfig();
     CommandManager.syncCommand();
-    MessageUtils.sendMessage(sender, plugin.getMessageConfig().success);
+    MessageUtils.sendMessage(sender, plugin.getMessageConfig().getSuccess());
     return true;
   }
 }

@@ -1,9 +1,8 @@
 package me.hsgamer.bettergui.action;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
-import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
+import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
@@ -20,7 +19,7 @@ import java.util.UUID;
  */
 public class ClickActionHandler {
   private final Menu menu;
-  private final Map<AdvancedClickType, ActionApplier> actionMap;
+  private final Map<BukkitClickType, ActionApplier> actionMap;
   private final boolean closeOnClick;
 
   /**
@@ -30,7 +29,7 @@ public class ClickActionHandler {
    * @param actionMap    the action map
    * @param closeOnClick if the menu should close when the player click
    */
-  public ClickActionHandler(Menu menu, Map<AdvancedClickType, ActionApplier> actionMap, boolean closeOnClick) {
+  public ClickActionHandler(Menu menu, Map<BukkitClickType, ActionApplier> actionMap, boolean closeOnClick) {
     this.menu = menu;
     this.actionMap = actionMap;
     this.closeOnClick = closeOnClick;
@@ -45,7 +44,7 @@ public class ClickActionHandler {
    */
   public ClickActionHandler(Menu menu, Object o, boolean closeOnClick) {
     this(menu, new HashMap<>(), closeOnClick);
-    Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
+    Map<String, BukkitClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
     if (o instanceof Map) {
       // noinspection unchecked
       Map<String, Object> keys = new CaseInsensitiveStringMap<>((Map<String, Object>) o);
@@ -69,7 +68,7 @@ public class ClickActionHandler {
    * @param clickType     the click type
    * @param batchRunnable the batch runnable
    */
-  public void apply(UUID uuid, AdvancedClickType clickType, BatchRunnable batchRunnable) {
+  public void apply(UUID uuid, BukkitClickType clickType, BatchRunnable batchRunnable) {
     Optional.ofNullable(actionMap.get(clickType))
       .ifPresent(actionApplier ->
         batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> actionApplier.accept(uuid, process))
@@ -78,7 +77,7 @@ public class ClickActionHandler {
       Optional.ofNullable(Bukkit.getPlayer(uuid))
         .ifPresent(player ->
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process ->
-            Scheduler.CURRENT.runEntityTaskWithFinalizer(BetterGUI.getInstance(), player, () -> menu.close(player), process::next, false)
+            Scheduler.current().sync().runEntityTaskWithFinalizer(player, () -> menu.close(player), process::next)
           )
         );
     }

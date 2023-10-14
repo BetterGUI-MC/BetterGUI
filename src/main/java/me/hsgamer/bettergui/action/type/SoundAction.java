@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
@@ -53,13 +52,13 @@ public class SoundAction extends BaseAction {
 
     float finalVolume = volume;
     float finalPitch = pitch;
-    Scheduler.CURRENT.runEntityTaskWithFinalizer(BetterGUI.getInstance(), player, () -> {
+    Scheduler.current().sync().runEntityTaskWithFinalizer(player, () -> {
       try {
         Sound soundEnum = Sound.valueOf(sound.replace(" ", "_").toUpperCase());
         player.playSound(player.getLocation(), soundEnum, finalVolume, finalPitch);
       } catch (Exception exception) {
         player.playSound(player.getLocation(), sound, finalVolume, finalPitch);
       }
-    }, process::next, false);
+    }, process::next);
   }
 }

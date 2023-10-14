@@ -1,9 +1,6 @@
 package me.hsgamer.bettergui.config;
 
-import me.hsgamer.hscore.bukkit.config.BukkitConfig;
-import me.hsgamer.hscore.config.annotated.AnnotatedConfig;
 import me.hsgamer.hscore.config.annotation.ConfigPath;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.net.URI;
@@ -11,24 +8,33 @@ import java.net.URI;
 /**
  * The main class of the plugin
  */
-public class MainConfig extends AnnotatedConfig {
-  public final @ConfigPath("replace-all-variables-each-check") boolean replaceAllVariables;
-  public final @ConfigPath("use-modern-click-type") boolean modernClickType;
-  public final @ConfigPath("use-legacy-button") boolean useLegacyButton;
-  public final @ConfigPath("relative-menu-name") boolean relativeMenuName;
-  public final @ConfigPath("trim-menu-file-extension") boolean trimMenuFileExtension;
-  public final @ConfigPath("include-menu-in-template") boolean includeMenuInTemplate;
-
-  public MainConfig(Plugin plugin) {
-    super(new BukkitConfig(plugin, "config.yml"));
-
-    replaceAllVariables = true;
-    modernClickType = false;
-    useLegacyButton = true;
-    relativeMenuName = false;
-    trimMenuFileExtension = false;
-    includeMenuInTemplate = false;
+public interface MainConfig {
+  @ConfigPath("use-modern-click-type")
+  default boolean isModernClickType() {
+    return false;
   }
+
+  @ConfigPath("use-legacy-button")
+  default boolean isUseLegacyButton() {
+    return true;
+  }
+
+  @ConfigPath("relative-menu-name")
+  default boolean isRelativeMenuName() {
+    return false;
+  }
+
+  @ConfigPath("trim-menu-file-extension")
+  default boolean isTrimMenuFileExtension() {
+    return false;
+  }
+
+  @ConfigPath("include-menu-in-template")
+  default boolean isIncludeMenuInTemplate() {
+    return false;
+  }
+
+  void reloadConfig();
 
   /**
    * Get the file name
@@ -38,16 +44,16 @@ public class MainConfig extends AnnotatedConfig {
    *
    * @return the file name
    */
-  public String getFileName(File rootFolder, File file) {
+  default String getFileName(File rootFolder, File file) {
     String name;
-    if (relativeMenuName) {
+    if (isRelativeMenuName()) {
       URI menusFolderURI = rootFolder.toURI();
       URI fileURI = file.toURI();
       name = menusFolderURI.relativize(fileURI).getPath();
     } else {
       name = file.getName();
     }
-    if (trimMenuFileExtension) {
+    if (isTrimMenuFileExtension()) {
       int index = name.lastIndexOf('.');
       if (index > 0) {
         name = name.substring(0, index);

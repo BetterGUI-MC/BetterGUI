@@ -45,9 +45,9 @@ public class OpenMenuAction extends BaseAction {
       } else {
         runnable = () -> getInstance().getMenuManager().openMenu(menu, player, finalArgs, false);
       }
-      Scheduler.CURRENT.runEntityTaskWithFinalizer(getInstance(), player, runnable, process::next, false);
+      Scheduler.current().sync().runEntityTaskWithFinalizer(player, runnable, process::next);
     } else {
-      MessageUtils.sendMessage(player, getInstance().getMessageConfig().menuNotFound);
+      MessageUtils.sendMessage(player, getInstance().getMessageConfig().getMenuNotFound());
       process.next();
     }
   }

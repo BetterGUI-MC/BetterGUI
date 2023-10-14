@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
-
 public class MenuCommandManager {
   private final Map<String, Command> registeredMenuCommand = new HashMap<>();
   private final BetterGUI plugin;
@@ -40,7 +38,7 @@ public class MenuCommandManager {
           menu.create((Player) commandSender, strings, commandSender.hasPermission(Permissions.OPEN_MENU_BYPASS));
           return true;
         } else {
-          MessageUtils.sendMessage(commandSender, plugin.getMessageConfig().playerOnly);
+          MessageUtils.sendMessage(commandSender, plugin.getMessageConfig().getPlayerOnly());
           return false;
         }
       }
@@ -63,10 +61,10 @@ public class MenuCommandManager {
   public void registerMenuCommand(Command command) {
     String name = command.getName();
     if (registeredMenuCommand.containsKey(name)) {
-      getInstance().getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", name);
+      plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", name);
       return;
     }
-    CommandManager.registerCommandToCommandMap(getInstance().getName() + "_menu", command);
+    CommandManager.registerCommandToCommandMap(plugin.getName() + "_menu", command);
     registeredMenuCommand.put(name, command);
   }
 
@@ -74,13 +72,7 @@ public class MenuCommandManager {
    * Clear all menu commands
    */
   public void clearMenuCommand() {
-    registeredMenuCommand.values().forEach(command -> {
-      try {
-        CommandManager.unregisterFromKnownCommands(command);
-      } catch (IllegalAccessException e) {
-        getInstance().getLogger().log(Level.WARNING, "Something wrong when unregister the command", e);
-      }
-    });
+    registeredMenuCommand.values().forEach(CommandManager::unregisterFromKnownCommands);
     registeredMenuCommand.clear();
   }
 

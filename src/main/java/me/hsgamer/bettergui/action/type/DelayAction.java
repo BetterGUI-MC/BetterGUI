@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
@@ -31,6 +30,6 @@ public class DelayAction extends BaseAction {
       process.next();
     }
 
-    Scheduler.CURRENT.runEntityTaskLater(BetterGUI.getInstance(), player, process::next, process::next, Long.parseLong(value), true);
+    Scheduler.current().async().runEntityTaskLater(player, process::next, process::next, Long.parseLong(value));
   }
 }

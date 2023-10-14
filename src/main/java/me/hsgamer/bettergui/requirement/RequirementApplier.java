@@ -5,11 +5,11 @@ import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.api.requirement.Requirement;
-import me.hsgamer.bettergui.util.MapUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
-import me.hsgamer.hscore.bukkit.clicktype.AdvancedClickType;
+import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.task.element.TaskPool;
 import me.hsgamer.hscore.task.element.TaskProcess;
 
@@ -38,7 +38,7 @@ public class RequirementApplier implements ProcessApplier {
         requirementSets.add(new RequirementSet(menu, name + "_reqset_" + key, (Map<String, Object>) value));
       }
     });
-    this.failActionApplier = new ActionApplier(menu, MapUtil.getIfFoundOrDefault(keys, Collections.emptyList(), "fail-command", "fail-action"));
+    this.failActionApplier = new ActionApplier(menu, MapUtils.getIfFoundOrDefault(keys, Collections.emptyList(), "fail-command", "fail-action"));
   }
 
   /**
@@ -49,19 +49,19 @@ public class RequirementApplier implements ProcessApplier {
    *
    * @return the map
    */
-  public static Map<AdvancedClickType, RequirementApplier> convertClickRequirementAppliers(Map<String, Object> section, WrappedButton button) {
-    Map<AdvancedClickType, RequirementApplier> clickRequirements = new ConcurrentHashMap<>();
+  public static Map<BukkitClickType, RequirementApplier> convertClickRequirementAppliers(Map<String, Object> section, WrappedButton button) {
+    Map<BukkitClickType, RequirementApplier> clickRequirements = new ConcurrentHashMap<>();
 
-    Map<String, AdvancedClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
+    Map<String, BukkitClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
 
     boolean simpleInput = true;
-    List<AdvancedClickType> remainingClickTypes = new ArrayList<>();
+    List<BukkitClickType> remainingClickTypes = new ArrayList<>();
 
-    for (Map.Entry<String, AdvancedClickType> entry : clickTypeMap.entrySet()) {
+    for (Map.Entry<String, BukkitClickType> entry : clickTypeMap.entrySet()) {
       String clickTypeName = entry.getKey();
-      AdvancedClickType clickType = entry.getValue();
-      Optional<Map<String, Object>> optionalSubSection = Optional.ofNullable(keys.get(clickTypeName)).flatMap(MapUtil::castOptionalStringObjectMap);
+      BukkitClickType clickType = entry.getValue();
+      Optional<Map<String, Object>> optionalSubSection = Optional.ofNullable(keys.get(clickTypeName)).flatMap(MapUtils::castOptionalStringObjectMap);
       if (!optionalSubSection.isPresent()) {
         remainingClickTypes.add(clickType);
         continue;
@@ -78,11 +78,11 @@ public class RequirementApplier implements ProcessApplier {
       button.getMenu(),
       button.getName() + "_click_default",
       Optional.ofNullable(keys.get("default"))
-        .flatMap(MapUtil::castOptionalStringObjectMap)
+        .flatMap(MapUtils::castOptionalStringObjectMap)
         .orElse(simpleInput ? section : Collections.emptyMap())
     );
 
-    for (AdvancedClickType clickType : remainingClickTypes) {
+    for (BukkitClickType clickType : remainingClickTypes) {
       clickRequirements.put(clickType, defaultSetting);
     }
 

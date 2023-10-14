@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.command;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.manager.ExtraAddonManager;
+import me.hsgamer.bettergui.manager.AddonManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
@@ -32,8 +32,8 @@ public final class GetAddonsCommand extends BukkitCommand {
       sendMessage(sender, "  &f- &a" + name);
       if (!shortMessage) {
         sendMessage(sender, "    &eVersion: &f" + loader.getDescription().getVersion());
-        sendMessage(sender, "    &eAuthors: &f" + ExtraAddonManager.getAuthors(loader));
-        sendMessage(sender, "    &eDescription: &f" + ExtraAddonManager.getDescription(loader));
+        sendMessage(sender, "    &eAuthors: &f" + AddonManager.getAuthors(loader));
+        sendMessage(sender, "    &eDescription: &f" + AddonManager.getDescription(loader));
         sendMessage(sender, "    &eState: &f" + loader.getState());
       }
     });

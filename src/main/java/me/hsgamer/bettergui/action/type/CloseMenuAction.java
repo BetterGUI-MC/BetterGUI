@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
@@ -24,7 +23,7 @@ public class CloseMenuAction implements Action {
       process.next();
       return;
     }
-    Scheduler.CURRENT.runEntityTaskWithFinalizer(BetterGUI.getInstance(), player, () -> menu.close(player), process::next, false);
+    Scheduler.current().sync().runEntityTaskWithFinalizer(player, () -> menu.close(player), process::next);
   }
 
   @Override

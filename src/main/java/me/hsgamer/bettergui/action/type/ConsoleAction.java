@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
@@ -16,9 +15,9 @@ public class ConsoleAction extends BaseAction {
 
   @Override
   public void accept(UUID uuid, TaskProcess process) {
-    Scheduler.CURRENT.runTask(BetterGUI.getInstance(), () -> {
+    Scheduler.current().sync().runTask(() -> {
       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getReplacedString(uuid));
       process.next();
-    }, false);
+    });
   }
 }

@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
@@ -28,7 +27,7 @@ public class BackAction implements Action {
     Runnable runnable = menu.getParentMenu(uuid)
       .<Runnable>map(parentMenu -> () -> parentMenu.create(player, new String[0], player.hasPermission(Permissions.OPEN_MENU_BYPASS)))
       .orElse(player::closeInventory);
-    Scheduler.CURRENT.runEntityTaskWithFinalizer(BetterGUI.getInstance(), player, runnable, process::next, false);
+    Scheduler.current().sync().runEntityTaskWithFinalizer(player, runnable, process::next);
   }
 
   @Override

@@ -54,22 +54,14 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
    * @param type    the type
    */
   public void register(Function<Input, Action> creator, String... type) {
-    register(new Element<Input, Action>() {
-      @Override
-      public boolean canBuild(Input input) {
-        String action = input.type;
-        for (String s : type) {
-          if (action.equalsIgnoreCase(s)) {
-            return true;
-          }
+    register(input -> {
+      String action = input.type;
+      for (String s : type) {
+        if (action.equalsIgnoreCase(s)) {
+          return Optional.of(creator.apply(input));
         }
-        return false;
       }
-
-      @Override
-      public Action build(Input input) {
-        return creator.apply(input);
-      }
+      return Optional.empty();
     });
   }
 

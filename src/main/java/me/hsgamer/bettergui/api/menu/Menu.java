@@ -1,8 +1,7 @@
 package me.hsgamer.bettergui.api.menu;
 
-import me.hsgamer.hscore.common.interfaces.StringReplacer;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.Config;
-import me.hsgamer.hscore.variable.InstanceVariableManager;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
 
@@ -14,8 +13,7 @@ import java.util.*;
 public abstract class Menu {
 
   protected final Config config;
-  protected final InstanceVariableManager variableManager = new InstanceVariableManager();
-  protected final List<StringReplacer> stringReplacers = new ArrayList<>();
+  protected final VariableManager variableManager = new VariableManager();
   private final Map<UUID, Menu> parentMenu = new HashMap<>();
 
   /**
@@ -25,11 +23,9 @@ public abstract class Menu {
    */
   protected Menu(Config config) {
     this.config = config;
-    variableManager.register("current-menu", (original, uuid) -> getName());
-    variableManager.register("parent-menu", (original, uuid) -> getParentMenu(uuid).map(Menu::getName).orElse(""));
-
-    stringReplacers.add(variableManager::setVariables);
-    stringReplacers.add(VariableManager::setVariables);
+    variableManager.register("current-menu", original -> getName(), true);
+    variableManager.register("parent-menu", StringReplacer.of((original, uuid) -> getParentMenu(uuid).map(Menu::getName).orElse("")));
+    variableManager.addExternalReplacer(VariableManager.GLOBAL);
   }
 
   /**
@@ -55,17 +51,8 @@ public abstract class Menu {
    *
    * @return the variable manager
    */
-  public InstanceVariableManager getVariableManager() {
+  public VariableManager getVariableManager() {
     return variableManager;
-  }
-
-  /**
-   * Get the mutable string replacers
-   *
-   * @return the string replacers
-   */
-  public List<StringReplacer> getStringReplacers() {
-    return stringReplacers;
   }
 
   /**
@@ -133,17 +120,5 @@ public abstract class Menu {
     } else {
       parentMenu.put(uuid, menu);
     }
-  }
-
-  /**
-   * Replace the string
-   *
-   * @param string the string
-   * @param uuid   the unique id
-   *
-   * @return the replaced string
-   */
-  public String replace(String string, UUID uuid) {
-    return StringReplacer.replace(string, uuid, stringReplacers);
   }
 }
