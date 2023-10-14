@@ -5,11 +5,12 @@ import me.hsgamer.bettergui.menu.AddonMenu;
 import me.hsgamer.bettergui.menu.PredicateMenu;
 import me.hsgamer.bettergui.menu.SimpleMenu;
 import me.hsgamer.hscore.builder.MassBuilder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.config.PathString;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -34,23 +35,22 @@ public final class MenuBuilder extends MassBuilder<Config, Menu> {
    * @param type    the type
    */
   public void register(Function<Config, Menu> creator, String... type) {
-    register(new Element<Config, Menu>() {
-      @Override
-      public boolean canBuild(Config input) {
-        Map<String, Object> keys = new CaseInsensitiveStringMap<>(input.getNormalizedValues(true));
-        String menu = Objects.toString(keys.get("menu-settings.menu-type"), "simple");
-        for (String s : type) {
-          if (menu.equalsIgnoreCase(s)) {
-            return true;
-          }
+    register(input -> {
+      String menu = "simple";
+      for (Map.Entry<PathString, Object> entry : input.getNormalizedValues(true).entrySet()) {
+        String[] path = entry.getKey().getPath();
+        if (path.length == 2 && path[0].equalsIgnoreCase("menu-settings") && path[1].equalsIgnoreCase("menu-type")) {
+          menu = Objects.toString(entry.getValue(), "simple");
+          break;
         }
-        return false;
       }
 
-      @Override
-      public Menu build(Config input) {
-        return creator.apply(input);
+      for (String s : type) {
+        if (menu.equalsIgnoreCase(s)) {
+          return Optional.of(creator.apply(input));
+        }
       }
+      return Optional.empty();
     });
   }
 }

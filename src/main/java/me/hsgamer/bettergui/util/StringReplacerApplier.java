@@ -46,7 +46,7 @@ public final class StringReplacerApplier {
    *
    * @return the item builder
    */
-  public static ItemBuilder<?> apply(ItemBuilder<?> itemBuilder, boolean useGlobalVariableManager) {
+  public static <T> ItemBuilder<T> apply(ItemBuilder<T> itemBuilder, boolean useGlobalVariableManager) {
     if (useGlobalVariableManager) {
       itemBuilder.addStringReplacer(VariableManager.GLOBAL);
     }
@@ -62,7 +62,7 @@ public final class StringReplacerApplier {
    *
    * @return the item builder
    */
-  public static ItemBuilder<?> apply(ItemBuilder<?> itemBuilder, Menu menu) {
+  public static <T> ItemBuilder<T> apply(ItemBuilder<T> itemBuilder, Menu menu) {
     return apply(itemBuilder.addStringReplacer(menu.getVariableManager()), false);
   }
 
@@ -74,7 +74,7 @@ public final class StringReplacerApplier {
    *
    * @return the item builder
    */
-  public static ItemBuilder<?> apply(ItemBuilder<?> itemBuilder, MenuElement menuElement) {
+  public static <T> ItemBuilder<T> apply(ItemBuilder<T> itemBuilder, MenuElement menuElement) {
     return apply(itemBuilder, menuElement.getMenu());
   }
 

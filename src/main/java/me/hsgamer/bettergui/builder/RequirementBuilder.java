@@ -5,6 +5,7 @@ import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.requirement.type.*;
 import me.hsgamer.hscore.builder.MassBuilder;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -31,22 +32,14 @@ public final class RequirementBuilder extends MassBuilder<RequirementBuilder.Inp
    * @param type    the type
    */
   public void register(Function<Input, Requirement> creator, String... type) {
-    register(new Element<Input, Requirement>() {
-      @Override
-      public boolean canBuild(Input input) {
-        String requirement = input.type;
-        for (String s : type) {
-          if (requirement.equalsIgnoreCase(s)) {
-            return true;
-          }
+    register(input -> {
+      String requirement = input.type;
+      for (String s : type) {
+        if (requirement.equalsIgnoreCase(s)) {
+          return Optional.of(creator.apply(input));
         }
-        return false;
       }
-
-      @Override
-      public Requirement build(Input input) {
-        return creator.apply(input);
-      }
+      return Optional.empty();
     });
   }
 

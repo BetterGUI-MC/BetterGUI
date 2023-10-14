@@ -1,11 +1,13 @@
 package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.hscore.builder.MassBuilder;
-import me.hsgamer.hscore.bukkit.item.ItemModifier;
 import me.hsgamer.hscore.bukkit.item.modifier.*;
+import me.hsgamer.hscore.minecraft.item.ItemModifier;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,7 +15,7 @@ import java.util.stream.Stream;
 /**
  * The item modifier builder
  */
-public class ItemModifierBuilder extends MassBuilder<Map.Entry<String, Object>, ItemModifier> {
+public class ItemModifierBuilder extends MassBuilder<Map.Entry<String, Object>, ItemModifier<ItemStack>> {
   /**
    * The instance of the item modifier builder
    */
@@ -38,26 +40,18 @@ public class ItemModifierBuilder extends MassBuilder<Map.Entry<String, Object>, 
    * @param creator the creator
    * @param type    the type
    */
-  public void register(Supplier<ItemModifier> creator, String... type) {
-    register(new Element<Map.Entry<String, Object>, ItemModifier>() {
-      @Override
-      public boolean canBuild(Map.Entry<String, Object> input) {
-        String modifier = input.getKey();
-        for (String s : type) {
-          if (modifier.equalsIgnoreCase(s)) {
-            return true;
-          }
+  public void register(Supplier<ItemModifier<ItemStack>> creator, String... type) {
+    register(input -> {
+      String modifier = input.getKey();
+      for (String s : type) {
+        if (modifier.equalsIgnoreCase(s)) {
+          ItemModifier<ItemStack> itemModifier = creator.get();
+          Object value = input.getValue();
+          itemModifier.loadFromObject(value);
+          return Optional.of(itemModifier);
         }
-        return false;
       }
-
-      @Override
-      public ItemModifier build(Map.Entry<String, Object> input) {
-        ItemModifier itemModifier = creator.get();
-        Object value = input.getValue();
-        itemModifier.loadFromObject(value);
-        return itemModifier;
-      }
+      return Optional.empty();
     });
   }
 
@@ -68,7 +62,7 @@ public class ItemModifierBuilder extends MassBuilder<Map.Entry<String, Object>, 
    *
    * @return the modifiers
    */
-  public List<ItemModifier> build(Map<String, Object> map) {
+  public List<ItemModifier<ItemStack>> build(Map<String, Object> map) {
     return map.entrySet()
       .stream()
       .flatMap(entry -> build(entry).map(Stream::of).orElse(Stream.empty()))
