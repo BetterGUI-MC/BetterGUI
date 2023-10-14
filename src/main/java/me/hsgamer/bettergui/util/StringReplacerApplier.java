@@ -90,10 +90,7 @@ public final class StringReplacerApplier {
   public static String replace(String string, UUID uuid, boolean useGlobalVariableManager) {
     String replaced = string;
     if (useGlobalVariableManager) {
-      replaced = VariableManager.GLOBAL.tryReplace(replaced, uuid);
-      if (replaced == null) {
-        return string;
-      }
+      replaced = VariableManager.GLOBAL.setVariables(replaced, uuid);
     }
 
     for (StringReplacer replacer : STRING_REPLACERS) {
