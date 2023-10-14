@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.BaseAction;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.util.CommandUtil;
@@ -41,6 +40,6 @@ public abstract class CommandAction extends BaseAction {
     }
 
     String command = CommandUtil.normalizeCommand(getReplacedString(uuid));
-    Scheduler.CURRENT.runEntityTaskWithFinalizer(BetterGUI.getInstance(), player, () -> accept(player, command), process::next, false);
+    Scheduler.current().sync().runEntityTaskWithFinalizer(player, () -> accept(player, command), process::next);
   }
 }
