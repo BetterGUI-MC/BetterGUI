@@ -111,7 +111,7 @@ public final class BetterGUI extends BasePlugin {
     registerCommand(new GetTemplateButtonsCommand(this));
 
     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-      ExtraPlaceholderExpansion expansion = new ExtraPlaceholderExpansion();
+      ExtraPlaceholderExpansion expansion = new ExtraPlaceholderExpansion(this);
       expansion.register();
       addDisableFunction(expansion::unregister);
     }
