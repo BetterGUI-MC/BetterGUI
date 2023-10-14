@@ -11,27 +11,27 @@ import java.net.URI;
 public interface MainConfig {
   @ConfigPath("use-modern-click-type")
   default boolean isModernClickType() {
-    return true;
+    return false;
   }
 
   @ConfigPath("use-legacy-button")
   default boolean isUseLegacyButton() {
-    return false;
+    return true;
   }
 
   @ConfigPath("relative-menu-name")
   default boolean isRelativeMenuName() {
-    return true;
+    return false;
   }
 
   @ConfigPath("trim-menu-file-extension")
   default boolean isTrimMenuFileExtension() {
-    return true;
+    return false;
   }
 
   @ConfigPath("include-menu-in-template")
   default boolean isIncludeMenuInTemplate() {
-    return true;
+    return false;
   }
 
   void reloadConfig();
