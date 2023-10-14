@@ -4,11 +4,13 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.util.PathStringUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.Pair;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
 
@@ -37,7 +39,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
     Config config = menu.getConfig();
 
     ActionApplier tempMinArgActionApplier = new ActionApplier(Collections.emptyList());
-    for (Map.Entry<String, Object> entry : config.getNormalizedValues(false).entrySet()) {
+    for (Map.Entry<String, Object> entry : PathStringUtil.asStringMap(config.getNormalizedValues(false)).entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
       if (!key.equalsIgnoreCase("menu-settings")) {
@@ -65,8 +67,8 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
     }
     this.minArgActionApplier = tempMinArgActionApplier;
 
-    menu.getVariableManager().register("merged_args", (original, uuid) -> Optional.ofNullable(argsPerPlayer.get(uuid)).map(args -> String.join(" ", args)).orElse(""));
-    menu.getVariableManager().register("arg_", (original, uuid) -> {
+    menu.getVariableManager().register("merged_args", StringReplacer.of((original, uuid) -> Optional.ofNullable(argsPerPlayer.get(uuid)).map(args -> String.join(" ", args)).orElse("")));
+    menu.getVariableManager().register("arg_", StringReplacer.of((original, uuid) -> {
       int index = argToIndexMap.getOrDefault(original, -1);
       if (argsPerPlayer.containsKey(uuid)) {
         String[] playerArgs = argsPerPlayer.get(uuid);
@@ -77,7 +79,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
         }
       }
       return "";
-    });
+    }));
   }
 
   @Override
@@ -140,7 +142,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
   private String[] fillEmptyArgs(String[] args) {
     if (args.length < registeredArgs) {
       String[] clone = Arrays.copyOf(args, registeredArgs);
-      Arrays.fill(clone, args.length, clone.length, BetterGUI.getInstance().getMessageConfig().emptyArgValue);
+      Arrays.fill(clone, args.length, clone.length, BetterGUI.getInstance().getMessageConfig().getEmptyArgValue());
       return clone;
     }
     return args;
