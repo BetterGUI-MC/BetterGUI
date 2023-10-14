@@ -36,6 +36,10 @@ public interface MessageConfig {
     return "&cError converting! {input} is not a valid number";
   }
 
+  default String getInvalidNumber(String input) {
+    return getInvalidNumber().replace("{input}", input);
+  }
+
   @ConfigPath("menu-not-found")
   default String getMenuNotFound() {
     return "&cThat menu does not exist";

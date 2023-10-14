@@ -5,6 +5,7 @@ import me.hsgamer.bettergui.api.requirement.TakableRequirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,7 +16,7 @@ import java.util.UUID;
 public class LevelRequirement extends TakableRequirement<Integer> {
   public LevelRequirement(RequirementBuilder.Input input) {
     super(input);
-    getMenu().getVariableManager().register(getName(), (original, uuid) -> {
+    getMenu().getVariableManager().register(getName(), StringReplacer.of((original, uuid) -> {
       Player player = Bukkit.getPlayer(uuid);
       if (player == null) {
         return "";
@@ -24,8 +25,8 @@ public class LevelRequirement extends TakableRequirement<Integer> {
       if (level > 0 && player.getLevel() < level) {
         return String.valueOf(level);
       }
-      return BetterGUI.getInstance().getMessageConfig().haveMetRequirementPlaceholder;
-    });
+      return BetterGUI.getInstance().getMessageConfig().getHaveMetRequirementPlaceholder();
+    }));
   }
 
   @Override
@@ -34,7 +35,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
     return Validate.getNumber(replaced)
       .map(BigDecimal::intValue)
       .orElseGet(() -> {
-        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().getMessageConfig().invalidNumber.replace("{input}", replaced));
+        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().getMessageConfig().getInvalidNumber(replaced));
         return 0;
       });
   }

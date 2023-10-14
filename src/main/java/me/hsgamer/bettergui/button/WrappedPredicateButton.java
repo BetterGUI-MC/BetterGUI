@@ -60,7 +60,7 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
         predicateButton.setClickFuturePredicate(clickEvent -> {
           if (!(clickEvent instanceof BukkitClickEvent)) return CompletableFuture.completedFuture(false);
           BukkitClickEvent bukkitClickEvent = (BukkitClickEvent) clickEvent;
-          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), BetterGUI.getInstance().getMainConfig().modernClickType));
+          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), BetterGUI.getInstance().getMainConfig().isModernClickType()));
           return CompletableFuture.supplyAsync(() -> clickRequirement.getResult(clickEvent.getViewerID()))
             .thenApply(result -> {
               BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {

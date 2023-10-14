@@ -5,6 +5,7 @@ import me.hsgamer.bettergui.api.requirement.BaseRequirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
 import org.apache.commons.lang.time.DurationFormatUtils;
 
@@ -20,7 +21,7 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
 
   public CooldownRequirement(RequirementBuilder.Input input) {
     super(input);
-    getMenu().getVariableManager().register(getName(), (original, uuid) -> {
+    getMenu().getVariableManager().register(getName(), StringReplacer.of((original, uuid) -> {
       long millis = getCooldown(uuid);
       millis = millis > 0 ? millis : 0;
 
@@ -41,7 +42,7 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
         default:
           return String.valueOf(millis);
       }
-    });
+    }));
   }
 
   @Override
@@ -50,7 +51,7 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
     return Validate.getNumber(replaced)
       .map(bigDecimal -> Duration.ofMillis((long) bigDecimal.doubleValue() * 1000))
       .orElseGet(() -> {
-        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().getMessageConfig().invalidNumber.replace("{input}", replaced));
+        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().getMessageConfig().getInvalidNumber(replaced));
         return Duration.ZERO;
       });
   }
