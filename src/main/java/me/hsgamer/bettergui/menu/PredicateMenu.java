@@ -6,11 +6,13 @@ import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
+import me.hsgamer.bettergui.util.PathStringUtil;
 import me.hsgamer.bettergui.util.PlayerUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
@@ -32,7 +34,7 @@ public class PredicateMenu extends Menu {
     menuPredicateList = new ArrayList<>();
 
     List<Permission> tempPermissions = Collections.singletonList(new Permission(getInstance().getName().toLowerCase() + "." + getName()));
-    for (Map.Entry<String, Object> entry : config.getNormalizedValues(false).entrySet()) {
+    for (Map.Entry<String, Object> entry : PathStringUtil.asStringMap(config.getNormalizedValues(false)).entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
       if (!(value instanceof Map)) {
@@ -59,7 +61,7 @@ public class PredicateMenu extends Menu {
             }
           });
 
-        Optional.ofNullable(MapUtil.getIfFound(values, "argument-processor", "arg-processor"))
+        Optional.ofNullable(MapUtils.getIfFound(values, "argument-processor", "arg-processor"))
           .map(o -> CollectionUtils.createStringListFromObject(o, true))
           .ifPresent(list -> {
             for (String s : list) {
@@ -71,8 +73,8 @@ public class PredicateMenu extends Menu {
         if (menu == null) {
           continue;
         }
-        String args = Optional.ofNullable(MapUtil.getIfFound(values, "args", "arguments", "arg", "argument")).map(Object::toString).orElse("");
-        Map<String, Object> requirementValue = MapUtil.castOptionalStringObjectMap(values.get("requirement")).orElseGet(Collections::emptyMap);
+        String args = Optional.ofNullable(MapUtils.getIfFound(values, "args", "arguments", "arg", "argument")).map(Object::toString).orElse("");
+        Map<String, Object> requirementValue = MapUtils.castOptionalStringObjectMap(values.get("requirement")).orElseGet(Collections::emptyMap);
         menuPredicateList.add(Pair.of(
           new RequirementApplier(this, getName() + "_" + key + "_requirement", requirementValue),
           new MenuProcess(menu, args)

@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.menu;
 
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.util.PathStringUtil;
 import me.hsgamer.bettergui.util.SlotUtil;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.config.Config;
@@ -18,7 +19,7 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMap> {
   @Override
   protected SimpleButtonMap createButtonMap(Config config) {
     SimpleButtonMap buttonMap = new SimpleButtonMap();
-    for (Map.Entry<String, Object> entry : config.getNormalizedValues(false).entrySet()) {
+    for (Map.Entry<String, Object> entry : PathStringUtil.asStringMap(config.getNormalizedValues(false)).entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
       if (!(value instanceof Map)) {
