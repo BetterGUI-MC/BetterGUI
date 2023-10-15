@@ -25,7 +25,6 @@ import me.hsgamer.hscore.minecraft.gui.event.ClickEvent;
 import me.hsgamer.hscore.minecraft.gui.event.CloseEvent;
 import me.hsgamer.hscore.minecraft.gui.event.OpenEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.permissions.Permission;
@@ -71,14 +70,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       @Override
       protected void onRemoveDisplay(@NotNull BukkitGUIDisplay display) {
         argumentHandler.onClear(display.getUniqueId());
-
         Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(Task::cancel);
-        for (HumanEntity humanEntity : display.getInventory().getViewers()) {
-          UUID uuid = humanEntity.getUniqueId();
-          if (uuid != display.getUniqueId()) {
-            forceClose.add(uuid);
-          }
-        }
         super.onRemoveDisplay(display);
       }
     };
