@@ -32,10 +32,10 @@ public class CaseInsensitivePathString {
   @Override
   public int hashCode() {
     String[] thisPath = this.pathString.getPath();
-    String[] lowerPath = new String[thisPath.length];
+    Object[] lowerPath = new String[thisPath.length];
     for (int i = 0; i < thisPath.length; i++) {
       lowerPath[i] = thisPath[i].toLowerCase();
     }
-    return Objects.hash((Object) lowerPath);
+    return Objects.hash(lowerPath);
   }
 }
