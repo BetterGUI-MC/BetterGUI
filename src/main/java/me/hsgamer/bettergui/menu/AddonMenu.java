@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.menu;
 
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
 import me.hsgamer.bettergui.downloader.AdditionalInfoKeys;
-import me.hsgamer.bettergui.util.PathStringUtil;
+import me.hsgamer.bettergui.util.CaseInsensitivePathString;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
 import me.hsgamer.hscore.bukkit.gui.object.BukkitItem;
@@ -53,8 +53,14 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
   }
 
   @Override
-  protected ButtonMap createButtonMap(Config config) {
-    Map<String, Object> itemMap = PathStringUtil.asStringMap(config.getNormalizedValues(BUTTON_PATH, false));
+  protected ButtonMap createButtonMap() {
+    Object rawItemMap = configSettings.get(new CaseInsensitivePathString(BUTTON_PATH));
+    if (!(rawItemMap instanceof Map)) {
+      throw new IllegalStateException("The button map must be a map");
+    }
+    //noinspection unchecked
+    Map<String, Object> itemMap = (Map<String, Object>) rawItemMap;
+
     return new ButtonMap() {
       private final Map<DownloadInfo, AddonButton> addonButtonMap = new HashMap<>();
 

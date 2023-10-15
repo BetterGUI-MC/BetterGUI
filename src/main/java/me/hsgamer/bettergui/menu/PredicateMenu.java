@@ -6,10 +6,7 @@ import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
-import me.hsgamer.bettergui.util.PathStringUtil;
-import me.hsgamer.bettergui.util.PlayerUtil;
-import me.hsgamer.bettergui.util.ProcessApplierConstants;
-import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.bettergui.util.*;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
@@ -31,47 +28,54 @@ public class PredicateMenu extends Menu {
   public PredicateMenu(Config config) {
     super(config);
     argumentHandler = new ArgumentHandler(this);
+
+    Map<CaseInsensitivePathString, Object> configValues = PathStringUtil.asCaseInsensitiveMap(config.getNormalizedValues(false));
+
+    Object rawMenuSettings = configValues.get(PathStringConstants.MENU_SETTINGS);
+    //noinspection unchecked
+    Map<String, Object> menuSettings = rawMenuSettings instanceof Map
+      ? new CaseInsensitiveStringMap<>((Map<String, Object>) rawMenuSettings)
+      : Collections.emptyMap();
+
+    permissions = Optional.ofNullable(menuSettings.get("permission"))
+      .map(o -> CollectionUtils.createStringListFromObject(o, true))
+      .map(l -> l.stream().map(Permission::new).collect(Collectors.toList()))
+      .orElse(Collections.singletonList(new Permission(getInstance().getName().toLowerCase() + "." + getName())));
+
+    Optional.ofNullable(menuSettings.get("command"))
+      .map(o -> CollectionUtils.createStringListFromObject(o, true))
+      .ifPresent(list -> {
+        for (String s : list) {
+          if (s.contains(" ")) {
+            getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
+          } else {
+            getInstance().getMenuCommandManager().registerMenuCommand(s, this);
+          }
+        }
+      });
+
+    Optional.ofNullable(MapUtils.getIfFound(menuSettings, "argument-processor", "arg-processor"))
+      .map(o -> CollectionUtils.createStringListFromObject(o, true))
+      .ifPresent(list -> {
+        for (String s : list) {
+          ArgumentProcessorBuilder.INSTANCE.build(s, this).ifPresent(argumentHandler::addProcessor);
+        }
+      });
+
     menuPredicateList = new ArrayList<>();
-
-    List<Permission> tempPermissions = Collections.singletonList(new Permission(getInstance().getName().toLowerCase() + "." + getName()));
-    for (Map.Entry<String, Object> entry : PathStringUtil.asStringMap(config.getNormalizedValues(false)).entrySet()) {
-      String key = entry.getKey();
-      Object value = entry.getValue();
-      if (!(value instanceof Map)) {
-        continue;
-      }
-      //noinspection unchecked
-      Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
-
-      if (key.equalsIgnoreCase("menu-settings")) {
-        tempPermissions = Optional.ofNullable(values.get("permission"))
-          .map(o -> CollectionUtils.createStringListFromObject(o, true))
-          .map(l -> l.stream().map(Permission::new).collect(Collectors.toList()))
-          .orElse(tempPermissions);
-
-        Optional.ofNullable(values.get("command"))
-          .map(o -> CollectionUtils.createStringListFromObject(o, true))
-          .ifPresent(list -> {
-            for (String s : list) {
-              if (s.contains(" ")) {
-                getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
-              } else {
-                getInstance().getMenuCommandManager().registerMenuCommand(s, this);
-              }
-            }
-          });
-
-        Optional.ofNullable(MapUtils.getIfFound(values, "argument-processor", "arg-processor"))
-          .map(o -> CollectionUtils.createStringListFromObject(o, true))
-          .ifPresent(list -> {
-            for (String s : list) {
-              ArgumentProcessorBuilder.INSTANCE.build(s, this).ifPresent(argumentHandler::addProcessor);
-            }
-          });
-      } else {
+    configValues.entrySet().stream()
+      .filter(entry -> !entry.getKey().equals(PathStringConstants.MENU_SETTINGS))
+      .forEach(entry -> {
+        String key = PathStringUtil.asString(entry.getKey().getPathString());
+        Object value = entry.getValue();
+        if (!(value instanceof Map)) {
+          return;
+        }
+        //noinspection unchecked
+        Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
         String menu = Objects.toString(values.get("menu"), null);
         if (menu == null) {
-          continue;
+          return;
         }
         String args = Optional.ofNullable(MapUtils.getIfFound(values, "args", "arguments", "arg", "argument")).map(Object::toString).orElse("");
         Map<String, Object> requirementValue = MapUtils.castOptionalStringObjectMap(values.get("requirement")).orElseGet(Collections::emptyMap);
@@ -79,10 +83,7 @@ public class PredicateMenu extends Menu {
           new RequirementApplier(this, getName() + "_" + key + "_requirement", requirementValue),
           new MenuProcess(menu, args)
         ));
-      }
-    }
-
-    permissions = tempPermissions;
+      });
   }
 
   @Override

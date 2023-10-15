@@ -8,10 +8,7 @@ import me.hsgamer.bettergui.argument.ArgumentHandler;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.builder.InventoryBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
-import me.hsgamer.bettergui.util.PathStringUtil;
-import me.hsgamer.bettergui.util.PlayerUtil;
-import me.hsgamer.bettergui.util.ProcessApplierConstants;
-import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.bettergui.util.*;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIDisplay;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIHolder;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
@@ -44,6 +41,9 @@ import java.util.stream.Collectors;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
+  protected final Config config;
+  protected final Map<String, Object> menuSettings;
+  protected final Map<CaseInsensitivePathString, Object> configSettings;
   private final RequirementApplier viewRequirementApplier;
   private final BukkitGUIHolder guiHolder;
   private final B buttonMap;
@@ -55,6 +55,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
 
   protected BaseInventoryMenu(Config config) {
     super(config);
+    this.config = config;
     argumentHandler = new ArgumentHandler(this);
     guiHolder = new BukkitGUIHolder(getInstance()) {
       @Override
@@ -82,175 +83,165 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
       }
     };
 
+    Map<CaseInsensitivePathString, Object> configValues = PathStringUtil.asCaseInsensitiveMap(config.getNormalizedValues(false));
+    Object rawMenuSettings = configValues.get(PathStringConstants.MENU_SETTINGS);
+    //noinspection unchecked
+    menuSettings = rawMenuSettings instanceof Map
+      ? new CaseInsensitiveStringMap<>((Map<String, Object>) rawMenuSettings)
+      : Collections.emptyMap();
+    configSettings = configValues.entrySet().stream()
+      .filter(entry -> !entry.getKey().equals(PathStringConstants.MENU_SETTINGS))
+      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
     List<Consumer<BukkitGUIHolder>> postInitActions = new ArrayList<>();
-    long tempTicks = 0;
-    List<Permission> tempPermissions = Collections.singletonList(new Permission(getInstance().getName().toLowerCase() + "." + getName()));
-    RequirementApplier tempViewRequirementApplier = new RequirementApplier(this, getName(), Collections.emptyMap());
-    for (Map.Entry<String, Object> entry : PathStringUtil.asStringMap(config.getNormalizedValues(false)).entrySet()) {
-      String key = entry.getKey();
-      Object value = entry.getValue();
-      if (!(value instanceof Map)) {
-        continue;
+    Optional.ofNullable(menuSettings.get("open-action"))
+      .map(o -> new ActionApplier(this, o))
+      .ifPresent(actionApplier -> postInitActions.add(holder -> holder.addEventConsumer(OpenEvent.class, openEvent -> {
+        UUID uuid = openEvent.getViewerID();
+        BetterGUI.runBatchRunnable(batchRunnable ->
+          batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
+            .addLast(process ->
+              actionApplier.accept(uuid, process)
+            )
+        );
+      })));
+
+    Optional.ofNullable(menuSettings.get("close-action"))
+      .map(o -> new ActionApplier(this, o))
+      .ifPresent(actionApplier -> postInitActions.add(holder -> holder.addEventConsumer(CloseEvent.class, openEvent -> {
+        UUID uuid = openEvent.getViewerID();
+        BetterGUI.runBatchRunnable(batchRunnable ->
+          batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
+            .addLast(process ->
+              actionApplier.accept(uuid, process)
+            )
+        );
+      })));
+
+    Optional.ofNullable(MapUtils.getIfFound(menuSettings, "inventory-type", "inventory")).ifPresent(o -> {
+      try {
+        this.guiHolder.setInventoryType(InventoryType.valueOf(String.valueOf(o).toUpperCase(Locale.ROOT)));
+      } catch (IllegalArgumentException e) {
+        getInstance().getLogger().warning(() -> "The menu \"" + getName() + "\" contains an illegal inventory type");
       }
-      //noinspection unchecked
-      Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
+    });
 
-      if (key.equalsIgnoreCase("menu-settings")) {
+    Optional.ofNullable(menuSettings.get("rows"))
+      .map(String::valueOf)
+      .flatMap(Validate::getNumber)
+      .map(BigDecimal::intValue)
+      .map(i -> Math.max(1, i)).map(i -> i * 9)
+      .ifPresent(guiHolder::setSize);
+    Optional.ofNullable(menuSettings.get("slots"))
+      .map(String::valueOf)
+      .flatMap(Validate::getNumber)
+      .map(BigDecimal::intValue)
+      .map(i -> Math.max(1, i))
+      .ifPresent(guiHolder::setSize);
 
-        Optional.ofNullable(values.get("open-action"))
-          .map(o -> new ActionApplier(this, o))
-          .ifPresent(actionApplier -> postInitActions.add(holder -> holder.addEventConsumer(OpenEvent.class, openEvent -> {
-            UUID uuid = openEvent.getViewerID();
-            BetterGUI.runBatchRunnable(batchRunnable ->
-              batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
-                .addLast(process ->
-                  actionApplier.accept(uuid, process)
-                )
-            );
-          })));
+    ticks = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "auto-refresh", "ticks"))
+      .map(String::valueOf)
+      .flatMap(Validate::getNumber)
+      .map(BigDecimal::longValue)
+      .orElse(0L);
 
-        Optional.ofNullable(values.get("close-action"))
-          .map(o -> new ActionApplier(this, o))
-          .ifPresent(actionApplier -> postInitActions.add(holder -> holder.addEventConsumer(CloseEvent.class, openEvent -> {
-            UUID uuid = openEvent.getViewerID();
-            BetterGUI.runBatchRunnable(batchRunnable ->
-              batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
-                .addLast(process ->
-                  actionApplier.accept(uuid, process)
-                )
-            );
-          })));
+    viewRequirementApplier = Optional.ofNullable(menuSettings.get("view-requirement"))
+      .flatMap(MapUtils::castOptionalStringObjectMap)
+      .map(m -> new RequirementApplier(this, getName() + "_view", m))
+      .orElseGet(() -> new RequirementApplier(this, getName(), Collections.emptyMap()));
 
-        Optional.ofNullable(MapUtils.getIfFound(values, "inventory-type", "inventory")).ifPresent(o -> {
-          try {
-            this.guiHolder.setInventoryType(InventoryType.valueOf(String.valueOf(o).toUpperCase(Locale.ROOT)));
-          } catch (IllegalArgumentException e) {
-            getInstance().getLogger().warning(() -> "The menu \"" + getName() + "\" contains an illegal inventory type");
+    Optional.ofNullable(menuSettings.get("cached"))
+      .map(String::valueOf)
+      .map(Boolean::parseBoolean)
+      .ifPresent(cached -> {
+        guiHolder.addEventConsumer(CloseEvent.class, closeEvent -> closeEvent.setRemoveDisplay(!cached));
+      });
+
+    Optional.ofNullable(menuSettings.get("close-requirement"))
+      .flatMap(MapUtils::castOptionalStringObjectMap)
+      .map(m -> new RequirementApplier(this, getName() + "_close", m))
+      .ifPresent(closeRequirementApplier -> {
+        guiHolder.addEventConsumer(CloseEvent.class, closeEvent -> {
+          UUID uuid = closeEvent.getViewerID();
+          if (forceClose.contains(uuid)) {
+            forceClose.remove(uuid);
+            return;
           }
-        });
+          Requirement.Result result = closeRequirementApplier.getResult(uuid);
+          BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+            result.applier.accept(uuid, process);
+            process.next();
+          }));
 
-        Optional.ofNullable(values.get("rows"))
-          .map(String::valueOf)
-          .flatMap(Validate::getNumber)
-          .map(BigDecimal::intValue)
-          .map(i -> Math.max(1, i)).map(i -> i * 9)
-          .ifPresent(guiHolder::setSize);
-        Optional.ofNullable(values.get("slots"))
-          .map(String::valueOf)
-          .flatMap(Validate::getNumber)
-          .map(BigDecimal::intValue)
-          .map(i -> Math.max(1, i))
-          .ifPresent(guiHolder::setSize);
-
-        tempTicks = Optional.ofNullable(MapUtils.getIfFound(values, "auto-refresh", "ticks"))
-          .map(String::valueOf)
-          .flatMap(Validate::getNumber)
-          .map(BigDecimal::longValue)
-          .orElse(tempTicks);
-
-        tempViewRequirementApplier = Optional.ofNullable(values.get("view-requirement"))
-          .flatMap(MapUtils::castOptionalStringObjectMap)
-          .map(m -> new RequirementApplier(this, getName() + "_view", m))
-          .orElse(tempViewRequirementApplier);
-
-        Optional.ofNullable(values.get("cached"))
-          .map(String::valueOf)
-          .map(Boolean::parseBoolean)
-          .ifPresent(cached -> {
-            guiHolder.addEventConsumer(CloseEvent.class, closeEvent -> closeEvent.setRemoveDisplay(!cached));
-          });
-
-        Optional.ofNullable(values.get("close-requirement"))
-          .flatMap(MapUtils::castOptionalStringObjectMap)
-          .map(m -> new RequirementApplier(this, getName() + "_close", m))
-          .ifPresent(closeRequirementApplier -> {
-            guiHolder.addEventConsumer(CloseEvent.class, closeEvent -> {
-              UUID uuid = closeEvent.getViewerID();
-              if (forceClose.contains(uuid)) {
-                forceClose.remove(uuid);
-                return;
-              }
-              Requirement.Result result = closeRequirementApplier.getResult(uuid);
-              BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
-                result.applier.accept(uuid, process);
-                process.next();
-              }));
-
-              if (!result.isSuccess) {
-                closeEvent.setRemoveDisplay(false);
-                guiHolder.getDisplay(uuid).ifPresent(display -> {
-                  Player player = Bukkit.getPlayer(uuid);
-                  if (player != null) {
-                    Scheduler.current().sync().runEntityTask(player, () -> player.openInventory(display.getInventory()));
-                  }
-                });
+          if (!result.isSuccess) {
+            closeEvent.setRemoveDisplay(false);
+            guiHolder.getDisplay(uuid).ifPresent(display -> {
+              Player player = Bukkit.getPlayer(uuid);
+              if (player != null) {
+                Scheduler.current().sync().runEntityTask(player, () -> player.openInventory(display.getInventory()));
               }
             });
-          });
+          }
+        });
+      });
 
-        tempPermissions = Optional.ofNullable(values.get("permission"))
-          .map(o -> CollectionUtils.createStringListFromObject(o, true))
-          .map(l -> l.stream().map(Permission::new).collect(Collectors.toList()))
-          .orElse(tempPermissions);
+    permissions = Optional.ofNullable(menuSettings.get("permission"))
+      .map(o -> CollectionUtils.createStringListFromObject(o, true))
+      .map(l -> l.stream().map(Permission::new).collect(Collectors.toList()))
+      .orElseGet(() -> Collections.singletonList(new Permission(getInstance().getName().toLowerCase() + "." + getName())));
 
-        Optional.ofNullable(values.get("command"))
-          .map(o -> CollectionUtils.createStringListFromObject(o, true))
-          .ifPresent(list -> {
-            for (String s : list) {
-              if (s.contains(" ")) {
-                getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
-              } else {
-                getInstance().getMenuCommandManager().registerMenuCommand(s, this);
-              }
-            }
-          });
-
-        Optional.ofNullable(MapUtils.getIfFound(values, "name", "title"))
-          .map(String::valueOf)
-          .ifPresent(s -> guiHolder.setTitleFunction(uuid -> StringReplacerApplier.replace(s, uuid, this)));
-
-        Optional.ofNullable(values.get("creator"))
-          .map(String::valueOf)
-          .flatMap(s -> InventoryBuilder.INSTANCE.build(s, Pair.of(this, values)))
-          .ifPresent(guiHolder::setInventoryFunction);
-
-        Optional.ofNullable(MapUtils.getIfFound(values, "argument-processor", "arg-processor"))
-          .map(o -> CollectionUtils.createStringListFromObject(o, true))
-          .ifPresent(list -> {
-            for (String s : list) {
-              ArgumentProcessorBuilder.INSTANCE.build(s, this).ifPresent(argumentHandler::addProcessor);
-            }
-          });
-
-        long clickDelay = Optional.ofNullable(MapUtils.getIfFound(values, "click-delay"))
-          .map(String::valueOf)
-          .flatMap(Validate::getNumber)
-          .map(BigDecimal::longValue)
-          .orElse(50L);
-        if (clickDelay > 0) {
-          guiHolder.addEventConsumer(ClickEvent.class, new Consumer<ClickEvent>() {
-            private final Map<UUID, Long> lastClickMap = new ConcurrentHashMap<>();
-
-            @Override
-            public void accept(ClickEvent clickEvent) {
-              long currentTime = System.currentTimeMillis();
-              long lastClick = lastClickMap.getOrDefault(clickEvent.getViewerID(), 0L);
-              if (currentTime - lastClick < clickDelay) {
-                clickEvent.setButtonExecute(false);
-                return;
-              }
-              lastClickMap.put(clickEvent.getViewerID(), currentTime);
-            }
-          });
+    Optional.ofNullable(menuSettings.get("command"))
+      .map(o -> CollectionUtils.createStringListFromObject(o, true))
+      .ifPresent(list -> {
+        for (String s : list) {
+          if (s.contains(" ")) {
+            getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
+          } else {
+            getInstance().getMenuCommandManager().registerMenuCommand(s, this);
+          }
         }
-      }
+      });
+
+    Optional.ofNullable(MapUtils.getIfFound(menuSettings, "name", "title"))
+      .map(String::valueOf)
+      .ifPresent(s -> guiHolder.setTitleFunction(uuid -> StringReplacerApplier.replace(s, uuid, this)));
+
+    Optional.ofNullable(menuSettings.get("creator"))
+      .map(String::valueOf)
+      .flatMap(s -> InventoryBuilder.INSTANCE.build(s, Pair.of(this, menuSettings)))
+      .ifPresent(guiHolder::setInventoryFunction);
+
+    Optional.ofNullable(MapUtils.getIfFound(menuSettings, "argument-processor", "arg-processor"))
+      .map(o -> CollectionUtils.createStringListFromObject(o, true))
+      .ifPresent(list -> {
+        for (String s : list) {
+          ArgumentProcessorBuilder.INSTANCE.build(s, this).ifPresent(argumentHandler::addProcessor);
+        }
+      });
+
+    long clickDelay = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "click-delay"))
+      .map(String::valueOf)
+      .flatMap(Validate::getNumber)
+      .map(BigDecimal::longValue)
+      .orElse(50L);
+    if (clickDelay > 0) {
+      guiHolder.addEventConsumer(ClickEvent.class, new Consumer<ClickEvent>() {
+        private final Map<UUID, Long> lastClickMap = new ConcurrentHashMap<>();
+
+        @Override
+        public void accept(ClickEvent clickEvent) {
+          long currentTime = System.currentTimeMillis();
+          long lastClick = lastClickMap.getOrDefault(clickEvent.getViewerID(), 0L);
+          if (currentTime - lastClick < clickDelay) {
+            clickEvent.setButtonExecute(false);
+            return;
+          }
+          lastClickMap.put(clickEvent.getViewerID(), currentTime);
+        }
+      });
     }
 
-    this.ticks = tempTicks;
-    this.permissions = tempPermissions;
-    this.viewRequirementApplier = tempViewRequirementApplier;
-
-    buttonMap = createButtonMap(config);
+    buttonMap = createButtonMap();
     guiHolder.setButtonMap(buttonMap);
 
     guiHolder.init();
@@ -314,7 +305,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
     argumentHandler.clearProcessors();
   }
 
-  protected abstract B createButtonMap(Config config);
+  protected abstract B createButtonMap();
 
   protected void refreshButtonMapOnCreate(B buttonMap, UUID uuid) {
     // EMPTY
