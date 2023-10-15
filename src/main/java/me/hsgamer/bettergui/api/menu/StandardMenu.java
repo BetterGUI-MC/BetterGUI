@@ -1,8 +1,7 @@
 package me.hsgamer.bettergui.api.menu;
 
-import me.hsgamer.bettergui.util.CaseInsensitivePathString;
-import me.hsgamer.bettergui.util.PathStringUtil;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.config.CaseInsensitivePathString;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.config.PathString;
 
@@ -49,7 +48,7 @@ public abstract class StandardMenu extends Menu {
    */
   protected StandardMenu(Config config) {
     super(config);
-    Map<CaseInsensitivePathString, Object> configValues = PathStringUtil.asCaseInsensitiveMap(config.getNormalizedValues(false));
+    Map<CaseInsensitivePathString, Object> configValues = CaseInsensitivePathString.toCaseInsensitiveMap(config.getNormalizedValues(false));
     Object rawMenuSettings = configValues.get(MENU_SETTINGS_PATH);
     //noinspection unchecked
     menuSettings = rawMenuSettings instanceof Map

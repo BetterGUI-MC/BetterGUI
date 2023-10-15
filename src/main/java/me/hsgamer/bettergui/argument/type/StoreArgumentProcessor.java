@@ -4,7 +4,6 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.util.PathStringUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
@@ -13,6 +12,7 @@ import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.config.PathString;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -39,7 +39,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
     Config config = menu.getConfig();
 
     ActionApplier tempMinArgActionApplier = new ActionApplier(Collections.emptyList());
-    for (Map.Entry<String, Object> entry : PathStringUtil.asStringMap(config.getNormalizedValues(false)).entrySet()) {
+    for (Map.Entry<String, Object> entry : PathString.toPathMap(config.getNormalizedValues(false)).entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
       if (!key.equalsIgnoreCase("menu-settings")) {

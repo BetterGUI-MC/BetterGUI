@@ -8,7 +8,6 @@ import me.hsgamer.bettergui.argument.ArgumentHandler;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.builder.InventoryBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
-import me.hsgamer.bettergui.util.PlayerUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIDisplay;
@@ -16,6 +15,7 @@ import me.hsgamer.hscore.bukkit.gui.BukkitGUIHolder;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.bukkit.scheduler.Task;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.bukkit.utils.PermissionUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
@@ -240,7 +240,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMen
     refreshButtonMapOnCreate(buttonMap, uuid);
 
     // Check Permission
-    if (!bypass && !PlayerUtil.hasAnyPermission(player, permissions)) {
+    if (!bypass && !PermissionUtils.hasAnyPermission(player, permissions)) {
       MessageUtils.sendMessage(player, getInstance().getMessageConfig().getNoPermission());
       return false;
     }

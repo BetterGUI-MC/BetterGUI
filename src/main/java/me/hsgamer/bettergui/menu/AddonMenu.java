@@ -2,12 +2,12 @@ package me.hsgamer.bettergui.menu;
 
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
 import me.hsgamer.bettergui.downloader.AdditionalInfoKeys;
-import me.hsgamer.bettergui.util.CaseInsensitivePathString;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
 import me.hsgamer.hscore.bukkit.gui.object.BukkitItem;
 import me.hsgamer.hscore.bukkit.item.BukkitItemBuilder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.config.CaseInsensitivePathString;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.config.PathString;
 import me.hsgamer.hscore.downloader.core.object.DownloadInfo;

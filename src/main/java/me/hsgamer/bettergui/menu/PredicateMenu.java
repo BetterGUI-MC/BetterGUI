@@ -6,15 +6,15 @@ import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
-import me.hsgamer.bettergui.util.PathStringUtil;
-import me.hsgamer.bettergui.util.PlayerUtil;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.hscore.bukkit.utils.PermissionUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.config.PathString;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
@@ -63,7 +63,7 @@ public class PredicateMenu extends StandardMenu {
         return;
       }
 
-      String name = PathStringUtil.asString(key.getPathString());
+      String name = PathString.toPath(key.getPathString());
       //noinspection unchecked
       Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
       String menu = Objects.toString(values.get("menu"), null);
@@ -87,7 +87,7 @@ public class PredicateMenu extends StandardMenu {
       return false;
     }
 
-    if (!bypass && !PlayerUtil.hasAnyPermission(player, permissions)) {
+    if (!bypass && !PermissionUtils.hasAnyPermission(player, permissions)) {
       return false;
     }
 
