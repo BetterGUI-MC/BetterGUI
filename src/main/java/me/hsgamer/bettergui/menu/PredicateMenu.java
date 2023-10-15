@@ -1,12 +1,15 @@
 package me.hsgamer.bettergui.menu;
 
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
-import me.hsgamer.bettergui.util.*;
+import me.hsgamer.bettergui.util.PathStringUtil;
+import me.hsgamer.bettergui.util.PlayerUtil;
+import me.hsgamer.bettergui.util.ProcessApplierConstants;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
@@ -20,7 +23,7 @@ import java.util.stream.Collectors;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
-public class PredicateMenu extends Menu {
+public class PredicateMenu extends StandardMenu {
   private final List<Pair<RequirementApplier, MenuProcess>> menuPredicateList;
   private final List<Permission> permissions;
   private final ArgumentHandler argumentHandler;
@@ -28,14 +31,6 @@ public class PredicateMenu extends Menu {
   public PredicateMenu(Config config) {
     super(config);
     argumentHandler = new ArgumentHandler(this);
-
-    Map<CaseInsensitivePathString, Object> configValues = PathStringUtil.asCaseInsensitiveMap(config.getNormalizedValues(false));
-
-    Object rawMenuSettings = configValues.get(PathStringConstants.MENU_SETTINGS);
-    //noinspection unchecked
-    Map<String, Object> menuSettings = rawMenuSettings instanceof Map
-      ? new CaseInsensitiveStringMap<>((Map<String, Object>) rawMenuSettings)
-      : Collections.emptyMap();
 
     permissions = Optional.ofNullable(menuSettings.get("permission"))
       .map(o -> CollectionUtils.createStringListFromObject(o, true))
@@ -63,27 +58,25 @@ public class PredicateMenu extends Menu {
       });
 
     menuPredicateList = new ArrayList<>();
-    configValues.entrySet().stream()
-      .filter(entry -> !entry.getKey().equals(PathStringConstants.MENU_SETTINGS))
-      .forEach(entry -> {
-        String key = PathStringUtil.asString(entry.getKey().getPathString());
-        Object value = entry.getValue();
-        if (!(value instanceof Map)) {
-          return;
-        }
-        //noinspection unchecked
-        Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
-        String menu = Objects.toString(values.get("menu"), null);
-        if (menu == null) {
-          return;
-        }
-        String args = Optional.ofNullable(MapUtils.getIfFound(values, "args", "arguments", "arg", "argument")).map(Object::toString).orElse("");
-        Map<String, Object> requirementValue = MapUtils.castOptionalStringObjectMap(values.get("requirement")).orElseGet(Collections::emptyMap);
-        menuPredicateList.add(Pair.of(
-          new RequirementApplier(this, getName() + "_" + key + "_requirement", requirementValue),
-          new MenuProcess(menu, args)
-        ));
-      });
+    configSettings.forEach((key, value) -> {
+      if (!(value instanceof Map)) {
+        return;
+      }
+
+      String name = PathStringUtil.asString(key.getPathString());
+      //noinspection unchecked
+      Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
+      String menu = Objects.toString(values.get("menu"), null);
+      if (menu == null) {
+        return;
+      }
+      String args = Optional.ofNullable(MapUtils.getIfFound(values, "args", "arguments", "arg", "argument")).map(Object::toString).orElse("");
+      Map<String, Object> requirementValue = MapUtils.castOptionalStringObjectMap(values.get("requirement")).orElseGet(Collections::emptyMap);
+      menuPredicateList.add(Pair.of(
+        new RequirementApplier(this, getName() + "_" + name + "_requirement", requirementValue),
+        new MenuProcess(menu, args)
+      ));
+    });
   }
 
   @Override

@@ -2,19 +2,20 @@ package me.hsgamer.bettergui.menu;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
-import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.builder.InventoryBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
-import me.hsgamer.bettergui.util.*;
+import me.hsgamer.bettergui.util.PlayerUtil;
+import me.hsgamer.bettergui.util.ProcessApplierConstants;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIDisplay;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIHolder;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.bukkit.scheduler.Task;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
@@ -39,10 +40,7 @@ import java.util.stream.Collectors;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
-public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
-  protected final Config config;
-  protected final Map<String, Object> menuSettings;
-  protected final Map<CaseInsensitivePathString, Object> configSettings;
+public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMenu {
   private final RequirementApplier viewRequirementApplier;
   private final BukkitGUIHolder guiHolder;
   private final B buttonMap;
@@ -54,7 +52,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
 
   protected BaseInventoryMenu(Config config) {
     super(config);
-    this.config = config;
     argumentHandler = new ArgumentHandler(this);
     guiHolder = new BukkitGUIHolder(getInstance()) {
       @Override
@@ -74,16 +71,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends Menu {
         super.onRemoveDisplay(display);
       }
     };
-
-    Map<CaseInsensitivePathString, Object> configValues = PathStringUtil.asCaseInsensitiveMap(config.getNormalizedValues(false));
-    Object rawMenuSettings = configValues.get(PathStringConstants.MENU_SETTINGS);
-    //noinspection unchecked
-    menuSettings = rawMenuSettings instanceof Map
-      ? new CaseInsensitiveStringMap<>((Map<String, Object>) rawMenuSettings)
-      : Collections.emptyMap();
-    configSettings = configValues.entrySet().stream()
-      .filter(entry -> !entry.getKey().equals(PathStringConstants.MENU_SETTINGS))
-      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     List<Consumer<BukkitGUIHolder>> postInitActions = new ArrayList<>();
     Optional.ofNullable(menuSettings.get("open-action"))
