@@ -39,7 +39,7 @@ public final class MenuBuilder extends MassBuilder<Config, Menu> {
       String menu = "simple";
       for (Map.Entry<PathString, Object> entry : input.getNormalizedValues(true).entrySet()) {
         String[] path = entry.getKey().getPath();
-        if (path.length == 2 && path[0].equalsIgnoreCase("menu-settings") && path[1].equalsIgnoreCase("menu-type")) {
+        if (path.length == 2 && path[0].equalsIgnoreCase(Menu.MENU_SETTINGS_PATH) && path[1].equalsIgnoreCase("menu-type")) {
           menu = Objects.toString(entry.getValue(), "simple");
           break;
         }

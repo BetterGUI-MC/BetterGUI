@@ -11,6 +11,10 @@ import java.util.*;
  * The menu
  */
 public abstract class Menu {
+  /**
+   * The path of the menu settings
+   */
+  public static final String MENU_SETTINGS_PATH = "menu-settings";
 
   protected final Config config;
   protected final VariableManager variableManager = new VariableManager();

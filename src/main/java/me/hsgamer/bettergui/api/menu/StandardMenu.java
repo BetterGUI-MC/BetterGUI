@@ -31,7 +31,7 @@ public abstract class StandardMenu extends Menu {
   /**
    * The path of the menu settings
    */
-  public static final CaseInsensitivePathString MENU_SETTINGS_PATH = new CaseInsensitivePathString(new PathString("menu-settings"));
+  public static final CaseInsensitivePathString MENU_SETTINGS_PATH = new CaseInsensitivePathString(new PathString(Menu.MENU_SETTINGS_PATH));
   /**
    * The menu settings
    */
