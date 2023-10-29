@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.papi;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.Bukkit;
@@ -68,6 +69,6 @@ public class ExtraPlaceholderExpansion extends PlaceholderExpansion {
 
   @Override
   public String onRequest(OfflinePlayer player, @NotNull String identifier) {
-    return VariableManager.GLOBAL.setVariables("{" + identifier + "}", player.getUniqueId());
+    return StringReplacerApplier.replace("{" + identifier + "}", player.getUniqueId(), true);
   }
 }
