@@ -15,7 +15,6 @@ import me.hsgamer.hscore.common.Validate;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class StoreArgumentProcessor implements ArgumentProcessor {
   private final ArgumentProcessorBuilder.Input input;
@@ -36,7 +35,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
       .map(BigDecimal::intValue)
-      .orElse(1);
+      .orElse(0);
 
     this.defaultValue = Optional.ofNullable(options.get("default"))
       .map(Objects::toString)
@@ -53,8 +52,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
       .orElse(false);
 
     this.actionApplier = Optional.ofNullable(options.get("action"))
-      .map(MapUtils::castOptionalStringObjectMap)
-      .map(map -> new ActionApplier(input.menu, map))
+      .map(o -> new ActionApplier(input.menu, o))
       .orElseGet(() -> new ActionApplier(Collections.emptyList()));
 
     this.suggestions = Optional.ofNullable(MapUtils.getIfFound(options, "suggestion", "suggest"))
@@ -64,7 +62,11 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
 
   @Override
   public Optional<String[]> process(UUID uuid, String[] args) {
-    if (args.length < length) {
+    if (!takeRemaining && length <= 0) {
+      return Optional.empty();
+    }
+
+    if (length > 0 && args.length < length) {
       BetterGUI.runBatchRunnable(batchRunnable ->
         batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
           .addLast(process ->
@@ -77,13 +79,10 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
     if (takeRemaining) {
       map.put(uuid, String.join(" ", args));
       return Optional.of(new String[0]);
-    } else if (length > 0) {
+    } else {
       String[] store = Arrays.copyOfRange(args, 0, length);
       map.put(uuid, String.join(" ", store));
       return Optional.of(Arrays.copyOfRange(args, length, args.length));
-    } else {
-      map.put(uuid, "");
-      return Optional.of(args);
     }
   }
 
@@ -94,32 +93,25 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
 
   @Override
   public Pair<Optional<List<String>>, String[]> tabComplete(UUID uuid, String[] args) {
-    if (!takeRemaining && length <= 0) {
-      return Pair.of(Optional.empty(), args);
+    if (!takeRemaining) {
+      if (length <= 0) {
+        return Pair.of(Optional.empty(), args);
+      } else if (args.length > length) {
+        return Pair.of(Optional.empty(), Arrays.copyOfRange(args, length, args.length));
+      }
     }
 
-    String current;
-    String[] remaining;
-    if (takeRemaining) {
-      current = String.join(" ", args);
-      remaining = new String[0];
-    } else {
-      current = String.join(" ", Arrays.copyOfRange(args, 0, length));
-      remaining = Arrays.copyOfRange(args, length, args.length);
-    }
-
+    String current = String.join(" ", args);
     List<String> list = suggestions.stream()
-      .flatMap(string -> {
-        if (string.toLowerCase(Locale.ROOT).startsWith(current.toLowerCase(Locale.ROOT))) {
-          String suggestRemaining = string.substring(current.length());
-          return Stream.of(suggestRemaining);
-        } else {
-          return Stream.empty();
-        }
+      .filter(string -> string.length() > current.length())
+      .filter(string -> string.toLowerCase(Locale.ROOT).startsWith(current.toLowerCase(Locale.ROOT)))
+      .map(string -> {
+        String[] split = string.split(" ");
+        return split[args.length - 1];
       })
       .collect(Collectors.toList());
 
-    return Pair.of(Optional.of(list), remaining);
+    return Pair.of(Optional.of(list), new String[0]);
   }
 
   @Override
