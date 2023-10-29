@@ -34,6 +34,8 @@ public abstract class SingleArgumentProcessor<T> implements ArgumentProcessor {
 
   protected abstract String getArgumentValue(T object);
 
+  protected abstract String getValue(String query, UUID uuid, T object);
+
   protected Optional<T> getObject(UUID uuid) {
     return Optional.ofNullable(map.get(uuid));
   }
@@ -63,6 +65,21 @@ public abstract class SingleArgumentProcessor<T> implements ArgumentProcessor {
 
     map.put(uuid, object.get());
     return Optional.of(Arrays.copyOfRange(args, 1, args.length));
+  }
+
+  @Override
+  public String getValue(String query, UUID uuid) {
+    Optional<T> object = getObject(uuid);
+    if (!object.isPresent()) {
+      return "";
+    }
+
+    T obj = object.get();
+    if (query.isEmpty()) {
+      return getArgumentValue(obj);
+    } else {
+      return getValue(query, uuid, obj);
+    }
   }
 
   @Override

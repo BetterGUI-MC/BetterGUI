@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.argument.type;
 
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -19,11 +20,6 @@ public class PlayerArgumentProcessor extends SingleArgumentProcessor<OfflinePlay
       .map(String::valueOf)
       .map(Boolean::parseBoolean)
       .orElse(false);
-  }
-
-  @Override
-  public String getValue(String query, UUID uuid) {
-    return getObject(uuid).map(this::getArgumentValue).orElse("");
   }
 
   @Override
@@ -48,5 +44,15 @@ public class PlayerArgumentProcessor extends SingleArgumentProcessor<OfflinePlay
   @Override
   protected String getArgumentValue(OfflinePlayer object) {
     return Optional.ofNullable(object.getName()).orElse("");
+  }
+
+  @Override
+  protected String getValue(String query, UUID uuid, OfflinePlayer object) {
+    if (query.startsWith("papi_")) {
+      String papiQuery = query.substring("papi_".length());
+      return StringReplacerApplier.replace("%" + papiQuery + "%", object.getUniqueId(), this);
+    } else {
+      return StringReplacerApplier.replace("{" + query + "}", object.getUniqueId(), this);
+    }
   }
 }
