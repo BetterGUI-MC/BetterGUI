@@ -35,7 +35,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
       .map(BigDecimal::intValue)
-      .orElse(0);
+      .orElse(1);
 
     this.defaultValue = Optional.ofNullable(options.get("default"))
       .map(Objects::toString)
