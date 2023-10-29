@@ -84,16 +84,22 @@ public abstract class SingleArgumentProcessor<T> implements ArgumentProcessor {
 
   @Override
   public Pair<Optional<List<String>>, String[]> tabComplete(UUID uuid, String[] args) {
+    if (args.length == 0) {
+      return Pair.of(Optional.empty(), args);
+    }
+
+    List<String> list;
     if (args.length == 1) {
       String query = args[0];
-      List<String> suggestions = getObjectStream()
+      list = getObjectStream()
         .map(this::getArgumentValue)
         .filter(s -> s.toLowerCase(Locale.ROOT).startsWith(query.toLowerCase(Locale.ROOT)))
         .collect(Collectors.toList());
-      return Pair.of(Optional.of(suggestions), Arrays.copyOfRange(args, 1, args.length));
+    } else {
+      list = Collections.emptyList();
     }
 
-    return Pair.of(Optional.empty(), args);
+    return Pair.of(Optional.of(list), Arrays.copyOfRange(args, 1, args.length));
   }
 
   @Override
