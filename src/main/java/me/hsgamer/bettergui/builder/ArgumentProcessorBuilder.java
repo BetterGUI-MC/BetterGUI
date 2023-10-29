@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.argument.type.StoreArgumentProcessor;
 import me.hsgamer.hscore.builder.MassBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
@@ -20,7 +21,7 @@ public final class ArgumentProcessorBuilder extends MassBuilder<ArgumentProcesso
   public static final ArgumentProcessorBuilder INSTANCE = new ArgumentProcessorBuilder();
 
   private ArgumentProcessorBuilder() {
-
+    register(StoreArgumentProcessor::new, "store");
   }
 
   /**

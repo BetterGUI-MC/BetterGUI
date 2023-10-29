@@ -50,11 +50,6 @@ public interface MessageConfig {
     return "&cThe player is not found. Maybe he is offline or didn't join your server";
   }
 
-  @ConfigPath("empty-arg-value")
-  default String getEmptyArgValue() {
-    return "/empty/";
-  }
-
   @ConfigPath("have-met-requirement-placeholder")
   default String getHaveMetRequirementPlaceholder() {
     return "Yes";
