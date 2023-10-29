@@ -91,20 +91,6 @@ public class ArgumentHandler implements ArgumentProcessor {
   }
 
   @Override
-  public void onClear(UUID uuid) {
-    for (ArgumentProcessor processor : processorMap.values()) {
-      processor.onClear(uuid);
-    }
-  }
-
-  @Override
-  public void onClearAll() {
-    for (ArgumentProcessor processor : processorMap.values()) {
-      processor.onClearAll();
-    }
-  }
-
-  @Override
   public Menu getMenu() {
     return menu;
   }

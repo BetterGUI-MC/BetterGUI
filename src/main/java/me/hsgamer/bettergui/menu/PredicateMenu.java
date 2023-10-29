@@ -101,7 +101,6 @@ public class PredicateMenu extends StandardMenu {
         break;
       }
     }
-    argumentHandler.onClear(uuid);
     return isSuccessful;
   }
 
@@ -122,7 +121,7 @@ public class PredicateMenu extends StandardMenu {
 
   @Override
   public void closeAll() {
-    argumentHandler.onClearAll();
+    // EMPTY
   }
 
   private static final class MenuProcess {

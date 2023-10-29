@@ -64,7 +64,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMen
 
       @Override
       protected void onRemoveDisplay(@NotNull BukkitGUIDisplay display) {
-        argumentHandler.onClear(display.getUniqueId());
         Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(Task::cancel);
         super.onRemoveDisplay(display);
       }
@@ -276,7 +275,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMen
   @Override
   public void closeAll() {
     guiHolder.stop();
-    argumentHandler.onClearAll();
   }
 
   protected abstract B createButtonMap();

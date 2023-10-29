@@ -20,8 +20,6 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
   private final ArgumentProcessorBuilder.Input input;
   private final Map<UUID, String> map = new HashMap<>();
   private final int length;
-  private final String defaultValue;
-  private final boolean clearOnClose;
   private final boolean takeRemaining;
   private final ActionApplier actionApplier;
   private final List<String> suggestions;
@@ -36,15 +34,6 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
       .flatMap(Validate::getNumber)
       .map(BigDecimal::intValue)
       .orElse(1);
-
-    this.defaultValue = Optional.ofNullable(options.get("default"))
-      .map(Objects::toString)
-      .orElse("");
-
-    this.clearOnClose = Optional.ofNullable(options.get("clear-on-close"))
-      .map(String::valueOf)
-      .map(Boolean::parseBoolean)
-      .orElse(false);
 
     this.takeRemaining = Optional.ofNullable(options.get("take-remaining"))
       .map(String::valueOf)
@@ -88,7 +77,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
 
   @Override
   public String getValue(String query, UUID uuid) {
-    return map.getOrDefault(uuid, defaultValue);
+    return map.getOrDefault(uuid, "");
   }
 
   @Override
@@ -112,18 +101,6 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
       .collect(Collectors.toList());
 
     return Pair.of(Optional.of(list), new String[0]);
-  }
-
-  @Override
-  public void onClear(UUID uuid) {
-    if (clearOnClose) {
-      map.remove(uuid);
-    }
-  }
-
-  @Override
-  public void onClearAll() {
-    map.clear();
   }
 
   @Override

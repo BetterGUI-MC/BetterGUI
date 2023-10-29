@@ -42,20 +42,4 @@ public interface ArgumentProcessor extends MenuElement {
   default Pair<Optional<List<String>>, String[]> tabComplete(UUID uuid, String[] args) {
     return Pair.of(Optional.empty(), args);
   }
-
-  /**
-   * Called when the display of the menu is removed
-   *
-   * @param uuid the UUID of the player
-   */
-  default void onClear(UUID uuid) {
-    // EMPTY
-  }
-
-  /**
-   * Called when the menu is cleared
-   */
-  default void onClearAll() {
-    // EMPTY
-  }
 }
