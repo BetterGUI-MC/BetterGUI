@@ -40,9 +40,7 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
       .map(Boolean::parseBoolean)
       .orElse(false);
 
-    this.actionApplier = Optional.ofNullable(options.get("action"))
-      .map(o -> new ActionApplier(input.menu, o))
-      .orElseGet(() -> new ActionApplier(Collections.emptyList()));
+    this.actionApplier = new ActionApplier(input.menu, MapUtils.getIfFoundOrDefault(options, Collections.emptyList(), "required-command", "required-action", "action", "command"));
 
     this.suggestions = Optional.ofNullable(MapUtils.getIfFound(options, "suggestion", "suggest"))
       .map(CollectionUtils::createStringListFromObject)
