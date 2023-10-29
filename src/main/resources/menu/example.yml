@@ -319,7 +319,7 @@ skull:
   id:
     - player_head
     - skull_item:3
-  skull: "e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTA2YmIzYjRhZDdjMjk1NjQzYjRhZGFkMzQ3MGRjMzA5NjJlZWY5NjEzMWI3M2MxNzMzZDIwOTFmODAyZGYxMiJ9fX0="
+  skull: "http://textures.minecraft.net/texture/906bb3b4ad7c295643b4adad3470dc30962eef96131b73c1733d2091f802df12"
   #skull: "HSGamer"
   #skull: "7acc67dc-8b84-4f8d-b7ad-ec81e758f5a1"
 
