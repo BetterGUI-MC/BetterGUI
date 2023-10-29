@@ -5,7 +5,6 @@ import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
-import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.builder.InventoryBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
@@ -52,7 +51,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMen
 
   protected BaseInventoryMenu(Config config) {
     super(config);
-    argumentHandler = new ArgumentHandler(this);
     guiHolder = new BukkitGUIHolder(getInstance()) {
       @Override
       protected @NotNull BukkitGUIDisplay newDisplay(UUID uuid) {
@@ -190,14 +188,6 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMen
       .flatMap(s -> InventoryBuilder.INSTANCE.build(s, Pair.of(this, menuSettings)))
       .ifPresent(guiHolder::setInventoryFunction);
 
-    Optional.ofNullable(MapUtils.getIfFound(menuSettings, "argument-processor", "arg-processor"))
-      .map(o -> CollectionUtils.createStringListFromObject(o, true))
-      .ifPresent(list -> {
-        for (String s : list) {
-          ArgumentProcessorBuilder.INSTANCE.build(s, this).ifPresent(argumentHandler::addProcessor);
-        }
-      });
-
     long clickDelay = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "click-delay"))
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
@@ -219,6 +209,11 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMen
         }
       });
     }
+
+    argumentHandler = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "argument-processor", "arg-processor", "argument", "arg"))
+      .flatMap(MapUtils::castOptionalStringObjectMap)
+      .map(m -> new ArgumentHandler(this, m))
+      .orElseGet(() -> new ArgumentHandler(this, Collections.emptyMap()));
 
     buttonMap = createButtonMap();
     guiHolder.setButtonMap(buttonMap);
@@ -281,7 +276,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMen
   @Override
   public void closeAll() {
     guiHolder.stop();
-    argumentHandler.clearProcessors();
+    argumentHandler.onClearAll();
   }
 
   protected abstract B createButtonMap();

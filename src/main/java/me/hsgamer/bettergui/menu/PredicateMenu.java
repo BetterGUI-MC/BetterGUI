@@ -4,7 +4,6 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
-import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
@@ -30,7 +29,6 @@ public class PredicateMenu extends StandardMenu {
 
   public PredicateMenu(Config config) {
     super(config);
-    argumentHandler = new ArgumentHandler(this);
 
     permissions = Optional.ofNullable(menuSettings.get("permission"))
       .map(o -> CollectionUtils.createStringListFromObject(o, true))
@@ -49,13 +47,10 @@ public class PredicateMenu extends StandardMenu {
         }
       });
 
-    Optional.ofNullable(MapUtils.getIfFound(menuSettings, "argument-processor", "arg-processor"))
-      .map(o -> CollectionUtils.createStringListFromObject(o, true))
-      .ifPresent(list -> {
-        for (String s : list) {
-          ArgumentProcessorBuilder.INSTANCE.build(s, this).ifPresent(argumentHandler::addProcessor);
-        }
-      });
+    argumentHandler = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "argument-processor", "arg-processor", "argument", "arg"))
+      .flatMap(MapUtils::castOptionalStringObjectMap)
+      .map(m -> new ArgumentHandler(this, m))
+      .orElseGet(() -> new ArgumentHandler(this, Collections.emptyMap()));
 
     menuPredicateList = new ArrayList<>();
     configSettings.forEach((key, value) -> {
@@ -127,7 +122,7 @@ public class PredicateMenu extends StandardMenu {
 
   @Override
   public void closeAll() {
-    argumentHandler.clearProcessors();
+    argumentHandler.onClearAll();
   }
 
   private static final class MenuProcess {

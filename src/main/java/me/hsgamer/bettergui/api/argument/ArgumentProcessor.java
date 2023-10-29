@@ -22,6 +22,16 @@ public interface ArgumentProcessor extends MenuElement {
   Optional<String[]> process(UUID uuid, String[] args);
 
   /**
+   * Get the value
+   *
+   * @param query the query
+   * @param uuid  the UUID of the player
+   *
+   * @return the value
+   */
+  String getValue(String query, UUID uuid);
+
+  /**
    * Get the tab complete for the arguments
    *
    * @param uuid the UUID of the player
