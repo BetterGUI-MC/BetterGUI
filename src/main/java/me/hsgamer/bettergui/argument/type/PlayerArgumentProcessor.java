@@ -49,11 +49,6 @@ public class PlayerArgumentProcessor extends SingleArgumentProcessor<OfflinePlay
 
   @Override
   protected String getValue(String query, UUID uuid, OfflinePlayer object) {
-    if (query.startsWith("papi_")) {
-      String papiQuery = query.substring("papi_".length());
-      return StringReplacerApplier.replace("%" + papiQuery + "%", object.getUniqueId(), this);
-    } else {
-      return StringReplacerApplier.replace("{" + query + "}", object.getUniqueId(), this);
-    }
+    return StringReplacerApplier.replace(StringReplacerApplier.normalizeQuery(query), object.getUniqueId(), this);
   }
 }

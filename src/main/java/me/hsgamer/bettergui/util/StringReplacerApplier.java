@@ -131,4 +131,19 @@ public final class StringReplacerApplier {
   public static String replace(String string, UUID uuid, MenuElement menuElement) {
     return replace(string, uuid, menuElement.getMenu());
   }
+
+  /**
+   * Normalize the query to a variable
+   *
+   * @param query the query
+   *
+   * @return the normalized variable
+   */
+  public static String normalizeQuery(String query) {
+    if (query.startsWith("papi_")) {
+      return "%" + query.substring("papi_".length()) + "%";
+    } else {
+      return "{" + query + "}";
+    }
+  }
 }

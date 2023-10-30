@@ -11,6 +11,7 @@ import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.papi.ExtraPlaceholderExpansion;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIListener;
@@ -94,7 +95,7 @@ public final class BetterGUI extends BasePlugin {
       if (menu == null) {
         return null;
       }
-      return menu.getVariableManager().setVariables("{" + variable + "}", uuid);
+      return menu.getVariableManager().setVariables(StringReplacerApplier.normalizeQuery(variable), uuid);
     }));
   }
 

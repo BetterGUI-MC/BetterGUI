@@ -69,6 +69,6 @@ public class ExtraPlaceholderExpansion extends PlaceholderExpansion {
 
   @Override
   public String onRequest(OfflinePlayer player, @NotNull String identifier) {
-    return StringReplacerApplier.replace("{" + identifier + "}", player.getUniqueId(), true);
+    return StringReplacerApplier.replace(StringReplacerApplier.normalizeQuery(identifier), player.getUniqueId(), true);
   }
 }
