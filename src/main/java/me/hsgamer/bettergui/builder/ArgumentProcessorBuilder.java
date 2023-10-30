@@ -2,6 +2,8 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.argument.type.DecimalArgumentProcessor;
+import me.hsgamer.bettergui.argument.type.NumberArgumentProcessor;
 import me.hsgamer.bettergui.argument.type.PlayerArgumentProcessor;
 import me.hsgamer.bettergui.argument.type.StoreArgumentProcessor;
 import me.hsgamer.hscore.builder.MassBuilder;
@@ -24,6 +26,8 @@ public final class ArgumentProcessorBuilder extends MassBuilder<ArgumentProcesso
   private ArgumentProcessorBuilder() {
     register(StoreArgumentProcessor::new, "store");
     register(PlayerArgumentProcessor::new, "player");
+    register(NumberArgumentProcessor::new, "number", "int", "integer", "long");
+    register(DecimalArgumentProcessor::new, "decimal", "float", "double");
   }
 
   /**
