@@ -18,6 +18,7 @@ public abstract class SingleArgumentProcessor<T> implements ArgumentProcessor {
   protected final Map<String, Object> options;
   private final ArgumentProcessorBuilder.Input input;
   private final Map<UUID, T> map = new HashMap<>();
+  private final Map<UUID, String> rawMap = new HashMap<>();
   private final ActionApplier onRequiredActionApplier;
   private final ActionApplier onInvalidActionApplier;
 
@@ -52,7 +53,10 @@ public abstract class SingleArgumentProcessor<T> implements ArgumentProcessor {
       return Optional.empty();
     }
 
-    Optional<T> object = getObject(args[0]);
+    String raw = args[0];
+    rawMap.put(uuid, raw);
+
+    Optional<T> object = getObject(raw);
     if (!object.isPresent()) {
       BetterGUI.runBatchRunnable(batchRunnable ->
         batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
@@ -69,6 +73,10 @@ public abstract class SingleArgumentProcessor<T> implements ArgumentProcessor {
 
   @Override
   public String getValue(String query, UUID uuid) {
+    if (query.equalsIgnoreCase("raw")) {
+      return rawMap.getOrDefault(uuid, "");
+    }
+
     Optional<T> object = getObject(uuid);
     if (!object.isPresent()) {
       return "";
