@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.argument.type;
 
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.hscore.common.MapUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -16,7 +17,7 @@ public class PlayerArgumentProcessor extends SingleArgumentProcessor<OfflinePlay
   public PlayerArgumentProcessor(ArgumentProcessorBuilder.Input input) {
     super(input);
 
-    this.onlineOnly = Optional.ofNullable(options.get("online-only"))
+    this.onlineOnly = Optional.ofNullable(MapUtils.getIfFound(options, "online-only", "online"))
       .map(String::valueOf)
       .map(Boolean::parseBoolean)
       .orElse(false);
