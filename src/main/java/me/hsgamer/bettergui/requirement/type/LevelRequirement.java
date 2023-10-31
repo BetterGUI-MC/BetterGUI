@@ -50,7 +50,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
       return Result.fail();
     }
     return successConditional(uuid1 -> {
-      Player player1 = Bukkit.getPlayer(uuid);
+      Player player1 = Bukkit.getPlayer(uuid1);
       if (player1 == null) {
         return;
       }

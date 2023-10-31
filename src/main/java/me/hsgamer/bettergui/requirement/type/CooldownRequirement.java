@@ -61,7 +61,7 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
     if (getCooldown(uuid) <= 0) {
       return Result.success(uuid1 -> {
         if (!value.isNegative() && !value.isZero()) {
-          cooldownMap.put(uuid, Instant.now().plus(value));
+          cooldownMap.put(uuid1, Instant.now().plus(value));
         }
       });
     } else {
