@@ -7,7 +7,6 @@ import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
@@ -31,7 +30,7 @@ public class MenuCommandManager {
    * @param menu    the menu
    */
   public void registerMenuCommand(String command, Menu menu) {
-    registerMenuCommand(new BukkitCommand(command) {
+    registerMenuCommand(new Command(command) {
       @Override
       public boolean execute(CommandSender commandSender, String s, String[] strings) {
         if (commandSender instanceof Player) {
