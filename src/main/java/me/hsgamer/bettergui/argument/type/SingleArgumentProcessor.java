@@ -1,13 +1,8 @@
 package me.hsgamer.bettergui.argument.type;
 
-import me.hsgamer.bettergui.action.ActionApplier;
-import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
-import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
-import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.task.BatchRunnable;
 
@@ -15,19 +10,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class SingleArgumentProcessor<T> implements ArgumentProcessor {
-  protected final Map<String, Object> options;
-  private final ArgumentProcessorBuilder.Input input;
+public abstract class SingleArgumentProcessor<T> extends BaseActionArgumentProcessor {
   private final Map<UUID, T> map = new HashMap<>();
   private final Map<UUID, String> rawMap = new HashMap<>();
-  private final ActionApplier onRequiredActionApplier;
-  private final ActionApplier onInvalidActionApplier;
 
   public SingleArgumentProcessor(ArgumentProcessorBuilder.Input input) {
-    this.input = input;
-    options = new CaseInsensitiveStringMap<>(input.options);
-    this.onRequiredActionApplier = new ActionApplier(input.menu, MapUtils.getIfFoundOrDefault(options, Collections.emptyList(), "required-command", "required-action", "action", "command"));
-    this.onInvalidActionApplier = new ActionApplier(input.menu, MapUtils.getIfFoundOrDefault(options, Collections.emptyList(), "invalid-command", "invalid-action"));
+    super(input);
   }
 
   protected abstract Optional<T> getObject(String name);
@@ -104,10 +92,5 @@ public abstract class SingleArgumentProcessor<T> implements ArgumentProcessor {
     }
 
     return Pair.of(optionalList, Arrays.copyOfRange(args, 1, args.length));
-  }
-
-  @Override
-  public Menu getMenu() {
-    return input.menu;
   }
 }
