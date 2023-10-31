@@ -29,7 +29,7 @@ public class StoreArgumentProcessor extends BaseActionArgumentProcessor {
       .map(BigDecimal::intValue)
       .orElse(1);
 
-    this.takeRemaining = Optional.ofNullable(options.get("take-remaining"))
+    this.takeRemaining = Optional.ofNullable(MapUtils.getIfFound(options, "take-remaining", "take-remain", "remaining", "remain"))
       .map(String::valueOf)
       .map(Boolean::parseBoolean)
       .orElse(false);
