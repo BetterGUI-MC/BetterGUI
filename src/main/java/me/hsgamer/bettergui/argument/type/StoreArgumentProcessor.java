@@ -69,6 +69,9 @@ public class StoreArgumentProcessor extends BaseActionArgumentProcessor {
     }
 
     if (checkSuggestion && !suggestions.isEmpty() && !suggestions.contains(current)) {
+      BatchRunnable batchRunnable = new BatchRunnable();
+      batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> onInvalidActionApplier.accept(uuid, process));
+      Scheduler.current().async().runTask(batchRunnable);
       return Optional.empty();
     }
 
