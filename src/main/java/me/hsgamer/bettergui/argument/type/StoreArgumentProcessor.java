@@ -23,7 +23,7 @@ public class StoreArgumentProcessor extends BaseActionArgumentProcessor {
   public StoreArgumentProcessor(ArgumentProcessorBuilder.Input input) {
     super(input);
 
-    this.length = Optional.ofNullable(options.get("length"))
+    this.length = Optional.ofNullable(MapUtils.getIfFound(options, "length", "size"))
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
       .map(BigDecimal::intValue)
