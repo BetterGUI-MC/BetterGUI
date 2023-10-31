@@ -15,7 +15,6 @@ import java.util.*;
 public class TemplateConfig {
   private final File templateFolder;
   private final Map<String, Map<String, Object>> templateMap = new HashMap<>();
-  private boolean includeMenuInTemplate = false;
 
   public TemplateConfig(File templateFolder) {
     this.templateFolder = templateFolder;
@@ -56,15 +55,6 @@ public class TemplateConfig {
   }
 
   /**
-   * Should the menu name be included in the template name?
-   *
-   * @param includeMenuInTemplate true if the menu name should be included
-   */
-  public void setIncludeMenuInTemplate(boolean includeMenuInTemplate) {
-    this.includeMenuInTemplate = includeMenuInTemplate;
-  }
-
-  /**
    * Set up the list
    */
   public void setup() {
@@ -84,7 +74,7 @@ public class TemplateConfig {
         for (PathString pathString : config.getKeys(false)) {
           Map<String, Object> values = PathString.toPathMap(config.getNormalizedValues(pathString, false));
           String key = pathString.getLastPath();
-          if (includeMenuInTemplate) {
+          if (BetterGUI.getInstance().getMainConfig().isIncludeMenuInTemplate()) {
             key = BetterGUI.getInstance().getMainConfig().getFileName(templateFolder, file) + "/" + key;
           }
           templateMap.put(key, values);
