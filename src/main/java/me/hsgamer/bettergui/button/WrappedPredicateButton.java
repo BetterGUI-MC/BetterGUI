@@ -10,10 +10,12 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.minecraft.gui.button.Button;
 import me.hsgamer.hscore.minecraft.gui.button.impl.PredicateButton;
+import me.hsgamer.hscore.task.BatchRunnable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -46,10 +48,12 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
           if (result.isSuccess) {
             checked.add(uuid);
           }
-          BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+          BatchRunnable batchRunnable = new BatchRunnable();
+          batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
             result.applier.accept(uuid, process);
             process.next();
-          }));
+          });
+          Scheduler.current().async().runTask(batchRunnable);
           return result.isSuccess;
         });
       });
@@ -63,10 +67,12 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
           RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), BetterGUI.getInstance().getMainConfig().isModernClickType()));
           return CompletableFuture.supplyAsync(() -> clickRequirement.getResult(clickEvent.getViewerID()))
             .thenApply(result -> {
-              BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+              BatchRunnable batchRunnable = new BatchRunnable();
+              batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
                 result.applier.accept(clickEvent.getViewerID(), process);
                 process.next();
-              }));
+              });
+              Scheduler.current().async().runTask(batchRunnable);
               return result.isSuccess;
             });
         });

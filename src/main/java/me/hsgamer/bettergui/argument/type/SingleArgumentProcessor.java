@@ -1,14 +1,15 @@
 package me.hsgamer.bettergui.argument.type;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
+import me.hsgamer.hscore.task.BatchRunnable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,12 +45,9 @@ public abstract class SingleArgumentProcessor<T> implements ArgumentProcessor {
   @Override
   public Optional<String[]> process(UUID uuid, String[] args) {
     if (args.length == 0) {
-      BetterGUI.runBatchRunnable(batchRunnable ->
-        batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
-          .addLast(process ->
-            onRequiredActionApplier.accept(uuid, process)
-          )
-      );
+      BatchRunnable batchRunnable = new BatchRunnable();
+      batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> onRequiredActionApplier.accept(uuid, process));
+      Scheduler.current().async().runTask(batchRunnable);
       return Optional.empty();
     }
 
@@ -58,12 +56,9 @@ public abstract class SingleArgumentProcessor<T> implements ArgumentProcessor {
 
     Optional<T> object = getObject(raw);
     if (!object.isPresent()) {
-      BetterGUI.runBatchRunnable(batchRunnable ->
-        batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
-          .addLast(process ->
-            onInvalidActionApplier.accept(uuid, process)
-          )
-      );
+      BatchRunnable batchRunnable = new BatchRunnable();
+      batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> onInvalidActionApplier.accept(uuid, process));
+      Scheduler.current().async().runTask(batchRunnable);
       return Optional.empty();
     }
 

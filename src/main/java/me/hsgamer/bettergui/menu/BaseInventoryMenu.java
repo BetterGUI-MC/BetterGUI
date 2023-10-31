@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.menu;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
@@ -24,6 +23,7 @@ import me.hsgamer.hscore.minecraft.gui.button.ButtonMap;
 import me.hsgamer.hscore.minecraft.gui.event.ClickEvent;
 import me.hsgamer.hscore.minecraft.gui.event.CloseEvent;
 import me.hsgamer.hscore.minecraft.gui.event.OpenEvent;
+import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -74,24 +74,18 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMen
       .map(o -> new ActionApplier(this, o))
       .ifPresent(actionApplier -> postInitActions.add(holder -> holder.addEventConsumer(OpenEvent.class, openEvent -> {
         UUID uuid = openEvent.getViewerID();
-        BetterGUI.runBatchRunnable(batchRunnable ->
-          batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
-            .addLast(process ->
-              actionApplier.accept(uuid, process)
-            )
-        );
+        BatchRunnable batchRunnable = new BatchRunnable();
+        batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> actionApplier.accept(uuid, process));
+        Scheduler.current().async().runTask(batchRunnable);
       })));
 
     Optional.ofNullable(menuSettings.get("close-action"))
       .map(o -> new ActionApplier(this, o))
       .ifPresent(actionApplier -> postInitActions.add(holder -> holder.addEventConsumer(CloseEvent.class, openEvent -> {
         UUID uuid = openEvent.getViewerID();
-        BetterGUI.runBatchRunnable(batchRunnable ->
-          batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
-            .addLast(process ->
-              actionApplier.accept(uuid, process)
-            )
-        );
+        BatchRunnable batchRunnable = new BatchRunnable();
+        batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> actionApplier.accept(uuid, process));
+        Scheduler.current().async().runTask(batchRunnable);
       })));
 
     Optional.ofNullable(MapUtils.getIfFound(menuSettings, "inventory-type", "inventory")).ifPresent(o -> {
@@ -144,10 +138,13 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMen
             return;
           }
           Requirement.Result result = closeRequirementApplier.getResult(uuid);
-          BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+
+          BatchRunnable batchRunnable = new BatchRunnable();
+          batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
             result.applier.accept(uuid, process);
             process.next();
-          }));
+          });
+          Scheduler.current().async().runTask(batchRunnable);
 
           if (!result.isSuccess) {
             closeEvent.setRemoveDisplay(false);
@@ -242,10 +239,14 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends StandardMen
     // Check Requirement
     if (!bypass) {
       Requirement.Result result = viewRequirementApplier.getResult(uuid);
-      BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+
+      BatchRunnable batchRunnable = new BatchRunnable();
+      batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
         result.applier.accept(uuid, process);
         process.next();
-      }));
+      });
+      Scheduler.current().async().runTask(batchRunnable);
+
       if (!result.isSuccess) {
         return false;
       }

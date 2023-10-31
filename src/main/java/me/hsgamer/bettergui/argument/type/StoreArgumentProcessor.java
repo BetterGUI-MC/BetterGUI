@@ -1,16 +1,17 @@
 package me.hsgamer.bettergui.argument.type;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.Validate;
+import me.hsgamer.hscore.task.BatchRunnable;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -54,12 +55,9 @@ public class StoreArgumentProcessor implements ArgumentProcessor {
     }
 
     if (length > 0 && args.length < length) {
-      BetterGUI.runBatchRunnable(batchRunnable ->
-        batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE)
-          .addLast(process ->
-            actionApplier.accept(uuid, process)
-          )
-      );
+      BatchRunnable batchRunnable = new BatchRunnable();
+      batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> actionApplier.accept(uuid, process));
+      Scheduler.current().async().runTask(batchRunnable);
       return Optional.empty();
     }
 

@@ -7,6 +7,7 @@ import me.hsgamer.bettergui.argument.ArgumentHandler;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.bukkit.utils.PermissionUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
@@ -14,6 +15,7 @@ import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.config.PathString;
+import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
@@ -89,10 +91,14 @@ public class PredicateMenu extends StandardMenu {
     boolean isSuccessful = false;
     for (Pair<RequirementApplier, MenuProcess> pair : menuPredicateList) {
       Requirement.Result result = pair.getKey().getResult(uuid);
-      BetterGUI.runBatchRunnable(batchRunnable -> batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+
+      BatchRunnable batchRunnable = new BatchRunnable();
+      batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
         result.applier.accept(uuid, process);
         process.next();
-      }));
+      });
+      Scheduler.current().async().runTask(batchRunnable);
+
       if (result.isSuccess) {
         MenuProcess menuProcess = pair.getValue();
         String[] finalArgs = StringReplacerApplier.replace(menuProcess.args, uuid, this).split("\\s+");
