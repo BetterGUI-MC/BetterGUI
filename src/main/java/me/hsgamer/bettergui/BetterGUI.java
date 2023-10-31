@@ -18,6 +18,7 @@ import me.hsgamer.hscore.bukkit.gui.BukkitGUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.bukkit.variable.BukkitVariableBundle;
 import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
+import me.hsgamer.hscore.common.CachedValue;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.proxy.ConfigGenerator;
 import me.hsgamer.hscore.variable.VariableBundle;
@@ -25,6 +26,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.DrilldownPie;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +37,7 @@ import java.util.Map;
  * The main class of the plugin
  */
 public final class BetterGUI extends BasePlugin {
-  private static BetterGUI instance;
+  private static final CachedValue<BetterGUI> INSTANCE_CACHE = CachedValue.of(() -> JavaPlugin.getPlugin(BetterGUI.class));
   private final MainConfig mainConfig = ConfigGenerator.newInstance(MainConfig.class, new BukkitConfig(this, "config.yml"));
   private final MessageConfig messageConfig = ConfigGenerator.newInstance(MessageConfig.class, new BukkitConfig(this, "messages.yml"));
   private final TemplateConfig templateButtonConfig = new TemplateConfig(this);
@@ -51,12 +53,7 @@ public final class BetterGUI extends BasePlugin {
    * @return the instance
    */
   public static BetterGUI getInstance() {
-    return instance;
-  }
-
-  @Override
-  public void preLoad() {
-    instance = this;
+    return INSTANCE_CACHE.get();
   }
 
   @Override
@@ -147,6 +144,7 @@ public final class BetterGUI extends BasePlugin {
     MenuBuilder.INSTANCE.clear();
     RequirementBuilder.INSTANCE.clear();
     variableBundle.unregisterAll();
+    INSTANCE_CACHE.clearCache();
   }
 
   @Override
