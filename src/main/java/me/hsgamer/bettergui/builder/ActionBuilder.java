@@ -6,7 +6,7 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.hscore.builder.MassBuilder;
 import me.hsgamer.hscore.common.CollectionUtils;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -115,19 +115,39 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
     }
 
     /**
-     * Get the option as a list
+     * Get the option as a stream
      *
      * @param separator the separator
      *
      * @return the list
      */
+    public Stream<String> getOptionStream(String separator) {
+      return option.isEmpty() ? Stream.empty() : Arrays.stream(option.split(separator)).map(String::trim);
+    }
+
+    /**
+     * Get the option as a stream.
+     * The format is {@code value,value}
+     *
+     * @return the list
+     *
+     * @see #getOptionStream(String)
+     */
+    public Stream<String> getOptionStream() {
+      return getOptionStream(",");
+    }
+
+    /**
+     * Get the option as a list
+     *
+     * @param separator the separator
+     *
+     * @return the list
+     *
+     * @see #getOptionStream(String)
+     */
     public List<String> getOptionAsList(String separator) {
-      if (option.isEmpty()) {
-        return Collections.emptyList();
-      }
-      return Stream.of(option.split(separator))
-        .map(String::trim)
-        .collect(Collectors.toList());
+      return getOptionStream(separator).collect(Collectors.toList());
     }
 
     /**
@@ -135,9 +155,11 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
      * The format is {@code value,value}
      *
      * @return the list
+     *
+     * @see #getOptionStream()
      */
     public List<String> getOptionAsList() {
-      return getOptionAsList(",");
+      return getOptionStream().collect(Collectors.toList());
     }
 
     /**
@@ -147,7 +169,7 @@ public final class ActionBuilder extends MassBuilder<ActionBuilder.Input, Action
      * @return the map
      */
     public Map<String, String> getOptionAsMap() {
-      return getOptionAsList().stream()
+      return getOptionStream()
         .map(s -> s.split("="))
         .collect(Collectors.toMap(strings -> strings[0].trim(), strings -> strings.length > 1 ? strings[1].trim() : ""));
     }

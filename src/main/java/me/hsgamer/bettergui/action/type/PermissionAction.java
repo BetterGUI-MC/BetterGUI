@@ -15,7 +15,7 @@ public class PermissionAction extends CommandAction {
 
   @Override
   protected void accept(Player player, String command) {
-    List<PermissionAttachment> attachments = input.getOptionAsList().stream()
+    List<PermissionAttachment> attachments = input.getOptionStream()
       .filter(s -> !player.hasPermission(s))
       .map(s -> player.addAttachment(BetterGUI.getInstance(), s, true))
       .collect(Collectors.toList());
