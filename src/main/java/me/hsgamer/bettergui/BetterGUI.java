@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui;
 
+import me.hsgamer.bettergui.api.addon.PostEnable;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.*;
 import me.hsgamer.bettergui.command.*;
@@ -99,6 +100,7 @@ public final class BetterGUI extends BasePlugin {
     addonDownloader.setup();
     templateButtonConfig.setup();
     menuManager.loadMenuConfig();
+    addonManager.call(PostEnable.class, PostEnable::onPostEnable);
 
     Metrics metrics = new Metrics(this, 6609);
     metrics.addCustomChart(new DrilldownPie("addon", () -> {
