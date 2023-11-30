@@ -19,7 +19,7 @@ jobs:
         run: echo "${{ steps.changelog.outputs.changelog }}" > CHANGELOG.md
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 11
