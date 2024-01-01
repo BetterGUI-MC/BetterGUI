@@ -58,7 +58,7 @@ public final class OpenCommand extends BukkitCommand {
         return false;
       }
     }
-    plugin.getMenuManager().openMenu(menuName, player, args, true);
+    plugin.getMenuManager().openMenu(menuName, player, args, player.hasPermission(Permissions.OPEN_MENU_BYPASS));
     return true;
   }
 

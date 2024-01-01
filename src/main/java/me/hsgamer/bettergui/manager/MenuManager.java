@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.manager;
 
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
@@ -90,7 +89,7 @@ public final class MenuManager {
    * @param bypass whether the plugin ignores the permission check
    */
   public void openMenu(String name, Player player, String[] args, boolean bypass) {
-    menuMap.get(name).create(player, args, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
+    menuMap.get(name).create(player, args, bypass);
   }
 
   /**
@@ -105,7 +104,7 @@ public final class MenuManager {
   public void openMenu(String name, Player player, String[] args, Menu parentMenu, boolean bypass) {
     Menu menu = menuMap.get(name);
     menu.setParentMenu(player.getUniqueId(), parentMenu);
-    menu.create(player, args, bypass || player.hasPermission(Permissions.OPEN_MENU_BYPASS));
+    menu.create(player, args, bypass);
   }
 
   /**
