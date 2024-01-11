@@ -8,6 +8,8 @@ import me.hsgamer.hscore.minecraft.gui.button.Button;
 import java.util.Map;
 
 public class TemplateButton extends BaseWrappedButton<Button> {
+  private Map<String, Object> finalOptions;
+
   /**
    * Create a new button
    *
@@ -15,11 +17,17 @@ public class TemplateButton extends BaseWrappedButton<Button> {
    */
   public TemplateButton(ButtonBuilder.Input input) {
     super(input);
+    finalOptions = input.options;
   }
 
   @Override
   protected Button createButton(Map<String, Object> section) {
-    Map<String, Object> finalMap = BetterGUI.getInstance().getTemplateButtonConfig().getValues(section, "type");
-    return ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName(), finalMap)).orElse(null);
+    finalOptions = BetterGUI.getInstance().getTemplateButtonConfig().getValues(section, "type");
+    return ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName(), finalOptions)).orElse(null);
+  }
+
+  @Override
+  public Map<String, Object> getOptions() {
+    return finalOptions;
   }
 }
