@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.*;
+import java.util.logging.Level;
 
 public class AddonManager extends ExpansionManager {
   private final BetterGUI plugin;
@@ -38,6 +39,7 @@ public class AddonManager extends ExpansionManager {
         checkPluginDepends(loader);
       }
     });
+    setExceptionHandler(throwable -> plugin.getLogger().log(Level.SEVERE, "There is an error when handling an addon", throwable));
   }
 
   /**
