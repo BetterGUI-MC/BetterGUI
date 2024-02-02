@@ -1,5 +1,8 @@
 package me.hsgamer.bettergui.util;
 
+import me.hsgamer.hscore.common.Validate;
+
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,10 +72,9 @@ public class SlotUtil {
       }
     }
 
-    try {
-      return Stream.of(Integer.parseInt(input));
-    } catch (Exception ignored) {
-      return Stream.empty();
-    }
+    return Validate.getNumber(input)
+      .map(BigDecimal::intValue)
+      .map(Stream::of)
+      .orElseGet(Stream::empty);
   }
 }
