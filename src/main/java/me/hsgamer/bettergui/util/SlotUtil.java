@@ -1,9 +1,8 @@
 package me.hsgamer.bettergui.util;
 
-import me.hsgamer.hscore.common.Validate;
-
-import java.math.BigDecimal;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -15,6 +14,7 @@ public class SlotUtil {
   private static final String POS_X = "position-x";
   private static final String POS_Y = "position-y";
   private static final String POS_SLOT = "slot";
+  private static final Pattern RANGE_PATTERN = Pattern.compile("([0-9]+)-([0-9]+)");
 
   private SlotUtil() {
     // EMPTY
@@ -58,22 +58,21 @@ public class SlotUtil {
    * @return the stream of slots
    */
   public static Stream<Integer> generateSlots(String input) {
-    if (Validate.isValidInteger(input)) {
-      return Stream.of(Integer.parseInt(input));
-    } else {
-      String[] split = input.split("-", 2);
-      Optional<BigDecimal> optional1 = Validate.getNumber(split[0].trim());
-      Optional<BigDecimal> optional2 = Validate.getNumber(split[1].trim());
-      if (optional1.isPresent() && optional2.isPresent()) {
-        int s1 = optional1.get().intValue();
-        int s2 = optional2.get().intValue();
-        if (s1 <= s2) {
-          return IntStream.rangeClosed(s1, s2).boxed();
-        } else {
-          return IntStream.rangeClosed(s2, s1).boxed().sorted(Collections.reverseOrder());
-        }
+    Matcher matcher = RANGE_PATTERN.matcher(input);
+    if (matcher.matches()) {
+      int s1 = Integer.parseInt(matcher.group(1));
+      int s2 = Integer.parseInt(matcher.group(2));
+      if (s1 <= s2) {
+        return IntStream.rangeClosed(s1, s2).boxed();
+      } else {
+        return IntStream.rangeClosed(s2, s1).boxed().sorted(Collections.reverseOrder());
       }
     }
-    return Stream.empty();
+
+    try {
+      return Stream.of(Integer.parseInt(input));
+    } catch (Exception ignored) {
+      return Stream.empty();
+    }
   }
 }
