@@ -18,7 +18,7 @@ public class OpenMenuAction extends BaseAction {
   private final boolean bypass;
   public OpenMenuAction(ActionBuilder.Input input) {
     super(input);
-    this.bypass = !input.option.isEmpty() && Boolean.parseBoolean(input.option);
+    this.bypass = input.option.equalsIgnoreCase("bypassChecks");
   }
 
   @Override
