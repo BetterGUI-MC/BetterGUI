@@ -22,6 +22,7 @@ import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
 import me.hsgamer.hscore.common.CachedValue;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.proxy.ConfigGenerator;
+import me.hsgamer.hscore.variable.CommonVariableBundle;
 import me.hsgamer.hscore.variable.VariableBundle;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
@@ -61,6 +62,7 @@ public final class BetterGUI extends BasePlugin {
   public void load() {
     MessageUtils.setPrefix(messageConfig::getPrefix);
 
+    CommonVariableBundle.registerVariables(variableBundle);
     BukkitVariableBundle.registerVariables(variableBundle);
     variableBundle.register("menu_", StringReplacer.of((original, uuid) -> {
       String[] split = original.split("_", 2);
