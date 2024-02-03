@@ -15,8 +15,10 @@ import java.util.UUID;
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 public class OpenMenuAction extends BaseAction {
+  private final boolean bypass;
   public OpenMenuAction(ActionBuilder.Input input) {
     super(input);
+    this.bypass = input.option.equalsIgnoreCase("bypassChecks");
   }
 
   @Override
@@ -41,9 +43,9 @@ public class OpenMenuAction extends BaseAction {
       Runnable runnable;
       Menu parentMenu = getMenu();
       if (parentMenu != null) {
-        runnable = () -> getInstance().getMenuManager().openMenu(menu, player, finalArgs, parentMenu, false);
+        runnable = () -> getInstance().getMenuManager().openMenu(menu, player, finalArgs, parentMenu, bypass);
       } else {
-        runnable = () -> getInstance().getMenuManager().openMenu(menu, player, finalArgs, false);
+        runnable = () -> getInstance().getMenuManager().openMenu(menu, player, finalArgs, bypass);
       }
       Scheduler.current().sync().runEntityTaskWithFinalizer(player, runnable, process::next);
     } else {
