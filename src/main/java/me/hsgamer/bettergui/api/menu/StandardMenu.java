@@ -6,6 +6,7 @@ import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.config.PathString;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -56,6 +57,6 @@ public abstract class StandardMenu extends Menu {
       : Collections.emptyMap();
     configSettings = configValues.entrySet().stream()
       .filter(entry -> !entry.getKey().equals(MENU_SETTINGS_PATH))
-      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
   }
 }
