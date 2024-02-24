@@ -62,3 +62,6 @@ jobs:
           HANGAR_KEY: ${{ secrets.HANGAR_KEY }}
           HANGAR_PROJECT: BetterGUI
           HANGAR_PLATFORM: paper
+
+          POLYMART_KEY: ${{ secrets.POLYMART_KEY }}
+          POLYMART_RESOURCE: 16
