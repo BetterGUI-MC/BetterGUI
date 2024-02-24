@@ -39,23 +39,26 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/site/apidocs
       - name: Release
-        uses: Kir-Antipov/mc-publish@v3
+        uses: HSGamer/action-mcreleaser@main
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          modrinth-id: SekuiXMA
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          modrinth-featured: true
-          loaders: |
+          files: |
+            target/bettergui-*-shaded.jar
+            target/bettergui-*-@(sources|javadoc).jar
+        env:
+          DESCRIPTION: ${{ steps.changelog.outputs.changelog }}
+          GAME_VERSIONS: "1.8..latest"
+
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          MODRINTH_PROJECT: SekuiXMA
+          MODRINTH_LOADERS: |
             bukkit
             spigot
             paper
             purpur
             folia
-          game-versions: ">=1.8"
-          game-version-filter: releases
-          files: |
-            target/bettergui-*-shaded.jar
-            target/bettergui-*-@(sources|javadoc).jar
-          name: ${{ github.ref_name }}
-          changelog: ${{ steps.changelog.outputs.changelog }}
-          version: ${{ github.ref_name }}
+
+          HANGAR_KEY: ${{ secrets.HANGAR_KEY }}
+          HANGAR_PROJECT: BetterGUI
+          HANGAR_PLATFORM: paper
