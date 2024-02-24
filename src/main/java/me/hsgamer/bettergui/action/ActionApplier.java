@@ -7,6 +7,7 @@ import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.hscore.task.element.TaskPool;
 import me.hsgamer.hscore.task.element.TaskProcess;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +15,10 @@ import java.util.UUID;
  * The action applier
  */
 public class ActionApplier implements ProcessApplier {
+  /**
+   * The empty action applier
+   */
+  public static final ActionApplier EMPTY = new ActionApplier(Collections.emptyList());
   private final List<Action> actions;
 
   /**
