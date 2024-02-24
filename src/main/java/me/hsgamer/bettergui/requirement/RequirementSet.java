@@ -40,8 +40,12 @@ public class RequirementSet implements Requirement {
     }).collect(Collectors.toList());
 
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
-    this.successActionApplier = new ActionApplier(menu, MapUtils.getIfFoundOrDefault(keys, Collections.emptyList(), "success-command", "success-action"));
-    this.failActionApplier = new ActionApplier(menu, MapUtils.getIfFoundOrDefault(keys, Collections.emptyList(), "fail-command", "fail-action"));
+    this.successActionApplier = Optional.ofNullable(MapUtils.getIfFound(keys, "success-command", "success-action"))
+      .map(o -> new ActionApplier(menu, o))
+      .orElse(ActionApplier.EMPTY);
+    this.failActionApplier = Optional.ofNullable(MapUtils.getIfFound(keys, "fail-command", "fail-action"))
+      .map(o -> new ActionApplier(menu, o))
+      .orElse(ActionApplier.EMPTY);
   }
 
   /**
