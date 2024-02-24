@@ -20,8 +20,24 @@ import java.util.concurrent.ConcurrentHashMap;
  * The requirement setting used in Menus/Buttons/...
  */
 public class RequirementApplier implements ProcessApplier {
-  private final List<RequirementSet> requirementSets = new LinkedList<>();
+  /**
+   * The empty requirement applier
+   */
+  public static final RequirementApplier EMPTY = new RequirementApplier(Collections.emptyList(), ActionApplier.EMPTY);
+
+  private final List<RequirementSet> requirementSets;
   private final ActionApplier failActionApplier;
+
+  /**
+   * Create a new requirement applier
+   *
+   * @param requirementSets   the requirement sets
+   * @param failActionApplier the fail action applier
+   */
+  public RequirementApplier(List<RequirementSet> requirementSets, ActionApplier failActionApplier) {
+    this.requirementSets = requirementSets;
+    this.failActionApplier = failActionApplier;
+  }
 
   /**
    * Create a new requirement applier
@@ -31,6 +47,7 @@ public class RequirementApplier implements ProcessApplier {
    * @param section the section
    */
   public RequirementApplier(Menu menu, String name, Map<String, Object> section) {
+    this.requirementSets = new ArrayList<>();
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
     keys.forEach((key, value) -> {
       if (value instanceof Map) {
@@ -38,7 +55,9 @@ public class RequirementApplier implements ProcessApplier {
         requirementSets.add(new RequirementSet(menu, name + "_reqset_" + key, (Map<String, Object>) value));
       }
     });
-    this.failActionApplier = new ActionApplier(menu, MapUtils.getIfFoundOrDefault(keys, Collections.emptyList(), "fail-command", "fail-action"));
+    this.failActionApplier = Optional.ofNullable(MapUtils.getIfFound(keys, "fail-command", "fail-action"))
+      .map(o -> new ActionApplier(menu, o))
+      .orElse(ActionApplier.EMPTY);
   }
 
   /**
