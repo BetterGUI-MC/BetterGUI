@@ -41,6 +41,15 @@ public class ActionApplier implements ProcessApplier {
   }
 
   /**
+   * Check if the applier is empty
+   *
+   * @return true if it is empty
+   */
+  public boolean isEmpty() {
+    return actions.isEmpty();
+  }
+
+  /**
    * Apply the action to the process without the next action
    *
    * @param uuid    the unique id

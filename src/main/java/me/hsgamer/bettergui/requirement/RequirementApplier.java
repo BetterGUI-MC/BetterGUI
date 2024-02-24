@@ -109,6 +109,15 @@ public class RequirementApplier implements ProcessApplier {
   }
 
   /**
+   * Check if the applier is empty
+   *
+   * @return true if it is empty
+   */
+  public boolean isEmpty() {
+    return requirementSets.isEmpty() && failActionApplier.isEmpty();
+  }
+
+  /**
    * Get the result of the requirement
    *
    * @param uuid the unique id
