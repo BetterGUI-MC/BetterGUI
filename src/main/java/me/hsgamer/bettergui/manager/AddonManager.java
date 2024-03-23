@@ -37,6 +37,8 @@ public class AddonManager extends ExpansionManager {
     addStateListener((loader, state) -> {
       if (state == ExpansionState.LOADING) {
         checkPluginDepends(loader);
+      } else if (state == ExpansionState.ERROR) {
+        plugin.getLogger().log(Level.WARNING, "There is an error when loading an addon: " + loader.getDescription().getName(), loader.getThrowable());
       }
     });
     setExceptionHandler(throwable -> plugin.getLogger().log(Level.SEVERE, "There is an error when handling an addon", throwable));
