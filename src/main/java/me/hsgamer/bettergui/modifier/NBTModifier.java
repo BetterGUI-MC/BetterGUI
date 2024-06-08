@@ -1,10 +1,13 @@
 package me.hsgamer.bettergui.modifier;
 
 import com.google.gson.Gson;
+import me.hsgamer.hscore.bukkit.utils.VersionUtils;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.minecraft.item.ItemModifier;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +18,7 @@ import java.util.UUID;
 
 public class NBTModifier implements ItemModifier<ItemStack> {
   private static final Gson GSON = new Gson();
+  private static final boolean USE_ITEM_COMPONENT = VersionUtils.isAtLeast(20, 5);
   private String nbtData = "";
 
   @SuppressWarnings("deprecation")
@@ -23,10 +27,24 @@ public class NBTModifier implements ItemModifier<ItemStack> {
     if (Validate.isNullOrEmpty(nbtData)) {
       return original;
     }
-    try {
-      return Bukkit.getUnsafe().modifyItemStack(original, StringReplacer.replace(nbtData, uuid, stringReplacers));
-    } catch (Throwable throwable) {
-      return original;
+
+    String replacedNbtData = StringReplacer.replace(nbtData, uuid, stringReplacers);
+
+    if (USE_ITEM_COMPONENT) {
+      Material material = original.getType();
+      NamespacedKey materialKey = material.getKey();
+      String materialName = materialKey.toString();
+      try {
+        return Bukkit.getItemFactory().createItemStack(materialName + replacedNbtData);
+      } catch (Throwable throwable) {
+        return original;
+      }
+    } else {
+      try {
+        return Bukkit.getUnsafe().modifyItemStack(original, replacedNbtData);
+      } catch (Throwable throwable) {
+        return original;
+      }
     }
   }
 
