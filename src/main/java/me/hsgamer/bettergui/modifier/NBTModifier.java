@@ -16,6 +16,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * This is a legacy modifier that was removed from HSCore.
+ * I decide to keep it here for compatibility.
+ */
 public class NBTModifier implements ItemModifier<ItemStack> {
   private static final Gson GSON = new Gson();
   private static final boolean USE_ITEM_COMPONENT = VersionUtils.isAtLeast(20, 5);

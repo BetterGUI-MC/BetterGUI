@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.modifier.NBTModifier;
+import me.hsgamer.bettergui.modifier.SkullModifier;
 import me.hsgamer.hscore.builder.MassBuilder;
 import me.hsgamer.hscore.bukkit.item.modifier.*;
 import me.hsgamer.hscore.minecraft.item.ItemModifier;
