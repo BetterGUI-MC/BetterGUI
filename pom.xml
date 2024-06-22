@@ -15,7 +15,8 @@
 
   <properties>
     <java.version>1.8</java.version>
-    <core.version>4.3.30</core.version>
+    <core.version>4.5.0</core.version>
+    <minelib.version>1.2.0</minelib.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -58,6 +59,12 @@
                 <relocation>
                   <pattern>me.hsgamer.hscore</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.core</shadedPattern>
+                </relocation>
+
+                <!-- MineLib -->
+                <relocation>
+                  <pattern>io.github.projectunified.minelib</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.minelib</shadedPattern>
                 </relocation>
 
                 <!-- bStats -->
@@ -161,11 +168,6 @@
     </dependency>
 
     <!-- HSCore -->
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-bukkit-baseplugin</artifactId>
-      <version>${core.version}</version>
-    </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-utils</artifactId>
@@ -272,6 +274,43 @@
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-downloader-web-stream</artifactId>
       <version>${core.version}</version>
+    </dependency>
+
+    <!-- MineLib -->
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>minelib-plugin-base</artifactId>
+      <version>${minelib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>minelib-plugin-command</artifactId>
+      <version>${minelib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>minelib-plugin-permission</artifactId>
+      <version>${minelib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>minelib-plugin-postenable</artifactId>
+      <version>${minelib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>minelib-scheduler-global</artifactId>
+      <version>${minelib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>minelib-scheduler-async</artifactId>
+      <version>${minelib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>minelib-scheduler-entity</artifactId>
+      <version>${minelib.version}</version>
     </dependency>
 
     <!-- Annotations -->
