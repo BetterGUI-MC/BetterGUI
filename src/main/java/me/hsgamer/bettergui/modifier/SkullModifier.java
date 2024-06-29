@@ -159,7 +159,7 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
     }
 
     public void setSkullByURL(SkullMeta meta, URL url) {
-      GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+      GameProfile profile = new GameProfile(UUID.randomUUID(), "");
       profile.getProperties().put("textures", new Property("textures", Base64.getEncoder().encodeToString(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes())));
 
       try {
