@@ -6,7 +6,6 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.*;
@@ -22,7 +21,7 @@ public class TemplateConfig implements Loadable, PostEnable {
     this.templateFolder = templateFolder;
   }
 
-  public TemplateConfig(Plugin plugin) {
+  public TemplateConfig(BetterGUI plugin) {
     this(new File(plugin.getDataFolder(), "template"));
     if (!templateFolder.exists() && templateFolder.mkdirs()) {
       plugin.saveResource("template" + File.separator + "example-template.yml", false);
@@ -79,10 +78,8 @@ public class TemplateConfig implements Loadable, PostEnable {
           if (!optionalValues.isPresent()) {
             continue;
           }
-          BetterGUI betterGUI1 = BetterGUI.getInstance();
-          if (betterGUI1.get(MainConfig.class).isIncludeMenuInTemplate()) {
-            BetterGUI betterGUI = BetterGUI.getInstance();
-            key = betterGUI.get(MainConfig.class).getFileName(templateFolder, file) + "/" + key;
+          if (BetterGUI.getInstance().get(MainConfig.class).isIncludeMenuInTemplate()) {
+            key = BetterGUI.getInstance().get(MainConfig.class).getFileName(templateFolder, file) + "/" + key;
           }
           templateMap.put(key, optionalValues.get());
         }

@@ -23,8 +23,7 @@ public class VersionRequirement extends BaseRequirement<Integer> {
     return Validate.getNumber(replaced)
       .map(BigDecimal::intValue)
       .orElseGet(() -> {
-        BetterGUI betterGUI = BetterGUI.getInstance();
-        MessageUtils.sendMessage(uuid, betterGUI.get(MessageConfig.class).getInvalidNumber(replaced));
+        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().get(MessageConfig.class).getInvalidNumber(replaced));
         return 0;
       });
   }

@@ -26,8 +26,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
       if (level > 0 && player.getLevel() < level) {
         return String.valueOf(level);
       }
-      BetterGUI betterGUI = BetterGUI.getInstance();
-      return betterGUI.get(MessageConfig.class).getHaveMetRequirementPlaceholder();
+      return BetterGUI.getInstance().get(MessageConfig.class).getHaveMetRequirementPlaceholder();
     }), true);
   }
 
@@ -37,8 +36,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
     return Validate.getNumber(replaced)
       .map(BigDecimal::intValue)
       .orElseGet(() -> {
-        BetterGUI betterGUI = BetterGUI.getInstance();
-        MessageUtils.sendMessage(uuid, betterGUI.get(MessageConfig.class).getInvalidNumber(replaced));
+        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().get(MessageConfig.class).getInvalidNumber(replaced));
         return 0;
       });
   }

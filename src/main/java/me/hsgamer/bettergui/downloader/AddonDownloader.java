@@ -10,20 +10,22 @@ import me.hsgamer.hscore.downloader.webstream.WebInputStreamLoader;
 
 public class AddonDownloader extends Downloader implements PostEnable {
   private final BetterGUI plugin;
+  private final AddonManager addonManager;
 
-  public AddonDownloader(BetterGUI plugin) {
+  public AddonDownloader(BetterGUI plugin, AddonManager addonManager) {
     super(
       new JsonDownloadInfoLoader("https://raw.githubusercontent.com/BetterGUI-MC/Addon-List/master/addons.json"),
       new WebInputStreamLoader(),
-      plugin.get(AddonManager.class).getExpansionsDir()
+      addonManager.getExpansionsDir()
     );
     this.plugin = plugin;
+    this.addonManager = addonManager;
   }
 
   @Override
   public void onLoaded() {
     for (DownloadInfo downloadInfo : getLoadedDownloadInfo().values()) {
-      plugin.get(AddonManager.class).getExpansionClassLoader(downloadInfo.getName()).ifPresent(loader -> {
+      addonManager.getExpansionClassLoader(downloadInfo.getName()).ifPresent(loader -> {
         if (!loader.getDescription().getVersion().equals(downloadInfo.getVersion())) {
           plugin.getLogger().warning(() -> "The addon '" + downloadInfo.getName() + "' has a new update. New Version: " + downloadInfo.getVersion());
         }

@@ -46,15 +46,13 @@ public class OpenMenuAction implements Action {
     }
 
     // Open menu
-    BetterGUI betterGUI1 = getInstance();
-    if (betterGUI1.get(MenuManager.class).contains(menu)) {
+    if (getInstance().get(MenuManager.class).contains(menu)) {
       String[] finalArgs = args;
       Menu parentMenu = this.menu;
       EntityScheduler.get(BetterGUI.getInstance(), player)
         .run(() -> {
           try {
-            BetterGUI betterGUI = getInstance();
-            betterGUI.get(MenuManager.class).openMenu(menu, player, finalArgs, parentMenu, bypass);
+            getInstance().get(MenuManager.class).openMenu(menu, player, finalArgs, parentMenu, bypass);
           } finally {
             process.next();
           }

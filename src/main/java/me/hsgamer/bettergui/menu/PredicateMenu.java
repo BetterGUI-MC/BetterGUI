@@ -45,8 +45,7 @@ public class PredicateMenu extends StandardMenu {
           if (s.contains(" ")) {
             getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
           } else {
-            BetterGUI betterGUI = getInstance();
-            betterGUI.get(MenuCommandManager.class).registerMenuCommand(s, this);
+            getInstance().get(MenuCommandManager.class).registerMenuCommand(s, this);
           }
         }
       });
@@ -103,8 +102,7 @@ public class PredicateMenu extends StandardMenu {
       if (result.isSuccess) {
         MenuProcess menuProcess = pair.getValue();
         String[] finalArgs = StringReplacerApplier.replace(menuProcess.args, uuid, this).split("\\s+");
-        BetterGUI betterGUI = BetterGUI.getInstance();
-        betterGUI.get(MenuManager.class).openMenu(menuProcess.menu, player, finalArgs, getParentMenu(uuid).orElse(null), bypass);
+        BetterGUI.getInstance().get(MenuManager.class).openMenu(menuProcess.menu, player, finalArgs, getParentMenu(uuid).orElse(null), bypass);
         isSuccessful = true;
         break;
       }

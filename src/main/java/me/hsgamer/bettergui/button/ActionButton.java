@@ -39,8 +39,7 @@ public abstract class ActionButton<B extends Button> extends BaseWrappedButton<B
     return getButtonFunction(section).apply(clickEvent -> {
       if (!(clickEvent instanceof BukkitClickEvent)) return;
       BukkitClickEvent bukkitClickEvent = (BukkitClickEvent) clickEvent;
-      BetterGUI betterGUI = BetterGUI.getInstance();
-      BukkitClickType clickType = ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), betterGUI.get(MainConfig.class).isModernClickType());
+      BukkitClickType clickType = ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), BetterGUI.getInstance().get(MainConfig.class).isModernClickType());
       BatchRunnable batchRunnable = new BatchRunnable();
       clickActionHandler.apply(clickEvent.getViewerID(), clickType, batchRunnable);
       AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);

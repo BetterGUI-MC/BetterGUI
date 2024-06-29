@@ -78,8 +78,7 @@ public abstract class BaseMenu extends StandardMenu {
           if (s.contains(" ")) {
             getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
           } else {
-            BetterGUI betterGUI = getInstance();
-            betterGUI.get(MenuCommandManager.class).registerMenuCommand(s, this);
+            getInstance().get(MenuCommandManager.class).registerMenuCommand(s, this);
           }
         }
       });
@@ -109,8 +108,7 @@ public abstract class BaseMenu extends StandardMenu {
 
     // Check Permission
     if (!bypass && !PermissionUtils.hasAnyPermission(player, permissions)) {
-      BetterGUI betterGUI = getInstance();
-      MessageUtils.sendMessage(player, betterGUI.get(MessageConfig.class).getNoPermission());
+      MessageUtils.sendMessage(player, getInstance().get(MessageConfig.class).getNoPermission());
       return false;
     }
 

@@ -52,8 +52,7 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
     return Validate.getNumber(replaced)
       .map(bigDecimal -> Duration.ofMillis((long) bigDecimal.doubleValue() * 1000))
       .orElseGet(() -> {
-        BetterGUI betterGUI = BetterGUI.getInstance();
-        MessageUtils.sendMessage(uuid, betterGUI.get(MessageConfig.class).getInvalidNumber(replaced));
+        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().get(MessageConfig.class).getInvalidNumber(replaced));
         return Duration.ZERO;
       });
   }
