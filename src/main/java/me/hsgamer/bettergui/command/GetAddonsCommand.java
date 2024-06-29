@@ -28,7 +28,7 @@ public final class GetAddonsCommand extends BukkitCommand {
     boolean shortMessage = args.length > 0 && args[0].equalsIgnoreCase("short");
 
     sendMessage(sender, "&b&lLoaded Addons:");
-    plugin.getAddonManager().getClassLoaders().forEach((name, loader) -> {
+    plugin.get(AddonManager.class).getClassLoaders().forEach((name, loader) -> {
       sendMessage(sender, "  &f- &a" + name);
       if (!shortMessage) {
         sendMessage(sender, "    &eVersion: &f" + loader.getDescription().getVersion());

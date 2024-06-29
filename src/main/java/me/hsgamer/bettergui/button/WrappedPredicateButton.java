@@ -6,6 +6,7 @@ import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
@@ -64,7 +65,8 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
         predicateButton.setClickFuturePredicate(clickEvent -> {
           if (!(clickEvent instanceof BukkitClickEvent)) return CompletableFuture.completedFuture(false);
           BukkitClickEvent bukkitClickEvent = (BukkitClickEvent) clickEvent;
-          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), BetterGUI.getInstance().getMainConfig().isModernClickType()));
+          BetterGUI betterGUI = BetterGUI.getInstance();
+          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), betterGUI.get(MainConfig.class).isModernClickType()));
           return CompletableFuture.supplyAsync(() -> clickRequirement.getResult(clickEvent.getViewerID()))
             .thenApply(result -> {
               BatchRunnable batchRunnable = new BatchRunnable();

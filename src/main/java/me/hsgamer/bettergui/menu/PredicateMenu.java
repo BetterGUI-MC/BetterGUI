@@ -5,6 +5,8 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
+import me.hsgamer.bettergui.manager.MenuCommandManager;
+import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
@@ -43,7 +45,8 @@ public class PredicateMenu extends StandardMenu {
           if (s.contains(" ")) {
             getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
           } else {
-            getInstance().getMenuCommandManager().registerMenuCommand(s, this);
+            BetterGUI betterGUI = getInstance();
+            betterGUI.get(MenuCommandManager.class).registerMenuCommand(s, this);
           }
         }
       });
@@ -100,7 +103,8 @@ public class PredicateMenu extends StandardMenu {
       if (result.isSuccess) {
         MenuProcess menuProcess = pair.getValue();
         String[] finalArgs = StringReplacerApplier.replace(menuProcess.args, uuid, this).split("\\s+");
-        BetterGUI.getInstance().getMenuManager().openMenu(menuProcess.menu, player, finalArgs, getParentMenu(uuid).orElse(null), bypass);
+        BetterGUI betterGUI = BetterGUI.getInstance();
+        betterGUI.get(MenuManager.class).openMenu(menuProcess.menu, player, finalArgs, getParentMenu(uuid).orElse(null), bypass);
         isSuccessful = true;
         break;
       }

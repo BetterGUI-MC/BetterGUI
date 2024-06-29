@@ -4,6 +4,8 @@ import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.action.MenuActionInput;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.StringReplacer;
@@ -44,19 +46,22 @@ public class OpenMenuAction implements Action {
     }
 
     // Open menu
-    if (getInstance().getMenuManager().contains(menu)) {
+    BetterGUI betterGUI1 = getInstance();
+    if (betterGUI1.get(MenuManager.class).contains(menu)) {
       String[] finalArgs = args;
       Menu parentMenu = this.menu;
       EntityScheduler.get(BetterGUI.getInstance(), player)
         .run(() -> {
           try {
-            getInstance().getMenuManager().openMenu(menu, player, finalArgs, parentMenu, bypass);
+            BetterGUI betterGUI = getInstance();
+            betterGUI.get(MenuManager.class).openMenu(menu, player, finalArgs, parentMenu, bypass);
           } finally {
             process.next();
           }
         }, process::next);
     } else {
-      MessageUtils.sendMessage(player, getInstance().getMessageConfig().getMenuNotFound());
+      BetterGUI betterGUI = getInstance();
+      MessageUtils.sendMessage(player, betterGUI.get(MessageConfig.class).getMenuNotFound());
       process.next();
     }
   }

@@ -5,6 +5,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ClickActionHandler;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
@@ -38,7 +39,8 @@ public abstract class ActionButton<B extends Button> extends BaseWrappedButton<B
     return getButtonFunction(section).apply(clickEvent -> {
       if (!(clickEvent instanceof BukkitClickEvent)) return;
       BukkitClickEvent bukkitClickEvent = (BukkitClickEvent) clickEvent;
-      BukkitClickType clickType = ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), BetterGUI.getInstance().getMainConfig().isModernClickType());
+      BetterGUI betterGUI = BetterGUI.getInstance();
+      BukkitClickType clickType = ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), betterGUI.get(MainConfig.class).isModernClickType());
       BatchRunnable batchRunnable = new BatchRunnable();
       clickActionHandler.apply(clickEvent.getViewerID(), clickType, batchRunnable);
       AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);

@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.config;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
+import io.github.projectunified.minelib.plugin.postenable.PostEnable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
@@ -12,7 +14,7 @@ import java.util.*;
 /**
  * The list of template configurations
  */
-public class TemplateConfig {
+public class TemplateConfig implements Loadable, PostEnable {
   private final File templateFolder;
   private final Map<String, Map<String, Object>> templateMap = new HashMap<>();
 
@@ -77,8 +79,10 @@ public class TemplateConfig {
           if (!optionalValues.isPresent()) {
             continue;
           }
-          if (BetterGUI.getInstance().getMainConfig().isIncludeMenuInTemplate()) {
-            key = BetterGUI.getInstance().getMainConfig().getFileName(templateFolder, file) + "/" + key;
+          BetterGUI betterGUI1 = BetterGUI.getInstance();
+          if (betterGUI1.get(MainConfig.class).isIncludeMenuInTemplate()) {
+            BetterGUI betterGUI = BetterGUI.getInstance();
+            key = betterGUI.get(MainConfig.class).getFileName(templateFolder, file) + "/" + key;
           }
           templateMap.put(key, optionalValues.get());
         }
@@ -176,5 +180,15 @@ public class TemplateConfig {
    */
   public Collection<String> getAllTemplateNames() {
     return this.templateMap.keySet();
+  }
+
+  @Override
+  public void postEnable() {
+    setup();
+  }
+
+  @Override
+  public void disable() {
+    clear();
   }
 }

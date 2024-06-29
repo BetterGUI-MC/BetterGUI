@@ -1,9 +1,9 @@
 package me.hsgamer.bettergui.command;
 
+import io.github.projectunified.minelib.plugin.command.CommandComponent;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
-import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.common.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -30,7 +30,7 @@ public class MainCommand extends BukkitCommand {
       return false;
     }
 
-    CommandManager manager = plugin.getCommandManager();
+    CommandComponent manager = plugin.get(CommandComponent.class);
     sendMessage(commandSender, "");
     sendMessage(commandSender, "&e&lAuthor: &f" + Arrays.toString(plugin.getDescription().getAuthors().toArray()));
     sendMessage(commandSender, "&e&lVersion: &f" + plugin.getDescription().getVersion());
@@ -52,7 +52,7 @@ public class MainCommand extends BukkitCommand {
     sendMessage(commandSender, "");
 
 
-    MenuCommandManager menuCommandManager = plugin.getMenuCommandManager();
+    MenuCommandManager menuCommandManager = plugin.get(MenuCommandManager.class);
     sendMessage(commandSender, "&b&lMenu Command: ");
     for (Command command : menuCommandManager.getRegisteredMenuCommand().values()) {
       sendMessage(commandSender, "  &6" + command.getUsage());

@@ -6,6 +6,8 @@ import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
+import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
@@ -76,7 +78,8 @@ public abstract class BaseMenu extends StandardMenu {
           if (s.contains(" ")) {
             getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
           } else {
-            getInstance().getMenuCommandManager().registerMenuCommand(s, this);
+            BetterGUI betterGUI = getInstance();
+            betterGUI.get(MenuCommandManager.class).registerMenuCommand(s, this);
           }
         }
       });
@@ -106,7 +109,8 @@ public abstract class BaseMenu extends StandardMenu {
 
     // Check Permission
     if (!bypass && !PermissionUtils.hasAnyPermission(player, permissions)) {
-      MessageUtils.sendMessage(player, getInstance().getMessageConfig().getNoPermission());
+      BetterGUI betterGUI = getInstance();
+      MessageUtils.sendMessage(player, betterGUI.get(MessageConfig.class).getNoPermission());
       return false;
     }
 

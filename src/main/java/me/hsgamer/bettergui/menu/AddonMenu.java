@@ -1,7 +1,11 @@
 package me.hsgamer.bettergui.menu;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.downloader.AdditionalInfoKeys;
+import me.hsgamer.bettergui.downloader.AddonDownloader;
+import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
 import me.hsgamer.hscore.bukkit.gui.object.BukkitItem;
@@ -67,7 +71,8 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
       @Override
       public @NotNull Map<@NotNull Integer, @NotNull DisplayButton> getButtons(@NotNull UUID uuid, InventorySize inventorySize) {
         Map<Integer, DisplayButton> buttonMap = new HashMap<>();
-        Collection<DownloadInfo> downloadInfos = getInstance().getAddonDownloader().getLoadedDownloadInfo().values();
+        BetterGUI betterGUI = getInstance();
+        Collection<DownloadInfo> downloadInfos = betterGUI.get(AddonDownloader.class).getLoadedDownloadInfo().values();
         int slot = 0;
         for (DownloadInfo info : downloadInfos) {
           AddonButton button = addonButtonMap.computeIfAbsent(info, downloadInfo -> {
@@ -109,7 +114,8 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
     }
 
     private void updateStatus() {
-      status = getInstance().getAddonManager().getExpansionClassLoader(downloadInfo.getName())
+      BetterGUI betterGUI = getInstance();
+      status = betterGUI.get(AddonManager.class).getExpansionClassLoader(downloadInfo.getName())
         .map(addon -> addon.getDescription().getVersion().equals(downloadInfo.getVersion()) ? upToDateStatus : outdatedStatus)
         .orElse(availableStatus);
     }
@@ -147,7 +153,8 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
                 }
                 MessageUtils.sendMessage(humanEntity, downloadFinishedMessage);
               });
-              MessageUtils.sendMessage(humanEntity, getInstance().getMessageConfig().getSuccess());
+              BetterGUI betterGUI = getInstance();
+              MessageUtils.sendMessage(humanEntity, betterGUI.get(MessageConfig.class).getSuccess());
             }
           } else if (clickType.isRightClick()) {
             MessageUtils.sendMessage(humanEntity, "&bLink: &f" + AdditionalInfoKeys.SOURCE_CODE.get(downloadInfo));

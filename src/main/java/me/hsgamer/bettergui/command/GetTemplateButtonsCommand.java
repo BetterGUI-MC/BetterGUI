@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.command;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
+import me.hsgamer.bettergui.config.TemplateConfig;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
@@ -24,7 +25,7 @@ public class GetTemplateButtonsCommand extends BukkitCommand {
       return false;
     }
     sendMessage(sender, "&bRegistered Template Buttons:");
-    plugin.getTemplateButtonConfig().getAllTemplateNames().stream().sorted().forEach(prefix -> sendMessage(sender, "&f- &e" + prefix));
+    plugin.get(TemplateConfig.class).getAllTemplateNames().stream().sorted().forEach(prefix -> sendMessage(sender, "&f- &e" + prefix));
     return true;
   }
 }
