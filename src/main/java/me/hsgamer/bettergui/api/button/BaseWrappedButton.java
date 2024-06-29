@@ -3,9 +3,9 @@ package me.hsgamer.bettergui.api.button;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.minecraft.gui.button.Button;
-import me.hsgamer.hscore.minecraft.gui.event.ClickEvent;
-import me.hsgamer.hscore.minecraft.gui.object.Item;
+import me.hsgamer.hscore.minecraft.gui.button.DisplayButton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -59,18 +59,11 @@ public abstract class BaseWrappedButton<B extends Button> implements WrappedButt
   }
 
   @Override
-  public Item getItem(@NotNull UUID uuid) {
+  public @Nullable DisplayButton display(@NotNull UUID uuid) {
     if (button != null) {
-      return button.getItem(uuid);
+      return button.display(uuid);
     }
     return null;
-  }
-
-  @Override
-  public void handleAction(@NotNull ClickEvent event) {
-    if (button != null) {
-      button.handleAction(event);
-    }
   }
 
   @Override
@@ -86,13 +79,5 @@ public abstract class BaseWrappedButton<B extends Button> implements WrappedButt
     if (button != null) {
       button.stop();
     }
-  }
-
-  @Override
-  public boolean forceSetAction(@NotNull UUID uuid) {
-    if (button != null) {
-      return button.forceSetAction(uuid);
-    }
-    return false;
   }
 }

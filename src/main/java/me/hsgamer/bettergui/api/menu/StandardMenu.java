@@ -1,7 +1,7 @@
 package me.hsgamer.bettergui.api.menu;
 
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
-import me.hsgamer.hscore.config.CaseInsensitivePathString;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.config.PathString;
 
@@ -30,17 +30,13 @@ import java.util.stream.Collectors;
  */
 public abstract class StandardMenu extends Menu {
   /**
-   * The path of the menu settings
-   */
-  public static final CaseInsensitivePathString MENU_SETTINGS_PATH = new CaseInsensitivePathString(new PathString(Menu.MENU_SETTINGS_PATH));
-  /**
    * The menu settings
    */
   protected final Map<String, Object> menuSettings;
   /**
    * The config settings, which are not in the menu settings
    */
-  protected final Map<CaseInsensitivePathString, Object> configSettings;
+  protected final Map<String, Object> configSettings;
 
   /**
    * Create a new menu
@@ -49,14 +45,13 @@ public abstract class StandardMenu extends Menu {
    */
   protected StandardMenu(Config config) {
     super(config);
-    Map<CaseInsensitivePathString, Object> configValues = CaseInsensitivePathString.toCaseInsensitiveMap(config.getNormalizedValues(false));
+    Map<String, Object> configValues = new CaseInsensitiveStringMap<>(PathString.joinDefault(config.getNormalizedValues(false)));
     Object rawMenuSettings = configValues.get(MENU_SETTINGS_PATH);
-    //noinspection unchecked
-    menuSettings = rawMenuSettings instanceof Map
-      ? new CaseInsensitiveStringMap<>((Map<String, Object>) rawMenuSettings)
-      : Collections.emptyMap();
+    menuSettings = MapUtils.castOptionalStringObjectMap(rawMenuSettings)
+      .<Map<String, Object>>map(CaseInsensitiveStringMap::new)
+      .orElse(Collections.emptyMap());
     configSettings = configValues.entrySet().stream()
-      .filter(entry -> !entry.getKey().equals(MENU_SETTINGS_PATH))
+      .filter(entry -> !entry.getKey().equalsIgnoreCase(MENU_SETTINGS_PATH))
       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
   }
 }
