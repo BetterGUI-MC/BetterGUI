@@ -1,9 +1,9 @@
 package me.hsgamer.bettergui.command;
 
+import io.github.projectunified.minelib.plugin.command.CommandComponent;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.addon.Reloadable;
-import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -35,7 +35,7 @@ public class ReloadCommand extends BukkitCommand {
     }
     plugin.getTemplateButtonConfig().setup();
     plugin.getMenuManager().loadMenuConfig();
-    CommandManager.syncCommand();
+    CommandComponent.syncCommand();
     MessageUtils.sendMessage(sender, plugin.getMessageConfig().getSuccess());
     return true;
   }
