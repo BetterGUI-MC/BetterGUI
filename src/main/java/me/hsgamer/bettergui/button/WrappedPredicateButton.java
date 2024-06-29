@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.button;
 
+import io.github.projectunified.minelib.scheduler.async.AsyncScheduler;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
@@ -10,7 +11,6 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.minecraft.gui.button.Button;
@@ -53,7 +53,7 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
             result.applier.accept(uuid, process);
             process.next();
           });
-          Scheduler.current().async().runTask(batchRunnable);
+          AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
           return result.isSuccess;
         });
       });
@@ -72,7 +72,7 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
                 result.applier.accept(clickEvent.getViewerID(), process);
                 process.next();
               });
-              Scheduler.current().async().runTask(batchRunnable);
+              AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
               return result.isSuccess;
             });
         });
