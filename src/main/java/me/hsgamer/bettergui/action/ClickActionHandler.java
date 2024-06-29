@@ -1,10 +1,11 @@
 package me.hsgamer.bettergui.action;
 
+import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.Bukkit;
@@ -77,7 +78,14 @@ public class ClickActionHandler {
       Optional.ofNullable(Bukkit.getPlayer(uuid))
         .ifPresent(player ->
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process ->
-            Scheduler.current().sync().runEntityTaskWithFinalizer(player, () -> menu.close(player), process::next)
+            EntityScheduler.get(BetterGUI.getInstance(), player)
+              .run(() -> {
+                try {
+                  menu.close(player);
+                } finally {
+                  process.next();
+                }
+              }, process::next)
           )
         );
     }

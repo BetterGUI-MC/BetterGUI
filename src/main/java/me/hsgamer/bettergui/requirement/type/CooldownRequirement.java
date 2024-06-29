@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.requirement.type;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.requirement.BaseRequirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.StringReplacer;
@@ -51,7 +52,7 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
     return Validate.getNumber(replaced)
       .map(bigDecimal -> Duration.ofMillis((long) bigDecimal.doubleValue() * 1000))
       .orElseGet(() -> {
-        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().getMessageConfig().getInvalidNumber(replaced));
+        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().get(MessageConfig.class).getInvalidNumber(replaced));
         return Duration.ZERO;
       });
   }

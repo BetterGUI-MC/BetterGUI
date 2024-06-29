@@ -1,8 +1,9 @@
 package me.hsgamer.bettergui.argument.type;
 
+import io.github.projectunified.minelib.scheduler.async.AsyncScheduler;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.task.BatchRunnable;
 
@@ -35,7 +36,7 @@ public abstract class SingleArgumentProcessor<T> extends BaseActionArgumentProce
     if (args.length == 0) {
       BatchRunnable batchRunnable = new BatchRunnable();
       batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> onRequiredActionApplier.accept(uuid, process));
-      Scheduler.current().async().runTask(batchRunnable);
+      AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
       return Optional.empty();
     }
 
@@ -46,7 +47,7 @@ public abstract class SingleArgumentProcessor<T> extends BaseActionArgumentProce
     if (!object.isPresent()) {
       BatchRunnable batchRunnable = new BatchRunnable();
       batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> onInvalidActionApplier.accept(uuid, process));
-      Scheduler.current().async().runTask(batchRunnable);
+      AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
       return Optional.empty();
     }
 

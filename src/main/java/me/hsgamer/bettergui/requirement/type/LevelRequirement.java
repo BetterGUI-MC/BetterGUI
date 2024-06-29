@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.requirement.type;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.requirement.TakableRequirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.StringReplacer;
@@ -25,7 +26,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
       if (level > 0 && player.getLevel() < level) {
         return String.valueOf(level);
       }
-      return BetterGUI.getInstance().getMessageConfig().getHaveMetRequirementPlaceholder();
+      return BetterGUI.getInstance().get(MessageConfig.class).getHaveMetRequirementPlaceholder();
     }), true);
   }
 
@@ -35,7 +36,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
     return Validate.getNumber(replaced)
       .map(BigDecimal::intValue)
       .orElseGet(() -> {
-        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().getMessageConfig().getInvalidNumber(replaced));
+        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().get(MessageConfig.class).getInvalidNumber(replaced));
         return 0;
       });
   }

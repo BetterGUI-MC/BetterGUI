@@ -1,9 +1,12 @@
 package me.hsgamer.bettergui.manager;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
+import io.github.projectunified.minelib.plugin.postenable.PostEnable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
 import me.hsgamer.bettergui.builder.MenuBuilder;
+import me.hsgamer.bettergui.config.MainConfig;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -13,7 +16,7 @@ import java.util.logging.Level;
 /**
  * The Menu Manager
  */
-public final class MenuManager {
+public final class MenuManager implements Loadable, PostEnable {
 
   private final Map<String, Menu> menuMap = new HashMap<>();
   private final BetterGUI plugin;
@@ -29,8 +32,8 @@ public final class MenuManager {
    */
   public void loadMenuConfig() {
     if (!menusFolder.exists() && menusFolder.mkdirs()) {
-      plugin.saveResource("menu" + File.separator + "example.yml", false);
-      plugin.saveResource("menu" + File.separator + "addondownloader.yml", false);
+      plugin.saveResource("menu/example.yml", false);
+      plugin.saveResource("menu/addondownloader.yml", false);
     }
     LinkedList<File> files = new LinkedList<>();
     files.add(menusFolder);
@@ -50,7 +53,7 @@ public final class MenuManager {
    * @param file the menu file
    */
   public void registerMenu(File file) {
-    String name = plugin.getMainConfig().getFileName(menusFolder, file);
+    String name = plugin.get(MainConfig.class).getFileName(menusFolder, file);
     if (menuMap.containsKey(name)) {
       plugin.getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
     } else {
@@ -138,5 +141,15 @@ public final class MenuManager {
    */
   public Menu getMenu(String name) {
     return menuMap.get(name);
+  }
+
+  @Override
+  public void postEnable() {
+    loadMenuConfig();
+  }
+
+  @Override
+  public void disable() {
+    clear();
   }
 }

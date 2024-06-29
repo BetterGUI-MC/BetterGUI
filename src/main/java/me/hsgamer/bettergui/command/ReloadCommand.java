@@ -1,9 +1,15 @@
 package me.hsgamer.bettergui.command;
 
+import io.github.projectunified.minelib.plugin.command.CommandComponent;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.addon.Reloadable;
-import me.hsgamer.hscore.bukkit.command.CommandManager;
+import me.hsgamer.bettergui.config.MainConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.config.TemplateConfig;
+import me.hsgamer.bettergui.manager.AddonManager;
+import me.hsgamer.bettergui.manager.MenuCommandManager;
+import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -25,18 +31,18 @@ public class ReloadCommand extends BukkitCommand {
       return false;
     }
 
-    plugin.getMenuCommandManager().clearMenuCommand();
-    plugin.getMenuManager().clear();
-    plugin.getTemplateButtonConfig().clear();
-    plugin.getMainConfig().reloadConfig();
-    plugin.getMessageConfig().reloadConfig();
+    plugin.get(MenuCommandManager.class).clearMenuCommand();
+    plugin.get(MenuManager.class).clear();
+    plugin.get(TemplateConfig.class).clear();
+    plugin.get(MainConfig.class).reloadConfig();
+    plugin.get(MessageConfig.class).reloadConfig();
     if (commandLabel.equalsIgnoreCase("reloadplugin") || commandLabel.equalsIgnoreCase("rlplugin")) {
-      plugin.getAddonManager().call(Reloadable.class, Reloadable::onReload);
+      plugin.get(AddonManager.class).call(Reloadable.class, Reloadable::onReload);
     }
-    plugin.getTemplateButtonConfig().setup();
-    plugin.getMenuManager().loadMenuConfig();
-    CommandManager.syncCommand();
-    MessageUtils.sendMessage(sender, plugin.getMessageConfig().getSuccess());
+    plugin.get(TemplateConfig.class).setup();
+    plugin.get(MenuManager.class).loadMenuConfig();
+    CommandComponent.syncCommand();
+    MessageUtils.sendMessage(sender, plugin.get(MessageConfig.class).getSuccess());
     return true;
   }
 }

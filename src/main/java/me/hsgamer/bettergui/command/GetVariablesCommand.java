@@ -3,6 +3,8 @@ package me.hsgamer.bettergui.command;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -29,16 +31,16 @@ public class GetVariablesCommand extends BukkitCommand {
     }
     List<String> variables = new ArrayList<>();
     if (args.length > 0) {
-      Menu menu = plugin.getMenuManager().getMenu(args[0]);
+      Menu menu = plugin.get(MenuManager.class).getMenu(args[0]);
       if (menu == null) {
-        sendMessage(sender, plugin.getMessageConfig().getMenuNotFound());
+        sendMessage(sender, plugin.get(MessageConfig.class).getMenuNotFound());
         return false;
       }
       variables.addAll(menu.getVariableManager().getVariables().keySet());
     } else {
       variables.addAll(VariableManager.GLOBAL.getVariables().keySet());
-      for (String menuName : plugin.getMenuManager().getMenuNames()) {
-        Menu menu = plugin.getMenuManager().getMenu(menuName);
+      for (String menuName : plugin.get(MenuManager.class).getMenuNames()) {
+        Menu menu = plugin.get(MenuManager.class).getMenu(menuName);
         if (menu == null) continue;
         menu.getVariableManager().getVariables().keySet().forEach(variable -> variables.add("menu_" + menuName + "_" + variable));
       }
@@ -52,7 +54,7 @@ public class GetVariablesCommand extends BukkitCommand {
   public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
     List<String> list = new ArrayList<>();
     if (args.length == 1) {
-      list.addAll(plugin.getMenuManager().getMenuNames());
+      list.addAll(plugin.get(MenuManager.class).getMenuNames());
     }
     return list;
   }

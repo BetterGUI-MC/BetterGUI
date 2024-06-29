@@ -1,13 +1,15 @@
 package me.hsgamer.bettergui.menu;
 
+import io.github.projectunified.minelib.scheduler.async.AsyncScheduler;
+import io.github.projectunified.minelib.scheduler.common.task.Task;
+import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.InventoryBuilder;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIDisplay;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIHolder;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
-import me.hsgamer.hscore.bukkit.scheduler.Task;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.Validate;
@@ -50,7 +52,16 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
         BukkitGUIDisplay guiDisplay = super.newDisplay(uuid);
         if (ticks >= 0) {
           Player player = Bukkit.getPlayer(uuid);
-          updateTasks.put(uuid, Scheduler.current().async().runEntityTaskTimer(player, guiDisplay::update, ticks, ticks));
+          assert player != null;
+
+          updateTasks.put(uuid, AsyncScheduler.get(BetterGUI.getInstance()).runTimer(() -> {
+            if (player.isOnline()) {
+              guiDisplay.update();
+              return true;
+            } else {
+              return false;
+            }
+          }, ticks, ticks));
         }
         return guiDisplay;
       }
@@ -67,7 +78,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
           UUID uuid = event.getViewerID();
           BatchRunnable batchRunnable = new BatchRunnable();
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> openActionApplier.accept(uuid, process));
-          Scheduler.current().async().runTask(batchRunnable);
+          AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
         }
       }
 
@@ -78,7 +89,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
         if (!closeActionApplier.isEmpty()) {
           BatchRunnable batchRunnable = new BatchRunnable();
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> closeActionApplier.accept(uuid, process));
-          Scheduler.current().async().runTask(batchRunnable);
+          AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
         }
 
         if (!closeRequirementApplier.isEmpty()) {
@@ -93,14 +104,14 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
             result.applier.accept(uuid, process);
             process.next();
           });
-          Scheduler.current().async().runTask(batchRunnable);
+          AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
 
           if (!result.isSuccess) {
             event.setRemoveDisplay(false);
             guiHolder.getDisplay(uuid).ifPresent(display -> {
               Player player = Bukkit.getPlayer(uuid);
               if (player != null) {
-                Scheduler.current().sync().runEntityTask(player, () -> player.openInventory(display.getInventory()));
+                EntityScheduler.get(BetterGUI.getInstance(), player).run(() -> player.openInventory(display.getInventory()));
               }
             });
           }

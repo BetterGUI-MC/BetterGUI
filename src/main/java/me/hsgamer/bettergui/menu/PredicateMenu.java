@@ -1,20 +1,21 @@
 package me.hsgamer.bettergui.menu;
 
+import io.github.projectunified.minelib.scheduler.async.AsyncScheduler;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
+import me.hsgamer.bettergui.manager.MenuCommandManager;
+import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.bukkit.utils.PermissionUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.config.Config;
-import me.hsgamer.hscore.config.PathString;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -44,7 +45,7 @@ public class PredicateMenu extends StandardMenu {
           if (s.contains(" ")) {
             getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
           } else {
-            getInstance().getMenuCommandManager().registerMenuCommand(s, this);
+            getInstance().get(MenuCommandManager.class).registerMenuCommand(s, this);
           }
         }
       });
@@ -60,7 +61,6 @@ public class PredicateMenu extends StandardMenu {
         return;
       }
 
-      String name = PathString.toPath(key.getPathString());
       //noinspection unchecked
       Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
       String menu = Objects.toString(values.get("menu"), null);
@@ -70,7 +70,7 @@ public class PredicateMenu extends StandardMenu {
       String args = Optional.ofNullable(MapUtils.getIfFound(values, "args", "arguments", "arg", "argument")).map(Object::toString).orElse("");
       Map<String, Object> requirementValue = MapUtils.castOptionalStringObjectMap(values.get("requirement")).orElseGet(Collections::emptyMap);
       menuPredicateList.add(Pair.of(
-        new RequirementApplier(this, getName() + "_" + name + "_requirement", requirementValue),
+        new RequirementApplier(this, getName() + "_" + key + "_requirement", requirementValue),
         new MenuProcess(menu, args)
       ));
     });
@@ -97,12 +97,12 @@ public class PredicateMenu extends StandardMenu {
         result.applier.accept(uuid, process);
         process.next();
       });
-      Scheduler.current().async().runTask(batchRunnable);
+      AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
 
       if (result.isSuccess) {
         MenuProcess menuProcess = pair.getValue();
         String[] finalArgs = StringReplacerApplier.replace(menuProcess.args, uuid, this).split("\\s+");
-        BetterGUI.getInstance().getMenuManager().openMenu(menuProcess.menu, player, finalArgs, getParentMenu(uuid).orElse(null), bypass);
+        BetterGUI.getInstance().get(MenuManager.class).openMenu(menuProcess.menu, player, finalArgs, getParentMenu(uuid).orElse(null), bypass);
         isSuccessful = true;
         break;
       }

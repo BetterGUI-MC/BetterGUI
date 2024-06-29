@@ -1,9 +1,11 @@
 package me.hsgamer.bettergui.manager;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
+import io.github.projectunified.minelib.plugin.command.CommandComponent;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.hscore.bukkit.command.CommandManager;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class MenuCommandManager {
+public class MenuCommandManager implements Loadable {
   private final Map<String, Command> registeredMenuCommand = new HashMap<>();
   private final BetterGUI plugin;
 
@@ -37,7 +39,7 @@ public class MenuCommandManager {
           menu.create((Player) commandSender, strings, commandSender.hasPermission(Permissions.OPEN_MENU_BYPASS));
           return true;
         } else {
-          MessageUtils.sendMessage(commandSender, plugin.getMessageConfig().getPlayerOnly());
+          MessageUtils.sendMessage(commandSender, plugin.get(MessageConfig.class).getPlayerOnly());
           return false;
         }
       }
@@ -63,7 +65,7 @@ public class MenuCommandManager {
       plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", name);
       return;
     }
-    CommandManager.registerCommandToCommandMap(plugin.getName() + "_menu", command);
+    CommandComponent.registerCommandToCommandMap(plugin.getName() + "_menu", command);
     registeredMenuCommand.put(name, command);
   }
 
@@ -71,7 +73,7 @@ public class MenuCommandManager {
    * Clear all menu commands
    */
   public void clearMenuCommand() {
-    registeredMenuCommand.values().forEach(CommandManager::unregisterFromKnownCommands);
+    registeredMenuCommand.values().forEach(CommandComponent::unregisterFromKnownCommands);
     registeredMenuCommand.clear();
   }
 
@@ -82,5 +84,10 @@ public class MenuCommandManager {
    */
   public Map<String, Command> getRegisteredMenuCommand() {
     return registeredMenuCommand;
+  }
+
+  @Override
+  public void disable() {
+    clearMenuCommand();
   }
 }

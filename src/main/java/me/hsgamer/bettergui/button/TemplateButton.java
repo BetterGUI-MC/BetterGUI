@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.button;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.config.TemplateConfig;
 import me.hsgamer.hscore.minecraft.gui.button.Button;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ public class TemplateButton extends BaseWrappedButton<Button> {
 
   @Override
   protected Button createButton(Map<String, Object> section) {
-    finalOptions = BetterGUI.getInstance().getTemplateButtonConfig().getValues(section, "type");
+    finalOptions = BetterGUI.getInstance().get(TemplateConfig.class).getValues(section, "type");
     return ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName(), finalOptions)).orElse(null);
   }
 

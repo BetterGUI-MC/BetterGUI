@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.papi;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.hsgamer.bettergui.BetterGUI;
@@ -14,11 +15,21 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.logging.Level;
 
-public class ExtraPlaceholderExpansion extends PlaceholderExpansion {
+public class ExtraPlaceholderExpansion extends PlaceholderExpansion implements Loadable {
   private final BetterGUI plugin;
 
   public ExtraPlaceholderExpansion(BetterGUI plugin) {
     this.plugin = plugin;
+  }
+
+  @Override
+  public void enable() {
+    register();
+  }
+
+  @Override
+  public void disable() {
+    unregister();
   }
 
   @Override

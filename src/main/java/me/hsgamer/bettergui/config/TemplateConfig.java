@@ -1,10 +1,11 @@
 package me.hsgamer.bettergui.config;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
+import io.github.projectunified.minelib.plugin.postenable.PostEnable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
-import me.hsgamer.hscore.config.PathString;
-import org.bukkit.plugin.Plugin;
+import me.hsgamer.hscore.common.MapUtils;
 
 import java.io.File;
 import java.util.*;
@@ -12,7 +13,7 @@ import java.util.*;
 /**
  * The list of template configurations
  */
-public class TemplateConfig {
+public class TemplateConfig implements Loadable, PostEnable {
   private final File templateFolder;
   private final Map<String, Map<String, Object>> templateMap = new HashMap<>();
 
@@ -20,7 +21,7 @@ public class TemplateConfig {
     this.templateFolder = templateFolder;
   }
 
-  public TemplateConfig(Plugin plugin) {
+  public TemplateConfig(BetterGUI plugin) {
     this(new File(plugin.getDataFolder(), "template"));
     if (!templateFolder.exists() && templateFolder.mkdirs()) {
       plugin.saveResource("template" + File.separator + "example-template.yml", false);
@@ -71,13 +72,16 @@ public class TemplateConfig {
     if (file.isFile()) {
       ConfigBuilder.INSTANCE.build(file).ifPresent(config -> {
         config.setup();
-        for (PathString pathString : config.getKeys(false)) {
-          Map<String, Object> values = PathString.toPathMap(config.getNormalizedValues(pathString, false));
-          String key = pathString.getLastPath();
-          if (BetterGUI.getInstance().getMainConfig().isIncludeMenuInTemplate()) {
-            key = BetterGUI.getInstance().getMainConfig().getFileName(templateFolder, file) + "/" + key;
+        for (Map.Entry<String[], Object> entry : config.getNormalizedValues(false).entrySet()) {
+          String key = entry.getKey()[0];
+          Optional<Map<String, Object>> optionalValues = MapUtils.castOptionalStringObjectMap(entry.getValue());
+          if (!optionalValues.isPresent()) {
+            continue;
           }
-          templateMap.put(key, values);
+          if (BetterGUI.getInstance().get(MainConfig.class).isIncludeMenuInTemplate()) {
+            key = BetterGUI.getInstance().get(MainConfig.class).getFileName(templateFolder, file) + "/" + key;
+          }
+          templateMap.put(key, optionalValues.get());
         }
       });
     }
@@ -173,5 +177,15 @@ public class TemplateConfig {
    */
   public Collection<String> getAllTemplateNames() {
     return this.templateMap.keySet();
+  }
+
+  @Override
+  public void postEnable() {
+    setup();
+  }
+
+  @Override
+  public void disable() {
+    clear();
   }
 }

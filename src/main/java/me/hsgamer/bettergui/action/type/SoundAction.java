@@ -1,8 +1,9 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.api.action.BaseAction;
-import me.hsgamer.bettergui.builder.ActionBuilder;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
+import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.hscore.action.common.Action;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -10,13 +11,15 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class SoundAction extends BaseAction {
-  public SoundAction(ActionBuilder.Input input) {
-    super(input);
+public class SoundAction implements Action {
+  private final String value;
+
+  public SoundAction(String value) {
+    this.value = value;
   }
 
   @Override
-  public void accept(UUID uuid, TaskProcess process) {
+  public void apply(UUID uuid, TaskProcess process, StringReplacer stringReplacer) {
     Player player = Bukkit.getPlayer(uuid);
     if (player == null) {
       process.next();
@@ -26,7 +29,7 @@ public class SoundAction extends BaseAction {
     String sound;
     float volume = 1f;
     float pitch = 1f;
-    String replaced = getReplacedString(uuid);
+    String replaced = stringReplacer.replaceOrOriginal(value, uuid);
     String[] split;
     if (replaced.indexOf(',') != -1) {
       split = replaced.split(",");
@@ -52,13 +55,16 @@ public class SoundAction extends BaseAction {
 
     float finalVolume = volume;
     float finalPitch = pitch;
-    Scheduler.current().sync().runEntityTaskWithFinalizer(player, () -> {
-      try {
-        Sound soundEnum = Sound.valueOf(sound.replace(" ", "_").toUpperCase());
-        player.playSound(player.getLocation(), soundEnum, finalVolume, finalPitch);
-      } catch (Exception exception) {
-        player.playSound(player.getLocation(), sound, finalVolume, finalPitch);
-      }
-    }, process::next);
+    EntityScheduler.get(BetterGUI.getInstance(), player)
+      .run(() -> {
+        try {
+          Sound soundEnum = Sound.valueOf(sound.replace(" ", "_").toUpperCase());
+          player.playSound(player.getLocation(), soundEnum, finalVolume, finalPitch);
+        } catch (Exception exception) {
+          player.playSound(player.getLocation(), sound, finalVolume, finalPitch);
+        } finally {
+          process.next();
+        }
+      }, process::next);
   }
 }

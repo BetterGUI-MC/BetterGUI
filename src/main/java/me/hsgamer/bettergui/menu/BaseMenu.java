@@ -1,12 +1,15 @@
 package me.hsgamer.bettergui.menu;
 
+import io.github.projectunified.minelib.scheduler.async.AsyncScheduler;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
+import me.hsgamer.bettergui.config.MessageConfig;
+import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.bukkit.utils.PermissionUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
@@ -75,7 +78,7 @@ public abstract class BaseMenu extends StandardMenu {
           if (s.contains(" ")) {
             getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
           } else {
-            getInstance().getMenuCommandManager().registerMenuCommand(s, this);
+            getInstance().get(MenuCommandManager.class).registerMenuCommand(s, this);
           }
         }
       });
@@ -105,7 +108,7 @@ public abstract class BaseMenu extends StandardMenu {
 
     // Check Permission
     if (!bypass && !PermissionUtils.hasAnyPermission(player, permissions)) {
-      MessageUtils.sendMessage(player, getInstance().getMessageConfig().getNoPermission());
+      MessageUtils.sendMessage(player, getInstance().get(MessageConfig.class).getNoPermission());
       return false;
     }
 
@@ -118,7 +121,7 @@ public abstract class BaseMenu extends StandardMenu {
         result.applier.accept(uuid, process);
         process.next();
       });
-      Scheduler.current().async().runTask(batchRunnable);
+      AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
 
       if (!result.isSuccess) {
         return false;

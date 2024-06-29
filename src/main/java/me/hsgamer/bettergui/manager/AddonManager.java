@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.manager;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
+import io.github.projectunified.minelib.plugin.postenable.PostEnable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.hscore.bukkit.expansion.BukkitConfigExpansionDescriptionLoader;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
@@ -17,7 +19,7 @@ import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
 
-public class AddonManager extends ExpansionManager {
+public class AddonManager extends ExpansionManager implements Loadable, PostEnable {
   private final BetterGUI plugin;
 
   public AddonManager(BetterGUI plugin) {
@@ -108,5 +110,21 @@ public class AddonManager extends ExpansionManager {
    */
   public BetterGUI getPlugin() {
     return plugin;
+  }
+
+  @Override
+  public void enable() {
+    loadExpansions();
+  }
+
+  @Override
+  public void postEnable() {
+    enableExpansions();
+  }
+
+  @Override
+  public void disable() {
+    disableExpansions();
+    clearExpansions();
   }
 }

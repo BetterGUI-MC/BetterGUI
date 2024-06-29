@@ -1,8 +1,10 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.api.action.Action;
+import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
+import me.hsgamer.hscore.action.common.Action;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,17 +19,19 @@ public class CloseMenuAction implements Action {
   }
 
   @Override
-  public void accept(UUID uuid, TaskProcess process) {
+  public void apply(UUID uuid, TaskProcess process, StringReplacer stringReplacer) {
     Player player = Bukkit.getPlayer(uuid);
     if (menu == null || player == null) {
       process.next();
       return;
     }
-    Scheduler.current().sync().runEntityTaskWithFinalizer(player, () -> menu.close(player), process::next);
-  }
-
-  @Override
-  public Menu getMenu() {
-    return menu;
+    EntityScheduler.get(BetterGUI.getInstance(), player)
+      .run(() -> {
+        try {
+          menu.close(player);
+        } finally {
+          process.next();
+        }
+      }, process::next);
   }
 }
