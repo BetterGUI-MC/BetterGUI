@@ -6,7 +6,6 @@ import me.hsgamer.bettergui.menu.PredicateMenu;
 import me.hsgamer.bettergui.menu.SimpleMenu;
 import me.hsgamer.hscore.builder.MassBuilder;
 import me.hsgamer.hscore.config.Config;
-import me.hsgamer.hscore.config.PathString;
 
 import java.util.Map;
 import java.util.Objects;
@@ -37,8 +36,8 @@ public final class MenuBuilder extends MassBuilder<Config, Menu> {
   public void register(Function<Config, Menu> creator, String... type) {
     register(input -> {
       String menu = "simple";
-      for (Map.Entry<PathString, Object> entry : input.getNormalizedValues(true).entrySet()) {
-        String[] path = entry.getKey().getPath();
+      for (Map.Entry<String[], Object> entry : input.getNormalizedValues(true).entrySet()) {
+        String[] path = entry.getKey();
         if (path.length == 2 && path[0].equalsIgnoreCase(Menu.MENU_SETTINGS_PATH) && path[1].equalsIgnoreCase("menu-type")) {
           menu = Objects.toString(entry.getValue(), "simple");
           break;
