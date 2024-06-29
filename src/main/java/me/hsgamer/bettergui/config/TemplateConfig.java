@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.config;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
-import me.hsgamer.hscore.config.PathString;
+import me.hsgamer.hscore.common.MapUtils;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -71,13 +71,16 @@ public class TemplateConfig {
     if (file.isFile()) {
       ConfigBuilder.INSTANCE.build(file).ifPresent(config -> {
         config.setup();
-        for (PathString pathString : config.getKeys(false)) {
-          Map<String, Object> values = PathString.toPathMap(config.getNormalizedValues(pathString, false));
-          String key = pathString.getLastPath();
+        for (Map.Entry<String[], Object> entry : config.getNormalizedValues(false).entrySet()) {
+          String key = entry.getKey()[0];
+          Optional<Map<String, Object>> optionalValues = MapUtils.castOptionalStringObjectMap(entry.getValue());
+          if (!optionalValues.isPresent()) {
+            continue;
+          }
           if (BetterGUI.getInstance().getMainConfig().isIncludeMenuInTemplate()) {
             key = BetterGUI.getInstance().getMainConfig().getFileName(templateFolder, file) + "/" + key;
           }
-          templateMap.put(key, values);
+          templateMap.put(key, optionalValues.get());
         }
       });
     }
