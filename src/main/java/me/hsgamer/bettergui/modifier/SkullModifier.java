@@ -34,6 +34,7 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
   private static final Pattern MOJANG_SHA256_APPROX = Pattern.compile("[0-9a-z]{55,70}");
   private static final SkullMeta delegateSkullMeta;
   private static final SkullHandler skullHandler = new SkullHandler();
+  private static final Map<String, GameProfile> cache = new HashMap<>();
 
   static {
     ItemStack itemStack;
@@ -159,8 +160,11 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
     }
 
     public void setSkullByURL(SkullMeta meta, URL url) {
-      GameProfile profile = new GameProfile(UUID.randomUUID(), "");
-      profile.getProperties().put("textures", new Property("textures", Base64.getEncoder().encodeToString(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes())));
+      GameProfile profile = cache.computeIfAbsent(url.toString(), s -> {
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
+        gameProfile.getProperties().put("textures", new Property("textures", Base64.getEncoder().encodeToString(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes())));
+        return gameProfile;
+      });
 
       try {
         Method setProfile = meta.getClass().getMethod("setProfile", GameProfile.class);
