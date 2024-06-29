@@ -205,6 +205,11 @@
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
+      <artifactId>hscore-bukkit-action-builder</artifactId>
+      <version>${core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>me.hsgamer</groupId>
       <artifactId>hscore-config-proxy</artifactId>
       <version>${core.version}</version>
     </dependency>
