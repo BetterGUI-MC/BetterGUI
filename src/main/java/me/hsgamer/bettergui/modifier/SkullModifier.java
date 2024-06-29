@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.hsgamer.hscore.bukkit.item.modifier.ItemMetaComparator;
 import me.hsgamer.hscore.bukkit.item.modifier.ItemMetaModifier;
-import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.bukkit.utils.VersionUtils;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
@@ -20,10 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -53,15 +49,24 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
   private String skullString = "";
 
   private static void setSkull(SkullMeta meta, String skull) {
-    if (BukkitUtils.isUsername(skull)) {
-      skullHandler.setSkullByName(meta, skull);
-    } else if (Validate.isValidUUID(skull)) {
-      skullHandler.setSkullByUUID(meta, UUID.fromString(skull));
-    } else if (Validate.isValidURL(skull)) {
-      skullHandler.setSkullByURL(meta, skull);
-    } else if (MOJANG_SHA256_APPROX.matcher(skull).matches()) {
-      skullHandler.setSkullByURL(meta, "https://textures.minecraft.net/texture/" + skull);
+    Optional<URL> url = Validate.getURL(skull);
+    if (url.isPresent()) {
+      skullHandler.setSkullByURL(meta, url.get());
+      return;
     }
+
+    if (MOJANG_SHA256_APPROX.matcher(skull).matches()) {
+      skullHandler.setSkullByURL(meta, "https://textures.minecraft.net/texture/" + skull);
+      return;
+    }
+
+    Optional<UUID> uuid = Validate.getUUID(skull);
+    if (uuid.isPresent()) {
+      skullHandler.setSkullByUUID(meta, uuid.get());
+      return;
+    }
+
+    skullHandler.setSkullByName(meta, skull);
   }
 
   private static SkullMeta getSkullMeta(String skull) {
@@ -70,16 +75,12 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
     return meta;
   }
 
-  private String getFinalSkullString(UUID uuid, Collection<StringReplacer> replacers) {
-    return StringReplacer.replace(skullString, uuid, replacers);
-  }
-
   @Override
-  public @NotNull ItemMeta modifyMeta(@NotNull ItemMeta meta, @Nullable UUID uuid, @NotNull Collection<StringReplacer> stringReplacers) {
+  public @NotNull ItemMeta modifyMeta(@NotNull ItemMeta meta, @Nullable UUID uuid, @NotNull StringReplacer stringReplacer) {
     if (!(meta instanceof SkullMeta)) {
       return meta;
     }
-    setSkull((SkullMeta) meta, getFinalSkullString(uuid, stringReplacers));
+    setSkull((SkullMeta) meta, stringReplacer.replaceOrOriginal(skullString, uuid));
     return meta;
   }
 
@@ -93,12 +94,12 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
   }
 
   @Override
-  public boolean compare(@NotNull ItemMeta meta, @Nullable UUID uuid, @NotNull Collection<StringReplacer> stringReplacers) {
+  public boolean compare(@NotNull ItemMeta meta, @Nullable UUID uuid, @NotNull StringReplacer stringReplacer) {
     if (!(meta instanceof SkullMeta)) {
       return false;
     }
     return skullHandler.compareSkull(
-      getSkullMeta(getFinalSkullString(uuid, stringReplacers)),
+      getSkullMeta(stringReplacer.replaceOrOriginal(skullString, uuid)),
       (SkullMeta) meta
     );
   }
