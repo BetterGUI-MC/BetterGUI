@@ -29,8 +29,8 @@ public final class MenuManager {
    */
   public void loadMenuConfig() {
     if (!menusFolder.exists() && menusFolder.mkdirs()) {
-      plugin.saveResource("menu" + File.separator + "example.yml", false);
-      plugin.saveResource("menu" + File.separator + "addondownloader.yml", false);
+      plugin.saveResource("menu/example.yml", false);
+      plugin.saveResource("menu/addondownloader.yml", false);
     }
     LinkedList<File> files = new LinkedList<>();
     files.add(menusFolder);

@@ -1,9 +1,9 @@
 package me.hsgamer.bettergui.manager;
 
+import io.github.projectunified.minelib.plugin.command.CommandComponent;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.hscore.bukkit.command.CommandManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -63,7 +63,7 @@ public class MenuCommandManager {
       plugin.getLogger().log(Level.WARNING, "Duplicated \"{0}\" command ! Ignored", name);
       return;
     }
-    CommandManager.registerCommandToCommandMap(plugin.getName() + "_menu", command);
+    CommandComponent.registerCommandToCommandMap(plugin.getName() + "_menu", command);
     registeredMenuCommand.put(name, command);
   }
 
@@ -71,7 +71,7 @@ public class MenuCommandManager {
    * Clear all menu commands
    */
   public void clearMenuCommand() {
-    registeredMenuCommand.values().forEach(CommandManager::unregisterFromKnownCommands);
+    registeredMenuCommand.values().forEach(CommandComponent::unregisterFromKnownCommands);
     registeredMenuCommand.clear();
   }
 
