@@ -84,6 +84,7 @@
         <configuration>
           <links>
             <link>https://hsgamer.github.io/HSCore/</link>
+            <link>https://projectunified.github.io/MineLib/</link>
           </links>
         </configuration>
         <executions>
