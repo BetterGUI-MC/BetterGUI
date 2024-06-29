@@ -1,10 +1,12 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.api.action.BaseAction;
+import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.api.action.MenuActionInput;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.builder.ActionBuilder;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
+import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,17 +16,21 @@ import java.util.UUID;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
-public class OpenMenuAction extends BaseAction {
+public class OpenMenuAction implements Action {
+  private final Menu menu;
+  private final String value;
   private final boolean bypass;
-  public OpenMenuAction(ActionBuilder.Input input) {
-    super(input);
-    this.bypass = input.option.equalsIgnoreCase("bypassChecks");
+
+  public OpenMenuAction(MenuActionInput input) {
+    this.menu = input.getMenu();
+    this.value = input.getValue();
+    this.bypass = input.getOption().equalsIgnoreCase("bypassChecks");
   }
 
   @Override
-  public void accept(UUID uuid, TaskProcess process) {
+  public void apply(UUID uuid, TaskProcess process, StringReplacer stringReplacer) {
     // Get Menu and Arguments
-    String[] split = getReplacedString(uuid).split(" ");
+    String[] split = stringReplacer.replaceOrOriginal(value, uuid).split(" ");
     String menu = split[0];
     String[] args = new String[0];
     if (split.length > 1) {
@@ -40,14 +46,15 @@ public class OpenMenuAction extends BaseAction {
     // Open menu
     if (getInstance().getMenuManager().contains(menu)) {
       String[] finalArgs = args;
-      Runnable runnable;
-      Menu parentMenu = getMenu();
-      if (parentMenu != null) {
-        runnable = () -> getInstance().getMenuManager().openMenu(menu, player, finalArgs, parentMenu, bypass);
-      } else {
-        runnable = () -> getInstance().getMenuManager().openMenu(menu, player, finalArgs, bypass);
-      }
-      Scheduler.current().sync().runEntityTaskWithFinalizer(player, runnable, process::next);
+      Menu parentMenu = this.menu;
+      EntityScheduler.get(BetterGUI.getInstance(), player)
+        .run(() -> {
+          try {
+            getInstance().getMenuManager().openMenu(menu, player, finalArgs, parentMenu, bypass);
+          } finally {
+            process.next();
+          }
+        }, process::next);
     } else {
       MessageUtils.sendMessage(player, getInstance().getMessageConfig().getMenuNotFound());
       process.next();

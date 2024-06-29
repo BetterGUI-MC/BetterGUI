@@ -1,9 +1,11 @@
 package me.hsgamer.bettergui.action;
 
-import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.builder.ActionBuilder;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.hscore.action.common.Action;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskPool;
 import me.hsgamer.hscore.task.element.TaskProcess;
 
@@ -18,16 +20,19 @@ public class ActionApplier implements ProcessApplier {
   /**
    * The empty action applier
    */
-  public static final ActionApplier EMPTY = new ActionApplier(Collections.emptyList());
+  public static final ActionApplier EMPTY = new ActionApplier(Collections.emptyList(), StringReplacer.DUMMY);
   private final List<Action> actions;
+  private final StringReplacer replacer;
 
   /**
    * Create a new action applier
    *
-   * @param actions the actions
+   * @param actions  the actions
+   * @param replacer the replacer
    */
-  public ActionApplier(List<Action> actions) {
+  public ActionApplier(List<Action> actions, StringReplacer replacer) {
     this.actions = actions;
+    this.replacer = replacer;
   }
 
   /**
@@ -37,7 +42,7 @@ public class ActionApplier implements ProcessApplier {
    * @param value the value
    */
   public ActionApplier(Menu menu, Object value) {
-    this(ActionBuilder.INSTANCE.build(menu, value));
+    this(ActionBuilder.INSTANCE.build(menu, value), StringReplacer.of((original, uuid) -> StringReplacerApplier.replace(original, uuid, menu)));
   }
 
   /**
@@ -58,7 +63,7 @@ public class ActionApplier implements ProcessApplier {
   public void acceptWithoutNext(UUID uuid, TaskProcess process) {
     TaskPool currentPool = process.getCurrentTaskPool();
     for (Action action : actions) {
-      currentPool.addLast(subProcess -> action.accept(uuid, subProcess));
+      currentPool.addLast(subProcess -> action.apply(uuid, subProcess, replacer));
     }
   }
 

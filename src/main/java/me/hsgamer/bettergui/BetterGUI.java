@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui;
 
+import io.github.projectunified.minelib.plugin.base.BasePlugin;
 import me.hsgamer.bettergui.api.addon.PostEnable;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.*;
@@ -13,7 +14,6 @@ import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.papi.ExtraPlaceholderExpansion;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
-import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
@@ -152,7 +152,7 @@ public final class BetterGUI extends BasePlugin {
   }
 
   @Override
-  protected List<Class<?>> getPermissionClasses() {
+  private List<Class<?>> getPermissionClasses() {
     return Collections.singletonList(Permissions.class);
   }
 
