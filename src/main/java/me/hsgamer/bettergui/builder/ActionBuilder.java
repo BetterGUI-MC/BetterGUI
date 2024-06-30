@@ -42,39 +42,46 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
   public List<Action> build(Menu menu, Object object) {
     List<Input> inputs = CollectionUtils.createStringListFromObject(object, true)
       .stream()
-      .map(ActionInput::create)
       .map(input -> Input.create(menu, input))
       .collect(Collectors.toList());
-    return build(inputs, input -> new PlayerAction(BetterGUI.getInstance(), input.getValue()));
+    return build(inputs, input -> new PlayerAction(BetterGUI.getInstance(), input.getOriginalValue()));
   }
 
   public interface Input extends ActionInput, MenuElement {
-    static Input create(Menu menu, ActionInput input) {
+    static Input create(Menu menu, String input) {
+      ActionInput actionInput = ActionInput.create(input);
       return new Input() {
         @Override
         public String getType() {
-          return input.getType();
+          return actionInput.getType();
         }
 
         @Override
         public String getOption() {
-          return input.getOption();
+          return actionInput.getOption();
         }
 
         @Override
         public String getValue() {
-          return input.getValue();
+          return actionInput.getValue();
         }
 
         @Override
         public Menu getMenu() {
           return menu;
         }
+
+        @Override
+        public String getOriginalValue() {
+          return input;
+        }
       };
     }
 
-    static Input create(MenuElement menuElement, ActionInput input) {
+    static Input create(MenuElement menuElement, String input) {
       return create(menuElement.getMenu(), input);
     }
+
+    String getOriginalValue();
   }
 }
