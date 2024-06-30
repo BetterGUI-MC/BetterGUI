@@ -2,8 +2,8 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.type.*;
-import me.hsgamer.bettergui.api.action.MenuActionInput;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.menu.MenuElement;
 import me.hsgamer.hscore.action.builder.ActionInput;
 import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.bukkit.action.PlayerAction;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * The action builder
  */
-public final class ActionBuilder extends me.hsgamer.hscore.action.builder.ActionBuilder {
+public final class ActionBuilder extends me.hsgamer.hscore.action.builder.ActionBuilder<ActionBuilder.Input> {
   /**
    * The instance of the action builder
    */
@@ -24,10 +24,10 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
 
   private ActionBuilder() {
     BukkitActionBuilder.register(this, BetterGUI.getInstance());
-    register(input -> new OpenMenuAction((MenuActionInput) input), "open-menu", "open", "menu", "open-menu");
-    register(input -> new BackAction(((MenuActionInput) input).getMenu()), "back-menu", "backmenu");
-    register(input -> new CloseMenuAction(((MenuActionInput) input).getMenu()), "close-menu", "closemenu");
-    register(input -> new UpdateMenuAction(((MenuActionInput) input).getMenu()), "update-menu", "updatemenu");
+    register(OpenMenuAction::new, "open-menu", "open", "menu", "open-menu");
+    register(input -> new BackAction(input.getMenu()), "back-menu", "backmenu");
+    register(input -> new CloseMenuAction(input.getMenu()), "close-menu", "closemenu");
+    register(input -> new UpdateMenuAction(input.getMenu()), "update-menu", "updatemenu");
     register(input -> new SoundAction(input.getValue()), "sound", "raw-sound");
   }
 
@@ -40,11 +40,41 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
    * @return the list of actions
    */
   public List<Action> build(Menu menu, Object object) {
-    List<ActionInput> inputs = CollectionUtils.createStringListFromObject(object, true)
+    List<Input> inputs = CollectionUtils.createStringListFromObject(object, true)
       .stream()
       .map(ActionInput::create)
-      .map(input -> MenuActionInput.create(menu, input))
+      .map(input -> Input.create(menu, input))
       .collect(Collectors.toList());
     return build(inputs, input -> new PlayerAction(BetterGUI.getInstance(), input.getValue()));
+  }
+
+  public interface Input extends ActionInput, MenuElement {
+    static Input create(Menu menu, ActionInput input) {
+      return new Input() {
+        @Override
+        public String getType() {
+          return input.getType();
+        }
+
+        @Override
+        public String getOption() {
+          return input.getOption();
+        }
+
+        @Override
+        public String getValue() {
+          return input.getValue();
+        }
+
+        @Override
+        public Menu getMenu() {
+          return menu;
+        }
+      };
+    }
+
+    static Input create(MenuElement menuElement, ActionInput input) {
+      return create(menuElement.getMenu(), input);
+    }
   }
 }

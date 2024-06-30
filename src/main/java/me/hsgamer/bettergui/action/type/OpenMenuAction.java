@@ -2,8 +2,8 @@ package me.hsgamer.bettergui.action.type;
 
 import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.action.MenuActionInput;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.hscore.action.common.Action;
@@ -23,7 +23,7 @@ public class OpenMenuAction implements Action {
   private final String value;
   private final boolean bypass;
 
-  public OpenMenuAction(MenuActionInput input) {
+  public OpenMenuAction(ActionBuilder.Input input) {
     this.menu = input.getMenu();
     this.value = input.getValue();
     this.bypass = input.getOption().equalsIgnoreCase("bypassChecks");
