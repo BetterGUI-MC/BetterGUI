@@ -3,15 +3,12 @@ package me.hsgamer.bettergui.builder;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.requirement.type.*;
-import me.hsgamer.hscore.builder.MassBuilder;
-
-import java.util.Optional;
-import java.util.function.Function;
+import me.hsgamer.hscore.builder.FunctionalMassBuilder;
 
 /**
  * The requirement builder
  */
-public final class RequirementBuilder extends MassBuilder<RequirementBuilder.Input, Requirement> {
+public final class RequirementBuilder extends FunctionalMassBuilder<RequirementBuilder.Input, Requirement> {
   public static final RequirementBuilder INSTANCE = new RequirementBuilder();
 
   /**
@@ -25,22 +22,9 @@ public final class RequirementBuilder extends MassBuilder<RequirementBuilder.Inp
     register(ConditionRequirement::new, "condition");
   }
 
-  /**
-   * Register a new requirement creator
-   *
-   * @param creator the creator
-   * @param type    the type
-   */
-  public void register(Function<Input, Requirement> creator, String... type) {
-    register(input -> {
-      String requirement = input.type;
-      for (String s : type) {
-        if (requirement.equalsIgnoreCase(s)) {
-          return Optional.of(creator.apply(input));
-        }
-      }
-      return Optional.empty();
-    });
+  @Override
+  protected String getType(Input input) {
+    return input.type;
   }
 
   /**

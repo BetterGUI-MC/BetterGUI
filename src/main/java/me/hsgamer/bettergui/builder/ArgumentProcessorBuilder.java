@@ -3,18 +3,16 @@ package me.hsgamer.bettergui.builder;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.argument.type.*;
-import me.hsgamer.hscore.builder.MassBuilder;
+import me.hsgamer.hscore.builder.FunctionalMassBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * The argument processor builder
  */
-public final class ArgumentProcessorBuilder extends MassBuilder<ArgumentProcessorBuilder.Input, ArgumentProcessor> {
+public final class ArgumentProcessorBuilder extends FunctionalMassBuilder<ArgumentProcessorBuilder.Input, ArgumentProcessor> {
   /**
    * The instance of the argument processor builder
    */
@@ -29,23 +27,9 @@ public final class ArgumentProcessorBuilder extends MassBuilder<ArgumentProcesso
     register(MaterialArgumentProcessor::new, "material", "item");
   }
 
-  /**
-   * Register a new processor creator
-   *
-   * @param creator the creator
-   * @param type    the type
-   */
-  public void register(Function<ArgumentProcessorBuilder.Input, ArgumentProcessor> creator, String... type) {
-    register(input -> {
-      Map<String, Object> keys = new CaseInsensitiveStringMap<>(input.options);
-      String processor = Objects.toString(keys.get("type"), "store");
-      for (String s : type) {
-        if (processor.equalsIgnoreCase(s)) {
-          return Optional.of(creator.apply(input));
-        }
-      }
-      return Optional.empty();
-    });
+  @Override
+  protected String getType(Input input) {
+    return Objects.toString(new CaseInsensitiveStringMap<>(input.options).get("type"), "store");
   }
 
   /**

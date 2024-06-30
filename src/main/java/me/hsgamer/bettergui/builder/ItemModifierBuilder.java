@@ -2,14 +2,13 @@ package me.hsgamer.bettergui.builder;
 
 import me.hsgamer.bettergui.modifier.NBTModifier;
 import me.hsgamer.bettergui.modifier.SkullModifier;
-import me.hsgamer.hscore.builder.MassBuilder;
+import me.hsgamer.hscore.builder.FunctionalMassBuilder;
 import me.hsgamer.hscore.bukkit.item.modifier.*;
 import me.hsgamer.hscore.minecraft.item.ItemModifier;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,7 +16,7 @@ import java.util.stream.Stream;
 /**
  * The item modifier builder
  */
-public class ItemModifierBuilder extends MassBuilder<Map.Entry<String, Object>, ItemModifier<ItemStack>> {
+public class ItemModifierBuilder extends FunctionalMassBuilder<Map.Entry<String, Object>, ItemModifier<ItemStack>> {
   /**
    * The instance of the item modifier builder
    */
@@ -36,6 +35,11 @@ public class ItemModifierBuilder extends MassBuilder<Map.Entry<String, Object>, 
     register(PotionEffectModifier::new, "potion-effect", "potion", "effect");
   }
 
+  @Override
+  protected String getType(Map.Entry<String, Object> input) {
+    return input.getKey();
+  }
+
   /**
    * Register a new modifier creator
    *
@@ -44,17 +48,11 @@ public class ItemModifierBuilder extends MassBuilder<Map.Entry<String, Object>, 
    */
   public void register(Supplier<ItemModifier<ItemStack>> creator, String... type) {
     register(input -> {
-      String modifier = input.getKey();
-      for (String s : type) {
-        if (modifier.equalsIgnoreCase(s)) {
-          ItemModifier<ItemStack> itemModifier = creator.get();
-          Object value = input.getValue();
-          itemModifier.loadFromObject(value);
-          return Optional.of(itemModifier);
-        }
-      }
-      return Optional.empty();
-    });
+      ItemModifier<ItemStack> itemModifier = creator.get();
+      Object value = input.getValue();
+      itemModifier.loadFromObject(value);
+      return itemModifier;
+    }, type);
   }
 
   /**

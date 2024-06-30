@@ -4,18 +4,16 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.menu.AddonMenu;
 import me.hsgamer.bettergui.menu.PredicateMenu;
 import me.hsgamer.bettergui.menu.SimpleMenu;
-import me.hsgamer.hscore.builder.MassBuilder;
+import me.hsgamer.hscore.builder.FunctionalMassBuilder;
 import me.hsgamer.hscore.config.Config;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * The menu builder
  */
-public final class MenuBuilder extends MassBuilder<Config, Menu> {
+public final class MenuBuilder extends FunctionalMassBuilder<Config, Menu> {
   /**
    * The instance of the menu builder
    */
@@ -27,29 +25,16 @@ public final class MenuBuilder extends MassBuilder<Config, Menu> {
     register(PredicateMenu::new, "predicate");
   }
 
-  /**
-   * Register a new menu creator
-   *
-   * @param creator the creator
-   * @param type    the type
-   */
-  public void register(Function<Config, Menu> creator, String... type) {
-    register(input -> {
-      String menu = "simple";
-      for (Map.Entry<String[], Object> entry : input.getNormalizedValues(true).entrySet()) {
-        String[] path = entry.getKey();
-        if (path.length == 2 && path[0].equalsIgnoreCase(Menu.MENU_SETTINGS_PATH) && path[1].equalsIgnoreCase("menu-type")) {
-          menu = Objects.toString(entry.getValue(), "simple");
-          break;
-        }
+  @Override
+  protected String getType(Config input) {
+    String type = "simple";
+    for (Map.Entry<String[], Object> entry : input.getNormalizedValues(true).entrySet()) {
+      String[] path = entry.getKey();
+      if (path.length == 2 && path[0].equalsIgnoreCase(Menu.MENU_SETTINGS_PATH) && path[1].equalsIgnoreCase("menu-type")) {
+        type = Objects.toString(entry.getValue(), "simple");
+        break;
       }
-
-      for (String s : type) {
-        if (menu.equalsIgnoreCase(s)) {
-          return Optional.of(creator.apply(input));
-        }
-      }
-      return Optional.empty();
-    });
+    }
+    return type;
   }
 }

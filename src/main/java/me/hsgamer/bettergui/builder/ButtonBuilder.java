@@ -5,21 +5,19 @@ import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.button.*;
 import me.hsgamer.bettergui.config.MainConfig;
-import me.hsgamer.hscore.builder.MassBuilder;
+import me.hsgamer.hscore.builder.FunctionalMassBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * The button builder
  */
-public final class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, WrappedButton> {
+public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Input, WrappedButton> {
   /**
    * The instance of the button builder
    */
@@ -42,23 +40,9 @@ public final class ButtonBuilder extends MassBuilder<ButtonBuilder.Input, Wrappe
     );
   }
 
-  /**
-   * Register a new button creator
-   *
-   * @param creator the creator
-   * @param type    the type
-   */
-  public void register(Function<Input, WrappedButton> creator, String... type) {
-    register(input -> {
-      Map<String, Object> keys = new CaseInsensitiveStringMap<>(input.options);
-      String button = Objects.toString(keys.get("type"), "simple");
-      for (String s : type) {
-        if (button.equalsIgnoreCase(s)) {
-          return Optional.of(creator.apply(input));
-        }
-      }
-      return Optional.empty();
-    });
+  @Override
+  protected String getType(Input input) {
+    return Objects.toString(new CaseInsensitiveStringMap<>(input.options).get("type"), "simple");
   }
 
   /**
