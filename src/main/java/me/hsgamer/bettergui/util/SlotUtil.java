@@ -68,7 +68,7 @@ public class SlotUtil {
             return Stream.empty();
           }
         } else {
-          return Validate.getNumber(input)
+          return Validate.getNumber(rawSlot)
             .map(BigDecimal::intValue)
             .map(Stream::of)
             .orElseGet(Stream::empty);
