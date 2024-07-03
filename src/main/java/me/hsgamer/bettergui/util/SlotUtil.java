@@ -3,10 +3,10 @@ package me.hsgamer.bettergui.util;
 import me.hsgamer.hscore.common.Validate;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * The utility class for generating slots
@@ -27,23 +27,21 @@ public class SlotUtil {
    *
    * @return the slots
    */
-  public static List<Integer> getSlots(Map<String, Object> map) {
-    List<Integer> slots = new ArrayList<>();
+  public static IntStream getSlots(Map<String, Object> map) {
+    IntStream slots = IntStream.empty();
 
     if (map.containsKey(POS_X) || map.containsKey(POS_Y)) {
-      int x = 1;
-      int y = 1;
-      if (map.containsKey(POS_X)) {
-        x = Integer.parseInt(String.valueOf(map.get(POS_X)));
+      Optional<Integer> x = Validate.getNumber(String.valueOf(map.get(POS_X))).map(BigDecimal::intValue);
+      Optional<Integer> y = Validate.getNumber(String.valueOf(map.get(POS_Y))).map(BigDecimal::intValue);
+      if (x.isPresent() && y.isPresent()) {
+        slots = IntStream.of((y.get() - 1) * 9 + x.get() - 1);
       }
-      if (map.containsKey(POS_Y)) {
-        y = Integer.parseInt(String.valueOf(map.get(POS_Y)));
-      }
-      slots.add((y - 1) * 9 + x - 1);
     }
+
     if (map.containsKey(POS_SLOT)) {
-      slots.addAll(generateSlots(String.valueOf(map.get(POS_SLOT))).collect(Collectors.toList()));
+      slots = IntStream.concat(slots, generateSlots(String.valueOf(map.get(POS_SLOT))));
     }
+
     return slots;
   }
 
@@ -54,24 +52,24 @@ public class SlotUtil {
    *
    * @return the stream of slots
    */
-  public static Stream<Integer> generateSlots(String input) {
+  public static IntStream generateSlots(String input) {
     return Arrays.stream(input.split(","))
       .map(String::trim)
-      .flatMap(rawSlot -> {
+      .flatMapToInt(rawSlot -> {
         String[] rangeSplit = rawSlot.split("-", 2);
         if (rangeSplit.length == 2) {
           Optional<Integer> start = Validate.getNumber(rangeSplit[0]).map(BigDecimal::intValue);
           Optional<Integer> end = Validate.getNumber(rangeSplit[1]).map(BigDecimal::intValue);
           if (start.isPresent() && end.isPresent()) {
-            return IntStream.rangeClosed(start.get(), end.get()).boxed();
+            return IntStream.rangeClosed(start.get(), end.get());
           } else {
-            return Stream.empty();
+            return IntStream.empty();
           }
         } else {
           return Validate.getNumber(rawSlot)
             .map(BigDecimal::intValue)
-            .map(Stream::of)
-            .orElseGet(Stream::empty);
+            .map(IntStream::of)
+            .orElseGet(IntStream::empty);
         }
       });
   }
