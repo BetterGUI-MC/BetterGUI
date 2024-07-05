@@ -8,6 +8,7 @@ import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.InventoryBuilder;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.bettergui.util.TickUtil;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIDisplay;
 import me.hsgamer.hscore.bukkit.gui.BukkitGUIHolder;
 import me.hsgamer.hscore.common.MapUtils;
@@ -28,6 +29,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
@@ -42,7 +44,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
   private final B buttonMap;
   private final Set<UUID> forceClose = new ConcurrentSkipListSet<>();
   private final Map<UUID, Task> updateTasks = new ConcurrentHashMap<>();
-  private final long ticks;
+  private final long refreshMillis;
 
   protected BaseInventoryMenu(Config config) {
     super(config);
@@ -50,7 +52,9 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
       @Override
       protected @NotNull BukkitGUIDisplay newDisplay(UUID uuid) {
         BukkitGUIDisplay guiDisplay = super.newDisplay(uuid);
-        if (ticks >= 0) {
+        if (refreshMillis >= 0) {
+          long millis = refreshMillis == 0 ? 50L : refreshMillis;
+
           Player player = Bukkit.getPlayer(uuid);
           assert player != null;
 
@@ -61,7 +65,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
             } else {
               return false;
             }
-          }, ticks, ticks));
+          }, millis, millis, TimeUnit.MILLISECONDS));
         }
         return guiDisplay;
       }
@@ -140,10 +144,9 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
       .map(i -> Math.max(1, i))
       .ifPresent(guiHolder::setSize);
 
-    ticks = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "auto-refresh", "ticks"))
+    refreshMillis = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "auto-refresh", "ticks"))
       .map(String::valueOf)
-      .flatMap(Validate::getNumber)
-      .map(BigDecimal::longValue)
+      .flatMap(TickUtil::toMillis)
       .orElse(0L);
 
     Optional.ofNullable(menuSettings.get("cached"))
