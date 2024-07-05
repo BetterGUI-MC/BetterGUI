@@ -43,7 +43,7 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
   private final BukkitGUIHolder guiHolder;
   private final B buttonMap;
   private final Set<UUID> forceClose = new ConcurrentSkipListSet<>();
-  private final Map<UUID, Task> updateTasks = new ConcurrentHashMap<>();
+  private final Map<UUID, UpdateTask> updateTasks = new ConcurrentHashMap<>();
   private final long refreshMillis;
 
   protected BaseInventoryMenu(Config config) {
@@ -58,32 +58,29 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
           Player player = Bukkit.getPlayer(uuid);
           assert player != null;
 
-          updateTasks.put(uuid, AsyncScheduler.get(BetterGUI.getInstance()).runTimer(() -> {
-            if (player.isOnline()) {
-              guiDisplay.update();
-              return true;
-            } else {
-              return false;
-            }
-          }, millis, millis, TimeUnit.MILLISECONDS));
+          UpdateTask task = new UpdateTask(guiDisplay::update, millis);
+          updateTasks.put(uuid, task);
         }
         return guiDisplay;
       }
 
       @Override
       protected void onRemoveDisplay(@NotNull BukkitGUIDisplay display) {
-        Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(Task::cancel);
+        Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(UpdateTask::stop);
         super.onRemoveDisplay(display);
       }
 
       @Override
       protected void onOpen(@NotNull OpenEvent event) {
+        UUID uuid = event.getViewerID();
+
         if (!openActionApplier.isEmpty()) {
-          UUID uuid = event.getViewerID();
           BatchRunnable batchRunnable = new BatchRunnable();
           batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> openActionApplier.accept(uuid, process));
           AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
         }
+
+        Optional.ofNullable(updateTasks.get(uuid)).ifPresent(UpdateTask::start);
       }
 
       @Override
@@ -229,5 +226,31 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
 
   public BukkitGUIHolder getGUIHolder() {
     return guiHolder;
+  }
+
+  private static class UpdateTask {
+    private final Runnable runnable;
+    private final long millis;
+    private Task task;
+
+    private UpdateTask(Runnable runnable, long millis) {
+      this.runnable = runnable;
+      this.millis = millis;
+    }
+
+    public void start() {
+      if (task != null && !task.isCancelled()) return;
+
+      task = AsyncScheduler.get(BetterGUI.getInstance()).runTimer(() -> {
+        runnable.run();
+        return true;
+      }, millis, millis, TimeUnit.MILLISECONDS);
+    }
+
+    public void stop() {
+      if (task != null) {
+        task.cancel();
+      }
+    }
   }
 }
