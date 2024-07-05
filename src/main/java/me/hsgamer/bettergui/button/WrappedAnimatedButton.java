@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.button;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
+import me.hsgamer.bettergui.util.TickUtil;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
@@ -22,10 +23,9 @@ public class WrappedAnimatedButton extends BaseWrappedButton<AnimatedButton> {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
     long update = Optional.ofNullable(keys.get("update"))
       .map(String::valueOf)
-      .flatMap(Validate::getNumber)
-      .filter(bigDecimal -> bigDecimal.compareTo(BigDecimal.ZERO) > 0)
-      .map(BigDecimal::longValue)
-      .orElse(0L);
+      .flatMap(TickUtil::toMillis)
+      .filter(n -> n > 0)
+      .orElse(50L);
     int shift = Optional.ofNullable(keys.get("shift"))
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
@@ -45,7 +45,7 @@ public class WrappedAnimatedButton extends BaseWrappedButton<AnimatedButton> {
       frames = CollectionUtils.reverse(frames);
     }
 
-    return new AnimatedButton().addButton(frames).setPeriodTicks(update);
+    return new AnimatedButton().addButton(frames).setPeriodMillis(update);
   }
 
   @Override
