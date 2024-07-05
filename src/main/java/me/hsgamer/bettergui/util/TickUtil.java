@@ -64,6 +64,6 @@ public class TickUtil {
       function = n -> ticksToMillis(n.longValue());
     }
 
-    return Validate.getNumber(number).map(function);
+    return Validate.getNumber(number.trim()).map(function);
   }
 }
