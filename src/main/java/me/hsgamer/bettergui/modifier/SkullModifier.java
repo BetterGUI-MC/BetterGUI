@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 /**
@@ -34,7 +35,7 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
   private static final Pattern MOJANG_SHA256_APPROX = Pattern.compile("[0-9a-z]{55,70}");
   private static final SkullMeta delegateSkullMeta;
   private static final SkullHandler skullHandler = new SkullHandler();
-  private static final Map<String, GameProfile> cache = new HashMap<>();
+  private static final Map<String, GameProfile> cache = new ConcurrentHashMap<>();
 
   static {
     ItemStack itemStack;
