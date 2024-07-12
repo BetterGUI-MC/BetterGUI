@@ -1,8 +1,7 @@
 package me.hsgamer.bettergui.action.type;
 
-import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskProcess;
@@ -25,7 +24,7 @@ public class CloseMenuAction implements Action {
       process.next();
       return;
     }
-    EntityScheduler.get(BetterGUI.getInstance(), player)
+    SchedulerUtil.entity(player)
       .run(() -> {
         try {
           menu.close(player);

@@ -1,11 +1,11 @@
 package me.hsgamer.bettergui.action.type;
 
-import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.MenuManager;
+import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.StringReplacer;
@@ -49,7 +49,7 @@ public class OpenMenuAction implements Action {
     if (getInstance().get(MenuManager.class).contains(menu)) {
       String[] finalArgs = args;
       Menu parentMenu = this.menu;
-      EntityScheduler.get(BetterGUI.getInstance(), player)
+      SchedulerUtil.entity(player)
         .run(() -> {
           try {
             getInstance().get(MenuManager.class).openMenu(menu, player, finalArgs, parentMenu, bypass);

@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.menu;
 
-import io.github.projectunified.minelib.scheduler.async.AsyncScheduler;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
@@ -9,6 +8,7 @@ import me.hsgamer.bettergui.manager.MenuCommandManager;
 import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
+import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.PermissionUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
@@ -97,7 +97,7 @@ public class PredicateMenu extends StandardMenu {
         result.applier.accept(uuid, process);
         process.next();
       });
-      AsyncScheduler.get(BetterGUI.getInstance()).run(batchRunnable);
+      SchedulerUtil.async().run(batchRunnable);
 
       if (result.isSuccess) {
         MenuProcess menuProcess = pair.getValue();

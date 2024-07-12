@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.action.type;
 
-import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
-import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskProcess;
@@ -55,7 +54,7 @@ public class SoundAction implements Action {
 
     float finalVolume = volume;
     float finalPitch = pitch;
-    EntityScheduler.get(BetterGUI.getInstance(), player)
+    SchedulerUtil.entity(player)
       .run(() -> {
         try {
           Sound soundEnum = Sound.valueOf(sound.replace(" ", "_").toUpperCase());

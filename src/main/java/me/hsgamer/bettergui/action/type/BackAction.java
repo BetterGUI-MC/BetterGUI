@@ -1,9 +1,8 @@
 package me.hsgamer.bettergui.action.type;
 
-import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskProcess;
@@ -30,7 +29,7 @@ public class BackAction implements Action {
     Runnable runnable = menu.getParentMenu(uuid)
       .<Runnable>map(parentMenu -> () -> parentMenu.create(player, new String[0], player.hasPermission(Permissions.OPEN_MENU_BYPASS)))
       .orElse(player::closeInventory);
-    EntityScheduler.get(BetterGUI.getInstance(), player)
+    SchedulerUtil.entity(player)
       .run(() -> {
         try {
           runnable.run();
