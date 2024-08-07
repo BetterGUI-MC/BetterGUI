@@ -2,7 +2,6 @@ package me.hsgamer.bettergui.modifier;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import me.hsgamer.hscore.bukkit.item.modifier.ItemMetaComparator;
 import me.hsgamer.hscore.bukkit.item.modifier.ItemMetaModifier;
 import me.hsgamer.hscore.bukkit.utils.VersionUtils;
 import me.hsgamer.hscore.common.StringReplacer;
@@ -13,6 +12,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,13 +29,13 @@ import java.util.regex.Pattern;
  * I decide to keep it here for compatibility.
  */
 @SuppressWarnings("deprecation")
-public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
+public class SkullModifier implements ItemMetaModifier {
   /**
    * <a href="https://github.com/CryptoMorin/XSeries/blob/b633d00608435701f1045a566b98a81edd5f923c/src/main/java/com/cryptomorin/xseries/profiles/objects/ProfileInputType.java#L29C35-L29C50">...</a>
    */
   private static final Pattern MOJANG_SHA256_APPROX = Pattern.compile("[0-9a-z]{55,70}");
   private static final SkullMeta delegateSkullMeta;
-  private static final SkullHandler skullHandler = new SkullHandler();
+  private static final SkullHandler skullHandler = getSkullHandler();
   private static final Map<String, GameProfile> cache = new ConcurrentHashMap<>();
 
   static {
@@ -49,6 +50,15 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
   }
 
   private String skullString = "";
+
+  private static SkullHandler getSkullHandler() {
+    try {
+      Class.forName("org.bukkit.profile.PlayerProfile");
+      return new NewSkullHandler();
+    } catch (ClassNotFoundException e) {
+      return new OldSkullHandler();
+    }
+  }
 
   private static void setSkull(SkullMeta meta, String skull) {
     Optional<URL> url = Validate.getURL(skull);
@@ -96,17 +106,6 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
   }
 
   @Override
-  public boolean compare(@NotNull ItemMeta meta, @Nullable UUID uuid, @NotNull StringReplacer stringReplacer) {
-    if (!(meta instanceof SkullMeta)) {
-      return false;
-    }
-    return skullHandler.compareSkull(
-      getSkullMeta(stringReplacer.replaceOrOriginal(skullString, uuid)),
-      (SkullMeta) meta
-    );
-  }
-
-  @Override
   public Object toObject() {
     return skullString;
   }
@@ -116,10 +115,35 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
     this.skullString = String.valueOf(object);
   }
 
-  private static class SkullHandler {
+  private interface SkullHandler {
+    @SuppressWarnings("deprecation")
+    default void setSkullByName(SkullMeta meta, String name) {
+      setSkullByPlayer(meta, Bukkit.getOfflinePlayer(name));
+    }
+
+    default void setSkullByUUID(SkullMeta meta, UUID uuid) {
+      setSkullByPlayer(meta, Bukkit.getOfflinePlayer(uuid));
+    }
+
+    void setSkullByPlayer(SkullMeta meta, OfflinePlayer player);
+
+    void setSkullByURL(SkullMeta meta, URL url);
+
+    default void setSkullByURL(SkullMeta meta, String url) {
+      try {
+        setSkullByURL(meta, new URL(url));
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    String getSkullValue(SkullMeta meta);
+  }
+
+  private static class OldSkullHandler implements SkullHandler {
     private final Method getProfileMethod;
 
-    private SkullHandler() {
+    private OldSkullHandler() {
       Method method = null;
       try {
         //noinspection JavaReflectionMemberAccess
@@ -135,23 +159,8 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
       getProfileMethod = method;
     }
 
-    public void setSkullByName(SkullMeta meta, String name) {
-      setSkullByPlayer(meta, Bukkit.getOfflinePlayer(name));
-    }
-
-    public void setSkullByUUID(SkullMeta meta, UUID uuid) {
-      setSkullByPlayer(meta, Bukkit.getOfflinePlayer(uuid));
-    }
-
-    public void setSkullByURL(SkullMeta meta, String url) {
-      try {
-        setSkullByURL(meta, new URL(url));
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-
     @SuppressWarnings("deprecation")
+    @Override
     public void setSkullByPlayer(SkullMeta meta, OfflinePlayer player) {
       if (VersionUtils.isAtLeast(12)) {
         meta.setOwningPlayer(player);
@@ -160,6 +169,7 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
       }
     }
 
+    @Override
     public void setSkullByURL(SkullMeta meta, URL url) {
       GameProfile profile = cache.computeIfAbsent(url.toString(), s -> {
         GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
@@ -182,6 +192,7 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
       }
     }
 
+    @Override
     public String getSkullValue(SkullMeta meta) {
       GameProfile profile;
       try {
@@ -211,9 +222,41 @@ public class SkullModifier implements ItemMetaModifier, ItemMetaComparator {
       }
       return "";
     }
+  }
 
-    public boolean compareSkull(SkullMeta meta1, SkullMeta meta2) {
-      return getSkullValue(meta1).equals(getSkullValue(meta2));
+  private static class NewSkullHandler implements SkullHandler {
+    private final Map<URL, PlayerProfile> profileMap = new HashMap<>();
+
+    @Override
+    public void setSkullByPlayer(SkullMeta meta, OfflinePlayer player) {
+      meta.setOwningPlayer(player);
+    }
+
+    @Override
+    public void setSkullByURL(SkullMeta meta, URL url) {
+      PlayerProfile profile = profileMap.computeIfAbsent(url, url1 -> {
+        PlayerProfile newProfile = Bukkit.createPlayerProfile(UUID.randomUUID(), "");
+        PlayerTextures textures = newProfile.getTextures();
+        textures.setSkin(url1);
+        return newProfile;
+      });
+      meta.setOwnerProfile(profile);
+    }
+
+    @Override
+    public String getSkullValue(SkullMeta meta) {
+      PlayerProfile profile = meta.getOwnerProfile();
+      if (profile == null) {
+        return "";
+      }
+
+      PlayerTextures textures = profile.getTextures();
+      URL url = textures.getSkin();
+      if (url == null) {
+        return "";
+      }
+
+      return url.toString();
     }
   }
 }
