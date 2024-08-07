@@ -4,6 +4,7 @@ import io.github.projectunified.minelib.plugin.base.Loadable;
 import io.github.projectunified.minelib.plugin.command.CommandComponent;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
+import me.hsgamer.bettergui.api.addon.PostEnable;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class MenuCommandManager implements Loadable {
+public class MenuCommandManager implements Loadable, PostEnable {
   private final Map<String, Command> registeredMenuCommand = new HashMap<>();
   private final BetterGUI plugin;
 
@@ -84,6 +85,11 @@ public class MenuCommandManager implements Loadable {
    */
   public Map<String, Command> getRegisteredMenuCommand() {
     return registeredMenuCommand;
+  }
+
+  @Override
+  public void onPostEnable() {
+    CommandComponent.syncCommand();
   }
 
   @Override
