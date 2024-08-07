@@ -2,9 +2,9 @@ package me.hsgamer.bettergui.manager;
 
 import io.github.projectunified.minelib.plugin.base.Loadable;
 import io.github.projectunified.minelib.plugin.command.CommandComponent;
+import io.github.projectunified.minelib.plugin.postenable.PostEnable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.Permissions;
-import me.hsgamer.bettergui.api.addon.PostEnable;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
@@ -88,7 +88,7 @@ public class MenuCommandManager implements Loadable, PostEnable {
   }
 
   @Override
-  public void onPostEnable() {
+  public void postEnable() {
     CommandComponent.syncCommand();
   }
 
