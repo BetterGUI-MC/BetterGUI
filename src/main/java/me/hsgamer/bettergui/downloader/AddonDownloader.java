@@ -20,7 +20,7 @@ public class AddonDownloader implements PostEnable {
   public void postEnable() {
     AddonManager addonManager = plugin.get(AddonManager.class);
     this.downloader = new Downloader(
-      new JsonDownloadInfoLoader("https://raw.githubusercontent.com/BetterGUI-MC/Addon-List/master/addons.json"),
+      new JsonDownloadInfoLoader("https://bettergui-mc.github.io/Addon-List/addons.json"),
       new WebInputStreamLoader(),
       addonManager.getExpansionsDir()
     ) {
