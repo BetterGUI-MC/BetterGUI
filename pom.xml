@@ -16,7 +16,7 @@
   <properties>
     <java.version>1.8</java.version>
     <core.version>4.5.4</core.version>
-    <minelib.version>1.2.2</minelib.version>
+    <minelib.version>1.2.3</minelib.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
