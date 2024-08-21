@@ -65,9 +65,6 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
       return menu.getVariableManager().setVariables(StringReplacerApplier.normalizeQuery(variable), uuid);
     }));
 
-    AddonManager addonManager = new AddonManager(this);
-    AddonDownloader addonDownloader = new AddonDownloader(this, addonManager);
-
     List<Object> components = new ArrayList<>(Arrays.asList(
       variableBundle,
 
@@ -87,10 +84,10 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
       ConfigGenerator.newInstance(MessageConfig.class, new BukkitConfig(this, "messages.yml")),
       new TemplateConfig(this),
 
-      addonManager,
+      new AddonManager(this),
       new MenuManager(this),
       new MenuCommandManager(this),
-      addonDownloader
+      new AddonDownloader(this)
     ));
 
     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {

@@ -70,7 +70,7 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
       @Override
       public @NotNull Map<@NotNull Integer, @NotNull DisplayButton> getButtons(@NotNull UUID uuid, InventorySize inventorySize) {
         Map<Integer, DisplayButton> buttonMap = new HashMap<>();
-        Collection<DownloadInfo> downloadInfos = getInstance().get(AddonDownloader.class).getLoadedDownloadInfo().values();
+        Collection<DownloadInfo> downloadInfos = getInstance().get(AddonDownloader.class).getDownloader().getLoadedDownloadInfo().values();
         int slot = 0;
         for (DownloadInfo info : downloadInfos) {
           AddonButton button = addonButtonMap.computeIfAbsent(info, downloadInfo -> {
