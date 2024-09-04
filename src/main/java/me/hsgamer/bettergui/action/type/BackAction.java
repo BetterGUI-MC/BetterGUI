@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.action.type;
 
 import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.common.StringReplacer;
@@ -13,9 +14,11 @@ import java.util.UUID;
 
 public class BackAction implements Action {
   private final Menu menu;
+  private final boolean bypass;
 
-  public BackAction(Menu menu) {
-    this.menu = menu;
+  public BackAction(ActionBuilder.Input input) {
+    this.menu = input.getMenu();
+    this.bypass = input.getOption().equalsIgnoreCase("bypassChecks");
   }
 
   @Override
@@ -27,7 +30,7 @@ public class BackAction implements Action {
     }
 
     Runnable runnable = menu.getParentMenu(uuid)
-      .<Runnable>map(parentMenu -> () -> parentMenu.create(player, new String[0], player.hasPermission(Permissions.OPEN_MENU_BYPASS)))
+      .<Runnable>map(parentMenu -> () -> parentMenu.create(player, new String[0], bypass))
       .orElse(player::closeInventory);
     SchedulerUtil.entity(player)
       .run(() -> {
