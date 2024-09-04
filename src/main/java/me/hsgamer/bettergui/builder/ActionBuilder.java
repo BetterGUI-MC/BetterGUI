@@ -25,7 +25,7 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
   private ActionBuilder() {
     BukkitActionBuilder.register(this, BetterGUI.getInstance());
     register(OpenMenuAction::new, "open-menu", "open", "menu", "open-menu");
-    register(input -> new BackAction(input.getMenu()), "back-menu", "backmenu");
+    register(BackAction::new, "back-menu", "backmenu");
     register(input -> new CloseMenuAction(input.getMenu()), "close-menu", "closemenu");
     register(input -> new UpdateMenuAction(input.getMenu()), "update-menu", "updatemenu");
     register(input -> new SoundAction(input.getValue()), "sound", "raw-sound");
