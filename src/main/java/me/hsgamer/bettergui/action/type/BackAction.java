@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.action.type;
 
-import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.util.SchedulerUtil;
@@ -14,10 +13,12 @@ import java.util.UUID;
 
 public class BackAction implements Action {
   private final Menu menu;
+  private final String value;
   private final boolean bypass;
 
   public BackAction(ActionBuilder.Input input) {
     this.menu = input.getMenu();
+    this.value = input.getValue();
     this.bypass = input.getOption().equalsIgnoreCase("bypassChecks");
   }
 
@@ -29,8 +30,12 @@ public class BackAction implements Action {
       return;
     }
 
+    String[] args = !value.isEmpty()
+      ? stringReplacer.replaceOrOriginal(value, uuid).split(" ")
+      : new String[0];
+
     Runnable runnable = menu.getParentMenu(uuid)
-      .<Runnable>map(parentMenu -> () -> parentMenu.create(player, new String[0], bypass))
+      .<Runnable>map(parentMenu -> () -> parentMenu.create(player, args, bypass))
       .orElse(player::closeInventory);
     SchedulerUtil.entity(player)
       .run(() -> {
