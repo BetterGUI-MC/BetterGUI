@@ -94,6 +94,7 @@
             <link>https://hsgamer.github.io/HSCore/</link>
             <link>https://projectunified.github.io/MineLib/</link>
           </links>
+          <outputDirectory>${project.build.directory}/reports</outputDirectory>
         </configuration>
         <executions>
           <execution>
