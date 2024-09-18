@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.modifier;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.hsgamer.hscore.bukkit.item.modifier.ItemMetaModifier;
@@ -36,7 +38,6 @@ public class SkullModifier implements ItemMetaModifier {
   private static final Pattern MOJANG_SHA256_APPROX = Pattern.compile("[0-9a-z]{55,70}");
   private static final SkullMeta delegateSkullMeta;
   private static final SkullHandler skullHandler = getSkullHandler();
-  private static final Map<String, GameProfile> cache = new ConcurrentHashMap<>();
 
   static {
     ItemStack itemStack;
@@ -61,6 +62,12 @@ public class SkullModifier implements ItemMetaModifier {
   }
 
   private static void setSkull(SkullMeta meta, String skull) {
+    Optional<byte[]> base64 = Validate.getBase64(skull);
+    if (base64.isPresent()) {
+      skullHandler.setSkullByBase64(meta, base64.get());
+      return;
+    }
+
     Optional<URL> url = Validate.getURL(skull);
     if (url.isPresent()) {
       skullHandler.setSkullByURL(meta, url.get());
@@ -137,10 +144,13 @@ public class SkullModifier implements ItemMetaModifier {
       }
     }
 
+    void setSkullByBase64(SkullMeta meta, byte[] base64);
+
     String getSkullValue(SkullMeta meta);
   }
 
   private static class OldSkullHandler implements SkullHandler {
+    private final Map<String, GameProfile> cache = new ConcurrentHashMap<>();
     private final Method getProfileMethod;
 
     private OldSkullHandler() {
@@ -169,14 +179,7 @@ public class SkullModifier implements ItemMetaModifier {
       }
     }
 
-    @Override
-    public void setSkullByURL(SkullMeta meta, URL url) {
-      GameProfile profile = cache.computeIfAbsent(url.toString(), s -> {
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
-        gameProfile.getProperties().put("textures", new Property("textures", Base64.getEncoder().encodeToString(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes())));
-        return gameProfile;
-      });
-
+    private void setSkullByGameProfile(SkullMeta meta, GameProfile profile) {
       try {
         Method setProfile = meta.getClass().getMethod("setProfile", GameProfile.class);
         setProfile.setAccessible(true);
@@ -190,6 +193,23 @@ public class SkullModifier implements ItemMetaModifier {
           // IGNORE
         }
       }
+    }
+
+    @Override
+    public void setSkullByURL(SkullMeta meta, URL url) {
+      GameProfile profile = cache.computeIfAbsent(url.toString(), url1 -> {
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
+        gameProfile.getProperties().put("textures", new Property("textures", Base64.getEncoder().encodeToString(String.format("{textures:{SKIN:{url:\"%s\"}}}", url1).getBytes())));
+        return gameProfile;
+      });
+      setSkullByGameProfile(meta, profile);
+    }
+
+    @Override
+    public void setSkullByBase64(SkullMeta meta, byte[] base64) {
+      GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
+      gameProfile.getProperties().put("textures", new Property("textures", Base64.getEncoder().encodeToString(base64)));
+      setSkullByGameProfile(meta, gameProfile);
     }
 
     @Override
@@ -225,7 +245,7 @@ public class SkullModifier implements ItemMetaModifier {
   }
 
   private static class NewSkullHandler implements SkullHandler {
-    private final Map<URL, PlayerProfile> profileMap = new HashMap<>();
+    private final Map<String, PlayerProfile> profileMap = new ConcurrentHashMap<>();
 
     @Override
     public void setSkullByPlayer(SkullMeta meta, OfflinePlayer player) {
@@ -234,13 +254,25 @@ public class SkullModifier implements ItemMetaModifier {
 
     @Override
     public void setSkullByURL(SkullMeta meta, URL url) {
-      PlayerProfile profile = profileMap.computeIfAbsent(url, url1 -> {
+      PlayerProfile profile = profileMap.computeIfAbsent(url.toString(), u -> {
         PlayerProfile newProfile = Bukkit.createPlayerProfile(UUID.randomUUID(), "");
         PlayerTextures textures = newProfile.getTextures();
-        textures.setSkin(url1);
+        textures.setSkin(url);
         return newProfile;
       });
       meta.setOwnerProfile(profile);
+    }
+
+    @Override
+    public void setSkullByBase64(SkullMeta meta, byte[] base64) {
+      try {
+        String decoded = new String(Base64.getDecoder().decode(base64));
+        JsonObject json = new Gson().fromJson(decoded, JsonObject.class);
+        String url = json.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
+        setSkullByURL(meta, url);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
 
     @Override
