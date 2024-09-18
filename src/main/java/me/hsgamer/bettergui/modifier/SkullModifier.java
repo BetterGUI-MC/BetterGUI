@@ -79,8 +79,7 @@ public class SkullModifier implements ItemMetaModifier {
     }
 
     if (BASE64_PATTERN.matcher(skull).matches()) {
-      Optional<byte[]> base64 = Validate.getBase64(skull);
-      base64.ifPresent(bytes -> skullHandler.setSkullByBase64(meta, bytes));
+      skullHandler.setSkullByBase64(meta, skull);
       return;
     }
 
@@ -149,7 +148,7 @@ public class SkullModifier implements ItemMetaModifier {
       }
     }
 
-    void setSkullByBase64(SkullMeta meta, byte[] base64);
+    void setSkullByBase64(SkullMeta meta, String base64);
 
     String getSkullValue(SkullMeta meta);
   }
@@ -211,9 +210,12 @@ public class SkullModifier implements ItemMetaModifier {
     }
 
     @Override
-    public void setSkullByBase64(SkullMeta meta, byte[] base64) {
-      GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
-      gameProfile.getProperties().put("textures", new Property("textures", new String(base64, StandardCharsets.UTF_8)));
+    public void setSkullByBase64(SkullMeta meta, String base64) {
+      GameProfile gameProfile = cache.computeIfAbsent(base64, b -> {
+        GameProfile profile = new GameProfile(UUID.randomUUID(), "");
+        profile.getProperties().put("textures", new Property("textures", b));
+        return profile;
+      });
       setSkullByGameProfile(meta, gameProfile);
     }
 
@@ -269,9 +271,9 @@ public class SkullModifier implements ItemMetaModifier {
     }
 
     @Override
-    public void setSkullByBase64(SkullMeta meta, byte[] base64) {
+    public void setSkullByBase64(SkullMeta meta, String base64) {
       try {
-        String decoded = new String(base64, StandardCharsets.UTF_8);
+        String decoded = new String(Base64.getDecoder().decode(base64), StandardCharsets.UTF_8);
         JsonObject json = new Gson().fromJson(decoded, JsonObject.class);
         String url = json.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
         setSkullByURL(meta, url);
