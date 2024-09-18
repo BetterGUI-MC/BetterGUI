@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -212,7 +213,7 @@ public class SkullModifier implements ItemMetaModifier {
     @Override
     public void setSkullByBase64(SkullMeta meta, byte[] base64) {
       GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
-      gameProfile.getProperties().put("textures", new Property("textures", Base64.getEncoder().encodeToString(base64)));
+      gameProfile.getProperties().put("textures", new Property("textures", new String(base64, StandardCharsets.UTF_8)));
       setSkullByGameProfile(meta, gameProfile);
     }
 
@@ -270,7 +271,7 @@ public class SkullModifier implements ItemMetaModifier {
     @Override
     public void setSkullByBase64(SkullMeta meta, byte[] base64) {
       try {
-        String decoded = new String(Base64.getDecoder().decode(base64));
+        String decoded = new String(base64, StandardCharsets.UTF_8);
         JsonObject json = new Gson().fromJson(decoded, JsonObject.class);
         String url = json.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
         setSkullByURL(meta, url);
