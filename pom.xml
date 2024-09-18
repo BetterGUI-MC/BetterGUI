@@ -6,7 +6,7 @@
 
   <groupId>me.hsgamer</groupId>
   <artifactId>bettergui</artifactId>
-  <version>10.2-SNAPSHOT</version>
+  <version>10.2</version>
   <packaging>jar</packaging>
 
   <name>BetterGUI</name>
