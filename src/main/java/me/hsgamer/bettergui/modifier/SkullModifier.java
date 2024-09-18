@@ -35,7 +35,11 @@ public class SkullModifier implements ItemMetaModifier {
   /**
    * <a href="https://github.com/CryptoMorin/XSeries/blob/b633d00608435701f1045a566b98a81edd5f923c/src/main/java/com/cryptomorin/xseries/profiles/objects/ProfileInputType.java#L29C35-L29C50">...</a>
    */
-  private static final Pattern MOJANG_SHA256_APPROX = Pattern.compile("[0-9a-z]{55,70}");
+  private static final Pattern MOJANG_SHA256_APPROX_PATTERN = Pattern.compile("[0-9a-z]{55,70}");
+  /**
+   * <a href="https://github.com/CryptoMorin/XSeries/blob/b11b176deca55da6d465e67a3d4be548c3ef06c6/src/main/java/com/cryptomorin/xseries/profiles/objects/ProfileInputType.java#L55C12-L55C57">...</a>
+   */
+  private static final Pattern BASE64_PATTERN = Pattern.compile("[-A-Za-z0-9+/]{100,}={0,3}");
   private static final SkullMeta delegateSkullMeta;
   private static final SkullHandler skullHandler = getSkullHandler();
 
@@ -62,20 +66,20 @@ public class SkullModifier implements ItemMetaModifier {
   }
 
   private static void setSkull(SkullMeta meta, String skull) {
-    Optional<byte[]> base64 = Validate.getBase64(skull);
-    if (base64.isPresent()) {
-      skullHandler.setSkullByBase64(meta, base64.get());
-      return;
-    }
-
     Optional<URL> url = Validate.getURL(skull);
     if (url.isPresent()) {
       skullHandler.setSkullByURL(meta, url.get());
       return;
     }
 
-    if (MOJANG_SHA256_APPROX.matcher(skull).matches()) {
+    if (MOJANG_SHA256_APPROX_PATTERN.matcher(skull).matches()) {
       skullHandler.setSkullByURL(meta, "https://textures.minecraft.net/texture/" + skull);
+      return;
+    }
+
+    if (BASE64_PATTERN.matcher(skull).matches()) {
+      Optional<byte[]> base64 = Validate.getBase64(skull);
+      base64.ifPresent(bytes -> skullHandler.setSkullByBase64(meta, bytes));
       return;
     }
 
