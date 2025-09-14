@@ -1,7 +1,6 @@
 package me.hsgamer.bettergui.util;
 
 import me.hsgamer.hscore.common.Validate;
-import me.hsgamer.hscore.minecraft.gui.GUIProperties;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -19,7 +18,7 @@ public class TickUtil {
    * @return the milliseconds
    */
   public static long ticksToMillis(long ticks) {
-    return ticks * GUIProperties.getMillisPerTick();
+    return ticks * 20L;
   }
 
   /**

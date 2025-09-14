@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui;
 
+import io.github.projectunified.craftux.spigot.SpigotInventoryUIListener;
 import io.github.projectunified.minelib.plugin.base.BasePlugin;
 import io.github.projectunified.minelib.plugin.command.CommandComponent;
 import io.github.projectunified.minelib.plugin.postenable.PostEnable;
@@ -17,7 +18,6 @@ import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.papi.ExtraPlaceholderExpansion;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
-import me.hsgamer.hscore.bukkit.gui.BukkitGUIListener;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.bukkit.variable.BukkitVariableBundle;
 import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
@@ -87,7 +87,9 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
       new AddonManager(this),
       new MenuManager(this),
       new MenuCommandManager(this),
-      new AddonDownloader(this)
+      new AddonDownloader(this),
+
+      new SpigotInventoryUIListener(this)
     ));
 
     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -104,7 +106,7 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
 
   @Override
   public void enable() {
-    BukkitGUIListener.init(this);
+    get(SpigotInventoryUIListener.class).register();
   }
 
   @Override
@@ -140,6 +142,7 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
 
   @Override
   public void disable() {
+    get(SpigotInventoryUIListener.class).unregister();
     ActionBuilder.INSTANCE.clear();
     ButtonBuilder.INSTANCE.clear();
     ItemModifierBuilder.INSTANCE.clear();

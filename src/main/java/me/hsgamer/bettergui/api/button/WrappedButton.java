@@ -1,14 +1,15 @@
 package me.hsgamer.bettergui.api.button;
 
+import io.github.projectunified.craftux.common.Button;
+import io.github.projectunified.craftux.common.Element;
 import me.hsgamer.bettergui.api.menu.MenuElement;
-import me.hsgamer.hscore.minecraft.gui.button.Button;
 
 import java.util.UUID;
 
 /**
  * The wrapped button for Menu
  */
-public interface WrappedButton extends Button, MenuElement {
+public interface WrappedButton extends Button, MenuElement, Element {
   /**
    * Refresh the button for the unique id
    *

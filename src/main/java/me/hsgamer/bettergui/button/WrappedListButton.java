@@ -1,11 +1,11 @@
 package me.hsgamer.bettergui.button;
 
+import io.github.projectunified.craftux.button.ListButton;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
-import me.hsgamer.hscore.minecraft.gui.button.impl.ListButton;
 
 import java.util.*;
 
@@ -22,7 +22,11 @@ public class WrappedListButton extends BaseWrappedButton<ListButton> {
       .flatMap(MapUtils::castOptionalStringObjectMap)
       .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, o))
       .orElseGet(Collections::emptyList);
-    return new ListButton().addButton(childButtons).setKeepCurrentIndex(keepCurrentIndex);
+
+    ListButton button = new ListButton();
+    button.addButton(childButtons);
+    button.setKeepCurrentIndex(keepCurrentIndex);
+    return button;
   }
 
   @Override

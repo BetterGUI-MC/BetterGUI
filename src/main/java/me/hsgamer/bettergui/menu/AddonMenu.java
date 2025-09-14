@@ -1,37 +1,32 @@
 package me.hsgamer.bettergui.menu;
 
+import io.github.projectunified.craftux.common.*;
+import io.github.projectunified.craftux.spigot.SpigotInventoryUtil;
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.downloader.AdditionalInfoKeys;
 import me.hsgamer.bettergui.downloader.AddonDownloader;
 import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
-import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
-import me.hsgamer.hscore.bukkit.gui.object.BukkitItem;
 import me.hsgamer.hscore.bukkit.item.BukkitItemBuilder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.downloader.core.object.DownloadInfo;
-import me.hsgamer.hscore.minecraft.gui.button.Button;
-import me.hsgamer.hscore.minecraft.gui.button.ButtonMap;
-import me.hsgamer.hscore.minecraft.gui.button.DisplayButton;
-import me.hsgamer.hscore.minecraft.gui.object.InventorySize;
 import me.hsgamer.hscore.minecraft.item.ItemBuilder;
-import me.hsgamer.hscore.ui.property.Initializable;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
-public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
+public class AddonMenu extends BaseInventoryMenu<Mask> {
   private static final String MESSAGE_PATH = "message";
   private static final String STATUS_PATH = "status";
   private static final String BUTTON_PATH = "button";
@@ -43,6 +38,7 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
   private final String upToDateStatus;
   private final String availableStatus;
   private final String outdatedStatus;
+  private final Map<String, Object> itemMap;
 
   public AddonMenu(Config config) {
     super(config);
@@ -53,47 +49,43 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
     upToDateStatus = Objects.toString(config.get("&aUp-to-date", new String[]{STATUS_PATH, "up-to-date"}));
     availableStatus = Objects.toString(config.get("&aAvailable", new String[]{STATUS_PATH, "available"}));
     outdatedStatus = Objects.toString(config.get("&cOutdated", new String[]{STATUS_PATH, "outdated"}));
+    itemMap = MapUtils.castOptionalStringObjectMap(configSettings.get(BUTTON_PATH)).orElseThrow(() -> new IllegalStateException("The button map must be a map"));
   }
 
   @Override
-  protected ButtonMap createButtonMap() {
-    Optional<Map<String, Object>> optionalMap = MapUtils.castOptionalStringObjectMap(configSettings.get(BUTTON_PATH));
-    if (!optionalMap.isPresent()) {
-      throw new IllegalStateException("The button map must be a map");
-    }
-    Map<String, Object> itemMap = optionalMap.get();
-
-    return new ButtonMap() {
-
-      private final Map<DownloadInfo, AddonButton> addonButtonMap = new HashMap<>();
-
-      @Override
-      public @NotNull Map<@NotNull Integer, @NotNull DisplayButton> getButtons(@NotNull UUID uuid, InventorySize inventorySize) {
-        Map<Integer, DisplayButton> buttonMap = new HashMap<>();
-        Collection<DownloadInfo> downloadInfos = getInstance().get(AddonDownloader.class).getDownloader().getLoadedDownloadInfo().values();
-        int slot = 0;
-        for (DownloadInfo info : downloadInfos) {
-          AddonButton button = addonButtonMap.computeIfAbsent(info, downloadInfo -> {
-            ItemBuilder<ItemStack> itemBuilder = new BukkitItemBuilder();
-            ItemModifierBuilder.INSTANCE.build(itemMap).forEach(itemBuilder::addItemModifier);
-            AddonButton addonButton = new AddonButton(downloadInfo, itemBuilder);
-            addonButton.init();
-            return addonButton;
-          });
-          buttonMap.put(slot++, button.display(uuid));
-        }
-        return buttonMap;
-      }
-
-      @Override
-      public void stop() {
-        addonButtonMap.values().forEach(Initializable::stop);
-        addonButtonMap.clear();
-      }
-    };
+  protected Mask createMask(Map<String, Object> sectionMap) {
+    return new AddonMask();
   }
 
-  private class AddonButton implements Button {
+  private class AddonMask implements Mask, Element {
+    private final Map<DownloadInfo, AddonButton> addonButtonMap = new HashMap<>();
+
+    @Override
+    public @NotNull Map<Position, Consumer<ActionItem>> apply(@NotNull UUID uuid) {
+      Map<Position, Consumer<ActionItem>> buttonMap = new HashMap<>();
+      Collection<DownloadInfo> downloadInfos = getInstance().get(AddonDownloader.class).getDownloader().getLoadedDownloadInfo().values();
+      int slot = 0;
+      for (DownloadInfo info : downloadInfos) {
+        AddonButton button = addonButtonMap.computeIfAbsent(info, downloadInfo -> {
+          ItemBuilder<ItemStack> itemBuilder = new BukkitItemBuilder();
+          ItemModifierBuilder.INSTANCE.build(itemMap).forEach(itemBuilder::addItemModifier);
+          AddonButton addonButton = new AddonButton(downloadInfo, itemBuilder);
+          addonButton.init();
+          return addonButton;
+        });
+        buttonMap.put(SpigotInventoryUtil.toPosition(slot++, getInventoryType()), button.apply(uuid));
+      }
+      return buttonMap;
+    }
+
+    @Override
+    public void stop() {
+      addonButtonMap.values().forEach(Element::stop);
+      addonButtonMap.clear();
+    }
+  }
+
+  private class AddonButton implements Button, Element {
     private final DownloadInfo downloadInfo;
     private final ItemBuilder<ItemStack> itemBuilder;
     private String status = "";
@@ -123,41 +115,39 @@ public class AddonMenu extends BaseInventoryMenu<ButtonMap> {
     }
 
     @Override
-    public @Nullable DisplayButton display(@NotNull UUID uuid) {
+    public boolean apply(@NotNull UUID uuid, @NotNull ActionItem actionItem) {
       updateStatus();
-      return new DisplayButton()
-        .setItem(new BukkitItem(itemBuilder.build(uuid)))
-        .setClickAction(clickEvent -> {
-          if (!(clickEvent instanceof BukkitClickEvent)) return;
-          InventoryClickEvent event = ((BukkitClickEvent) clickEvent).getEvent();
-          HumanEntity humanEntity = event.getWhoClicked();
-          ClickType clickType = event.getClick();
-          if (clickType.isLeftClick()) {
-            if (status.equals(upToDateStatus)) {
-              MessageUtils.sendMessage(humanEntity, upToDateMessage);
-              return;
-            }
-
-            if (downloadInfo.isDownloading()) {
-              MessageUtils.sendMessage(humanEntity, stillDownloadingMessage);
-            } else {
-              MessageUtils.sendMessage(humanEntity, downloadingMessage.replace("{addon}", downloadInfo.getName()));
-              downloadInfo.download().whenComplete((file, throwable) -> {
-                if (throwable != null) {
-                  getInstance().getLogger().log(Level.WARNING, throwable, () -> "Unexpected issue when downloading " + downloadInfo.getName());
-                  MessageUtils.sendMessage(humanEntity, "&cAn unexpected issue occurs when downloading. Check the console");
-                  return;
-                }
-                MessageUtils.sendMessage(humanEntity, downloadFinishedMessage);
-              });
-              MessageUtils.sendMessage(humanEntity, getInstance().get(MessageConfig.class).getSuccess());
-            }
-          } else if (clickType.isRightClick()) {
-            MessageUtils.sendMessage(humanEntity, "&bLink: &f" + AdditionalInfoKeys.SOURCE_CODE.get(downloadInfo));
-          } else if (clickType.equals(ClickType.MIDDLE)) {
-            MessageUtils.sendMessage(humanEntity, "&bLink: &f" + AdditionalInfoKeys.WIKI.get(downloadInfo));
+      actionItem.setItem(itemBuilder.build(uuid));
+      actionItem.setAction(InventoryClickEvent.class, event -> {
+        HumanEntity humanEntity = event.getWhoClicked();
+        ClickType clickType = event.getClick();
+        if (clickType.isLeftClick()) {
+          if (status.equals(upToDateStatus)) {
+            MessageUtils.sendMessage(humanEntity, upToDateMessage);
+            return;
           }
-        });
+
+          if (downloadInfo.isDownloading()) {
+            MessageUtils.sendMessage(humanEntity, stillDownloadingMessage);
+          } else {
+            MessageUtils.sendMessage(humanEntity, downloadingMessage.replace("{addon}", downloadInfo.getName()));
+            downloadInfo.download().whenComplete((file, throwable) -> {
+              if (throwable != null) {
+                getInstance().getLogger().log(Level.WARNING, throwable, () -> "Unexpected issue when downloading " + downloadInfo.getName());
+                MessageUtils.sendMessage(humanEntity, "&cAn unexpected issue occurs when downloading. Check the console");
+                return;
+              }
+              MessageUtils.sendMessage(humanEntity, downloadFinishedMessage);
+            });
+            MessageUtils.sendMessage(humanEntity, getInstance().get(MessageConfig.class).getSuccess());
+          }
+        } else if (clickType.isRightClick()) {
+          MessageUtils.sendMessage(humanEntity, "&bLink: &f" + AdditionalInfoKeys.SOURCE_CODE.get(downloadInfo));
+        } else if (clickType.equals(ClickType.MIDDLE)) {
+          MessageUtils.sendMessage(humanEntity, "&bLink: &f" + AdditionalInfoKeys.WIKI.get(downloadInfo));
+        }
+      });
+      return true;
     }
   }
 }

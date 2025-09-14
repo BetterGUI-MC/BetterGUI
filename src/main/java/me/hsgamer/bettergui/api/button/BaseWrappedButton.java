@@ -1,11 +1,11 @@
 package me.hsgamer.bettergui.api.button;
 
+import io.github.projectunified.craftux.common.ActionItem;
+import io.github.projectunified.craftux.common.Button;
+import io.github.projectunified.craftux.common.Element;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
-import me.hsgamer.hscore.minecraft.gui.button.Button;
-import me.hsgamer.hscore.minecraft.gui.button.DisplayButton;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -59,25 +59,21 @@ public abstract class BaseWrappedButton<B extends Button> implements WrappedButt
   }
 
   @Override
-  public @Nullable DisplayButton display(@NotNull UUID uuid) {
+  public boolean apply(@NotNull UUID uuid, @NotNull ActionItem actionItem) {
     if (button != null) {
-      return button.display(uuid);
+      return button.apply(uuid, actionItem);
     }
-    return null;
+    return false;
   }
 
   @Override
   public void init() {
     this.button = createButton(options);
-    if (button != null) {
-      button.init();
-    }
+    Element.handleIfElement(this.button, Element::init);
   }
 
   @Override
   public void stop() {
-    if (button != null) {
-      button.stop();
-    }
+    Element.handleIfElement(this.button, Element::stop);
   }
 }

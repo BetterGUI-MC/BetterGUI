@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.button;
 
+import io.github.projectunified.craftux.button.PredicateButton;
+import io.github.projectunified.craftux.common.Button;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
@@ -11,18 +13,15 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
-import me.hsgamer.hscore.minecraft.gui.button.Button;
-import me.hsgamer.hscore.minecraft.gui.button.impl.PredicateButton;
 import me.hsgamer.hscore.task.BatchRunnable;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
@@ -34,9 +33,9 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
 
   public static void applyRequirement(Map<String, Object> section, WrappedButton wrappedButton, Set<UUID> checked, PredicateButton predicateButton) {
     boolean checkOnlyOnCreation = Optional.ofNullable(section.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
-    boolean preventSpamClick = Optional.ofNullable(section.get("prevent-spam-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(true);
-
-    predicateButton.setPreventSpamClick(preventSpamClick);
+    // TODO: Regain support for prevent-spam-click for asynchronous click-requirement check
+//    boolean preventSpamClick = Optional.ofNullable(section.get("prevent-spam-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(true);
+//    predicateButton.setPreventSpamClick(preventSpamClick);
     Optional.ofNullable(section.get("view-requirement"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
       .ifPresent(subsection -> {
@@ -58,24 +57,22 @@ public class WrappedPredicateButton extends BaseWrappedButton<PredicateButton> {
           return result.isSuccess;
         });
       });
+    // TODO: Regain support for asynchronous click-requirement check
     Optional.ofNullable(section.get("click-requirement"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
       .ifPresent(subsection -> {
         Map<BukkitClickType, RequirementApplier> clickRequirements = RequirementApplier.convertClickRequirementAppliers(subsection, wrappedButton);
-        predicateButton.setClickFuturePredicate(clickEvent -> {
-          if (!(clickEvent instanceof BukkitClickEvent)) return CompletableFuture.completedFuture(false);
-          BukkitClickEvent bukkitClickEvent = (BukkitClickEvent) clickEvent;
-          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), BetterGUI.getInstance().get(MainConfig.class).isModernClickType()));
-          return CompletableFuture.supplyAsync(() -> clickRequirement.getResult(clickEvent.getViewerID()))
-            .thenApply(result -> {
-              BatchRunnable batchRunnable = new BatchRunnable();
-              batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
-                result.applier.accept(clickEvent.getViewerID(), process);
-                process.next();
-              });
-              SchedulerUtil.async().run(batchRunnable);
-              return result.isSuccess;
-            });
+        predicateButton.setActionPredicate(InventoryClickEvent.class, clickEvent -> {
+          UUID uuid = clickEvent.getWhoClicked().getUniqueId();
+          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(clickEvent, BetterGUI.getInstance().get(MainConfig.class).isModernClickType()));
+          Requirement.Result result = clickRequirement.getResult(uuid);
+          BatchRunnable batchRunnable = new BatchRunnable();
+          batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+            result.applier.accept(uuid, process);
+            process.next();
+          });
+          SchedulerUtil.async().run(batchRunnable);
+          return result.isSuccess;
         });
       });
   }
