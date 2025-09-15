@@ -27,10 +27,9 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
       }
       //noinspection unchecked
       Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
-      ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "button_" + key, values)).ifPresent(button -> {
-        button.init();
-        SlotUtil.getSlots(values).forEach(slot -> mask.setButton(SpigotInventoryUtil.toPosition(slot, getInventoryType()), button));
-      });
+      ButtonBuilder.INSTANCE
+        .build(new ButtonBuilder.Input(this, "button_" + key, values))
+        .ifPresent(button -> SlotUtil.getSlots(values).forEach(slot -> mask.setButton(SpigotInventoryUtil.toPosition(slot, getInventoryType()), button)));
     }
     return mask;
   }
