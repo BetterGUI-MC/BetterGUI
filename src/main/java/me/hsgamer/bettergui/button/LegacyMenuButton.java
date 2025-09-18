@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class LegacyMenuButton extends BaseWrappedButton<PredicateButton> {
+public class LegacyMenuButton extends BaseWrappedButton<WrappedPredicateButton.PredicateClickButton> {
   private final Set<UUID> checked = new ConcurrentSkipListSet<>();
 
   public LegacyMenuButton(ButtonBuilder.Input input) {
@@ -20,13 +20,12 @@ public class LegacyMenuButton extends BaseWrappedButton<PredicateButton> {
   }
 
   @Override
-  protected PredicateButton createButton(Map<String, Object> section) {
+  protected WrappedPredicateButton.PredicateClickButton createButton(Map<String, Object> section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
     WrappedSimpleButton simpleButton = new WrappedSimpleButton(new ButtonBuilder.Input(getMenu(), getName(), section));
     PredicateButton predicateButton = new PredicateButton();
     predicateButton.setButton(simpleButton);
-    WrappedPredicateButton.applyRequirement(keys, this, checked, predicateButton);
-    return predicateButton;
+    return WrappedPredicateButton.getPredicateButton(keys, this, checked, predicateButton);
   }
 
   @Override
@@ -35,7 +34,7 @@ public class LegacyMenuButton extends BaseWrappedButton<PredicateButton> {
     if (this.button == null) {
       return;
     }
-    Button tempButton = this.button.getButton();
+    Button tempButton = this.button.getPredicateButton().getButton();
     if (tempButton instanceof WrappedButton) {
       ((WrappedButton) tempButton).refresh(uuid);
     }
