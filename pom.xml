@@ -17,6 +17,7 @@
     <java.version>1.8</java.version>
     <core.version>4.5.7</core.version>
     <minelib.version>1.2.5</minelib.version>
+    <craftux.version>1.5.0</craftux.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -65,6 +66,12 @@
                 <relocation>
                   <pattern>io.github.projectunified.minelib</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.minelib</shadedPattern>
+                </relocation>
+
+                <!-- CraftUX -->
+                <relocation>
+                  <pattern>io.github.projectunified.craftux</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.craftux</shadedPattern>
                 </relocation>
 
                 <!-- bStats -->
@@ -190,21 +197,6 @@
     </dependency>
     <dependency>
       <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-bukkit-gui</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-minecraft-gui-button</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-minecraft-gui-simple</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-item</artifactId>
       <version>${core.version}</version>
     </dependency>
@@ -326,6 +318,23 @@
       <groupId>io.github.projectunified</groupId>
       <artifactId>minelib-scheduler-entity</artifactId>
       <version>${minelib.version}</version>
+    </dependency>
+
+    <!-- CraftUX -->
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>craftux-spigot</artifactId>
+      <version>${craftux.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>craftux-button</artifactId>
+      <version>${craftux.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>craftux-simple</artifactId>
+      <version>${craftux.version}</version>
     </dependency>
 
     <!-- Annotations -->

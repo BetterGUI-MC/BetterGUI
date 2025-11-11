@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.button;
 
+import io.github.projectunified.craftux.button.AnimatedButton;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
@@ -8,7 +9,6 @@ import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Validate;
-import me.hsgamer.hscore.minecraft.gui.button.impl.AnimatedButton;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -45,7 +45,10 @@ public class WrappedAnimatedButton extends BaseWrappedButton<AnimatedButton> {
       frames = CollectionUtils.reverse(frames);
     }
 
-    return new AnimatedButton().addButton(frames).setPeriodMillis(update);
+    AnimatedButton animatedButton = new AnimatedButton();
+    animatedButton.addButton(frames);
+    animatedButton.setPeriodMillis(update);
+    return animatedButton;
   }
 
   @Override

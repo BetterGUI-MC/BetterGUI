@@ -1,18 +1,18 @@
 package me.hsgamer.bettergui.button;
 
+import io.github.projectunified.craftux.button.PredicateButton;
+import io.github.projectunified.craftux.common.Button;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
-import me.hsgamer.hscore.minecraft.gui.button.Button;
-import me.hsgamer.hscore.minecraft.gui.button.impl.PredicateButton;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class LegacyMenuButton extends BaseWrappedButton<PredicateButton> {
+public class LegacyMenuButton extends BaseWrappedButton<WrappedPredicateButton.PredicateClickButton> {
   private final Set<UUID> checked = new ConcurrentSkipListSet<>();
 
   public LegacyMenuButton(ButtonBuilder.Input input) {
@@ -20,12 +20,12 @@ public class LegacyMenuButton extends BaseWrappedButton<PredicateButton> {
   }
 
   @Override
-  protected PredicateButton createButton(Map<String, Object> section) {
+  protected WrappedPredicateButton.PredicateClickButton createButton(Map<String, Object> section) {
     Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
     WrappedSimpleButton simpleButton = new WrappedSimpleButton(new ButtonBuilder.Input(getMenu(), getName(), section));
-    PredicateButton predicateButton = new PredicateButton().setButton(simpleButton);
-    WrappedPredicateButton.applyRequirement(keys, this, checked, predicateButton);
-    return predicateButton;
+    PredicateButton predicateButton = new PredicateButton();
+    predicateButton.setButton(simpleButton);
+    return WrappedPredicateButton.getPredicateButton(keys, this, checked, predicateButton);
   }
 
   @Override
@@ -34,7 +34,7 @@ public class LegacyMenuButton extends BaseWrappedButton<PredicateButton> {
     if (this.button == null) {
       return;
     }
-    Button tempButton = this.button.getButton();
+    Button tempButton = this.button.getPredicateButton().getButton();
     if (tempButton instanceof WrappedButton) {
       ((WrappedButton) tempButton).refresh(uuid);
     }

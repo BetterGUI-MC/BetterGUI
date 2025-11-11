@@ -1,204 +1,165 @@
 package me.hsgamer.bettergui.menu;
 
+import io.github.projectunified.craftux.common.Button;
+import io.github.projectunified.craftux.common.Element;
+import io.github.projectunified.craftux.common.Mask;
+import io.github.projectunified.craftux.spigot.SpigotInventoryUI;
 import io.github.projectunified.minelib.scheduler.common.task.Task;
 import me.hsgamer.bettergui.api.requirement.Requirement;
+import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.builder.InventoryBuilder;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.bettergui.util.TickUtil;
-import me.hsgamer.hscore.bukkit.gui.BukkitGUIDisplay;
-import me.hsgamer.hscore.bukkit.gui.BukkitGUIHolder;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
-import me.hsgamer.hscore.minecraft.gui.button.ButtonMap;
-import me.hsgamer.hscore.minecraft.gui.event.ClickEvent;
-import me.hsgamer.hscore.minecraft.gui.event.CloseEvent;
-import me.hsgamer.hscore.minecraft.gui.event.OpenEvent;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 /**
- * A {@link BaseMenu} for menus using {@link BukkitGUIHolder}
+ * A {@link BaseMenu} for menus using {@link SpigotInventoryUI}
  *
- * @param <B> the type of the {@link ButtonMap} to use in the {@link BukkitGUIHolder}
+ * @param <M> the type of the {@link Mask} to use in the {@link SpigotInventoryUI}
  */
-public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
-  private final BukkitGUIHolder guiHolder;
-  private final B buttonMap;
+public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
+  private final M mask;
+  private final InventoryType inventoryType;
+  private final int size;
+  private final String title;
+  private final Function<UUID, SpigotInventoryUI> inventoryFunction;
+
   private final Set<UUID> forceClose = new ConcurrentSkipListSet<>();
-  private final Map<UUID, UpdateTask> updateTasks = new ConcurrentHashMap<>();
+  private final Map<UUID, SpigotInventoryUI> inventoryMap = new ConcurrentHashMap<>();
   private final long refreshMillis;
+  private final long clickDelay;
+  private final Button defaultButton;
 
   protected BaseInventoryMenu(Config config) {
     super(config);
-    guiHolder = new BukkitGUIHolder(getInstance()) {
-      @Override
-      protected @NotNull BukkitGUIDisplay newDisplay(UUID uuid) {
-        BukkitGUIDisplay guiDisplay = super.newDisplay(uuid);
-        if (refreshMillis >= 0) {
-          long millis = refreshMillis == 0 ? 50L : refreshMillis;
 
-          Player player = Bukkit.getPlayer(uuid);
-          assert player != null;
-
-          UpdateTask task = new UpdateTask(guiDisplay::update, millis);
-          updateTasks.put(uuid, task);
+    this.inventoryType = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "inventory-type", "inventory"))
+      .map(Object::toString)
+      .map(s -> {
+        try {
+          return InventoryType.valueOf(s.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+          getInstance().getLogger().warning(() -> "The menu \"" + getName() + "\" contains an illegal inventory type");
+          return null;
         }
-        return guiDisplay;
-      }
+      })
+      .orElse(InventoryType.CHEST);
 
-      @Override
-      protected void onRemoveDisplay(@NotNull BukkitGUIDisplay display) {
-        Optional.ofNullable(updateTasks.remove(display.getUniqueId())).ifPresent(UpdateTask::stop);
-        super.onRemoveDisplay(display);
-      }
-
-      @Override
-      protected void onOpen(@NotNull OpenEvent event) {
-        UUID uuid = event.getViewerID();
-
-        if (!openActionApplier.isEmpty()) {
-          BatchRunnable batchRunnable = new BatchRunnable();
-          batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> openActionApplier.accept(uuid, process));
-          SchedulerUtil.async().run(batchRunnable);
-        }
-
-        Optional.ofNullable(updateTasks.get(uuid)).ifPresent(UpdateTask::start);
-      }
-
-      @Override
-      protected void onClose(@NotNull CloseEvent event) {
-        UUID uuid = event.getViewerID();
-
-        if (!closeActionApplier.isEmpty()) {
-          BatchRunnable batchRunnable = new BatchRunnable();
-          batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> closeActionApplier.accept(uuid, process));
-          SchedulerUtil.async().run(batchRunnable);
-        }
-
-        if (!closeRequirementApplier.isEmpty()) {
-          if (forceClose.contains(uuid)) {
-            forceClose.remove(uuid);
-            return;
-          }
-          Requirement.Result result = closeRequirementApplier.getResult(uuid);
-
-          BatchRunnable batchRunnable = new BatchRunnable();
-          batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
-            result.applier.accept(uuid, process);
-            process.next();
-          });
-          SchedulerUtil.async().run(batchRunnable);
-
-          if (!result.isSuccess) {
-            event.setRemoveDisplay(false);
-            guiHolder.getDisplay(uuid).ifPresent(display -> {
-              Player player = Bukkit.getPlayer(uuid);
-              if (player != null) {
-                SchedulerUtil.entity(player).run(() -> player.openInventory(display.getInventory()));
-              }
-            });
-          }
-        }
-      }
-    };
-
-    Optional.ofNullable(MapUtils.getIfFound(menuSettings, "inventory-type", "inventory")).ifPresent(o -> {
-      try {
-        this.guiHolder.setInventoryType(InventoryType.valueOf(String.valueOf(o).toUpperCase(Locale.ROOT)));
-      } catch (IllegalArgumentException e) {
-        getInstance().getLogger().warning(() -> "The menu \"" + getName() + "\" contains an illegal inventory type");
-      }
-    });
-
-    Optional.ofNullable(menuSettings.get("rows"))
+    int size = 27;
+    Integer rows = Optional.ofNullable(menuSettings.get("rows"))
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
       .map(BigDecimal::intValue)
       .map(i -> Math.max(1, i)).map(i -> i * 9)
-      .ifPresent(guiHolder::setSize);
-    Optional.ofNullable(menuSettings.get("slots"))
+      .orElse(null);
+    if (rows != null) {
+      size = rows;
+    }
+    Integer slots = Optional.ofNullable(menuSettings.get("slots"))
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
       .map(BigDecimal::intValue)
       .map(i -> Math.max(1, i))
-      .ifPresent(guiHolder::setSize);
+      .orElse(null);
+    if (slots != null) {
+      size = slots;
+    }
+    this.size = size;
 
     refreshMillis = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "auto-refresh", "ticks"))
       .map(String::valueOf)
       .flatMap(TickUtil::toMillis)
       .orElse(0L);
 
-    Optional.ofNullable(menuSettings.get("cached"))
+    title = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "name", "title"))
       .map(String::valueOf)
-      .map(Boolean::parseBoolean)
-      .ifPresent(cached -> {
-        guiHolder.addEventConsumer(CloseEvent.class, closeEvent -> closeEvent.setRemoveDisplay(!cached));
-      });
+      .orElse("");
 
-    Optional.ofNullable(MapUtils.getIfFound(menuSettings, "name", "title"))
+    Optional<BiFunction<UUID, InventoryHolder, Inventory>> optionalCreator = Optional.ofNullable(menuSettings.get("creator"))
       .map(String::valueOf)
-      .ifPresent(s -> guiHolder.setTitleFunction(uuid -> StringReplacerApplier.replace(s, uuid, this)));
+      .flatMap(s -> InventoryBuilder.INSTANCE.build(s, Pair.of(this, menuSettings)));
+    if (optionalCreator.isPresent()) {
+      BiFunction<UUID, InventoryHolder, Inventory> creator = optionalCreator.get();
+      this.inventoryFunction = uuid -> new InternalInventoryUI(uuid, holder -> creator.apply(uuid, holder));
+    } else if (inventoryType == InventoryType.CHEST) {
+      this.inventoryFunction = uuid -> new InternalInventoryUI(uuid, StringReplacerApplier.replace(title, uuid, this), this.size);
+    } else {
+      this.inventoryFunction = uuid -> new InternalInventoryUI(uuid, StringReplacerApplier.replace(title, uuid, this), inventoryType);
+    }
 
-    Optional.ofNullable(menuSettings.get("creator"))
-      .map(String::valueOf)
-      .flatMap(s -> InventoryBuilder.INSTANCE.build(s, Pair.of(this, menuSettings)))
-      .ifPresent(guiHolder::setInventoryFunction);
+    Button defaultButton = null;
+    Map<String, Object> sectionMap = new CaseInsensitiveStringLinkedMap<>();
+    for (Map.Entry<String, Object> entry : configSettings.entrySet()) {
+      String key = entry.getKey();
+      Object value = entry.getValue();
+      if (!(value instanceof Map)) {
+        sectionMap.put(key, value);
+        continue;
+      }
+      //noinspection unchecked
+      Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
+      if (key.equalsIgnoreCase("default-icon") || key.equalsIgnoreCase("default-button")) {
+        defaultButton = ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "button_" + key, values)).orElse(null);
+        if (defaultButton != null) {
+          Element.handleIfElement(defaultButton, Element::init);
+        }
+      } else {
+        sectionMap.put(key, value);
+      }
+    }
 
-    long clickDelay = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "click-delay"))
+    this.defaultButton = defaultButton;
+
+    clickDelay = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "click-delay"))
       .map(String::valueOf)
       .flatMap(Validate::getNumber)
       .map(BigDecimal::longValue)
       .orElse(50L);
-    if (clickDelay > 0) {
-      guiHolder.addEventConsumer(ClickEvent.class, new Consumer<ClickEvent>() {
-        private final Map<UUID, Long> lastClickMap = new ConcurrentHashMap<>();
 
-        @Override
-        public void accept(ClickEvent clickEvent) {
-          long currentTime = System.currentTimeMillis();
-          long lastClick = lastClickMap.getOrDefault(clickEvent.getViewerID(), 0L);
-          if (currentTime - lastClick < clickDelay) {
-            clickEvent.setButtonExecute(false);
-            return;
-          }
-          lastClickMap.put(clickEvent.getViewerID(), currentTime);
-        }
-      });
-    }
-
-    buttonMap = createButtonMap();
-    guiHolder.setButtonMap(buttonMap);
-
-    guiHolder.init();
+    mask = createMask(sectionMap);
+    Element.handleIfElement(mask, Element::init);
   }
 
   @Override
   protected boolean createChecked(Player player, String[] args, boolean bypass) {
     UUID uuid = player.getUniqueId();
-    refreshButtonMapOnCreate(buttonMap, uuid);
-    guiHolder.createDisplay(uuid).open();
+    refreshMaskOnCreate(mask, uuid);
+    SpigotInventoryUI inventoryUI = inventoryFunction.apply(uuid);
+    inventoryMap.put(uuid, inventoryUI);
+    inventoryUI.open();
     return true;
   }
 
   @Override
   public void update(Player player) {
-    guiHolder.getDisplay(player.getUniqueId()).ifPresent(BukkitGUIDisplay::update);
+    Optional.ofNullable(inventoryMap.get(player.getUniqueId())).ifPresent(SpigotInventoryUI::update);
   }
 
   @Override
@@ -209,21 +170,40 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
 
   @Override
   public void closeAll() {
-    guiHolder.stop();
+    Element.handleIfElement(mask, Element::stop);
+    Element.handleIfElement(defaultButton, Element::stop);
+    List<UUID> viewerIds = new ArrayList<>(inventoryMap.keySet());
+    viewerIds.forEach(uuid -> {
+      forceClose.add(uuid);
+      Player player = Bukkit.getPlayer(uuid);
+      if (player != null) {
+        player.closeInventory();
+      }
+    });
+    inventoryMap.clear();
+    forceClose.clear();
   }
 
-  protected abstract B createButtonMap();
+  protected abstract M createMask(Map<String, Object> sectionMap);
 
-  protected void refreshButtonMapOnCreate(B buttonMap, UUID uuid) {
+  protected void refreshMaskOnCreate(M mask, UUID uuid) {
     // EMPTY
   }
 
-  public B getButtonMap() {
-    return buttonMap;
+  public M getMask() {
+    return mask;
   }
 
-  public BukkitGUIHolder getGUIHolder() {
-    return guiHolder;
+  public InventoryType getInventoryType() {
+    return inventoryType;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public String getTitle() {
+    return title;
   }
 
   private static class UpdateTask {
@@ -249,6 +229,103 @@ public abstract class BaseInventoryMenu<B extends ButtonMap> extends BaseMenu {
       if (task != null) {
         task.cancel();
       }
+    }
+  }
+
+  private class InternalInventoryUI extends SpigotInventoryUI {
+    private UpdateTask updateTask;
+    private Long lastClick;
+
+    public InternalInventoryUI(UUID viewerId, Function<InventoryHolder, Inventory> inventoryFunction) {
+      super(viewerId, inventoryFunction);
+      setup();
+    }
+
+    public InternalInventoryUI(UUID viewerId, String title, int size) {
+      super(viewerId, title, size);
+      setup();
+    }
+
+    public InternalInventoryUI(UUID viewerId, String title, InventoryType type) {
+      super(viewerId, title, type);
+      setup();
+    }
+
+    private void setup() {
+      setMask(mask);
+      if (defaultButton != null) {
+        setDefaultButton(defaultButton);
+      }
+      update();
+      if (refreshMillis >= 0) {
+        long millis = refreshMillis == 0 ? 50L : refreshMillis;
+        updateTask = new UpdateTask(this::update, millis);
+      }
+    }
+
+    @Override
+    protected void onOpen(InventoryOpenEvent event) {
+      UUID uuid = event.getPlayer().getUniqueId();
+
+      if (!openActionApplier.isEmpty()) {
+        BatchRunnable batchRunnable = new BatchRunnable();
+        batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> openActionApplier.accept(uuid, process));
+        SchedulerUtil.async().run(batchRunnable);
+      }
+
+      if (updateTask != null) {
+        updateTask.start();
+      }
+    }
+
+    @Override
+    protected void onClose(InventoryCloseEvent event) {
+      HumanEntity player = event.getPlayer();
+      UUID uuid = player.getUniqueId();
+
+      if (!closeActionApplier.isEmpty()) {
+        BatchRunnable batchRunnable = new BatchRunnable();
+        batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(process -> closeActionApplier.accept(uuid, process));
+        SchedulerUtil.async().run(batchRunnable);
+      }
+
+      if (!closeRequirementApplier.isEmpty()) {
+        if (forceClose.contains(uuid)) {
+          forceClose.remove(uuid);
+          return;
+        }
+        Requirement.Result result = closeRequirementApplier.getResult(uuid);
+
+        BatchRunnable batchRunnable = new BatchRunnable();
+        batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+          result.applier.accept(uuid, process);
+          process.next();
+        });
+        SchedulerUtil.async().run(batchRunnable);
+
+        if (!result.isSuccess) {
+          SchedulerUtil.entity(player).run(() -> player.openInventory(event.getInventory()));
+          return;
+        }
+      }
+
+      if (updateTask != null) {
+        updateTask.stop();
+      }
+
+      inventoryMap.remove(uuid);
+    }
+
+    @Override
+    protected boolean onClick(InventoryClickEvent event) {
+      if (clickDelay <= 0) return true;
+      long currentTime = System.currentTimeMillis();
+      long lastClick = this.lastClick == null ? 0 : this.lastClick;
+      if (currentTime - lastClick < clickDelay) {
+        return false;
+      }
+      this.lastClick = currentTime;
+      return true;
     }
   }
 }

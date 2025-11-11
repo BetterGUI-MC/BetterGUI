@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.button;
 
+import io.github.projectunified.craftux.common.Button;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ClickActionHandler;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
@@ -8,12 +9,10 @@ import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.bukkit.gui.event.BukkitClickEvent;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
-import me.hsgamer.hscore.minecraft.gui.button.Button;
-import me.hsgamer.hscore.minecraft.gui.event.ClickEvent;
 import me.hsgamer.hscore.task.BatchRunnable;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.Collections;
 import java.util.Map;
@@ -26,7 +25,7 @@ public abstract class ActionButton<B extends Button> extends BaseWrappedButton<B
     super(input);
   }
 
-  protected abstract Function<Consumer<ClickEvent>, B> getButtonFunction(Map<String, Object> section);
+  protected abstract Function<Consumer<InventoryClickEvent>, B> getButtonFunction(Map<String, Object> section);
 
   @Override
   protected B createButton(Map<String, Object> section) {
@@ -37,11 +36,9 @@ public abstract class ActionButton<B extends Button> extends BaseWrappedButton<B
       Optional.ofNullable(keys.get("close-on-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false)
     );
     return getButtonFunction(section).apply(clickEvent -> {
-      if (!(clickEvent instanceof BukkitClickEvent)) return;
-      BukkitClickEvent bukkitClickEvent = (BukkitClickEvent) clickEvent;
-      BukkitClickType clickType = ClickTypeUtils.getClickTypeFromEvent(bukkitClickEvent.getEvent(), BetterGUI.getInstance().get(MainConfig.class).isModernClickType());
+      BukkitClickType clickType = ClickTypeUtils.getClickTypeFromEvent(clickEvent, BetterGUI.getInstance().get(MainConfig.class).isModernClickType());
       BatchRunnable batchRunnable = new BatchRunnable();
-      clickActionHandler.apply(clickEvent.getViewerID(), clickType, batchRunnable);
+      clickActionHandler.apply(clickEvent.getWhoClicked().getUniqueId(), clickType, batchRunnable);
       SchedulerUtil.async().run(batchRunnable);
     });
   }

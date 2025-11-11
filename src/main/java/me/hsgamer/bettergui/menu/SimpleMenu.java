@@ -1,24 +1,25 @@
 package me.hsgamer.bettergui.menu;
 
+import io.github.projectunified.craftux.simple.SimpleButtonMask;
+import io.github.projectunified.craftux.spigot.SpigotInventoryUtil;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.util.SlotUtil;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.config.Config;
-import me.hsgamer.hscore.minecraft.gui.simple.SimpleButtonMap;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMap> {
+public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
   public SimpleMenu(Config config) {
     super(config);
   }
 
   @Override
-  protected SimpleButtonMap createButtonMap() {
-    SimpleButtonMap buttonMap = new SimpleButtonMap();
-    for (Map.Entry<String, Object> entry : configSettings.entrySet()) {
+  protected SimpleButtonMask createMask(Map<String, Object> sectionMap) {
+    SimpleButtonMask mask = new SimpleButtonMask();
+    for (Map.Entry<String, Object> entry : sectionMap.entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
       if (!(value instanceof Map)) {
@@ -26,24 +27,16 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMap> {
       }
       //noinspection unchecked
       Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
-      if (key.equalsIgnoreCase("default-icon") || key.equalsIgnoreCase("default-button")) {
-        ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "button_" + key, values)).ifPresent(button -> {
-          button.init();
-          buttonMap.setDefaultButton(button);
-        });
-      } else {
-        ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "button_" + key, values)).ifPresent(button -> {
-          button.init();
-          SlotUtil.getSlots(values).forEach(slot -> buttonMap.setButton(slot, button));
-        });
-      }
+      ButtonBuilder.INSTANCE
+        .build(new ButtonBuilder.Input(this, "button_" + key, values))
+        .ifPresent(button -> SlotUtil.getSlots(values).forEach(slot -> mask.setButton(SpigotInventoryUtil.toPosition(slot, getInventoryType()), button)));
     }
-    return buttonMap;
+    return mask;
   }
 
   @Override
-  protected void refreshButtonMapOnCreate(SimpleButtonMap buttonMap, UUID uuid) {
-    buttonMap.getButtonSlotMap().values()
+  protected void refreshMaskOnCreate(SimpleButtonMask mask, UUID uuid) {
+    mask.getButtonSlotMap().keySet()
       .stream()
       .filter(WrappedButton.class::isInstance)
       .map(WrappedButton.class::cast)

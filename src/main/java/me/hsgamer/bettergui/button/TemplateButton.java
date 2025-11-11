@@ -1,10 +1,10 @@
 package me.hsgamer.bettergui.button;
 
+import io.github.projectunified.craftux.common.Button;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.config.TemplateConfig;
-import me.hsgamer.hscore.minecraft.gui.button.Button;
 
 import java.util.Map;
 
