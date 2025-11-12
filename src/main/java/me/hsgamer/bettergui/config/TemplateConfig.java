@@ -4,6 +4,7 @@ import io.github.projectunified.minelib.plugin.base.Loadable;
 import io.github.projectunified.minelib.plugin.postenable.PostEnable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 
@@ -37,22 +38,12 @@ public class TemplateConfig implements Loadable, PostEnable {
    * @return the replaced object
    */
   private static Object replaceVariables(Object obj, Map<String, String> variableMap) {
-    if (obj instanceof String) {
-      String string = (String) obj;
+    return StringReplacerApplier.replace(obj, string -> {
       for (Map.Entry<String, String> entry : variableMap.entrySet()) {
         string = string.replace("{" + entry.getKey() + "}", entry.getValue());
       }
       return string;
-    } else if (obj instanceof Collection) {
-      List<Object> replaceList = new ArrayList<>();
-      ((Collection<?>) obj).forEach(o -> replaceList.add(replaceVariables(o, variableMap)));
-      return replaceList;
-    } else if (obj instanceof Map) {
-      Map<Object, Object> replaceMap = new LinkedHashMap<>();
-      ((Map<?, ?>) obj).forEach((k, v) -> replaceMap.put(k, replaceVariables(v, variableMap)));
-      return replaceMap;
-    }
-    return obj;
+    });
   }
 
   /**

@@ -1,9 +1,10 @@
 package me.hsgamer.bettergui.modifier;
 
-import com.google.gson.Gson;
+import me.hsgamer.bettergui.util.SNBTConverter;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.VersionUtils;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.StringReplacer;
-import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.minecraft.item.ItemModifier;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,40 +12,44 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
-/**
- * This is a legacy modifier that was removed from HSCore.
- * I decide to keep it here for compatibility.
- */
 public class NBTModifier implements ItemModifier<ItemStack> {
-  private static final Gson GSON = new Gson();
   private static final boolean USE_ITEM_COMPONENT = VersionUtils.isAtLeast(20, 5);
-  private String nbtData = "";
+  private Object nbtData;
 
   @SuppressWarnings("deprecation")
   @Override
   public @NotNull ItemStack modify(@NotNull ItemStack original, UUID uuid, @NotNull StringReplacer stringReplacer) {
-    if (Validate.isNullOrEmpty(nbtData)) {
+    if (nbtData == null) {
       return original;
     }
 
-    String replacedNbtData = stringReplacer.replaceOrOriginal(nbtData, uuid);
+    Object replacedNbtData = StringReplacerApplier.replace(nbtData, string -> stringReplacer.replaceOrOriginal(string, uuid));
+    String nbtDataString;
+    if (replacedNbtData instanceof String) {
+      nbtDataString = (String) replacedNbtData;
+    } else {
+      nbtDataString = MapUtils.castOptionalStringObjectMap(replacedNbtData)
+        .map(map -> SNBTConverter.toSNBT(map, USE_ITEM_COMPONENT))
+        .orElse(null);
+      if (nbtDataString == null) {
+        return original;
+      }
+    }
 
     if (USE_ITEM_COMPONENT) {
       Material material = original.getType();
       NamespacedKey materialKey = material.getKey();
       String materialName = materialKey.toString();
       try {
-        return Bukkit.getItemFactory().createItemStack(materialName + replacedNbtData);
+        return Bukkit.getItemFactory().createItemStack(materialName + nbtDataString);
       } catch (Throwable throwable) {
         return original;
       }
     } else {
       try {
-        return Bukkit.getUnsafe().modifyItemStack(original, replacedNbtData);
+        return Bukkit.getUnsafe().modifyItemStack(original, nbtDataString);
       } catch (Throwable throwable) {
         return original;
       }
@@ -58,11 +63,6 @@ public class NBTModifier implements ItemModifier<ItemStack> {
 
   @Override
   public void loadFromObject(Object object) {
-    if (object instanceof Map) {
-      Map<?, ?> map = (Map<?, ?>) object;
-      this.nbtData = GSON.toJson(map);
-    } else {
-      this.nbtData = Objects.toString(object, "");
-    }
+    this.nbtData = object;
   }
 }

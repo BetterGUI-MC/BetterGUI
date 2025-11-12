@@ -7,9 +7,8 @@ import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.minecraft.item.ItemBuilder;
 import me.hsgamer.hscore.variable.VariableManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.UnaryOperator;
 
 /**
  * A utility class to apply StringReplacer
@@ -145,5 +144,30 @@ public final class StringReplacerApplier {
     } else {
       return "{" + query + "}";
     }
+  }
+
+  /**
+   * Recursively replace the string in the object
+   *
+   * @param obj      the object
+   * @param replacer the replacer
+   *
+   * @return the object with replaced strings
+   */
+  public static Object replace(Object obj, UnaryOperator<String> replacer) {
+    if (obj instanceof String) {
+      String string = (String) obj;
+      string = replacer.apply(string);
+      return string;
+    } else if (obj instanceof Collection) {
+      List<Object> replaceList = new ArrayList<>();
+      ((Collection<?>) obj).forEach(o -> replaceList.add(replace(o, replacer)));
+      return replaceList;
+    } else if (obj instanceof Map) {
+      Map<Object, Object> replaceMap = new LinkedHashMap<>();
+      ((Map<?, ?>) obj).forEach((k, v) -> replaceMap.put(k, replace(v, replacer)));
+      return replaceMap;
+    }
+    return obj;
   }
 }
