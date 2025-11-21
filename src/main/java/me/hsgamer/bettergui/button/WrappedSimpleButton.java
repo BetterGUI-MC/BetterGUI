@@ -24,7 +24,7 @@ public class WrappedSimpleButton extends ActionButton<Button> {
     List<ItemModifier> itemModifiers = ItemModifierBuilder.INSTANCE.build(section);
     return buttonConsumer -> (uuid, actionItem) -> {
       UnaryOperator<String> replacer = StringReplacerApplier.getReplaceOperator(uuid, this);
-      SpigotItem item = new SpigotItem();
+      SpigotItem item = new SpigotItem(uuid);
       for (ItemModifier itemModifier : itemModifiers) {
         itemModifier.modify(item, replacer);
       }

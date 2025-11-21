@@ -22,7 +22,7 @@ public class WrappedDummyButton extends BaseWrappedButton<Button> {
     List<ItemModifier> itemModifiers = ItemModifierBuilder.INSTANCE.build(section);
     return (uuid, actionItem) -> {
       UnaryOperator<String> replacer = StringReplacerApplier.getReplaceOperator(uuid, this);
-      SpigotItem spigotItem = new SpigotItem();
+      SpigotItem spigotItem = new SpigotItem(uuid);
       for (ItemModifier itemModifier : itemModifiers) {
         itemModifier.modify(spigotItem, replacer);
       }
