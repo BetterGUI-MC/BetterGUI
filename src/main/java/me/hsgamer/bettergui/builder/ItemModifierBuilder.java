@@ -27,7 +27,7 @@ public class ItemModifierBuilder extends FunctionalMassBuilder<Map.Entry<String,
 
   private ItemModifierBuilder() {
     register(entry -> new NameModifier(Objects.toString(entry.getValue())), "name");
-    register(entry -> new LoreModifier(CollectionUtils.createStringListFromObject(entry)), "lore");
+    register(entry -> new LoreModifier(CollectionUtils.createStringListFromObject(entry.getValue())), "lore");
     register(entry -> new AmountModifier(Objects.toString(entry.getValue())), "amount");
     register(entry -> new DurabilityModifier(Objects.toString(entry.getValue())), "durability", "damage");
     register(entry -> new MaterialModifier(CollectionUtils.createStringListFromObject(entry.getValue(), true)), "material", "id", "mat", "raw-material", "raw-id", "raw-mat");
