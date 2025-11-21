@@ -1,5 +1,7 @@
 package me.hsgamer.bettergui.menu;
 
+import io.github.projectunified.craftitem.core.ItemModifier;
+import io.github.projectunified.craftitem.spigot.core.SpigotItem;
 import io.github.projectunified.craftux.common.*;
 import io.github.projectunified.craftux.spigot.SpigotInventoryUtil;
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
@@ -8,20 +10,18 @@ import me.hsgamer.bettergui.downloader.AdditionalInfoKeys;
 import me.hsgamer.bettergui.downloader.AddonDownloader;
 import me.hsgamer.bettergui.manager.AddonManager;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
-import me.hsgamer.hscore.bukkit.item.BukkitItemBuilder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.downloader.core.object.DownloadInfo;
-import me.hsgamer.hscore.minecraft.item.ItemBuilder;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 
 import static me.hsgamer.bettergui.BetterGUI.getInstance;
@@ -38,7 +38,7 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
   private final String upToDateStatus;
   private final String availableStatus;
   private final String outdatedStatus;
-  private final Map<String, Object> itemMap;
+  private final List<ItemModifier> itemModifiers;
 
   public AddonMenu(Config config) {
     super(config);
@@ -49,7 +49,8 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
     upToDateStatus = Objects.toString(config.get("&aUp-to-date", new String[]{STATUS_PATH, "up-to-date"}));
     availableStatus = Objects.toString(config.get("&aAvailable", new String[]{STATUS_PATH, "available"}));
     outdatedStatus = Objects.toString(config.get("&cOutdated", new String[]{STATUS_PATH, "outdated"}));
-    itemMap = MapUtils.castOptionalStringObjectMap(configSettings.get(BUTTON_PATH)).orElseThrow(() -> new IllegalStateException("The button map must be a map"));
+    Map<String, Object> itemMap = MapUtils.castOptionalStringObjectMap(configSettings.get(BUTTON_PATH)).orElseThrow(() -> new IllegalStateException("The button map must be a map"));
+    itemModifiers = ItemModifierBuilder.INSTANCE.build(itemMap);
   }
 
   @Override
@@ -67,9 +68,7 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
       int slot = 0;
       for (DownloadInfo info : downloadInfos) {
         AddonButton button = addonButtonMap.computeIfAbsent(info, downloadInfo -> {
-          ItemBuilder<ItemStack> itemBuilder = new BukkitItemBuilder();
-          ItemModifierBuilder.INSTANCE.build(itemMap).forEach(itemBuilder::addItemModifier);
-          AddonButton addonButton = new AddonButton(downloadInfo, itemBuilder);
+          AddonButton addonButton = new AddonButton(downloadInfo);
           addonButton.init();
           return addonButton;
         });
@@ -87,20 +86,20 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
 
   private class AddonButton implements Button, Element {
     private final DownloadInfo downloadInfo;
-    private final ItemBuilder<ItemStack> itemBuilder;
+    private final UnaryOperator<String> translator;
     private String status = "";
 
-    AddonButton(DownloadInfo downloadInfo, ItemBuilder<ItemStack> itemBuilder) {
+    AddonButton(DownloadInfo downloadInfo) {
       this.downloadInfo = downloadInfo;
-      this.itemBuilder = itemBuilder;
-      itemBuilder.addStringReplacer(original -> original
-        .replace("{status}", status)
-        .replace("{name}", downloadInfo.getName())
-        .replace("{version}", downloadInfo.getVersion())
-        .replace("{description}", AdditionalInfoKeys.DESCRIPTION.get(downloadInfo))
-        .replace("{author}", AdditionalInfoKeys.AUTHORS.get(downloadInfo).toString())
-      );
-      itemBuilder.addStringReplacer(StringReplacerApplier.COLORIZE);
+      this.translator = s -> {
+        s = s
+          .replace("{status}", status)
+          .replace("{name}", downloadInfo.getName())
+          .replace("{version}", downloadInfo.getVersion())
+          .replace("{description}", AdditionalInfoKeys.DESCRIPTION.get(downloadInfo))
+          .replace("{author}", AdditionalInfoKeys.AUTHORS.get(downloadInfo).toString());
+        return StringReplacerApplier.COLORIZE.replace(s);
+      };
     }
 
     private void updateStatus() {
@@ -117,7 +116,11 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
     @Override
     public boolean apply(@NotNull UUID uuid, @NotNull ActionItem actionItem) {
       updateStatus();
-      actionItem.setItem(itemBuilder.build(uuid));
+      SpigotItem item = new SpigotItem();
+      for (ItemModifier itemModifier : itemModifiers) {
+        itemModifier.modify(item, translator);
+      }
+      actionItem.setItem(item.getItemStack());
       actionItem.setAction(InventoryClickEvent.class, event -> {
         HumanEntity humanEntity = event.getWhoClicked();
         ClickType clickType = event.getClick();

@@ -4,7 +4,6 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.menu.MenuElement;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.common.StringReplacer;
-import me.hsgamer.hscore.minecraft.item.ItemBuilder;
 import me.hsgamer.hscore.variable.VariableManager;
 
 import java.util.*;
@@ -38,43 +37,49 @@ public final class StringReplacerApplier {
   }
 
   /**
-   * Apply the string replacers to the item builder
+   * Get the operator to replace the string
    *
-   * @param itemBuilder              the item builder
+   * @param uuid                     the unique id
    * @param useGlobalVariableManager whether to use the global variable manager
    *
-   * @return the item builder
+   * @return the operator
    */
-  public static <T> ItemBuilder<T> apply(ItemBuilder<T> itemBuilder, boolean useGlobalVariableManager) {
+  public static UnaryOperator<String> getReplaceOperator(UUID uuid, boolean useGlobalVariableManager) {
+    List<StringReplacer> replacers = new ArrayList<>();
     if (useGlobalVariableManager) {
-      itemBuilder.addStringReplacer(VariableManager.GLOBAL);
+      replacers.add(VariableManager.GLOBAL);
     }
-    STRING_REPLACERS.forEach(itemBuilder::addStringReplacer);
-    return itemBuilder;
+    replacers.addAll(STRING_REPLACERS);
+    StringReplacer combined = StringReplacer.combine(replacers);
+    return s -> combined.replaceOrOriginal(s, uuid);
   }
 
   /**
-   * Apply the string replacers to the item builder
+   * Get the operator to replace the string
    *
-   * @param itemBuilder the item builder
-   * @param menu        the menu
+   * @param uuid the unique id
+   * @param menu the menu
    *
-   * @return the item builder
+   * @return the operator
    */
-  public static <T> ItemBuilder<T> apply(ItemBuilder<T> itemBuilder, Menu menu) {
-    return apply(itemBuilder.addStringReplacer(menu.getVariableManager()), false);
+  public static UnaryOperator<String> getReplaceOperator(UUID uuid, Menu menu) {
+    UnaryOperator<String> replaceOperator = getReplaceOperator(uuid, false);
+    return s -> {
+      s = menu.getVariableManager().replaceOrOriginal(s, uuid);
+      return replaceOperator.apply(s);
+    };
   }
 
   /**
-   * Apply the string replacers to the item builder
+   * Get the operator to replace the string
    *
-   * @param itemBuilder the item builder
+   * @param uuid        the unique id
    * @param menuElement the menu element
    *
    * @return the item builder
    */
-  public static <T> ItemBuilder<T> apply(ItemBuilder<T> itemBuilder, MenuElement menuElement) {
-    return apply(itemBuilder, menuElement.getMenu());
+  public static UnaryOperator<String> getReplaceOperator(UUID uuid, MenuElement menuElement) {
+    return getReplaceOperator(uuid, menuElement.getMenu());
   }
 
   /**

@@ -1,17 +1,18 @@
 package me.hsgamer.bettergui.button;
 
+import io.github.projectunified.craftitem.core.ItemModifier;
+import io.github.projectunified.craftitem.spigot.core.SpigotItem;
 import io.github.projectunified.craftux.common.Button;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
-import me.hsgamer.hscore.bukkit.item.BukkitItemBuilder;
-import me.hsgamer.hscore.minecraft.item.ItemBuilder;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class WrappedSimpleButton extends ActionButton<Button> {
   public WrappedSimpleButton(ButtonBuilder.Input input) {
@@ -20,10 +21,14 @@ public class WrappedSimpleButton extends ActionButton<Button> {
 
   @Override
   protected Function<Consumer<InventoryClickEvent>, Button> getButtonFunction(Map<String, Object> section) {
-    ItemBuilder<ItemStack> itemBuilder = StringReplacerApplier.apply(new BukkitItemBuilder(), this);
-    ItemModifierBuilder.INSTANCE.build(section).forEach(itemBuilder::addItemModifier);
+    List<ItemModifier> itemModifiers = ItemModifierBuilder.INSTANCE.build(section);
     return buttonConsumer -> (uuid, actionItem) -> {
-      actionItem.setItem(itemBuilder.build(uuid));
+      UnaryOperator<String> replacer = StringReplacerApplier.getReplaceOperator(uuid, this);
+      SpigotItem item = new SpigotItem();
+      for (ItemModifier itemModifier : itemModifiers) {
+        itemModifier.modify(item, replacer);
+      }
+      actionItem.setItem(item.getItemStack());
       actionItem.setAction(InventoryClickEvent.class, buttonConsumer);
       return true;
     };

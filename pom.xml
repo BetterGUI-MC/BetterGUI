@@ -18,6 +18,7 @@
     <core.version>4.5.7</core.version>
     <minelib.version>1.2.5</minelib.version>
     <craftux.version>1.5.0</craftux.version>
+    <craftitem.version>1.0.0</craftitem.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -72,6 +73,12 @@
                 <relocation>
                   <pattern>io.github.projectunified.craftux</pattern>
                   <shadedPattern>me.hsgamer.bettergui.lib.craftux</shadedPattern>
+                </relocation>
+
+                <!-- CraftItem -->
+                <relocation>
+                  <pattern>io.github.projectunified.craftux</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.craftitem</shadedPattern>
                 </relocation>
 
                 <!-- bStats -->
@@ -193,11 +200,6 @@
     <dependency>
       <groupId>me.hsgamer</groupId>
       <artifactId>hscore-bukkit-config</artifactId>
-      <version>${core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>me.hsgamer</groupId>
-      <artifactId>hscore-bukkit-item</artifactId>
       <version>${core.version}</version>
     </dependency>
     <dependency>
@@ -335,6 +337,28 @@
       <groupId>io.github.projectunified</groupId>
       <artifactId>craftux-simple</artifactId>
       <version>${craftux.version}</version>
+    </dependency>
+
+    <!-- CraftItem -->
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>craftitem-modifier</artifactId>
+      <version>${craftitem.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>craftitem-spigot-modifier</artifactId>
+      <version>${craftitem.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>craftitem-spigot-nbt</artifactId>
+      <version>${craftitem.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>craftitem-spigot-skull</artifactId>
+      <version>${craftitem.version}</version>
     </dependency>
 
     <!-- Annotations -->
