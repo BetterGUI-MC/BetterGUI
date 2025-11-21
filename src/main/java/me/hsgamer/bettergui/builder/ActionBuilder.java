@@ -11,6 +11,9 @@ import me.hsgamer.hscore.bukkit.action.builder.BukkitActionBuilder;
 import me.hsgamer.hscore.common.CollectionUtils;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -48,8 +51,19 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
   }
 
   public interface Input extends ActionInput, MenuElement {
+    Pattern pattern = Pattern.compile("\\s*([\\w\\-$]+)\\s*(?:\\((.*?)\\))?\\s*(?::\\s*(.*))?");
+
     static Input create(Menu menu, String input) {
-      ActionInput actionInput = ActionInput.create(input);
+      ActionInput actionInput;
+      Matcher matcher = pattern.matcher(input);
+      if (matcher.matches()) {
+        String type = matcher.group(1);
+        String option = Optional.ofNullable(matcher.group(2)).orElse("");
+        String value = Optional.ofNullable(matcher.group(3)).orElse("");
+        actionInput = ActionInput.create(type, option, value);
+      } else {
+        actionInput = ActionInput.create("", "", input);
+      }
       return new Input() {
         @Override
         public String getType() {
