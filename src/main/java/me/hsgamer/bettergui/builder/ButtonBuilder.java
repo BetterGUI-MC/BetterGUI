@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.builder;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.api.menu.Menu;
@@ -17,13 +18,12 @@ import java.util.stream.Stream;
 /**
  * The button builder
  */
-public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Input, WrappedButton> {
-  /**
-   * The instance of the button builder
-   */
-  public static final ButtonBuilder INSTANCE = new ButtonBuilder();
+public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Input, WrappedButton> implements Loadable {
+  public ButtonBuilder() {
+  }
 
-  private ButtonBuilder() {
+  @Override
+  public void load() {
     register(TemplateButton::new, "template");
     register(WrappedDummyButton::new, "dummy", "raw");
     register(EmptyButton::new, "empty");
@@ -38,6 +38,11 @@ public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Inp
           : new WrappedSimpleButton(input),
       "simple"
     );
+  }
+
+  @Override
+  public void disable() {
+    clear();
   }
 
   @Override

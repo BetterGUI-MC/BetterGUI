@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.builder;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.argument.type.*;
@@ -12,19 +13,23 @@ import java.util.Objects;
 /**
  * The argument processor builder
  */
-public final class ArgumentProcessorBuilder extends FunctionalMassBuilder<ArgumentProcessorBuilder.Input, ArgumentProcessor> {
-  /**
-   * The instance of the argument processor builder
-   */
-  public static final ArgumentProcessorBuilder INSTANCE = new ArgumentProcessorBuilder();
+public final class ArgumentProcessorBuilder extends FunctionalMassBuilder<ArgumentProcessorBuilder.Input, ArgumentProcessor> implements Loadable {
+  public ArgumentProcessorBuilder() {
+  }
 
-  private ArgumentProcessorBuilder() {
+  @Override
+  public void enable() {
     register(StoreArgumentProcessor::new, "store");
     register(PlayerArgumentProcessor::new, "player");
     register(NumberArgumentProcessor::new, "number", "int", "integer", "long");
     register(DecimalArgumentProcessor::new, "decimal", "float", "double");
     register(EntityTypeArgumentProcessor::new, "entity");
     register(MaterialArgumentProcessor::new, "material", "item");
+  }
+
+  @Override
+  public void disable() {
+    clear();
   }
 
   @Override

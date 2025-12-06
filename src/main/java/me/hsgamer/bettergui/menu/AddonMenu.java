@@ -50,7 +50,7 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
     availableStatus = Objects.toString(config.get("&aAvailable", new String[]{STATUS_PATH, "available"}));
     outdatedStatus = Objects.toString(config.get("&cOutdated", new String[]{STATUS_PATH, "outdated"}));
     Map<String, Object> itemMap = MapUtils.castOptionalStringObjectMap(configSettings.get(BUTTON_PATH)).orElseThrow(() -> new IllegalStateException("The button map must be a map"));
-    itemModifiers = ItemModifierBuilder.INSTANCE.build(itemMap);
+    itemModifiers = getInstance().get(ItemModifierBuilder.class).build(itemMap);
   }
 
   @Override

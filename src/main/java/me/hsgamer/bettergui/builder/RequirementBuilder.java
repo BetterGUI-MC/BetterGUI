@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.builder;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.requirement.type.*;
@@ -8,18 +9,22 @@ import me.hsgamer.hscore.builder.FunctionalMassBuilder;
 /**
  * The requirement builder
  */
-public final class RequirementBuilder extends FunctionalMassBuilder<RequirementBuilder.Input, Requirement> {
-  public static final RequirementBuilder INSTANCE = new RequirementBuilder();
+public final class RequirementBuilder extends FunctionalMassBuilder<RequirementBuilder.Input, Requirement> implements Loadable {
+  public RequirementBuilder() {
+  }
 
-  /**
-   * The instance of the requirement builder
-   */
-  private RequirementBuilder() {
+  @Override
+  public void load() {
     register(LevelRequirement::new, "level");
     register(PermissionRequirement::new, "permission");
     register(CooldownRequirement::new, "cooldown");
     register(VersionRequirement::new, "version");
     register(ConditionRequirement::new, "condition");
+  }
+
+  @Override
+  public void disable() {
+    clear();
   }
 
   @Override

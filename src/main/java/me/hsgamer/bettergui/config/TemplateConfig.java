@@ -60,7 +60,7 @@ public class TemplateConfig implements Loadable, PostEnable {
       return;
     }
     if (file.isFile()) {
-      ConfigBuilder.INSTANCE.build(file).ifPresent(config -> {
+      BetterGUI.getInstance().get(ConfigBuilder.class).build(file).ifPresent(config -> {
         config.setup();
         for (Map.Entry<String[], Object> entry : config.getNormalizedValues(false).entrySet()) {
           String key = entry.getKey()[0];

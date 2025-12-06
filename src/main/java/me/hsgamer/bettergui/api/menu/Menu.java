@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.api.menu;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.VariableManager;
@@ -29,7 +30,7 @@ public abstract class Menu {
     this.config = config;
     variableManager.register("current-menu", original -> getName(), true);
     variableManager.register("parent-menu", StringReplacer.of((original, uuid) -> getParentMenu(uuid).map(Menu::getName).orElse("")));
-    variableManager.addExternalReplacer(VariableManager.GLOBAL);
+    variableManager.addExternalReplacer(BetterGUI.getInstance().get(VariableManager.class));
   }
 
   /**

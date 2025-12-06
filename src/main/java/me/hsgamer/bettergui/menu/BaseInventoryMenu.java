@@ -102,7 +102,7 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
 
     Optional<BiFunction<UUID, InventoryHolder, Inventory>> optionalCreator = Optional.ofNullable(menuSettings.get("creator"))
       .map(String::valueOf)
-      .flatMap(s -> InventoryBuilder.INSTANCE.build(s, Pair.of(this, menuSettings)));
+      .flatMap(s -> getInstance().get(InventoryBuilder.class).build(s, Pair.of(this, menuSettings)));
     if (optionalCreator.isPresent()) {
       BiFunction<UUID, InventoryHolder, Inventory> creator = optionalCreator.get();
       this.inventoryFunction = uuid -> new InternalInventoryUI(uuid, holder -> creator.apply(uuid, holder));
@@ -123,7 +123,7 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
       }
       Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
       if (key.equalsIgnoreCase("default-icon") || key.equalsIgnoreCase("default-button")) {
-        defaultButton = ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "button_" + key, values)).orElse(null);
+        defaultButton = getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "button_" + key, values)).orElse(null);
         if (defaultButton != null) {
           Element.handleIfElement(defaultButton, Element::init);
         }

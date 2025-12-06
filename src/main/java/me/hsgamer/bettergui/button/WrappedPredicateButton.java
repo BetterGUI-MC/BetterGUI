@@ -73,11 +73,11 @@ public class WrappedPredicateButton extends BaseWrappedButton<WrappedPredicateBu
     PredicateButton predicateButton = new PredicateButton();
     Optional.ofNullable(keys.get("button"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .flatMap(subsection -> ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName() + "_button", subsection)))
+      .flatMap(subsection -> BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(getMenu(), getName() + "_button", subsection)))
       .ifPresent(predicateButton::setButton);
     Optional.ofNullable(keys.get("fallback"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .flatMap(subsection -> ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName() + "_fallback", subsection)))
+      .flatMap(subsection -> BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(getMenu(), getName() + "_fallback", subsection)))
       .ifPresent(predicateButton::setFallbackButton);
 
     return getPredicateButton(keys, this, checked, predicateButton);

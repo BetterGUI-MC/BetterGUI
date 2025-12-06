@@ -1,12 +1,11 @@
 package me.hsgamer.bettergui.papi;
 
-import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.common.StringReplacer;
-import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -15,21 +14,11 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.logging.Level;
 
-public class ExtraPlaceholderExpansion extends PlaceholderExpansion implements Loadable {
+public class MenuPlaceholderExpansion extends PlaceholderExpansion {
   private final BetterGUI plugin;
 
-  public ExtraPlaceholderExpansion(BetterGUI plugin) {
+  public MenuPlaceholderExpansion(BetterGUI plugin) {
     this.plugin = plugin;
-  }
-
-  @Override
-  public void enable() {
-    register();
-  }
-
-  @Override
-  public void disable() {
-    unregister();
   }
 
   @Override
@@ -46,7 +35,7 @@ public class ExtraPlaceholderExpansion extends PlaceholderExpansion implements L
   public boolean register() {
     boolean success = super.register();
     if (success) {
-      VariableManager.GLOBAL.addExternalReplacer(StringReplacer.of(
+      plugin.get(VariableManager.class).addExternalReplacer(StringReplacer.of(
         (original) -> {
           try {
             return PlaceholderAPI.setPlaceholders(null, original);

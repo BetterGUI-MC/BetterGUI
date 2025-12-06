@@ -57,9 +57,9 @@ public final class MenuManager implements Loadable, PostEnable {
     if (menuMap.containsKey(name)) {
       plugin.getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
     } else {
-      ConfigBuilder.INSTANCE.build(file).flatMap(config -> {
+      plugin.get(ConfigBuilder.class).build(file).flatMap(config -> {
         config.setup();
-        return MenuBuilder.INSTANCE.build(config);
+        return plugin.get(MenuBuilder.class).build(config);
       }).ifPresent(menu -> menuMap.put(name, menu));
     }
   }

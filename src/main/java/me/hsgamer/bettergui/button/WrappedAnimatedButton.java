@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.button;
 
 import io.github.projectunified.craftux.button.AnimatedButton;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
@@ -37,7 +38,7 @@ public class WrappedAnimatedButton extends BaseWrappedButton<AnimatedButton> {
 
     List<WrappedButton> frames = Optional.ofNullable(keys.get("child"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, o))
+      .map(o -> BetterGUI.getInstance().get(ButtonBuilder.class).getChildButtons(this, o))
       .orElse(Collections.emptyList());
     frames = CollectionUtils.rotate(frames, shift);
     if (reverse) {

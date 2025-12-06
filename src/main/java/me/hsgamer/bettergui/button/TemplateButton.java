@@ -24,7 +24,7 @@ public class TemplateButton extends BaseWrappedButton<Button> {
   @Override
   protected Button createButton(Map<String, Object> section) {
     finalOptions = BetterGUI.getInstance().get(TemplateConfig.class).getValues(section, "type");
-    return ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(getMenu(), getName(), finalOptions)).orElse(null);
+    return BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(getMenu(), getName(), finalOptions)).orElse(null);
   }
 
   @Override

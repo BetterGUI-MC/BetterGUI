@@ -2,6 +2,7 @@ package me.hsgamer.bettergui.menu;
 
 import io.github.projectunified.craftux.simple.SimpleButtonMask;
 import io.github.projectunified.craftux.spigot.SpigotInventoryUtil;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.util.SlotUtil;
@@ -26,7 +27,7 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
         continue;
       }
       Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
-      ButtonBuilder.INSTANCE
+      BetterGUI.getInstance().get(ButtonBuilder.class)
         .build(new ButtonBuilder.Input(this, "button_" + key, values))
         .ifPresent(button -> SlotUtil.getSlots(values).forEach(slot -> mask.setButton(SpigotInventoryUtil.toPosition(slot, getInventoryType()), button)));
     }

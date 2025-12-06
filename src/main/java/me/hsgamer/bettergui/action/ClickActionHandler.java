@@ -9,10 +9,7 @@ import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.Bukkit;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A handler to handle the click action
@@ -49,8 +46,9 @@ public class ClickActionHandler {
       Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) o);
       Optional<ActionApplier> defaultActionApplier = Optional.ofNullable(keys.get("default")).map(value -> new ActionApplier(menu, value));
       clickTypeMap.forEach((clickTypeName, clickType) -> {
-        if (keys.containsKey(clickTypeName)) {
-          actionMap.put(clickType, new ActionApplier(menu, keys.get(clickTypeName)));
+        Object value = keys.get(clickTypeName.toLowerCase(Locale.ROOT));
+        if (value != null) {
+          actionMap.put(clickType, new ActionApplier(menu, value));
         } else {
           defaultActionApplier.ifPresent(actionApplier -> actionMap.put(clickType, actionApplier));
         }

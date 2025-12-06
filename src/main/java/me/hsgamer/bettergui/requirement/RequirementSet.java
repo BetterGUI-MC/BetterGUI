@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.requirement;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
@@ -35,7 +36,7 @@ public class RequirementSet implements Requirement {
     this.requirements = section.entrySet().stream().flatMap(entry -> {
       String type = entry.getKey();
       Object value = entry.getValue();
-      return RequirementBuilder.INSTANCE.build(new RequirementBuilder.Input(menu, type, name + "_" + type, value)).map(Stream::of).orElse(Stream.empty());
+      return BetterGUI.getInstance().get(RequirementBuilder.class).build(new RequirementBuilder.Input(menu, type, name + "_" + type, value)).map(Stream::of).orElse(Stream.empty());
     }).collect(Collectors.toList());
 
     Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);

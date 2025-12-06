@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.button;
 import io.github.projectunified.craftitem.core.ItemModifier;
 import io.github.projectunified.craftitem.spigot.core.SpigotItem;
 import io.github.projectunified.craftux.common.Button;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
@@ -19,7 +20,7 @@ public class WrappedDummyButton extends BaseWrappedButton<Button> {
 
   @Override
   protected Button createButton(Map<String, Object> section) {
-    List<ItemModifier> itemModifiers = ItemModifierBuilder.INSTANCE.build(section);
+    List<ItemModifier> itemModifiers = BetterGUI.getInstance().get(ItemModifierBuilder.class).build(section);
     return (uuid, actionItem) -> {
       UnaryOperator<String> replacer = StringReplacerApplier.getReplaceOperator(uuid, this);
       SpigotItem spigotItem = new SpigotItem(uuid);

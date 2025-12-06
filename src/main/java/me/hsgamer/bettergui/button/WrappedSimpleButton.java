@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.button;
 import io.github.projectunified.craftitem.core.ItemModifier;
 import io.github.projectunified.craftitem.spigot.core.SpigotItem;
 import io.github.projectunified.craftux.common.Button;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
@@ -21,7 +22,7 @@ public class WrappedSimpleButton extends ActionButton<Button> {
 
   @Override
   protected Function<Consumer<InventoryClickEvent>, Button> getButtonFunction(Map<String, Object> section) {
-    List<ItemModifier> itemModifiers = ItemModifierBuilder.INSTANCE.build(section);
+    List<ItemModifier> itemModifiers = BetterGUI.getInstance().get(ItemModifierBuilder.class).build(section);
     return buttonConsumer -> (uuid, actionItem) -> {
       UnaryOperator<String> replacer = StringReplacerApplier.getReplaceOperator(uuid, this);
       SpigotItem item = new SpigotItem(uuid);

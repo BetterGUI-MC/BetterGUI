@@ -6,6 +6,7 @@ import io.github.projectunified.craftitem.modifier.NameModifier;
 import io.github.projectunified.craftitem.spigot.modifier.*;
 import io.github.projectunified.craftitem.spigot.nbt.NBTModifier;
 import io.github.projectunified.craftitem.spigot.skull.SkullModifier;
+import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.hscore.builder.FunctionalMassBuilder;
 import me.hsgamer.hscore.bukkit.utils.VersionUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
@@ -19,13 +20,12 @@ import java.util.stream.Stream;
 /**
  * The item modifier builder
  */
-public class ItemModifierBuilder extends FunctionalMassBuilder<Map.Entry<String, Object>, ItemModifier> {
-  /**
-   * The instance of the item modifier builder
-   */
-  public static final ItemModifierBuilder INSTANCE = new ItemModifierBuilder();
+public class ItemModifierBuilder extends FunctionalMassBuilder<Map.Entry<String, Object>, ItemModifier> implements Loadable {
+  public ItemModifierBuilder() {
+  }
 
-  private ItemModifierBuilder() {
+  @Override
+  public void load() {
     register(entry -> new NameModifier(Objects.toString(entry.getValue())), "name");
     register(entry -> new LoreModifier(CollectionUtils.createStringListFromObject(entry.getValue())), "lore");
     register(entry -> new AmountModifier(Objects.toString(entry.getValue())), "amount");
@@ -36,6 +36,11 @@ public class ItemModifierBuilder extends FunctionalMassBuilder<Map.Entry<String,
     register(entry -> new SkullModifier(Objects.toString(entry.getValue())), "skull", "head", "skull-owner");
     register(entry -> new NBTModifier(entry.getValue(), VersionUtils.isAtLeast(20, 5)), "nbt", "nbt-data");
     register(entry -> new PotionEffectModifier(CollectionUtils.createStringListFromObject(entry.getValue(), true)), "potion-effect", "potion", "effect");
+  }
+
+  @Override
+  public void disable() {
+    clear();
   }
 
   @Override

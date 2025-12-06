@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.argument;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
@@ -28,7 +29,7 @@ public class ArgumentHandler implements ArgumentProcessor {
       if (value instanceof Map) {
         //noinspection unchecked
         Map<String, Object> map = (Map<String, Object>) value;
-        ArgumentProcessorBuilder.INSTANCE
+        BetterGUI.getInstance().get(ArgumentProcessorBuilder.class)
           .build(new ArgumentProcessorBuilder.Input(menu, key, map))
           .ifPresent(processor -> processorMap.put(key, processor));
       }

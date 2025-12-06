@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.util;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.menu.MenuElement;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
@@ -47,7 +48,7 @@ public final class StringReplacerApplier {
   public static UnaryOperator<String> getReplaceOperator(UUID uuid, boolean useGlobalVariableManager) {
     List<StringReplacer> replacers = new ArrayList<>();
     if (useGlobalVariableManager) {
-      replacers.add(VariableManager.GLOBAL);
+      replacers.add(BetterGUI.getInstance().get(VariableManager.class));
     }
     replacers.addAll(STRING_REPLACERS);
     StringReplacer combined = StringReplacer.combine(replacers);
@@ -94,7 +95,7 @@ public final class StringReplacerApplier {
   public static String replace(String string, UUID uuid, boolean useGlobalVariableManager) {
     String replaced = string;
     if (useGlobalVariableManager) {
-      replaced = VariableManager.GLOBAL.setVariables(replaced, uuid);
+      replaced = BetterGUI.getInstance().get(VariableManager.class).setVariables(replaced, uuid);
     }
 
     for (StringReplacer replacer : STRING_REPLACERS) {

@@ -5,7 +5,7 @@ import me.hsgamer.bettergui.Permissions;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.MenuManager;
-import me.hsgamer.hscore.variable.VariableManager;
+import me.hsgamer.bettergui.manager.VariableManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
@@ -38,7 +38,7 @@ public class GetVariablesCommand extends BukkitCommand {
       }
       variables.addAll(menu.getVariableManager().getVariables().keySet());
     } else {
-      variables.addAll(VariableManager.GLOBAL.getVariables().keySet());
+      variables.addAll(plugin.get(VariableManager.class).getVariables().keySet());
       for (String menuName : plugin.get(MenuManager.class).getMenuNames()) {
         Menu menu = plugin.get(MenuManager.class).getMenu(menuName);
         if (menu == null) continue;

@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.button;
 
 import io.github.projectunified.craftux.button.ListButton;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
@@ -19,7 +20,7 @@ public class WrappedListButton extends BaseWrappedButton<ListButton> {
     boolean keepCurrentIndex = Optional.ofNullable(keys.get("keep-current-index")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     List<WrappedButton> childButtons = Optional.ofNullable(keys.get("child"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .map(o -> ButtonBuilder.INSTANCE.getChildButtons(this, o))
+      .map(o -> BetterGUI.getInstance().get(ButtonBuilder.class).getChildButtons(this, o))
       .orElseGet(Collections::emptyList);
 
     ListButton button = new ListButton();

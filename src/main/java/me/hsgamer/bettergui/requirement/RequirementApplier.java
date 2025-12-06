@@ -71,13 +71,13 @@ public class RequirementApplier implements ProcessApplier {
     Map<BukkitClickType, RequirementApplier> clickRequirements = new ConcurrentHashMap<>();
 
     Map<String, BukkitClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
+    Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
 
     boolean simpleInput = true;
     List<BukkitClickType> remainingClickTypes = new ArrayList<>();
 
     for (Map.Entry<String, BukkitClickType> entry : clickTypeMap.entrySet()) {
-      String clickTypeName = entry.getKey();
+      String clickTypeName = entry.getKey().toLowerCase(Locale.ROOT);
       BukkitClickType clickType = entry.getValue();
       Optional<Map<String, Object>> optionalSubSection = Optional.ofNullable(keys.get(clickTypeName)).flatMap(MapUtils::castOptionalStringObjectMap);
       if (!optionalSubSection.isPresent()) {
@@ -87,7 +87,7 @@ public class RequirementApplier implements ProcessApplier {
       simpleInput = false;
       clickRequirements.put(clickType, new RequirementApplier(
         button.getMenu(),
-        button.getName() + "_click_" + clickTypeName.toLowerCase(Locale.ROOT),
+        button.getName() + "_click_" + clickTypeName,
         optionalSubSection.get()
       ));
     }

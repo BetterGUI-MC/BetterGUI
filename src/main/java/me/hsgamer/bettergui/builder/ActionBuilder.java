@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.builder;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.type.*;
 import me.hsgamer.bettergui.api.menu.Menu;
@@ -16,19 +17,26 @@ import java.util.stream.Collectors;
 /**
  * The action builder
  */
-public final class ActionBuilder extends me.hsgamer.hscore.action.builder.ActionBuilder<ActionBuilder.Input> {
-  /**
-   * The instance of the action builder
-   */
-  public static final ActionBuilder INSTANCE = new ActionBuilder();
+public final class ActionBuilder extends me.hsgamer.hscore.action.builder.ActionBuilder<ActionBuilder.Input> implements Loadable {
+  private final BetterGUI plugin;
 
-  private ActionBuilder() {
-    BukkitActionBuilder.register(this, BetterGUI.getInstance());
+  public ActionBuilder(BetterGUI plugin) {
+    this.plugin = plugin;
+  }
+
+  @Override
+  public void load() {
+    BukkitActionBuilder.register(this, plugin);
     register(OpenMenuAction::new, "open-menu", "open", "menu", "open-menu");
     register(BackAction::new, "back-menu", "backmenu");
     register(input -> new CloseMenuAction(input.getMenu()), "close-menu", "closemenu");
     register(input -> new UpdateMenuAction(input.getMenu()), "update-menu", "updatemenu");
     register(input -> new SoundAction(input.getValue()), "sound", "raw-sound");
+  }
+
+  @Override
+  public void disable() {
+    clear();
   }
 
   /**
