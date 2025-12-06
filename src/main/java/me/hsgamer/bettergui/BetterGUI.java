@@ -19,7 +19,6 @@ import me.hsgamer.bettergui.papi.PlaceholderAPIHook;
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
-import me.hsgamer.hscore.common.CachedValue;
 import me.hsgamer.hscore.config.proxy.ConfigGenerator;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
@@ -35,15 +34,13 @@ import java.util.Map;
  * The main class of the plugin
  */
 public final class BetterGUI extends BasePlugin implements PostEnable {
-  private static final CachedValue<BetterGUI> INSTANCE_CACHE = CachedValue.of(() -> JavaPlugin.getPlugin(BetterGUI.class));
-
   /**
    * Get the instance of the plugin
    *
    * @return the instance
    */
   public static BetterGUI getInstance() {
-    return INSTANCE_CACHE.get();
+    return JavaPlugin.getPlugin(BetterGUI.class);
   }
 
   @Override
@@ -130,6 +127,5 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
   @Override
   public void disable() {
     get(SpigotInventoryUIListener.class).unregister();
-    INSTANCE_CACHE.clearCache();
   }
 }
