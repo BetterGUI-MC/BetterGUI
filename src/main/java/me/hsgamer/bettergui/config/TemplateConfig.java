@@ -5,7 +5,6 @@ import io.github.projectunified.minelib.plugin.postenable.PostEnable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 
 import java.io.File;
@@ -93,7 +92,7 @@ public class TemplateConfig implements Loadable, PostEnable {
     List<String> ignoreKeyList = new ArrayList<>(ignoreKeys);
     ignoreKeyList.replaceAll(String::toLowerCase);
 
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(settingMap);
+    Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(settingMap);
     Optional.ofNullable(keys.get("template"))
       .map(String::valueOf)
       .flatMap(this::get)

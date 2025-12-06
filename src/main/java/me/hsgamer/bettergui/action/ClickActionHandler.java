@@ -5,7 +5,7 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.Bukkit;
 
@@ -46,8 +46,7 @@ public class ClickActionHandler {
     this(menu, new HashMap<>(), closeOnClick);
     Map<String, BukkitClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
     if (o instanceof Map) {
-      // noinspection unchecked
-      Map<String, Object> keys = new CaseInsensitiveStringMap<>((Map<String, Object>) o);
+      Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) o);
       Optional<ActionApplier> defaultActionApplier = Optional.ofNullable(keys.get("default")).map(value -> new ActionApplier(menu, value));
       clickTypeMap.forEach((clickTypeName, clickType) -> {
         if (keys.containsKey(clickTypeName)) {

@@ -9,7 +9,6 @@ import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -29,7 +28,7 @@ public abstract class ActionButton<B extends Button> extends BaseWrappedButton<B
 
   @Override
   protected B createButton(Map<String, Object> section) {
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
+    Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     ClickActionHandler clickActionHandler = new ClickActionHandler(
       menu,
       MapUtils.getIfFoundOrDefault(keys, Collections.emptyList(), "command", "action"),

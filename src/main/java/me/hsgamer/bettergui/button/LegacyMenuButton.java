@@ -5,7 +5,7 @@ import io.github.projectunified.craftux.common.Button;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.common.MapUtils;
 
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +21,7 @@ public class LegacyMenuButton extends BaseWrappedButton<WrappedPredicateButton.P
 
   @Override
   protected WrappedPredicateButton.PredicateClickButton createButton(Map<String, Object> section) {
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
+    Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     WrappedSimpleButton simpleButton = new WrappedSimpleButton(new ButtonBuilder.Input(getMenu(), getName(), section));
     PredicateButton predicateButton = new PredicateButton();
     predicateButton.setButton(simpleButton);

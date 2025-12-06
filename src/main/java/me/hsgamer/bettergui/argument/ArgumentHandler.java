@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.argument;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.StringReplacer;
 
@@ -23,7 +23,7 @@ public class ArgumentHandler implements ArgumentProcessor {
    */
   public ArgumentHandler(Menu menu, Map<String, Object> section) {
     this.menu = menu;
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
+    Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     keys.forEach((key, value) -> {
       if (value instanceof Map) {
         //noinspection unchecked

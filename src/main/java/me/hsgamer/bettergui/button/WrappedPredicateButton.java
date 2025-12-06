@@ -15,7 +15,6 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -69,7 +68,7 @@ public class WrappedPredicateButton extends BaseWrappedButton<WrappedPredicateBu
 
   @Override
   protected PredicateClickButton createButton(Map<String, Object> section) {
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
+    Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
 
     PredicateButton predicateButton = new PredicateButton();
     Optional.ofNullable(keys.get("button"))

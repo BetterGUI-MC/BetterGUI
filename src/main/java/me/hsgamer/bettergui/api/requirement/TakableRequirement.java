@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.api.requirement;
 
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.common.MapUtils;
 
 import java.util.Map;
 import java.util.Optional;
@@ -29,8 +29,7 @@ public abstract class TakableRequirement<V> extends BaseRequirement<V> {
   @Override
   protected Object handleValue(Object inputValue) {
     if (inputValue instanceof Map) {
-      //noinspection unchecked
-      Map<String, Object> keys = new CaseInsensitiveStringMap<>((Map<String, Object>) inputValue);
+      Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) inputValue);
       this.take = Optional.ofNullable(keys.get("take")).map(String::valueOf).map(Boolean::parseBoolean).orElse(getDefaultTake());
       return super.handleValue(Optional.ofNullable(keys.get("value")).orElse(getDefaultValue()));
     } else {

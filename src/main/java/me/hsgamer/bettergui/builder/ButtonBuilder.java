@@ -6,7 +6,7 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.button.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.hscore.builder.FunctionalMassBuilder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.common.MapUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Inp
 
   @Override
   protected String getType(Input input) {
-    return Objects.toString(new CaseInsensitiveStringMap<>(input.options).get("type"), "simple");
+    return Objects.toString(MapUtils.createLowercaseStringObjectMap(input.options).get("type"), "simple");
   }
 
   /**

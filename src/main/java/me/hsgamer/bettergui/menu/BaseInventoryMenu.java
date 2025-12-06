@@ -12,8 +12,6 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.bettergui.util.TickUtil;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringLinkedMap;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.Validate;
@@ -115,7 +113,7 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
     }
 
     Button defaultButton = null;
-    Map<String, Object> sectionMap = new CaseInsensitiveStringLinkedMap<>();
+    Map<String, Object> sectionMap = new LinkedHashMap<>();
     for (Map.Entry<String, Object> entry : configSettings.entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
@@ -123,8 +121,7 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
         sectionMap.put(key, value);
         continue;
       }
-      //noinspection unchecked
-      Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
+      Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
       if (key.equalsIgnoreCase("default-icon") || key.equalsIgnoreCase("default-button")) {
         defaultButton = ButtonBuilder.INSTANCE.build(new ButtonBuilder.Input(this, "button_" + key, values)).orElse(null);
         if (defaultButton != null) {

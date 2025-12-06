@@ -5,7 +5,6 @@ import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.task.element.TaskPool;
 
@@ -39,7 +38,7 @@ public class RequirementSet implements Requirement {
       return RequirementBuilder.INSTANCE.build(new RequirementBuilder.Input(menu, type, name + "_" + type, value)).map(Stream::of).orElse(Stream.empty());
     }).collect(Collectors.toList());
 
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
+    Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     this.successActionApplier = Optional.ofNullable(MapUtils.getIfFound(keys, "success-command", "success-action"))
       .map(o -> new ActionApplier(menu, o))
       .orElse(ActionApplier.EMPTY);

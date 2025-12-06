@@ -5,7 +5,7 @@ import io.github.projectunified.craftux.spigot.SpigotInventoryUtil;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.util.SlotUtil;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.config.Config;
 
 import java.util.Map;
@@ -25,8 +25,7 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
       if (!(value instanceof Map)) {
         continue;
       }
-      //noinspection unchecked
-      Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
+      Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
       ButtonBuilder.INSTANCE
         .build(new ButtonBuilder.Input(this, "button_" + key, values))
         .ifPresent(button -> SlotUtil.getSlots(values).forEach(slot -> mask.setButton(SpigotInventoryUtil.toPosition(slot, getInventoryType()), button)));

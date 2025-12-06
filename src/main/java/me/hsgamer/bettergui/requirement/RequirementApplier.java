@@ -8,7 +8,6 @@ import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.task.element.TaskPool;
 import me.hsgamer.hscore.task.element.TaskProcess;
@@ -48,7 +47,7 @@ public class RequirementApplier implements ProcessApplier {
    */
   public RequirementApplier(Menu menu, String name, Map<String, Object> section) {
     this.requirementSets = new ArrayList<>();
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
+    Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     keys.forEach((key, value) -> {
       if (value instanceof Map) {
         // noinspection unchecked

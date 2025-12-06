@@ -4,7 +4,7 @@ import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.argument.type.*;
 import me.hsgamer.hscore.builder.FunctionalMassBuilder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
+import me.hsgamer.hscore.common.MapUtils;
 
 import java.util.Map;
 import java.util.Objects;
@@ -29,7 +29,7 @@ public final class ArgumentProcessorBuilder extends FunctionalMassBuilder<Argume
 
   @Override
   protected String getType(Input input) {
-    return Objects.toString(new CaseInsensitiveStringMap<>(input.options).get("type"), "store");
+    return Objects.toString(MapUtils.createLowercaseStringObjectMap(input.options).get("type"), "store");
   }
 
   /**

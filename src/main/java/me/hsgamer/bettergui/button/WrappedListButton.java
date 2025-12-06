@@ -4,7 +4,6 @@ import io.github.projectunified.craftux.button.ListButton;
 import me.hsgamer.bettergui.api.button.BaseWrappedButton;
 import me.hsgamer.bettergui.api.button.WrappedButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.MapUtils;
 
 import java.util.*;
@@ -16,7 +15,7 @@ public class WrappedListButton extends BaseWrappedButton<ListButton> {
 
   @Override
   protected ListButton createButton(Map<String, Object> section) {
-    Map<String, Object> keys = new CaseInsensitiveStringMap<>(section);
+    Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     boolean keepCurrentIndex = Optional.ofNullable(keys.get("keep-current-index")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     List<WrappedButton> childButtons = Optional.ofNullable(keys.get("child"))
       .flatMap(MapUtils::castOptionalStringObjectMap)

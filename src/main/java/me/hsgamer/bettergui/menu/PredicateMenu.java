@@ -11,7 +11,6 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.PermissionUtils;
-import me.hsgamer.hscore.collections.map.CaseInsensitiveStringMap;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
@@ -60,9 +59,7 @@ public class PredicateMenu extends StandardMenu {
       if (!(value instanceof Map)) {
         return;
       }
-
-      //noinspection unchecked
-      Map<String, Object> values = new CaseInsensitiveStringMap<>((Map<String, Object>) value);
+      Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
       String menu = Objects.toString(values.get("menu"), null);
       if (menu == null) {
         return;
