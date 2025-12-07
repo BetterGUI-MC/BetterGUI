@@ -4,7 +4,7 @@ import io.github.projectunified.minelib.plugin.base.Loadable;
 import io.github.projectunified.minelib.plugin.postenable.PostEnable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
-import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.bettergui.util.MapTemplate;
 import me.hsgamer.hscore.common.MapUtils;
 
 import java.io.File;
@@ -17,32 +17,11 @@ public class TemplateConfig implements Loadable, PostEnable {
   private final File templateFolder;
   private final Map<String, Map<String, Object>> templateMap = new HashMap<>();
 
-  public TemplateConfig(File templateFolder) {
-    this.templateFolder = templateFolder;
-  }
-
   public TemplateConfig(BetterGUI plugin) {
-    this(new File(plugin.getDataFolder(), "template"));
+    this.templateFolder = new File(plugin.getDataFolder(), "template");
     if (!templateFolder.exists() && templateFolder.mkdirs()) {
       plugin.saveResource("template" + File.separator + "example-template.yml", false);
     }
-  }
-
-  /**
-   * Replace the variables in the object
-   *
-   * @param obj         the object
-   * @param variableMap the variable map
-   *
-   * @return the replaced object
-   */
-  private static Object replaceVariables(Object obj, Map<String, String> variableMap) {
-    return StringReplacerApplier.replace(obj, string -> {
-      for (Map.Entry<String, String> entry : variableMap.entrySet()) {
-        string = string.replace("{" + entry.getKey() + "}", entry.getValue());
-      }
-      return string;
-    });
   }
 
   /**
@@ -97,23 +76,7 @@ public class TemplateConfig implements Loadable, PostEnable {
       .map(String::valueOf)
       .flatMap(this::get)
       .ifPresent(finalMap::putAll);
-    Map<String, String> variableMap = new HashMap<>();
-    // noinspection unchecked
-    Optional.ofNullable(keys.get("variable"))
-      .filter(Map.class::isInstance)
-      .map(Map.class::cast)
-      .ifPresent(map -> map.forEach((k, v) -> {
-        String variable = String.valueOf(k);
-        String value;
-        if (v instanceof List) {
-          List<String> list = new ArrayList<>();
-          ((List<?>) v).forEach(o -> list.add(String.valueOf(o)));
-          value = String.join("\n", list);
-        } else {
-          value = String.valueOf(v);
-        }
-        variableMap.put(variable, value);
-      }));
+    Map<String, Object> variableMap = MapUtils.castOptionalStringObjectMap(keys.get("variable")).orElse(Collections.emptyMap());
     keys.entrySet()
       .stream()
       .filter(entry ->
@@ -122,11 +85,10 @@ public class TemplateConfig implements Loadable, PostEnable {
           && !ignoreKeyList.contains(entry.getKey().toLowerCase())
       )
       .forEach(entry -> finalMap.put(entry.getKey(), entry.getValue()));
-    if (!variableMap.isEmpty()) {
-      finalMap.replaceAll((s, o) -> replaceVariables(o, variableMap));
-    }
+    return variableMap.isEmpty()
+      ? finalMap
+      : MapUtils.castOptionalStringObjectMap(MapTemplate.apply(finalMap, variableMap), false).orElse(Collections.emptyMap());
 
-    return finalMap;
   }
 
   /**
