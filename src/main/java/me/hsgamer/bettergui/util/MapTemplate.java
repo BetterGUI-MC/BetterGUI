@@ -86,6 +86,12 @@ public class MapTemplate {
     }
     if (obj instanceof String) {
       String result = (String) obj;
+
+      Object variableValue = getVariableValue(result, variableMap);
+      if (variableValue != null) {
+        return apply(variableValue, variableMap);
+      }
+
       StringBuilder sb = new StringBuilder(result);
       for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
         String placeholder = START_VARIABLE + entry.getKey() + END_VARIABLE;
