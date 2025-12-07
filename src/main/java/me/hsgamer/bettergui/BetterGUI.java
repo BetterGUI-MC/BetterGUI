@@ -46,6 +46,10 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
   @Override
   protected List<Object> getComponents() {
     return Arrays.asList(
+      ConfigGenerator.newInstance(MainConfig.class, new BukkitConfig(this, "config.yml")),
+      ConfigGenerator.newInstance(MessageConfig.class, new BukkitConfig(this, "messages.yml")),
+      new TemplateConfig(this),
+
       new VariableManager(this),
 
       new PostEnableComponent(this),
@@ -68,10 +72,6 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
         new GetVariablesCommand(this),
         new GetTemplateButtonsCommand(this)
       ),
-
-      ConfigGenerator.newInstance(MainConfig.class, new BukkitConfig(this, "config.yml")),
-      ConfigGenerator.newInstance(MessageConfig.class, new BukkitConfig(this, "messages.yml")),
-      new TemplateConfig(this),
 
       new AddonManager(this),
       new MenuManager(this),
