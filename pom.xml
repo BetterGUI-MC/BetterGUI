@@ -53,6 +53,12 @@
                     <exclude>META-INF/maven/**</exclude>
                   </excludes>
                 </filter>
+                <filter>
+                  <artifact>me.hsgamer:hscore-bukkit-utils</artifact>
+                  <excludes>
+                    <exclude>me/hsgamer/hscore/bukkit/utils/VersionUtils*</exclude>
+                  </excludes>
+                </filter>
               </filters>
               <relocations>
                 <!-- HSCore -->
@@ -90,10 +96,6 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.10.0</version>
         <configuration>
-          <links>
-            <link>https://hsgamer.github.io/HSCore/</link>
-            <link>https://projectunified.github.io/MineLib/</link>
-          </links>
           <outputDirectory>${project.build.directory}/reports</outputDirectory>
         </configuration>
         <executions>
@@ -152,7 +154,7 @@
     </repository>
     <repository>
       <id>placeholderapi</id>
-      <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+      <url>https://repo.extendedclip.com/releases/</url>
     </repository>
     <repository>
       <id>minecraft-repo</id>
