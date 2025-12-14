@@ -84,15 +84,15 @@ public final class VersionUtils {
    * @param minorVersion the minor version
    * @param patchVersion the patch version
    *
-   * @return 0 if the versions are the same, -1 if the given version is lower, 1 if the given version is higher
+   * @return 0 if the versions are the same, negative if the server version is lower, positive if the server version is higher
    */
   public static int compare(int majorVersion, int minorVersion, int patchVersion) {
-    int compare = Integer.compare(majorVersion, MAJOR_VERSION);
+    int compare = Integer.compare(MAJOR_VERSION, majorVersion);
     if (compare == 0) {
-      compare = Integer.compare(minorVersion, MINOR_VERSION);
+      compare = Integer.compare(MINOR_VERSION, minorVersion);
     }
     if (compare == 0) {
-      compare = Integer.compare(patchVersion, PATCH_VERSION);
+      compare = Integer.compare(PATCH_VERSION, patchVersion);
     }
     return compare;
   }
@@ -103,7 +103,7 @@ public final class VersionUtils {
    * @param majorVersion the major version
    * @param minorVersion the minor version
    *
-   * @return 0 if the versions are the same, -1 if the given version is lower, 1 if the given version is higher
+   * @return 0 if the versions are the same, negative if the server version is lower, positive if the server version is higher
    */
   public static int compare(int majorVersion, int minorVersion) {
     return compare(majorVersion, minorVersion, getPatchVersion());
@@ -114,7 +114,7 @@ public final class VersionUtils {
    *
    * @param majorVersion the major version
    *
-   * @return 0 if the versions are the same, -1 if the given version is lower, 1 if the given version is higher
+   * @return 0 if the versions are the same, negative if the server version is lower, positive if the server version is higher
    */
   public static int compare(int majorVersion) {
     return compare(majorVersion, getMinorVersion());
