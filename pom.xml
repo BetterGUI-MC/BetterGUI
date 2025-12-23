@@ -17,6 +17,7 @@
     <java.version>1.8</java.version>
     <core.version>4.5.7</core.version>
     <minelib.version>1.2.3</minelib.version>
+    <crftitem.version>1.3.0</crftitem.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -340,7 +341,12 @@
     <dependency>
       <groupId>io.github.projectunified</groupId>
       <artifactId>craftitem-nbt</artifactId>
-      <version>1.1.0</version>
+      <version>${crftitem.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>craftitem-spigot-skull-handler</artifactId>
+      <version>${crftitem.version}</version>
     </dependency>
 
     <!-- Annotations -->
