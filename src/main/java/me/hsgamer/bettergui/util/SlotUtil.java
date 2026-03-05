@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.util;
 
+import io.github.projectunified.craftux.common.Position;
 import me.hsgamer.hscore.common.Validate;
 
 import java.math.BigDecimal;
@@ -21,28 +22,35 @@ public class SlotUtil {
   }
 
   /**
-   * Get the slots
+   * Get the position from the settings
    *
-   * @param map the value map
+   * @param map the settings
    *
-   * @return the slots
+   * @return the position
    */
-  public static IntStream getSlots(Map<String, Object> map) {
-    IntStream slots = IntStream.empty();
-
+  public static Optional<Position> getPosition(Map<String, Object> map) {
     if (map.containsKey(POS_X) || map.containsKey(POS_Y)) {
       Optional<Integer> x = Validate.getNumber(String.valueOf(map.get(POS_X))).map(BigDecimal::intValue);
       Optional<Integer> y = Validate.getNumber(String.valueOf(map.get(POS_Y))).map(BigDecimal::intValue);
       if (x.isPresent() && y.isPresent()) {
-        slots = IntStream.of((y.get() - 1) * 9 + x.get() - 1);
+        return Optional.of(Position.of(x.get(), y.get()));
       }
     }
+    return Optional.empty();
+  }
 
+  /**
+   * Get the slots from the settings
+   *
+   * @param map the settings
+   *
+   * @return the slots
+   */
+  public static IntStream getSlot(Map<String, Object> map) {
     if (map.containsKey(POS_SLOT)) {
-      slots = IntStream.concat(slots, generateSlots(String.valueOf(map.get(POS_SLOT))));
+      return generateSlots(String.valueOf(map.get(POS_SLOT)));
     }
-
-    return slots;
+    return IntStream.empty();
   }
 
   /**

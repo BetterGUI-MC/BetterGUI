@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.menu;
 
+import io.github.projectunified.craftux.common.Button;
 import io.github.projectunified.craftux.simple.SimpleButtonMask;
 import io.github.projectunified.craftux.spigot.SpigotInventoryUtil;
 import me.hsgamer.bettergui.BetterGUI;
@@ -10,6 +11,7 @@ import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.config.Config;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
@@ -27,9 +29,13 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
         continue;
       }
       Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
-      BetterGUI.getInstance().get(ButtonBuilder.class)
-        .build(new ButtonBuilder.Input(this, "button_" + key, values))
-        .ifPresent(button -> SlotUtil.getSlots(values).forEach(slot -> mask.setButton(SpigotInventoryUtil.toPosition(slot, getInventoryType()), button)));
+      Optional<WrappedButton> optionalButton = BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "button_" + key, values));
+      if (!optionalButton.isPresent()) {
+        continue;
+      }
+      Button button = optionalButton.get();
+      SlotUtil.getPosition(values).ifPresent(position -> mask.setButton(position, button));
+      SlotUtil.getSlot(values).forEach(slot -> mask.setButton(SpigotInventoryUtil.toPosition(slot, getInventoryType()), button));
     }
     return mask;
   }
