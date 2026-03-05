@@ -42,7 +42,10 @@ public final class MenuManager implements Loadable, PostEnable {
       if (file.isDirectory()) {
         files.addAll(Arrays.asList(Objects.requireNonNull(file.listFiles())));
       } else if (file.isFile()) {
-        this.registerMenu(file);
+        String name = plugin.get(MainConfig.class).getFileName(menusFolder, file);
+        if (!registerMenu(name, file)) {
+          plugin.getLogger().log(Level.WARNING, "\"{0}\" cannot be registered as a menu. Ignored", name);
+        }
       }
     }
   }
@@ -50,17 +53,36 @@ public final class MenuManager implements Loadable, PostEnable {
   /**
    * Register the menu
    *
+   * @param name the menu name
    * @param file the menu file
+   *
+   * @return true if the menu is registered, false if the menu cannot be registered because of either name duplication or unsupported file
    */
-  public void registerMenu(File file) {
-    String name = plugin.get(MainConfig.class).getFileName(menusFolder, file);
+  public boolean registerMenu(String name, File file) {
     if (menuMap.containsKey(name)) {
-      plugin.getLogger().log(Level.WARNING, "\"{0}\" is already available in the menu manager. Ignored", name);
-    } else {
-      plugin.get(ConfigBuilder.class).build(file).flatMap(config -> {
-        config.setup();
-        return plugin.get(MenuBuilder.class).build(config);
-      }).ifPresent(menu -> menuMap.put(name, menu));
+      return false;
+    }
+    Optional<Menu> optionalMenu = plugin.get(ConfigBuilder.class).build(file).flatMap(config -> {
+      config.setup();
+      return plugin.get(MenuBuilder.class).build(config);
+    });
+    if (optionalMenu.isPresent()) {
+      Menu menu = optionalMenu.get();
+      menuMap.put(name, menu);
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Remove a menu
+   *
+   * @param name the menu name
+   */
+  public void removeMenu(String name) {
+    Menu menu = menuMap.remove(name);
+    if (menu != null) {
+      menu.closeAll();
     }
   }
 
