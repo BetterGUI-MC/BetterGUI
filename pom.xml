@@ -81,6 +81,12 @@
                   <shadedPattern>me.hsgamer.bettergui.lib.craftitem</shadedPattern>
                 </relocation>
 
+                <!-- MapTemplate -->
+                <relocation>
+                  <pattern>io.github.projectunified.maptemplate</pattern>
+                  <shadedPattern>me.hsgamer.bettergui.lib.maptemplate</shadedPattern>
+                </relocation>
+
                 <!-- bStats -->
                 <relocation>
                   <pattern>org.bstats</pattern>
@@ -349,6 +355,13 @@
       <groupId>io.github.projectunified</groupId>
       <artifactId>craftitem-spigot-skull</artifactId>
       <version>${craftitem.version}</version>
+    </dependency>
+
+    <!-- MapTemplate -->
+    <dependency>
+      <groupId>io.github.projectunified</groupId>
+      <artifactId>map-template</artifactId>
+      <version>1.0.0</version>
     </dependency>
 
     <!-- Annotations -->

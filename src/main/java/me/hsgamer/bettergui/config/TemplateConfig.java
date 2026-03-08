@@ -1,10 +1,10 @@
 package me.hsgamer.bettergui.config;
 
+import io.github.projectunified.maptemplate.MapTemplate;
 import io.github.projectunified.minelib.plugin.base.Loadable;
 import io.github.projectunified.minelib.plugin.postenable.PostEnable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ConfigBuilder;
-import me.hsgamer.bettergui.util.MapTemplate;
 import me.hsgamer.hscore.common.MapUtils;
 
 import java.io.File;
@@ -87,8 +87,7 @@ public class TemplateConfig implements Loadable, PostEnable {
       .forEach(entry -> finalMap.put(entry.getKey(), entry.getValue()));
     return variableMap.isEmpty()
       ? finalMap
-      : MapUtils.castOptionalStringObjectMap(MapTemplate.apply(finalMap, variableMap), false).orElse(Collections.emptyMap());
-
+      : MapUtils.castOptionalStringObjectMap(MapTemplate.builder().setVariableMap(variableMap).build().apply(finalMap), false).orElse(Collections.emptyMap());
   }
 
   /**
