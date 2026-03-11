@@ -33,7 +33,7 @@ public class SlotUtil {
       Optional<Integer> x = Validate.getNumber(String.valueOf(map.get(POS_X))).map(BigDecimal::intValue);
       Optional<Integer> y = Validate.getNumber(String.valueOf(map.get(POS_Y))).map(BigDecimal::intValue);
       if (x.isPresent() && y.isPresent()) {
-        return Optional.of(Position.of(x.get(), y.get()));
+        return Optional.of(Position.of(x.get() - 1, y.get() - 1));
       }
     }
     return Optional.empty();
