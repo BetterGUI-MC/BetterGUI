@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class WrappedPredicateButton extends BaseWrappedButton<WrappedPredicateButton.PredicateClickButton> {
@@ -129,18 +128,20 @@ public class WrappedPredicateButton extends BaseWrappedButton<WrappedPredicateBu
             return;
           }
 
-          clickCheckList.add(clickUUID);
-          CompletableFuture.supplyAsync(() -> clickRequirement.getResult(clickUUID)).thenAccept((result) -> {
-            clickCheckList.remove(clickUUID);
-            BatchRunnable batchRunnable = new BatchRunnable();
-            batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
-              result.applier.accept(clickUUID, process);
-              process.next();
-            });
+          BatchRunnable batchRunnable = new BatchRunnable();
+          batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+            Requirement.Result result = clickRequirement.getResult(clickUUID);
+            result.applier.accept(uuid, process);
             if (result.isSuccess) {
-              batchRunnable.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(() -> objectConsumer.accept(event));
+              process.getTaskPool(ProcessApplierConstants.ACTION_STAGE).addLast(() -> objectConsumer.accept(event));
             }
-            SchedulerUtil.async().run(batchRunnable);
+            process.next();
+          });
+
+          SchedulerUtil.async().run(() -> {
+            clickCheckList.add(clickUUID);
+            batchRunnable.run();
+            clickCheckList.remove(clickUUID);
           });
         });
       }
