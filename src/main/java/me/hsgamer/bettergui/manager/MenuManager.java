@@ -66,11 +66,11 @@ public final class MenuManager implements Loadable, PostEnable {
       config.setup();
       return plugin.get(MenuBuilder.class).build(config);
     });
-    if (optionalMenu.isPresent()) {
-      Menu menu = optionalMenu.get();
-      menuMap.put(name, menu);
+    if (!optionalMenu.isPresent()) {
       return false;
     }
+    Menu menu = optionalMenu.get();
+    menuMap.put(name, menu);
     return true;
   }
 
