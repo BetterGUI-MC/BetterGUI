@@ -17,7 +17,7 @@
     <java.version>1.8</java.version>
     <core.version>4.8.1</core.version>
     <minelib.version>1.3.0</minelib.version>
-    <craftux.version>1.6.0</craftux.version>
+    <craftux.version>1.6.1</craftux.version>
     <craftitem.version>1.4.1</craftitem.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
