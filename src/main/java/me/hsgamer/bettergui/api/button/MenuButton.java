@@ -58,6 +58,7 @@ public abstract class MenuButton implements Button, MenuElement, Element {
     return options;
   }
 
+  @Override
   public String getName() {
     return name;
   }

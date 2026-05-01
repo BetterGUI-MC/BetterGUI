@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * The menu
  */
-public abstract class Menu {
+public abstract class Menu implements MenuElement {
   /**
    * The path of the menu settings
    */
@@ -34,15 +34,6 @@ public abstract class Menu {
   }
 
   /**
-   * Get the name
-   *
-   * @return the name
-   */
-  public String getName() {
-    return config.getName();
-  }
-
-  /**
    * Get the config
    *
    * @return the config
@@ -51,13 +42,19 @@ public abstract class Menu {
     return config;
   }
 
-  /**
-   * Get the variable manager
-   *
-   * @return the variable manager
-   */
+  @Override
+  public String getName() {
+    return config.getName();
+  }
+
+  @Override
   public VariableManager getVariableManager() {
     return variableManager;
+  }
+
+  @Override
+  public Menu getMenu() {
+    return this;
   }
 
   /**
