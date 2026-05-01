@@ -1,14 +1,17 @@
 package me.hsgamer.bettergui.builder;
 
-import me.hsgamer.bettergui.modifier.NBTModifier;
-import me.hsgamer.bettergui.modifier.SkullModifier;
+import io.github.projectunified.craftitem.spigot.nbt.NBTModifier;
+import io.github.projectunified.craftitem.spigot.skull.SkullModifier;
+import me.hsgamer.bettergui.modifier.CraftItemModifier;
 import me.hsgamer.hscore.builder.FunctionalMassBuilder;
 import me.hsgamer.hscore.bukkit.item.modifier.*;
+import me.hsgamer.hscore.bukkit.utils.VersionUtils;
 import me.hsgamer.hscore.minecraft.item.ItemModifier;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,8 +33,8 @@ public class ItemModifierBuilder extends FunctionalMassBuilder<Map.Entry<String,
     register(MaterialModifier::new, "material", "id", "mat", "raw-material", "raw-id", "raw-mat");
     register(EnchantmentModifier::new, "enchantment", "enchant", "enc");
     register(ItemFlagModifier::new, "flag", "item-flags", "itemflag", "itemflags", "item-flag");
-    register(SkullModifier::new, "skull", "head", "skull-owner");
-    register(NBTModifier::new, "nbt", "nbt-data");
+    register(() -> new CraftItemModifier(o -> new SkullModifier(Objects.toString(o))), "skull", "head", "skull-owner");
+    register(() -> new CraftItemModifier(o -> new NBTModifier(o, VersionUtils.isAtLeast(20, 5))), "nbt", "nbt-data");
     register(PotionEffectModifier::new, "potion-effect", "potion", "effect");
   }
 
