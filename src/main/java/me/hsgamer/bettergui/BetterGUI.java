@@ -95,7 +95,7 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
 
   @Override
   public void postEnable() {
-    get(AddonManager.class).call(me.hsgamer.bettergui.api.addon.PostEnable.class, me.hsgamer.bettergui.api.addon.PostEnable::onPostEnable);
+    get(AddonManager.class).call(PostEnable.class, PostEnable::postEnable);
 
     Metrics metrics = new Metrics(this, 6609);
     metrics.addCustomChart(new DrilldownPie("addon", () -> {
