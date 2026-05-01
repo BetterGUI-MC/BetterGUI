@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.builder;
 
 import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.button.WrappedButton;
+import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.button.*;
 import me.hsgamer.bettergui.config.MainConfig;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 /**
  * The button builder
  */
-public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Input, WrappedButton> implements Loadable {
+public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Input, MenuButton> implements Loadable {
   public ButtonBuilder() {
   }
 
@@ -58,7 +58,7 @@ public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Inp
    *
    * @return the child buttons
    */
-  public List<WrappedButton> getChildButtons(WrappedButton parentButton, Map<String, Object> section) {
+  public List<MenuButton> getChildButtons(MenuButton parentButton, Map<String, Object> section) {
     return section.entrySet()
       .stream()
       .filter(entry -> entry.getValue() instanceof Map)

@@ -5,8 +5,7 @@ import io.github.projectunified.craftux.common.ActionItem;
 import io.github.projectunified.craftux.common.Button;
 import io.github.projectunified.craftux.common.Element;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.button.BaseWrappedButton;
-import me.hsgamer.bettergui.api.button.WrappedButton;
+import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.config.MainConfig;
@@ -26,14 +25,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class WrappedPredicateButton extends BaseWrappedButton<WrappedPredicateButton.PredicateClickButton> {
+public class WrappedPredicateButton extends MenuButton {
   private final Set<UUID> checked = new ConcurrentSkipListSet<>();
 
   public WrappedPredicateButton(ButtonBuilder.Input input) {
     super(input);
   }
 
-  public static PredicateClickButton getPredicateButton(Map<String, Object> section, WrappedButton wrappedButton, Set<UUID> checked, PredicateButton predicateButton) {
+  public static PredicateClickButton getPredicateButton(Map<String, Object> section, MenuButton wrappedButton, Set<UUID> checked, PredicateButton predicateButton) {
     boolean checkOnlyOnCreation = Optional.ofNullable(section.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     boolean preventSpamClick = Optional.ofNullable(section.get("prevent-spam-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(true);
     Optional.ofNullable(section.get("view-requirement"))
@@ -88,14 +87,14 @@ public class WrappedPredicateButton extends BaseWrappedButton<WrappedPredicateBu
     if (this.button == null) {
       return;
     }
-    PredicateButton predicateButton = this.button.getPredicateButton();
+    PredicateButton predicateButton = ((PredicateClickButton) this.button).getPredicateButton();
     Button tempButton = predicateButton.getButton();
-    if (tempButton instanceof WrappedButton) {
-      ((WrappedButton) tempButton).refresh(uuid);
+    if (tempButton instanceof MenuButton) {
+      ((MenuButton) tempButton).refresh(uuid);
     }
     tempButton = predicateButton.getFallbackButton();
-    if (tempButton instanceof WrappedButton) {
-      ((WrappedButton) tempButton).refresh(uuid);
+    if (tempButton instanceof MenuButton) {
+      ((MenuButton) tempButton).refresh(uuid);
     }
   }
 

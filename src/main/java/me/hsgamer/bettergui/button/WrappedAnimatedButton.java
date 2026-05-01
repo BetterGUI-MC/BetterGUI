@@ -2,8 +2,7 @@ package me.hsgamer.bettergui.button;
 
 import io.github.projectunified.craftux.button.AnimatedButton;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.button.BaseWrappedButton;
-import me.hsgamer.bettergui.api.button.WrappedButton;
+import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.util.TickUtil;
 import me.hsgamer.hscore.common.CollectionUtils;
@@ -13,7 +12,7 @@ import me.hsgamer.hscore.common.Validate;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class WrappedAnimatedButton extends BaseWrappedButton<AnimatedButton> {
+public class WrappedAnimatedButton extends MenuButton {
   public WrappedAnimatedButton(ButtonBuilder.Input input) {
     super(input);
   }
@@ -36,7 +35,7 @@ public class WrappedAnimatedButton extends BaseWrappedButton<AnimatedButton> {
       .map(Boolean::parseBoolean)
       .orElse(false);
 
-    List<WrappedButton> frames = Optional.ofNullable(keys.get("child"))
+    List<MenuButton> frames = Optional.ofNullable(keys.get("child"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
       .map(o -> BetterGUI.getInstance().get(ButtonBuilder.class).getChildButtons(this, o))
       .orElse(Collections.emptyList());
@@ -54,7 +53,7 @@ public class WrappedAnimatedButton extends BaseWrappedButton<AnimatedButton> {
   @Override
   public void refresh(UUID uuid) {
     if (this.button != null) {
-      this.button.getButtons().stream().filter(WrappedButton.class::isInstance).forEach(button -> ((WrappedButton) button).refresh(uuid));
+      ((AnimatedButton) this.button).getButtons().stream().filter(MenuButton.class::isInstance).forEach(button -> ((MenuButton) button).refresh(uuid));
     }
   }
 }

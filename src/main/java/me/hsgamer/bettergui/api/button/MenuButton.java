@@ -4,6 +4,7 @@ import io.github.projectunified.craftux.common.ActionItem;
 import io.github.projectunified.craftux.common.Button;
 import io.github.projectunified.craftux.common.Element;
 import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.menu.MenuElement;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,18 +14,18 @@ import java.util.UUID;
 /**
  * The base class of wrapped button
  */
-public abstract class BaseWrappedButton<B extends Button> implements WrappedButton {
+public abstract class MenuButton implements Button, MenuElement, Element {
   protected final Menu menu;
   protected final String name;
   protected final Map<String, Object> options;
-  protected B button;
+  protected Button button;
 
   /**
    * Create a new wrapped button
    *
    * @param input the input
    */
-  protected BaseWrappedButton(ButtonBuilder.Input input) {
+  protected MenuButton(ButtonBuilder.Input input) {
     this.menu = input.menu;
     this.name = input.name;
     this.options = input.options;
@@ -37,7 +38,16 @@ public abstract class BaseWrappedButton<B extends Button> implements WrappedButt
    *
    * @return the button
    */
-  protected abstract B createButton(Map<String, Object> section);
+  protected abstract Button createButton(Map<String, Object> section);
+
+  /**
+   * Refresh the button for the unique id
+   *
+   * @param uuid the unique id
+   */
+  public void refresh(UUID uuid) {
+    // EMPTY
+  }
 
   /**
    * Get the options of the button
@@ -48,7 +58,6 @@ public abstract class BaseWrappedButton<B extends Button> implements WrappedButt
     return options;
   }
 
-  @Override
   public String getName() {
     return name;
   }

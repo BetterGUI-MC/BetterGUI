@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.button;
 import io.github.projectunified.craftux.common.Button;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ClickActionHandler;
-import me.hsgamer.bettergui.api.button.BaseWrappedButton;
+import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.bettergui.util.SchedulerUtil;
@@ -19,15 +19,15 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public abstract class ActionButton<B extends Button> extends BaseWrappedButton<B> {
+public abstract class ActionButton extends MenuButton {
   protected ActionButton(ButtonBuilder.Input input) {
     super(input);
   }
 
-  protected abstract Function<Consumer<InventoryClickEvent>, B> getButtonFunction(Map<String, Object> section);
+  protected abstract Function<Consumer<InventoryClickEvent>, Button> getButtonFunction(Map<String, Object> section);
 
   @Override
-  protected B createButton(Map<String, Object> section) {
+  protected Button createButton(Map<String, Object> section) {
     Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     ClickActionHandler clickActionHandler = new ClickActionHandler(
       menu,

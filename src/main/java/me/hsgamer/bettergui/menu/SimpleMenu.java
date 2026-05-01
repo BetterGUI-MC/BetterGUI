@@ -4,7 +4,7 @@ import io.github.projectunified.craftux.common.Button;
 import io.github.projectunified.craftux.simple.SimpleButtonMask;
 import io.github.projectunified.craftux.spigot.SpigotInventoryUtil;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.button.WrappedButton;
+import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.util.SlotUtil;
 import me.hsgamer.hscore.common.MapUtils;
@@ -29,7 +29,7 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
         continue;
       }
       Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
-      Optional<WrappedButton> optionalButton = BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "button_" + key, values));
+      Optional<MenuButton> optionalButton = BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "button_" + key, values));
       if (!optionalButton.isPresent()) {
         continue;
       }
@@ -44,8 +44,8 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
   protected void refreshMaskOnCreate(SimpleButtonMask mask, UUID uuid) {
     mask.getButtonSlotMap().keySet()
       .stream()
-      .filter(WrappedButton.class::isInstance)
-      .map(WrappedButton.class::cast)
+      .filter(MenuButton.class::isInstance)
+      .map(MenuButton.class::cast)
       .forEach(button -> button.refresh(uuid));
   }
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class WrappedNullButton extends ActionButton<Button> {
+public class WrappedNullButton extends ActionButton {
   public WrappedNullButton(ButtonBuilder.Input input) {
     super(input);
   }

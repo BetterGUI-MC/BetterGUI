@@ -1,12 +1,12 @@
 package me.hsgamer.bettergui.button;
 
 import io.github.projectunified.craftux.common.Button;
-import me.hsgamer.bettergui.api.button.BaseWrappedButton;
+import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 
 import java.util.Map;
 
-public class EmptyButton extends BaseWrappedButton<Button> {
+public class EmptyButton extends MenuButton {
   public EmptyButton(ButtonBuilder.Input input) {
     super(input);
   }

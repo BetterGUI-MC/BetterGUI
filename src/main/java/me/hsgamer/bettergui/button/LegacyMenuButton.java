@@ -2,8 +2,7 @@ package me.hsgamer.bettergui.button;
 
 import io.github.projectunified.craftux.button.PredicateButton;
 import io.github.projectunified.craftux.common.Button;
-import me.hsgamer.bettergui.api.button.BaseWrappedButton;
-import me.hsgamer.bettergui.api.button.WrappedButton;
+import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.common.MapUtils;
 
@@ -12,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class LegacyMenuButton extends BaseWrappedButton<WrappedPredicateButton.PredicateClickButton> {
+public class LegacyMenuButton extends MenuButton {
   private final Set<UUID> checked = new ConcurrentSkipListSet<>();
 
   public LegacyMenuButton(ButtonBuilder.Input input) {
@@ -34,9 +33,9 @@ public class LegacyMenuButton extends BaseWrappedButton<WrappedPredicateButton.P
     if (this.button == null) {
       return;
     }
-    Button tempButton = this.button.getPredicateButton().getButton();
-    if (tempButton instanceof WrappedButton) {
-      ((WrappedButton) tempButton).refresh(uuid);
+    Button tempButton = ((WrappedPredicateButton.PredicateClickButton) this.button).getPredicateButton().getButton();
+    if (tempButton instanceof MenuButton) {
+      ((MenuButton) tempButton).refresh(uuid);
     }
   }
 }

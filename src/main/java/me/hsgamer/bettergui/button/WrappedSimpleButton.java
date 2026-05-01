@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-public class WrappedSimpleButton extends ActionButton<Button> {
+public class WrappedSimpleButton extends ActionButton {
   public WrappedSimpleButton(ButtonBuilder.Input input) {
     super(input);
   }

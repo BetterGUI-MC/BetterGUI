@@ -4,7 +4,7 @@ import io.github.projectunified.craftitem.core.ItemModifier;
 import io.github.projectunified.craftitem.spigot.core.SpigotItem;
 import io.github.projectunified.craftux.common.Button;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.button.BaseWrappedButton;
+import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
-public class WrappedDummyButton extends BaseWrappedButton<Button> {
+public class WrappedDummyButton extends MenuButton {
   public WrappedDummyButton(ButtonBuilder.Input input) {
     super(input);
   }

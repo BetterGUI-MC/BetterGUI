@@ -2,14 +2,13 @@ package me.hsgamer.bettergui.button;
 
 import io.github.projectunified.craftux.button.ListButton;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.button.BaseWrappedButton;
-import me.hsgamer.bettergui.api.button.WrappedButton;
+import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.common.MapUtils;
 
 import java.util.*;
 
-public class WrappedListButton extends BaseWrappedButton<ListButton> {
+public class WrappedListButton extends MenuButton {
   public WrappedListButton(ButtonBuilder.Input input) {
     super(input);
   }
@@ -18,7 +17,7 @@ public class WrappedListButton extends BaseWrappedButton<ListButton> {
   protected ListButton createButton(Map<String, Object> section) {
     Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     boolean keepCurrentIndex = Optional.ofNullable(keys.get("keep-current-index")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
-    List<WrappedButton> childButtons = Optional.ofNullable(keys.get("child"))
+    List<MenuButton> childButtons = Optional.ofNullable(keys.get("child"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
       .map(o -> BetterGUI.getInstance().get(ButtonBuilder.class).getChildButtons(this, o))
       .orElseGet(Collections::emptyList);
@@ -32,8 +31,9 @@ public class WrappedListButton extends BaseWrappedButton<ListButton> {
   @Override
   public void refresh(UUID uuid) {
     if (this.button != null) {
-      this.button.removeCurrentIndex(uuid);
-      this.button.getButtons().stream().filter(WrappedButton.class::isInstance).forEach(button -> ((WrappedButton) button).refresh(uuid));
+      ListButton listButton = (ListButton) this.button;
+      listButton.removeCurrentIndex(uuid);
+      listButton.getButtons().stream().filter(MenuButton.class::isInstance).forEach(button -> ((MenuButton) button).refresh(uuid));
     }
   }
 }

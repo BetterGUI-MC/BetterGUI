@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class WrappedAirButton extends ActionButton<Button> {
+public class WrappedAirButton extends ActionButton {
   public WrappedAirButton(ButtonBuilder.Input input) {
     super(input);
   }

@@ -1,7 +1,7 @@
 package me.hsgamer.bettergui.requirement;
 
 import me.hsgamer.bettergui.action.ActionApplier;
-import me.hsgamer.bettergui.api.button.WrappedButton;
+import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.api.requirement.Requirement;
@@ -67,7 +67,7 @@ public class RequirementApplier implements ProcessApplier {
    *
    * @return the map
    */
-  public static Map<BukkitClickType, RequirementApplier> convertClickRequirementAppliers(Map<String, Object> section, WrappedButton button) {
+  public static Map<BukkitClickType, RequirementApplier> convertClickRequirementAppliers(Map<String, Object> section, MenuButton button) {
     Map<BukkitClickType, RequirementApplier> clickRequirements = new ConcurrentHashMap<>();
 
     Map<String, BukkitClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
