@@ -381,28 +381,75 @@ test-xp-list-template:
       variable:
         xp: 10
 
-colored-leather-chestplate: # The order is important: Material (ID) -> NBT -> others
-  id: leather_chestplate
-  nbt:
-    display:
-      color: 16175144
-  #nbt: "{display:{color:16175144}}"
-  name: "&aColored Leather Chestplate"
-  lore:
-    - "This is a colored leather chestplate"
+colored-leather-chestplate:
   position-x: 5
   position-y: 4
+  type: list
+  child:
+    new-nbt-usage: # The order is important: Material (ID) -> NBT -> others
+      id: leather_chestplate
+      nbt:
+        dyed_color: 16175144
+      #nbt: "[dyed_color=16175144]"
+      name: "&aColored Leather Chestplate"
+      lore:
+        - "This is a colored leather chestplate"
+        - "This is shown on Minecraft 1.20.5 and above"
+      view-requirement: # This NBT Button only works on 1.20.5 and above
+        version-check:
+          version: 1.20.5
+    old-nbt-usage:
+      id: leather_chestplate
+      nbt:
+        display:
+          color: 16175144
+      #nbt: "{display:{color:16175144}}"
+      name: "&aColored Leather Chestplate"
+      lore:
+        - "This is a colored leather chestplate"
+        - "This is shown on Minecraft below 1.20.5"
+
 
 custom-model-chestplate: # The order is important: Material (ID) -> NBT -> others
-  id: leather_chestplate
-  nbt:
-    CustomModelData: 104230
-  #nbt: "{CustomModelData:104230}"
-  name: "&aCustom Model Chestplate"
-  lore:
-    - "This is a custom model chestplate"
   position-x: 6
   position-y: 4
+  type: list
+  child:
+    higher-nbt-usage: # The order is important: Material (ID) -> NBT -> others
+      id: leather_chestplate
+      nbt:
+        custom_model_data:
+          floats:
+            - 104230.0
+      #nbt: "[custom_model_data={floats:[104230.0]}]"
+      name: "&aCustom Model Chestplate"
+      lore:
+        - "This is a custom model chestplate"
+        - "This is shown on Minecraft 1.21.4 and above"
+      view-requirement: # This NBT Button only works on 1.21.4 and above
+        version-check:
+          version: 1.21.4
+    new-nbt-usage: # The order is important: Material (ID) -> NBT -> others
+      id: leather_chestplate
+      nbt:
+        custom_model_data: 104230
+      #nbt: "[custom_model_data=104230]"
+      name: "&aCustom Model Chestplate"
+      lore:
+        - "This is a custom model chestplate"
+        - "This is shown on Minecraft 1.20.5 and above"
+      view-requirement: # This NBT Button only works on 1.20.5 and above
+        version-check:
+          version: 1.20.5
+    old-nbt-usage:
+      id: leather_chestplate
+      nbt:
+        CustomModelData: 104230
+      #nbt: "{CustomModelData:104230}"
+      name: "&aCustom Model Chestplate"
+      lore:
+        - "This is a custom model chestplate"
+        - "This is shown on Minecraft below 1.20.5"
 
 potion:
   position-x: 7
