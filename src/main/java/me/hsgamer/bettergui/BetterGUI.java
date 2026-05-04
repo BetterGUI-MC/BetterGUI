@@ -25,7 +25,9 @@ import org.bstats.charts.AdvancedPie;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The main class of the plugin
@@ -94,7 +96,11 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
     get(AddonManager.class).call(PostEnable.class, PostEnable::postEnable);
 
     Metrics metrics = new Metrics(this, 6609);
-    metrics.addCustomChart(new AdvancedPie("addon_count", get(AddonManager.class)::getExpansionCount));
+    metrics.addCustomChart(new AdvancedPie("addon_count", () -> {
+      Map<String, Integer> map = new HashMap<>();
+      get(AddonManager.class).getEnabledExpansions().keySet().forEach(s -> map.put(s, 1));
+      return map;
+    }));
 
     if (getDescription().getVersion().contains("SNAPSHOT")) {
       getLogger().warning("You are using the development version");

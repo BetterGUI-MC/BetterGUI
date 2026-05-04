@@ -93,17 +93,6 @@ public class AddonManager extends ExpansionManager implements Loadable, PostEnab
   }
 
   /**
-   * Get expansion count
-   *
-   * @return the expansion count
-   */
-  public Map<String, Integer> getExpansionCount() {
-    Map<String, Integer> map = new HashMap<>();
-    getEnabledExpansions().keySet().forEach(s -> map.put(s, 1));
-    return map;
-  }
-
-  /**
    * Get the plugin
    *
    * @return the plugin
