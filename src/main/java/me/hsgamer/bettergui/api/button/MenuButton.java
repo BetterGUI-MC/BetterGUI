@@ -4,7 +4,6 @@ import io.github.projectunified.craftux.common.ActionItem;
 import io.github.projectunified.craftux.common.Button;
 import io.github.projectunified.craftux.common.Element;
 import me.hsgamer.bettergui.api.element.MenuElement;
-import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +14,7 @@ import java.util.UUID;
  * The base class of wrapped button
  */
 public abstract class MenuButton implements Button, MenuElement, Element {
-  protected final Menu menu;
+  protected final MenuElement parent;
   protected final String name;
   protected final Map<String, Object> options;
   protected Button button;
@@ -26,7 +25,7 @@ public abstract class MenuButton implements Button, MenuElement, Element {
    * @param input the input
    */
   protected MenuButton(ButtonBuilder.Input input) {
-    this.menu = input.menu;
+    this.parent = input.parent;
     this.name = input.name;
     this.options = input.options;
   }
@@ -64,8 +63,8 @@ public abstract class MenuButton implements Button, MenuElement, Element {
   }
 
   @Override
-  public Menu getMenu() {
-    return menu;
+  public MenuElement getParent() {
+    return parent;
   }
 
   @Override

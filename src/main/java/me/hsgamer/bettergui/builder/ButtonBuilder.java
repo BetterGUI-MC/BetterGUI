@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.builder;
 import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.MenuButton;
-import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.bettergui.button.*;
 import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.hscore.builder.FunctionalMassBuilder;
@@ -51,22 +51,21 @@ public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Inp
   }
 
   /**
-   * Get the child buttons from the parent button
+   * Get the child buttons from the parent element
    *
-   * @param parentButton the parent button
-   * @param section      the child section
+   * @param parent  the parent element
+   * @param section the child section
    *
    * @return the child buttons
    */
-  public List<MenuButton> getChildButtons(MenuButton parentButton, Map<String, Object> section) {
+  public List<MenuButton> getChildButtons(MenuElement parent, Map<String, Object> section) {
     return section.entrySet()
       .stream()
       .filter(entry -> entry.getValue() instanceof Map)
       .map(entry -> {
         // noinspection unchecked
         Map<String, Object> value = (Map<String, Object>) entry.getValue();
-        String name = parentButton.getName() + "_child_" + entry.getKey();
-        return new Input(parentButton.getMenu(), name, value);
+        return new Input(parent, entry.getKey(), value);
       })
       .flatMap(input -> build(input).map(Stream::of).orElseGet(Stream::empty))
       .collect(Collectors.toList());
@@ -76,19 +75,19 @@ public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Inp
    * The input for the button builder
    */
   public static class Input {
-    public final Menu menu;
+    public final MenuElement parent;
     public final String name;
     public final Map<String, Object> options;
 
     /**
      * Create a new input
      *
-     * @param menu    the menu
+     * @param parent  the parent element
      * @param name    the name of the button
      * @param options the options of the button
      */
-    public Input(Menu menu, String name, Map<String, Object> options) {
-      this.menu = menu;
+    public Input(MenuElement parent, String name, Map<String, Object> options) {
+      this.parent = parent;
       this.name = name;
       this.options = options;
     }

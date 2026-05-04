@@ -18,6 +18,15 @@ public interface WithElementLookupStringReplacer<T extends MenuElement> extends 
   List<T> getElements();
 
   /**
+   * Get the prefix of the lookup string. This is for backward compatibility.
+   *
+   * @return the prefix
+   */
+  default String getPrefix() {
+    return "";
+  }
+
+  /**
    * Get the {@link StringReplacer} suitable for the string
    *
    * @param original the string
@@ -26,6 +35,10 @@ public interface WithElementLookupStringReplacer<T extends MenuElement> extends 
    */
   @Nullable
   default Pair<StringReplacer, String> lookup(String original) {
+    String prefix = getPrefix();
+    if (!prefix.isEmpty() && original.startsWith(prefix)) {
+      original = original.substring(prefix.length());
+    }
     MenuElement found = null;
     for (MenuElement element : getElements()) {
       if (original.startsWith(element.getName())) {

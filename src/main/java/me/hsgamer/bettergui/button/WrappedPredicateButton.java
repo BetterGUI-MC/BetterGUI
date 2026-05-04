@@ -6,6 +6,7 @@ import io.github.projectunified.craftux.common.Button;
 import io.github.projectunified.craftux.common.Element;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.MenuButton;
+import me.hsgamer.bettergui.api.element.WithLookupStringReplacer;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.config.MainConfig;
@@ -15,9 +16,12 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.common.MapUtils;
+import me.hsgamer.hscore.common.Pair;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class WrappedPredicateButton extends MenuButton {
+public class WrappedPredicateButton extends MenuButton implements WithLookupStringReplacer {
   private final Set<UUID> checked = new ConcurrentSkipListSet<>();
 
   public WrappedPredicateButton(ButtonBuilder.Input input) {
@@ -35,33 +39,34 @@ public class WrappedPredicateButton extends MenuButton {
   public static PredicateClickButton getPredicateButton(Map<String, Object> section, MenuButton wrappedButton, Set<UUID> checked, PredicateButton predicateButton) {
     boolean checkOnlyOnCreation = Optional.ofNullable(section.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     boolean preventSpamClick = Optional.ofNullable(section.get("prevent-spam-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(true);
-    Optional.ofNullable(section.get("view-requirement"))
+    RequirementApplier viewRequirement = Optional.ofNullable(section.get("view-requirement"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .ifPresent(subsection -> {
-        RequirementApplier requirementApplier = new RequirementApplier(wrappedButton.getMenu(), subsection);
-        predicateButton.setViewPredicate(uuid -> {
-          if (checkOnlyOnCreation && checked.contains(uuid)) {
-            return true;
-          }
-          Requirement.Result result = requirementApplier.getResult(uuid);
-          if (result.isSuccess) {
-            checked.add(uuid);
-          }
-          BatchRunnable batchRunnable = new BatchRunnable();
-          batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
-            result.applier.accept(uuid, process);
-            process.next();
-          });
-          SchedulerUtil.async().run(batchRunnable);
-          return result.isSuccess;
+      .map(subSection -> new RequirementApplier(wrappedButton, subSection))
+      .orElse(null);
+    if (viewRequirement != null) {
+      predicateButton.setViewPredicate(uuid -> {
+        if (checkOnlyOnCreation && checked.contains(uuid)) {
+          return true;
+        }
+        Requirement.Result result = viewRequirement.getResult(uuid);
+        if (result.isSuccess) {
+          checked.add(uuid);
+        }
+        BatchRunnable batchRunnable = new BatchRunnable();
+        batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+          result.applier.accept(uuid, process);
+          process.next();
         });
+        SchedulerUtil.async().run(batchRunnable);
+        return result.isSuccess;
       });
+    }
     ClickRequirementApplier clickRequirements = Optional.ofNullable(section.get("click-requirement"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
       .map(map -> new ClickRequirementApplier(wrappedButton, map))
       .orElse(null);
 
-    return new PredicateClickButton(predicateButton, clickRequirements, preventSpamClick);
+    return new PredicateClickButton(predicateButton, viewRequirement, clickRequirements, preventSpamClick);
   }
 
   @Override
@@ -71,11 +76,11 @@ public class WrappedPredicateButton extends MenuButton {
     PredicateButton predicateButton = new PredicateButton();
     Optional.ofNullable(keys.get("button"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .flatMap(subsection -> BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(getMenu(), getName() + "_button", subsection)))
+      .flatMap(subsection -> BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(getMenu(), "button", subsection)))
       .ifPresent(predicateButton::setButton);
     Optional.ofNullable(keys.get("fallback"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .flatMap(subsection -> BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(getMenu(), getName() + "_fallback", subsection)))
+      .flatMap(subsection -> BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(getMenu(), "fallback", subsection)))
       .ifPresent(predicateButton::setFallbackButton);
 
     return getPredicateButton(keys, this, checked, predicateButton);
@@ -98,14 +103,43 @@ public class WrappedPredicateButton extends MenuButton {
     }
   }
 
+  @Override
+  public @Nullable Pair<StringReplacer, String> lookup(String original) {
+    if (this.button == null) {
+      return null;
+    }
+    PredicateClickButton predicateButton = (PredicateClickButton) this.button;
+    if (original.startsWith("button")) {
+      Button button = predicateButton.getPredicateButton().getButton();
+      if (button instanceof MenuButton) {
+        return Pair.of((MenuButton) button, original.substring("button".length()));
+      }
+    }
+    if (original.startsWith("fallback")) {
+      Button button = predicateButton.getPredicateButton().getFallbackButton();
+      if (button instanceof MenuButton) {
+        return Pair.of((MenuButton) button, original.substring("fallback".length()));
+      }
+    }
+    if (original.startsWith("click")) {
+      return Pair.of(predicateButton.clickRequirements, original.substring("click".length()));
+    }
+    if (original.startsWith("view")) {
+      return Pair.of(predicateButton.viewRequirement,  original.substring("view".length()));
+    }
+    return null;
+  }
+
   public static class PredicateClickButton implements Button, Element {
     private final PredicateButton predicateButton;
+    private final RequirementApplier viewRequirement;
     private final ClickRequirementApplier clickRequirements;
     private final boolean preventSpamClick;
     private final Set<UUID> clickCheckList = new ConcurrentSkipListSet<>();
 
-    public PredicateClickButton(PredicateButton predicateButton, ClickRequirementApplier clickRequirements, boolean preventSpamClick) {
+    public PredicateClickButton(PredicateButton predicateButton, RequirementApplier viewRequirement, ClickRequirementApplier clickRequirements, boolean preventSpamClick) {
       this.predicateButton = predicateButton;
+      this.viewRequirement = viewRequirement;
       this.clickRequirements = clickRequirements;
       this.preventSpamClick = preventSpamClick;
     }
@@ -149,6 +183,14 @@ public class WrappedPredicateButton extends MenuButton {
 
     public PredicateButton getPredicateButton() {
       return predicateButton;
+    }
+
+    public ClickRequirementApplier getClickRequirements() {
+      return clickRequirements;
+    }
+
+    public RequirementApplier getViewRequirement() {
+      return viewRequirement;
     }
 
     @Override

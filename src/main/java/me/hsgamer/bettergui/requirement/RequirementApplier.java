@@ -7,11 +7,8 @@ import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.common.MapUtils;
-import me.hsgamer.hscore.common.Pair;
-import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskPool;
 import me.hsgamer.hscore.task.element.TaskProcess;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -126,11 +123,8 @@ public class RequirementApplier implements ProcessApplier, MenuElement, WithElem
   }
 
   @Override
-  public @Nullable Pair<StringReplacer, String> lookup(String original) {
-    if (original.startsWith("reqset_")) {
-      original = original.substring(7);
-    }
-    return WithElementLookupStringReplacer.super.lookup(original);
+  public String getPrefix() {
+    return "reqset_";
   }
 
   @Override

@@ -30,7 +30,7 @@ public abstract class ActionButton extends MenuButton {
   protected Button createButton(Map<String, Object> section) {
     Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     ClickActionHandler clickActionHandler = new ClickActionHandler(
-      menu,
+      this,
       MapUtils.getIfFoundOrDefault(keys, Collections.emptyList(), "command", "action"),
       Optional.ofNullable(keys.get("close-on-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false)
     );
