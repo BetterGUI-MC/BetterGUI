@@ -22,7 +22,7 @@ public class ClickActionHandler {
   /**
    * Create a new click action handler
    *
-   * @param menuElement         the menu element
+   * @param menuElement  the menu element
    * @param actionMap    the action map
    * @param closeOnClick if the menu should close when the player click
    */
@@ -35,7 +35,7 @@ public class ClickActionHandler {
   /**
    * Create a new click action handler
    *
-   * @param menuElement         the menu element
+   * @param menuElement  the menu element
    * @param o            the action value
    * @param closeOnClick if the menu should close when the player click
    */

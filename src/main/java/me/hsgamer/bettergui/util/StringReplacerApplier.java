@@ -1,12 +1,16 @@
 package me.hsgamer.bettergui.util;
 
+import io.github.projectunified.maptemplate.MapTemplate;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.function.UnaryOperator;
 
 /**
@@ -18,10 +22,6 @@ public final class StringReplacerApplier {
    */
   public static final StringReplacer COLORIZE = ColorUtils::colorize;
   private static final List<StringReplacer> STRING_REPLACERS = new ArrayList<>();
-
-  static {
-    STRING_REPLACERS.add(COLORIZE);
-  }
 
   private StringReplacerApplier() {
     // EMPTY
@@ -39,83 +39,49 @@ public final class StringReplacerApplier {
   /**
    * Get the operator to replace the string
    *
-   * @param uuid                     the unique id
-   *
-   * @return the operator
-   */
-  public static UnaryOperator<String> getReplaceOperator(UUID uuid) {
-    List<StringReplacer> replacers = new ArrayList<>();
-    replacers.add(BetterGUI.getInstance().get(VariableManager.class));
-    replacers.addAll(STRING_REPLACERS);
-    StringReplacer combined = StringReplacer.combine(replacers);
-    return s -> combined.replaceOrOriginal(s, uuid);
-  }
-
-//  /**
-//   * Get the operator to replace the string
-//   *
-//   * @param uuid the unique id
-//   * @param menu the menu
-//   *
-//   * @return the operator
-//   */
-//  public static UnaryOperator<String> getReplaceOperator(UUID uuid, Menu menu) {
-//    UnaryOperator<String> replaceOperator = getReplaceOperator(uuid, false);
-//    return s -> {
-//      s = menu.getVariableManager().replaceOrOriginal(s, uuid);
-//      return replaceOperator.apply(s);
-//    };
-//  }
-
-  /**
-   * Get the operator to replace the string
-   *
    * @param uuid        the unique id
    * @param menuElement the menu element
    *
    * @return the item builder
    */
   public static UnaryOperator<String> getReplaceOperator(UUID uuid, MenuElement menuElement) {
-    return getReplaceOperator(uuid, menuElement.getMenu());
+    VariableManager variableManager = BetterGUI.getInstance().get(VariableManager.class);
+
+    MapTemplate mapTemplate = MapTemplate.builder()
+      .setVariableFunction(s -> {
+        MenuElement currentMenuElement = menuElement;
+        while (currentMenuElement != null) {
+          String replaced = currentMenuElement.getStringReplacer().tryReplace(s, uuid);
+          if (replaced != null) {
+            return replaced;
+          }
+          currentMenuElement = currentMenuElement.getParent();
+        }
+
+        return variableManager.tryReplace(s, uuid);
+      })
+      .build();
+
+    List<StringReplacer> replacers = new ArrayList<>(STRING_REPLACERS);
+    replacers.add(COLORIZE);
+    StringReplacer combined = StringReplacer.combine(replacers);
+
+    return s -> {
+      s = Objects.toString(mapTemplate.apply(s));
+      return combined.replaceOrOriginal(s, uuid);
+    };
   }
 
   /**
-   * Apply the string replacers to the string
+   * Get the operator to replace the string
    *
-   * @param string                   the string
-   * @param uuid                     the unique id
+   * @param uuid the unique id
    *
-   * @return the replaced string
+   * @return the operator
    */
-  public static String replace(String string, UUID uuid) {
-    String replaced = string;
-    replaced = BetterGUI.getInstance().get(VariableManager.class).setVariables(replaced, uuid);
-
-    for (StringReplacer replacer : STRING_REPLACERS) {
-      String newString = replacer.tryReplace(replaced, uuid);
-      if (newString != null) {
-        replaced = newString;
-      }
-    }
-    return replaced;
+  public static UnaryOperator<String> getReplaceOperator(UUID uuid) {
+    return getReplaceOperator(uuid, null);
   }
-
-//  /**
-//   * Apply the string replacers to the string
-//   *
-//   * @param string the string
-//   * @param uuid   the unique id
-//   * @param menu   the menu
-//   *
-//   * @return the replaced string
-//   */
-//  public static String replace(String string, UUID uuid, Menu menu) {
-//    String replaced = menu.getVariableManager().tryReplace(string, uuid);
-//    if (replaced == null) {
-//      return string;
-//    }
-//    return replace(replaced, uuid, false);
-//  }
 
   /**
    * Apply the string replacers to the string
@@ -127,7 +93,45 @@ public final class StringReplacerApplier {
    * @return the replaced string
    */
   public static String replace(String string, UUID uuid, MenuElement menuElement) {
-    return replace(string, uuid, menuElement.getMenu());
+    VariableManager variableManager = BetterGUI.getInstance().get(VariableManager.class);
+
+    MapTemplate mapTemplate = MapTemplate.builder()
+      .setVariableFunction(s -> {
+        MenuElement currentMenuElement = menuElement;
+        while (currentMenuElement != null) {
+          String replaced = currentMenuElement.getStringReplacer().tryReplace(s, uuid);
+          if (replaced != null) {
+            return replaced;
+          }
+          currentMenuElement = currentMenuElement.getParent();
+        }
+
+        return variableManager.tryReplace(s, uuid);
+      })
+      .build();
+
+    string = Objects.toString(mapTemplate.apply(string));
+
+    for (StringReplacer replacer : STRING_REPLACERS) {
+      String newString = replacer.tryReplace(string, uuid);
+      if (newString != null) {
+        string = newString;
+      }
+    }
+    string = COLORIZE.tryReplace(string, uuid);
+    return string;
+  }
+
+  /**
+   * Apply the string replacers to the string
+   *
+   * @param string the string
+   * @param uuid   the unique id
+   *
+   * @return the replaced string
+   */
+  public static String replace(String string, UUID uuid) {
+    return replace(string, uuid, null);
   }
 
   /**

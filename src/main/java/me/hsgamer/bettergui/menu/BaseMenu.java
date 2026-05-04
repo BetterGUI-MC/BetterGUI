@@ -1,8 +1,8 @@
 package me.hsgamer.bettergui.menu;
 
 import me.hsgamer.bettergui.action.ActionApplier;
-import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
+import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
 import me.hsgamer.bettergui.config.MessageConfig;
@@ -145,8 +145,7 @@ public abstract class BaseMenu extends StandardMenu {
 
   @Override
   public StringReplacer getStringReplacer() {
-    return StringReplacer.combine(
-      super.getStringReplacer(),
+    return StringReplacer.either(
       (LookupStringReplacer) original -> {
         if (original.startsWith("view") && viewRequirementApplier != null) {
           return Pair.of(viewRequirementApplier.getStringReplacer(), original.substring("view".length()));
@@ -158,7 +157,8 @@ public abstract class BaseMenu extends StandardMenu {
           return Pair.of(argumentHandler.getStringReplacer(), original.substring("arg".length()));
         }
         return null;
-      }
+      },
+      super.getStringReplacer()
     );
   }
 }

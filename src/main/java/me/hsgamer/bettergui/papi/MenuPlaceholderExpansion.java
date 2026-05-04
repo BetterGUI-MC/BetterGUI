@@ -3,7 +3,6 @@ package me.hsgamer.bettergui.papi;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.manager.VariableManager;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.common.StringReplacer;
 import org.bukkit.Bukkit;
@@ -35,7 +34,7 @@ public class MenuPlaceholderExpansion extends PlaceholderExpansion {
   public boolean register() {
     boolean success = super.register();
     if (success) {
-      plugin.get(VariableManager.class).addExternalReplacer(StringReplacer.of(
+      StringReplacerApplier.getStringReplacers().add(StringReplacer.of(
         (original) -> {
           try {
             return PlaceholderAPI.setPlaceholders(null, original);

@@ -24,7 +24,7 @@ public class TemplateButton extends MenuButton {
   @Override
   protected MenuButton createButton(Map<String, Object> section) {
     finalOptions = BetterGUI.getInstance().get(TemplateConfig.class).getValues(section, "type");
-    return BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(getMenu(), getName(), finalOptions)).orElse(null);
+    return BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, getName(), finalOptions)).orElse(null);
   }
 
   @Override

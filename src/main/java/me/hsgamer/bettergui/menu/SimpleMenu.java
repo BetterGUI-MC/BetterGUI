@@ -11,7 +11,10 @@ import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.Config;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
@@ -29,7 +32,7 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
         continue;
       }
       Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
-      Optional<MenuButton> optionalButton = BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this,  key, values));
+      Optional<MenuButton> optionalButton = BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, key, values));
       if (!optionalButton.isPresent()) {
         continue;
       }
@@ -51,8 +54,7 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
 
   @Override
   public StringReplacer getStringReplacer() {
-    return StringReplacer.combine(
-      super.getStringReplacer(),
+    return StringReplacer.either(
       new ElementLookupStringReplacer<MenuButton>() {
         @Override
         public List<MenuButton> getElements() {
@@ -63,7 +65,8 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
         public String getPrefix() {
           return "button_";
         }
-      }
+      },
+      super.getStringReplacer()
     );
   }
 }

@@ -1,8 +1,8 @@
 package me.hsgamer.bettergui.menu;
 
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
+import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
 import me.hsgamer.bettergui.manager.MenuCommandManager;
@@ -131,14 +131,14 @@ public class PredicateMenu extends StandardMenu {
 
   @Override
   public StringReplacer getStringReplacer() {
-    return StringReplacer.combine(
-      super.getStringReplacer(),
+    return StringReplacer.either(
       (LookupStringReplacer) original -> {
         if (original.startsWith("arg")) {
           return Pair.of(argumentHandler.getStringReplacer(), original.substring("arg".length()));
         }
         return null;
-      }
+      },
+      super.getStringReplacer()
     );
   }
 

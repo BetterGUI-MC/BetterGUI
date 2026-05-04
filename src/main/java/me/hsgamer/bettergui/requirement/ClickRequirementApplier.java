@@ -66,7 +66,7 @@ public class ClickRequirementApplier implements MenuElement {
       for (Map.Entry<BukkitClickType, RequirementApplier> entry : requirementAppliers.entrySet()) {
         String name = entry.getKey().getName().toLowerCase(Locale.ROOT);
         if (lowerCaseOriginal.startsWith(name)) {
-          return Pair.of(entry.getValue().getStringReplacer(), name);
+          return Pair.of(entry.getValue().getStringReplacer(), original.substring(name.length()));
         }
       }
       return null;

@@ -6,8 +6,6 @@ import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.BatchRunnable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;

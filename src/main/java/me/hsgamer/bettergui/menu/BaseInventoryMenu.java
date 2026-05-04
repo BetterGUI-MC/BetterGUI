@@ -149,8 +149,7 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
 
   @Override
   public StringReplacer getStringReplacer() {
-    return StringReplacer.combine(
-      super.getStringReplacer(),
+    return StringReplacer.either(
       (LookupStringReplacer) original -> {
         if (defaultButton instanceof MenuButton) {
           MenuButton menuButton = (MenuButton) defaultButton;
@@ -161,7 +160,8 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
           }
         }
         return null;
-      }
+      },
+      super.getStringReplacer()
     );
   }
 

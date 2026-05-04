@@ -2,8 +2,8 @@ package me.hsgamer.bettergui.requirement;
 
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.element.MenuElement;
-import me.hsgamer.bettergui.api.replacer.ElementLookupStringReplacer;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
+import me.hsgamer.bettergui.api.replacer.ElementLookupStringReplacer;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.common.MapUtils;

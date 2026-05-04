@@ -24,7 +24,7 @@ public class LegacyMenuButton extends MenuButton {
   @Override
   protected WrappedPredicateButton.PredicateClickButton createButton(Map<String, Object> section) {
     Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
-    WrappedSimpleButton simpleButton = new WrappedSimpleButton(new ButtonBuilder.Input(getMenu(), getName(), section));
+    WrappedSimpleButton simpleButton = new WrappedSimpleButton(new ButtonBuilder.Input(this, getName(), section));
     PredicateButton predicateButton = new PredicateButton();
     predicateButton.setButton(simpleButton);
     return WrappedPredicateButton.getPredicateButton(keys, this, checked, predicateButton);

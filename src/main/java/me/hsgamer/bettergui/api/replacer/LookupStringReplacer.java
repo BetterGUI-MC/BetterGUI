@@ -1,6 +1,5 @@
 package me.hsgamer.bettergui.api.replacer;
 
-import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.StringReplacer;
 import org.jetbrains.annotations.NotNull;
