@@ -1,17 +1,17 @@
 package me.hsgamer.bettergui.button;
 
-import io.github.projectunified.craftux.button.AnimatedButton;
 import io.github.projectunified.craftux.button.ListButton;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.MenuButton;
-import me.hsgamer.bettergui.api.element.WithElementLookupStringReplacer;
+import me.hsgamer.bettergui.api.replacer.ElementLookupStringReplacer;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.hscore.common.MapUtils;
+import me.hsgamer.hscore.common.StringReplacer;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class WrappedListButton extends MenuButton implements WithElementLookupStringReplacer<MenuButton> {
+public class WrappedListButton extends MenuButton {
   public WrappedListButton(ButtonBuilder.Input input) {
     super(input);
   }
@@ -40,17 +40,23 @@ public class WrappedListButton extends MenuButton implements WithElementLookupSt
     }
   }
 
-  @Override
-  public List<MenuButton> getElements() {
-    if (this.button != null) {
-      return ((ListButton) this.button).getButtons().stream().filter(MenuButton.class::isInstance).map(MenuButton.class::cast).collect(Collectors.toList());
-    } else {
-      return Collections.emptyList();
-    }
-  }
 
   @Override
-  public String getPrefix() {
-    return "child_";
+  public StringReplacer getStringReplacer() {
+    return new ElementLookupStringReplacer<MenuButton>() {
+      @Override
+      public List<MenuButton> getElements() {
+        if (WrappedListButton.this.button != null) {
+          return ((ListButton) WrappedListButton.this.button).getButtons().stream().filter(MenuButton.class::isInstance).map(MenuButton.class::cast).collect(Collectors.toList());
+        } else {
+          return Collections.emptyList();
+        }
+      }
+
+      @Override
+      public String getPrefix() {
+        return "child_";
+      }
+    };
   }
 }

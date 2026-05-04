@@ -3,9 +3,9 @@ package me.hsgamer.bettergui.manager;
 import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.hscore.bukkit.variable.BukkitVariableBundle;
-import me.hsgamer.hscore.common.StringReplacer;
+import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.variable.CommonVariableBundle;
 import me.hsgamer.hscore.variable.VariableBundle;
 
@@ -16,16 +16,25 @@ public class VariableManager extends me.hsgamer.hscore.variable.VariableManager 
   private final List<VariableBundle> bundles = new ArrayList<>();
 
   public VariableManager(BetterGUI plugin) {
-    register("menu_", StringReplacer.of((original, uuid) -> {
-      String[] split = original.split("_", 2);
-      String menuName = split[0].trim();
-      String variable = split.length > 1 ? split[1].trim() : "";
-      Menu menu = plugin.get(MenuManager.class).getMenu(menuName);
+    register("menu_", (LookupStringReplacer) original -> {
+      MenuManager manager = plugin.get(MenuManager.class);
+      String found = null;
+      for (String name : manager.getMenuNames()) {
+        if (original.startsWith(name)) {
+          if (found == null || name.length() > found.length()) {
+            found = name;
+          }
+        }
+      }
+      if (found == null) {
+        return null;
+      }
+      Menu menu = manager.getMenu(found);
       if (menu == null) {
         return null;
       }
-      return menu.getVariableManager().setVariables(StringReplacerApplier.normalizeQuery(variable), uuid);
-    }));
+      return Pair.of(menu.getStringReplacer(), original.substring(found.length()));
+    });
   }
 
   @Override

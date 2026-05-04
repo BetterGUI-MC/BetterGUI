@@ -1,10 +1,8 @@
 package me.hsgamer.bettergui.api.menu;
 
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.Config;
-import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +19,6 @@ public abstract class Menu implements MenuElement {
   public static final String MENU_SETTINGS_PATH = "menu-settings";
 
   protected final Config config;
-  protected final VariableManager variableManager = new VariableManager();
   private final Map<UUID, Menu> parentMenu = new HashMap<>();
 
   /**
@@ -31,9 +28,6 @@ public abstract class Menu implements MenuElement {
    */
   protected Menu(Config config) {
     this.config = config;
-    variableManager.register("current-menu", original -> getName(), true);
-    variableManager.register("parent-menu", StringReplacer.of((original, uuid) -> getParentMenu(uuid).map(Menu::getName).orElse("")));
-    variableManager.addExternalReplacer(BetterGUI.getInstance().get(VariableManager.class));
   }
 
   /**
@@ -55,24 +49,25 @@ public abstract class Menu implements MenuElement {
     return config.getName();
   }
 
-  /**
-   * Get the variable manager of the menu
-   *
-   * @return the variable manager
-   */
-  @Deprecated
-  public VariableManager getVariableManager() {
-    return variableManager;
-  }
-
   @Override
-  public @Nullable String replace(@NotNull String original) {
-    return variableManager.replace(original);
-  }
+  public StringReplacer getStringReplacer() {
+    return new StringReplacer() {
+      @Override
+      public @Nullable String replace(@NotNull String original) {
+        if (original.equalsIgnoreCase("current-menu")) {
+          return getName();
+        }
+        return null;
+      }
 
-  @Override
-  public @Nullable String replace(@NotNull String original, @NotNull UUID uuid) {
-    return variableManager.replace(original, uuid);
+      @Override
+      public @Nullable String replace(@NotNull String original, @NotNull UUID uuid) {
+        if (original.equalsIgnoreCase("parent-menu")) {
+          return getParentMenu(uuid).map(Menu::getName).orElse(null);
+        }
+        return replace(original);
+      }
+    };
   }
 
   @Override

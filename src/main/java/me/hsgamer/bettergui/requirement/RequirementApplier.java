@@ -2,11 +2,12 @@ package me.hsgamer.bettergui.requirement;
 
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.element.MenuElement;
-import me.hsgamer.bettergui.api.element.WithElementLookupStringReplacer;
+import me.hsgamer.bettergui.api.replacer.ElementLookupStringReplacer;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.hscore.common.MapUtils;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskPool;
 import me.hsgamer.hscore.task.element.TaskProcess;
 
@@ -15,7 +16,7 @@ import java.util.*;
 /**
  * The requirement setting used in Menus/Buttons/...
  */
-public class RequirementApplier implements ProcessApplier, MenuElement, WithElementLookupStringReplacer<RequirementSet> {
+public class RequirementApplier implements ProcessApplier, MenuElement {
   private final MenuElement parent;
   private final List<RequirementSet> requirementSets;
   private final ActionApplier failActionApplier;
@@ -118,13 +119,18 @@ public class RequirementApplier implements ProcessApplier, MenuElement, WithElem
   }
 
   @Override
-  public List<RequirementSet> getElements() {
-    return requirementSets;
-  }
+  public StringReplacer getStringReplacer() {
+    return new ElementLookupStringReplacer<RequirementSet>() {
+      @Override
+      public List<RequirementSet> getElements() {
+        return requirementSets;
+      }
 
-  @Override
-  public String getPrefix() {
-    return "reqset_";
+      @Override
+      public String getPrefix() {
+        return "reqset_";
+      }
+    };
   }
 
   @Override

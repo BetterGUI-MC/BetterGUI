@@ -4,14 +4,15 @@ import io.github.projectunified.craftux.simple.SimpleButtonMask;
 import io.github.projectunified.craftux.spigot.SpigotInventoryUtil;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.MenuButton;
+import me.hsgamer.bettergui.api.replacer.ElementLookupStringReplacer;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.util.SlotUtil;
 import me.hsgamer.hscore.common.MapUtils;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.Config;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
   public SimpleMenu(Config config) {
@@ -28,7 +29,7 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
         continue;
       }
       Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
-      Optional<MenuButton> optionalButton = BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "button_" + key, values));
+      Optional<MenuButton> optionalButton = BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this,  key, values));
       if (!optionalButton.isPresent()) {
         continue;
       }
@@ -46,5 +47,23 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
       .filter(MenuButton.class::isInstance)
       .map(MenuButton.class::cast)
       .forEach(button -> button.refresh(uuid));
+  }
+
+  @Override
+  public StringReplacer getStringReplacer() {
+    return StringReplacer.combine(
+      super.getStringReplacer(),
+      new ElementLookupStringReplacer<MenuButton>() {
+        @Override
+        public List<MenuButton> getElements() {
+          return getMask().getButtonSlotMap().keySet().stream().filter(MenuButton.class::isInstance).map(MenuButton.class::cast).collect(Collectors.toList());
+        }
+
+        @Override
+        public String getPrefix() {
+          return "button_";
+        }
+      }
+    );
   }
 }

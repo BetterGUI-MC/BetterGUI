@@ -3,11 +3,12 @@ package me.hsgamer.bettergui.requirement;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.element.MenuElement;
-import me.hsgamer.bettergui.api.element.WithElementLookupStringReplacer;
+import me.hsgamer.bettergui.api.replacer.ElementLookupStringReplacer;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.hscore.common.MapUtils;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskPool;
 
 import java.util.*;
@@ -17,7 +18,7 @@ import java.util.stream.Stream;
 /**
  * The requirement set
  */
-public class RequirementSet implements Requirement, WithElementLookupStringReplacer<Requirement> {
+public class RequirementSet implements Requirement {
   private final String name;
   private final MenuElement parent;
   private final List<Requirement> requirements;
@@ -102,7 +103,7 @@ public class RequirementSet implements Requirement, WithElementLookupStringRepla
   }
 
   @Override
-  public List<Requirement> getElements() {
-    return requirements;
+  public StringReplacer getStringReplacer() {
+    return (ElementLookupStringReplacer<Requirement>) () -> requirements;
   }
 }

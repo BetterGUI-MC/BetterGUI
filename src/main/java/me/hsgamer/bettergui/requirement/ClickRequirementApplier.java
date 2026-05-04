@@ -1,17 +1,16 @@
 package me.hsgamer.bettergui.requirement;
 
 import me.hsgamer.bettergui.api.element.MenuElement;
-import me.hsgamer.bettergui.api.element.WithLookupStringReplacer;
+import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.StringReplacer;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class ClickRequirementApplier implements MenuElement, WithLookupStringReplacer {
+public class ClickRequirementApplier implements MenuElement {
   private final MenuElement parent;
   private final Map<BukkitClickType, RequirementApplier> requirementAppliers;
   private final RequirementApplier defaultApplier;
@@ -58,18 +57,20 @@ public class ClickRequirementApplier implements MenuElement, WithLookupStringRep
   }
 
   @Override
-  public @Nullable Pair<StringReplacer, String> lookup(String original) {
-    if (original.startsWith("default")) {
-      return Pair.of(defaultApplier, original.substring("default".length()));
-    }
-    String lowerCaseOriginal = original.toLowerCase(Locale.ROOT);
-    for (Map.Entry<BukkitClickType, RequirementApplier> entry : requirementAppliers.entrySet()) {
-      String name = entry.getKey().getName().toLowerCase(Locale.ROOT);
-      if (lowerCaseOriginal.startsWith(name)) {
-        return Pair.of(entry.getValue(), name);
+  public StringReplacer getStringReplacer() {
+    return (LookupStringReplacer) original -> {
+      if (original.startsWith("default")) {
+        return Pair.of(defaultApplier.getStringReplacer(), original.substring("default".length()));
       }
-    }
-    return null;
+      String lowerCaseOriginal = original.toLowerCase(Locale.ROOT);
+      for (Map.Entry<BukkitClickType, RequirementApplier> entry : requirementAppliers.entrySet()) {
+        String name = entry.getKey().getName().toLowerCase(Locale.ROOT);
+        if (lowerCaseOriginal.startsWith(name)) {
+          return Pair.of(entry.getValue().getStringReplacer(), name);
+        }
+      }
+      return null;
+    };
   }
 
   @Override

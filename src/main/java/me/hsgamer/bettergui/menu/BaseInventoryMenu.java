@@ -5,6 +5,8 @@ import io.github.projectunified.craftux.common.Element;
 import io.github.projectunified.craftux.common.Mask;
 import io.github.projectunified.craftux.spigot.SpigotInventoryUI;
 import io.github.projectunified.minelib.scheduler.common.task.Task;
+import me.hsgamer.bettergui.api.button.MenuButton;
+import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.builder.InventoryBuilder;
@@ -14,6 +16,7 @@ import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.bettergui.util.TickUtil;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.task.BatchRunnable;
@@ -123,7 +126,7 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
       }
       Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
       if (key.equalsIgnoreCase("default-icon") || key.equalsIgnoreCase("default-button")) {
-        defaultButton = getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "button_" + key, values)).orElse(null);
+        defaultButton = getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, key, values)).orElse(null);
         if (defaultButton != null) {
           Element.handleIfElement(defaultButton, Element::init);
         }
@@ -142,6 +145,24 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
 
     mask = createMask(sectionMap);
     Element.handleIfElement(mask, Element::init);
+  }
+
+  @Override
+  public StringReplacer getStringReplacer() {
+    return StringReplacer.combine(
+      super.getStringReplacer(),
+      (LookupStringReplacer) original -> {
+        if (defaultButton instanceof MenuButton) {
+          MenuButton menuButton = (MenuButton) defaultButton;
+          String name = menuButton.getName();
+          String key = "button_" + name;
+          if (original.startsWith(key)) {
+            return Pair.of(menuButton.getStringReplacer(), original.substring(key.length()));
+          }
+        }
+        return null;
+      }
+    );
   }
 
   @Override

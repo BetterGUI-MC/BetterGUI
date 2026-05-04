@@ -4,6 +4,7 @@ import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.common.Pair;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,22 +58,24 @@ public abstract class SingleArgumentProcessor<T> extends BaseActionArgumentProce
   }
 
   @Override
-  public @Nullable String replace(@NotNull String query, @NotNull UUID uuid) {
-    if (query.equalsIgnoreCase("raw")) {
-      return rawMap.getOrDefault(uuid, "");
-    }
+  public StringReplacer getStringReplacer() {
+    return StringReplacer.of((query, uuid) -> {
+      if (query.equalsIgnoreCase("raw")) {
+        return rawMap.getOrDefault(uuid, "");
+      }
 
-    Optional<T> object = getObject(uuid);
-    if (!object.isPresent()) {
-      return "";
-    }
+      Optional<T> object = getObject(uuid);
+      if (!object.isPresent()) {
+        return "";
+      }
 
-    T obj = object.get();
-    if (query.isEmpty()) {
-      return getArgumentValue(obj);
-    } else {
-      return getValue(query, uuid, obj);
-    }
+      T obj = object.get();
+      if (query.isEmpty()) {
+        return getArgumentValue(obj);
+      } else {
+        return getValue(query, uuid, obj);
+      }
+    });
   }
 
   @Override

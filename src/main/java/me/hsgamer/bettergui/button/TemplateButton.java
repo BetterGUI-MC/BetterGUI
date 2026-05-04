@@ -4,11 +4,9 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.config.TemplateConfig;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import me.hsgamer.hscore.common.StringReplacer;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class TemplateButton extends MenuButton {
   private Map<String, Object> finalOptions;
@@ -35,14 +33,10 @@ public class TemplateButton extends MenuButton {
   }
 
   @Override
-  public @Nullable String replace(@NotNull String arguments) {
-    if (this.button == null) return null;
-    return ((MenuButton) this.button).replace(arguments);
-  }
-
-  @Override
-  public @Nullable String replace(@NotNull String arguments, @NotNull UUID uuid) {
-    if (this.button == null) return null;
-    return ((MenuButton) this.button).replace(arguments, uuid);
+  public StringReplacer getStringReplacer() {
+    if (this.button instanceof MenuButton) {
+      return ((MenuButton) this.button).getStringReplacer();
+    }
+    return super.getStringReplacer();
   }
 }

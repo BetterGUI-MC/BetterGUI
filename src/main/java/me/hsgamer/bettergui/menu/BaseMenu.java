@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.menu;
 
 import me.hsgamer.bettergui.action.ActionApplier;
+import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
@@ -13,6 +14,8 @@ import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.bukkit.utils.PermissionUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
+import me.hsgamer.hscore.common.Pair;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.entity.Player;
@@ -138,5 +141,24 @@ public abstract class BaseMenu extends StandardMenu {
 
   public ArgumentHandler getArgumentHandler() {
     return argumentHandler;
+  }
+
+  @Override
+  public StringReplacer getStringReplacer() {
+    return StringReplacer.combine(
+      super.getStringReplacer(),
+      (LookupStringReplacer) original -> {
+        if (original.startsWith("view") && viewRequirementApplier != null) {
+          return Pair.of(viewRequirementApplier.getStringReplacer(), original.substring("view".length()));
+        }
+        if (original.startsWith("close") && closeRequirementApplier != null) {
+          return Pair.of(closeRequirementApplier.getStringReplacer(), original.substring("close".length()));
+        }
+        if (original.startsWith("arg")) {
+          return Pair.of(argumentHandler.getStringReplacer(), original.substring("arg".length()));
+        }
+        return null;
+      }
+    );
   }
 }

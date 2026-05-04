@@ -6,7 +6,7 @@ import io.github.projectunified.craftux.common.Button;
 import io.github.projectunified.craftux.common.Element;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.MenuButton;
-import me.hsgamer.bettergui.api.element.WithLookupStringReplacer;
+import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.config.MainConfig;
@@ -21,7 +21,6 @@ import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -29,7 +28,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class WrappedPredicateButton extends MenuButton implements WithLookupStringReplacer {
+public class WrappedPredicateButton extends MenuButton {
   private final Set<UUID> checked = new ConcurrentSkipListSet<>();
 
   public WrappedPredicateButton(ButtonBuilder.Input input) {
@@ -104,30 +103,32 @@ public class WrappedPredicateButton extends MenuButton implements WithLookupStri
   }
 
   @Override
-  public @Nullable Pair<StringReplacer, String> lookup(String original) {
-    if (this.button == null) {
+  public StringReplacer getStringReplacer() {
+    return (LookupStringReplacer) original -> {
+      if (this.button == null) {
+        return null;
+      }
+      PredicateClickButton predicateButton = (PredicateClickButton) this.button;
+      if (original.startsWith("button")) {
+        Button button = predicateButton.getPredicateButton().getButton();
+        if (button instanceof MenuButton) {
+          return Pair.of(((MenuButton) button).getStringReplacer(), original.substring("button".length()));
+        }
+      }
+      if (original.startsWith("fallback")) {
+        Button button = predicateButton.getPredicateButton().getFallbackButton();
+        if (button instanceof MenuButton) {
+          return Pair.of(((MenuButton) button).getStringReplacer(), original.substring("fallback".length()));
+        }
+      }
+      if (original.startsWith("click") && predicateButton.clickRequirements != null) {
+        return Pair.of(predicateButton.clickRequirements.getStringReplacer(), original.substring("click".length()));
+      }
+      if (original.startsWith("view") && predicateButton.viewRequirement != null) {
+        return Pair.of(predicateButton.viewRequirement.getStringReplacer(), original.substring("view".length()));
+      }
       return null;
-    }
-    PredicateClickButton predicateButton = (PredicateClickButton) this.button;
-    if (original.startsWith("button")) {
-      Button button = predicateButton.getPredicateButton().getButton();
-      if (button instanceof MenuButton) {
-        return Pair.of((MenuButton) button, original.substring("button".length()));
-      }
-    }
-    if (original.startsWith("fallback")) {
-      Button button = predicateButton.getPredicateButton().getFallbackButton();
-      if (button instanceof MenuButton) {
-        return Pair.of((MenuButton) button, original.substring("fallback".length()));
-      }
-    }
-    if (original.startsWith("click")) {
-      return Pair.of(predicateButton.clickRequirements, original.substring("click".length()));
-    }
-    if (original.startsWith("view")) {
-      return Pair.of(predicateButton.viewRequirement,  original.substring("view".length()));
-    }
-    return null;
+    };
   }
 
   public static class PredicateClickButton implements Button, Element {

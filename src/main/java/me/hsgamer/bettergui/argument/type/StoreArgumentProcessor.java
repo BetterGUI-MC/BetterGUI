@@ -3,13 +3,8 @@ package me.hsgamer.bettergui.argument.type;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
-import me.hsgamer.hscore.common.CollectionUtils;
-import me.hsgamer.hscore.common.MapUtils;
-import me.hsgamer.hscore.common.Pair;
-import me.hsgamer.hscore.common.Validate;
+import me.hsgamer.hscore.common.*;
 import me.hsgamer.hscore.task.BatchRunnable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -82,8 +77,8 @@ public class StoreArgumentProcessor extends BaseActionArgumentProcessor {
   }
 
   @Override
-  public @Nullable String replace(@NotNull String query, @NotNull UUID uuid) {
-    return map.getOrDefault(uuid, "");
+  public StringReplacer getStringReplacer() {
+    return StringReplacer.of((query, uuid) -> map.getOrDefault(uuid, ""));
   }
 
   @Override

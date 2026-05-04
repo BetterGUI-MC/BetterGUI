@@ -3,17 +3,18 @@ package me.hsgamer.bettergui.argument;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
 import me.hsgamer.bettergui.api.element.MenuElement;
-import me.hsgamer.bettergui.api.element.WithElementLookupStringReplacer;
+import me.hsgamer.bettergui.api.replacer.ElementLookupStringReplacer;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
+import me.hsgamer.hscore.common.StringReplacer;
 
 import java.util.*;
 
 /**
  * The handler for arguments
  */
-public class ArgumentHandler implements ArgumentProcessor, WithElementLookupStringReplacer<ArgumentProcessor> {
+public class ArgumentHandler implements ArgumentProcessor {
   private final MenuElement menuElement;
   private final List<ArgumentProcessor> processors = new ArrayList<>();
 
@@ -86,7 +87,7 @@ public class ArgumentHandler implements ArgumentProcessor, WithElementLookupStri
   }
 
   @Override
-  public List<ArgumentProcessor> getElements() {
-    return processors;
+  public StringReplacer getStringReplacer() {
+    return (ElementLookupStringReplacer<ArgumentProcessor>) () -> processors;
   }
 }

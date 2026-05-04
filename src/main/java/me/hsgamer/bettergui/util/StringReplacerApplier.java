@@ -2,7 +2,6 @@ package me.hsgamer.bettergui.util;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.element.MenuElement;
-import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
@@ -41,35 +40,32 @@ public final class StringReplacerApplier {
    * Get the operator to replace the string
    *
    * @param uuid                     the unique id
-   * @param useGlobalVariableManager whether to use the global variable manager
    *
    * @return the operator
    */
-  public static UnaryOperator<String> getReplaceOperator(UUID uuid, boolean useGlobalVariableManager) {
+  public static UnaryOperator<String> getReplaceOperator(UUID uuid) {
     List<StringReplacer> replacers = new ArrayList<>();
-    if (useGlobalVariableManager) {
-      replacers.add(BetterGUI.getInstance().get(VariableManager.class));
-    }
+    replacers.add(BetterGUI.getInstance().get(VariableManager.class));
     replacers.addAll(STRING_REPLACERS);
     StringReplacer combined = StringReplacer.combine(replacers);
     return s -> combined.replaceOrOriginal(s, uuid);
   }
 
-  /**
-   * Get the operator to replace the string
-   *
-   * @param uuid the unique id
-   * @param menu the menu
-   *
-   * @return the operator
-   */
-  public static UnaryOperator<String> getReplaceOperator(UUID uuid, Menu menu) {
-    UnaryOperator<String> replaceOperator = getReplaceOperator(uuid, false);
-    return s -> {
-      s = menu.getVariableManager().replaceOrOriginal(s, uuid);
-      return replaceOperator.apply(s);
-    };
-  }
+//  /**
+//   * Get the operator to replace the string
+//   *
+//   * @param uuid the unique id
+//   * @param menu the menu
+//   *
+//   * @return the operator
+//   */
+//  public static UnaryOperator<String> getReplaceOperator(UUID uuid, Menu menu) {
+//    UnaryOperator<String> replaceOperator = getReplaceOperator(uuid, false);
+//    return s -> {
+//      s = menu.getVariableManager().replaceOrOriginal(s, uuid);
+//      return replaceOperator.apply(s);
+//    };
+//  }
 
   /**
    * Get the operator to replace the string
@@ -88,15 +84,12 @@ public final class StringReplacerApplier {
    *
    * @param string                   the string
    * @param uuid                     the unique id
-   * @param useGlobalVariableManager whether to use the global variable manager
    *
    * @return the replaced string
    */
-  public static String replace(String string, UUID uuid, boolean useGlobalVariableManager) {
+  public static String replace(String string, UUID uuid) {
     String replaced = string;
-    if (useGlobalVariableManager) {
-      replaced = BetterGUI.getInstance().get(VariableManager.class).setVariables(replaced, uuid);
-    }
+    replaced = BetterGUI.getInstance().get(VariableManager.class).setVariables(replaced, uuid);
 
     for (StringReplacer replacer : STRING_REPLACERS) {
       String newString = replacer.tryReplace(replaced, uuid);
@@ -107,22 +100,22 @@ public final class StringReplacerApplier {
     return replaced;
   }
 
-  /**
-   * Apply the string replacers to the string
-   *
-   * @param string the string
-   * @param uuid   the unique id
-   * @param menu   the menu
-   *
-   * @return the replaced string
-   */
-  public static String replace(String string, UUID uuid, Menu menu) {
-    String replaced = menu.getVariableManager().tryReplace(string, uuid);
-    if (replaced == null) {
-      return string;
-    }
-    return replace(replaced, uuid, false);
-  }
+//  /**
+//   * Apply the string replacers to the string
+//   *
+//   * @param string the string
+//   * @param uuid   the unique id
+//   * @param menu   the menu
+//   *
+//   * @return the replaced string
+//   */
+//  public static String replace(String string, UUID uuid, Menu menu) {
+//    String replaced = menu.getVariableManager().tryReplace(string, uuid);
+//    if (replaced == null) {
+//      return string;
+//    }
+//    return replace(replaced, uuid, false);
+//  }
 
   /**
    * Apply the string replacers to the string
@@ -150,30 +143,5 @@ public final class StringReplacerApplier {
     } else {
       return "{" + query + "}";
     }
-  }
-
-  /**
-   * Recursively replace the string in the object
-   *
-   * @param obj      the object
-   * @param replacer the replacer
-   *
-   * @return the object with replaced strings
-   */
-  public static Object replace(Object obj, UnaryOperator<String> replacer) {
-    if (obj instanceof String) {
-      String string = (String) obj;
-      string = replacer.apply(string);
-      return string;
-    } else if (obj instanceof Collection) {
-      List<Object> replaceList = new ArrayList<>();
-      ((Collection<?>) obj).forEach(o -> replaceList.add(replace(o, replacer)));
-      return replaceList;
-    } else if (obj instanceof Map) {
-      Map<Object, Object> replaceMap = new LinkedHashMap<>();
-      ((Map<?, ?>) obj).forEach((k, v) -> replaceMap.put(k, replace(v, replacer)));
-      return replaceMap;
-    }
-    return obj;
   }
 }

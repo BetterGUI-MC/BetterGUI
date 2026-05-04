@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.menu;
 
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.argument.ArgumentHandler;
@@ -14,6 +15,7 @@ import me.hsgamer.hscore.bukkit.utils.PermissionUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.entity.Player;
@@ -125,6 +127,19 @@ public class PredicateMenu extends StandardMenu {
   @Override
   public void closeAll() {
     // EMPTY
+  }
+
+  @Override
+  public StringReplacer getStringReplacer() {
+    return StringReplacer.combine(
+      super.getStringReplacer(),
+      (LookupStringReplacer) original -> {
+        if (original.startsWith("arg")) {
+          return Pair.of(argumentHandler.getStringReplacer(), original.substring("arg".length()));
+        }
+        return null;
+      }
+    );
   }
 
   private static final class MenuProcess {
