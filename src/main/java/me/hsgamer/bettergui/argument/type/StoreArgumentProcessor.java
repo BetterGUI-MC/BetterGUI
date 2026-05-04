@@ -8,6 +8,8 @@ import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.task.BatchRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -80,7 +82,7 @@ public class StoreArgumentProcessor extends BaseActionArgumentProcessor {
   }
 
   @Override
-  public String getValue(String query, UUID uuid) {
+  public @Nullable String replace(@NotNull String query, @NotNull UUID uuid) {
     return map.getOrDefault(uuid, "");
   }
 

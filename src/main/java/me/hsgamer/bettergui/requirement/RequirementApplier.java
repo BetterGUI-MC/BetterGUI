@@ -1,39 +1,37 @@
 package me.hsgamer.bettergui.requirement;
 
 import me.hsgamer.bettergui.action.ActionApplier;
-import me.hsgamer.bettergui.api.button.MenuButton;
-import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.element.MenuElement;
+import me.hsgamer.bettergui.api.element.WithElementLookupStringReplacer;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
-import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
-import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.common.MapUtils;
+import me.hsgamer.hscore.common.Pair;
+import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskPool;
 import me.hsgamer.hscore.task.element.TaskProcess;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The requirement setting used in Menus/Buttons/...
  */
-public class RequirementApplier implements ProcessApplier {
-  /**
-   * The empty requirement applier
-   */
-  public static final RequirementApplier EMPTY = new RequirementApplier(Collections.emptyList(), ActionApplier.EMPTY);
-
+public class RequirementApplier implements ProcessApplier, MenuElement, WithElementLookupStringReplacer<RequirementSet> {
+  private final MenuElement parent;
   private final List<RequirementSet> requirementSets;
   private final ActionApplier failActionApplier;
 
   /**
    * Create a new requirement applier
    *
+   * @param parent            the parent element
    * @param requirementSets   the requirement sets
    * @param failActionApplier the fail action applier
    */
-  public RequirementApplier(List<RequirementSet> requirementSets, ActionApplier failActionApplier) {
+  public RequirementApplier(MenuElement parent, List<RequirementSet> requirementSets, ActionApplier failActionApplier) {
+    this.parent = parent;
     this.requirementSets = requirementSets;
     this.failActionApplier = failActionApplier;
   }
@@ -41,70 +39,33 @@ public class RequirementApplier implements ProcessApplier {
   /**
    * Create a new requirement applier
    *
-   * @param menu    the menu
-   * @param name    the name
+   * @param parent  the parent element
    * @param section the section
    */
-  public RequirementApplier(Menu menu, String name, Map<String, Object> section) {
+  public RequirementApplier(MenuElement parent, Map<String, Object> section) {
+    this.parent = parent;
     this.requirementSets = new ArrayList<>();
     Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     keys.forEach((key, value) -> {
       if (value instanceof Map) {
         // noinspection unchecked
-        requirementSets.add(new RequirementSet(menu, name + "_reqset_" + key, (Map<String, Object>) value));
+        requirementSets.add(new RequirementSet(parent, key, (Map<String, Object>) value));
       }
     });
     this.failActionApplier = Optional.ofNullable(MapUtils.getIfFound(keys, "fail-command", "fail-action"))
-      .map(o -> new ActionApplier(menu, o))
+      .map(o -> new ActionApplier(parent, o))
       .orElse(ActionApplier.EMPTY);
   }
 
   /**
-   * Convert the section to a map of click requirement appliers
+   * Create an empty requirement applier
    *
-   * @param section the section
-   * @param button  the button
+   * @param parent the parent element
    *
-   * @return the map
+   * @return the requirement applier
    */
-  public static Map<BukkitClickType, RequirementApplier> convertClickRequirementAppliers(Map<String, Object> section, MenuButton button) {
-    Map<BukkitClickType, RequirementApplier> clickRequirements = new ConcurrentHashMap<>();
-
-    Map<String, BukkitClickType> clickTypeMap = ClickTypeUtils.getClickTypeMap();
-    Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
-
-    boolean simpleInput = true;
-    List<BukkitClickType> remainingClickTypes = new ArrayList<>();
-
-    for (Map.Entry<String, BukkitClickType> entry : clickTypeMap.entrySet()) {
-      String clickTypeName = entry.getKey().toLowerCase(Locale.ROOT);
-      BukkitClickType clickType = entry.getValue();
-      Optional<Map<String, Object>> optionalSubSection = Optional.ofNullable(keys.get(clickTypeName)).flatMap(MapUtils::castOptionalStringObjectMap);
-      if (!optionalSubSection.isPresent()) {
-        remainingClickTypes.add(clickType);
-        continue;
-      }
-      simpleInput = false;
-      clickRequirements.put(clickType, new RequirementApplier(
-        button.getMenu(),
-        button.getName() + "_click_" + clickTypeName,
-        optionalSubSection.get()
-      ));
-    }
-
-    RequirementApplier defaultSetting = new RequirementApplier(
-      button.getMenu(),
-      button.getName() + "_click_default",
-      Optional.ofNullable(keys.get("default"))
-        .flatMap(MapUtils::castOptionalStringObjectMap)
-        .orElse(simpleInput ? section : Collections.emptyMap())
-    );
-
-    for (BukkitClickType clickType : remainingClickTypes) {
-      clickRequirements.put(clickType, defaultSetting);
-    }
-
-    return clickRequirements;
+  public static RequirementApplier empty(MenuElement parent) {
+    return new RequirementApplier(parent, Collections.emptyList(), ActionApplier.EMPTY);
   }
 
   /**
@@ -157,5 +118,28 @@ public class RequirementApplier implements ProcessApplier {
     TaskPool taskPool = process.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE);
     taskPool.addLast(process1 -> result.applier.accept(uuid, process1));
     process.next();
+  }
+
+  @Override
+  public List<RequirementSet> getElements() {
+    return requirementSets;
+  }
+
+  @Override
+  public @Nullable Pair<StringReplacer, String> lookup(String original) {
+    if (original.startsWith("reqset_")) {
+      original = original.substring(7);
+    }
+    return WithElementLookupStringReplacer.super.lookup(original);
+  }
+
+  @Override
+  public MenuElement getParent() {
+    return parent;
+  }
+
+  @Override
+  public String getName() {
+    return "requirement_applier";
   }
 }

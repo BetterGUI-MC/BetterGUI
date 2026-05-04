@@ -1,10 +1,13 @@
 package me.hsgamer.bettergui.api.menu;
 
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -43,17 +46,33 @@ public abstract class Menu implements MenuElement {
   }
 
   @Override
+  public MenuElement getParent() {
+    return null;
+  }
+
+  @Override
   public String getName() {
     return config.getName();
   }
 
+  /**
+   * Get the variable manager of the menu
+   *
+   * @return the variable manager
+   */
+  @Deprecated
   public VariableManager getVariableManager() {
     return variableManager;
   }
 
   @Override
-  public StringReplacer getStringReplacer() {
-    return variableManager;
+  public @Nullable String replace(@NotNull String original) {
+    return variableManager.replace(original);
+  }
+
+  @Override
+  public @Nullable String replace(@NotNull String original, @NotNull UUID uuid) {
+    return variableManager.replace(original, uuid);
   }
 
   @Override

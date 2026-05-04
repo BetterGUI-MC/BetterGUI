@@ -2,44 +2,43 @@ package me.hsgamer.bettergui.argument;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
-import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.element.MenuElement;
+import me.hsgamer.bettergui.api.element.WithElementLookupStringReplacer;
 import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
-import me.hsgamer.hscore.common.StringReplacer;
 
 import java.util.*;
 
 /**
  * The handler for arguments
  */
-public class ArgumentHandler implements ArgumentProcessor {
-  private final Menu menu;
-  private final Map<String, ArgumentProcessor> processorMap = new LinkedHashMap<>();
+public class ArgumentHandler implements ArgumentProcessor, WithElementLookupStringReplacer<ArgumentProcessor> {
+  private final MenuElement menuElement;
+  private final List<ArgumentProcessor> processors = new ArrayList<>();
 
   /**
    * Create a new handler
    *
-   * @param menu the menu
+   * @param menuElement the menu element
    */
-  public ArgumentHandler(Menu menu, Map<String, Object> section) {
-    this.menu = menu;
+  public ArgumentHandler(MenuElement menuElement, Map<String, Object> section) {
+    this.menuElement = menuElement;
     Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     keys.forEach((key, value) -> {
       if (value instanceof Map) {
         //noinspection unchecked
         Map<String, Object> map = (Map<String, Object>) value;
         BetterGUI.getInstance().get(ArgumentProcessorBuilder.class)
-          .build(new ArgumentProcessorBuilder.Input(menu, key, map))
-          .ifPresent(processor -> processorMap.put(key, processor));
+          .build(new ArgumentProcessorBuilder.Input(menuElement, key, map))
+          .ifPresent(processors::add);
       }
     });
-    menu.getVariableManager().register("arg_", StringReplacer.of(this::getValue));
   }
 
   @Override
   public Optional<String[]> process(UUID uuid, String[] args) {
-    for (ArgumentProcessor processor : processorMap.values()) {
+    for (ArgumentProcessor processor : processors) {
       Optional<String[]> optional = processor.process(uuid, args);
       if (optional.isPresent()) {
         args = optional.get();
@@ -51,23 +50,8 @@ public class ArgumentHandler implements ArgumentProcessor {
   }
 
   @Override
-  public String getValue(String query, UUID uuid) {
-    for (Map.Entry<String, ArgumentProcessor> entry : processorMap.entrySet()) {
-      String key = entry.getKey();
-      if (query.toLowerCase(Locale.ROOT).startsWith(key.toLowerCase(Locale.ROOT))) {
-        String subQuery = query.substring(key.length());
-        if (subQuery.startsWith("_")) {
-          subQuery = subQuery.substring(1);
-        }
-        return entry.getValue().getValue(subQuery, uuid);
-      }
-    }
-    return "";
-  }
-
-  @Override
   public Pair<Optional<List<String>>, String[]> tabComplete(UUID uuid, String[] args) {
-    for (ArgumentProcessor processor : processorMap.values()) {
+    for (ArgumentProcessor processor : processors) {
       Pair<Optional<List<String>>, String[]> pair = processor.tabComplete(uuid, args);
       Optional<List<String>> optional = pair.getKey();
       if (optional.isPresent()) {
@@ -92,7 +76,17 @@ public class ArgumentHandler implements ArgumentProcessor {
   }
 
   @Override
-  public Menu getMenu() {
-    return menu;
+  public MenuElement getParent() {
+    return menuElement;
+  }
+
+  @Override
+  public String getName() {
+    return "argument_handler";
+  }
+
+  @Override
+  public List<ArgumentProcessor> getElements() {
+    return processors;
   }
 }

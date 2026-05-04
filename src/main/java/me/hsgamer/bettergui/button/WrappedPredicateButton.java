@@ -9,10 +9,10 @@ import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import me.hsgamer.bettergui.config.MainConfig;
+import me.hsgamer.bettergui.requirement.ClickRequirementApplier;
 import me.hsgamer.bettergui.requirement.RequirementApplier;
 import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
-import me.hsgamer.hscore.bukkit.clicktype.BukkitClickType;
 import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.task.BatchRunnable;
@@ -38,7 +38,7 @@ public class WrappedPredicateButton extends MenuButton {
     Optional.ofNullable(section.get("view-requirement"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
       .ifPresent(subsection -> {
-        RequirementApplier requirementApplier = new RequirementApplier(wrappedButton.getMenu(), wrappedButton.getName() + "_view", subsection);
+        RequirementApplier requirementApplier = new RequirementApplier(wrappedButton.getMenu(), subsection);
         predicateButton.setViewPredicate(uuid -> {
           if (checkOnlyOnCreation && checked.contains(uuid)) {
             return true;
@@ -56,9 +56,9 @@ public class WrappedPredicateButton extends MenuButton {
           return result.isSuccess;
         });
       });
-    Map<BukkitClickType, RequirementApplier> clickRequirements = Optional.ofNullable(section.get("click-requirement"))
+    ClickRequirementApplier clickRequirements = Optional.ofNullable(section.get("click-requirement"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .map(map -> RequirementApplier.convertClickRequirementAppliers(map, wrappedButton))
+      .map(map -> new ClickRequirementApplier(wrappedButton, map))
       .orElse(null);
 
     return new PredicateClickButton(predicateButton, clickRequirements, preventSpamClick);
@@ -100,11 +100,11 @@ public class WrappedPredicateButton extends MenuButton {
 
   public static class PredicateClickButton implements Button, Element {
     private final PredicateButton predicateButton;
-    private final Map<BukkitClickType, RequirementApplier> clickRequirements;
+    private final ClickRequirementApplier clickRequirements;
     private final boolean preventSpamClick;
     private final Set<UUID> clickCheckList = new ConcurrentSkipListSet<>();
 
-    public PredicateClickButton(PredicateButton predicateButton, Map<BukkitClickType, RequirementApplier> clickRequirements, boolean preventSpamClick) {
+    public PredicateClickButton(PredicateButton predicateButton, ClickRequirementApplier clickRequirements, boolean preventSpamClick) {
       this.predicateButton = predicateButton;
       this.clickRequirements = clickRequirements;
       this.preventSpamClick = preventSpamClick;
@@ -115,13 +115,13 @@ public class WrappedPredicateButton extends MenuButton {
       boolean isApplied = predicateButton.apply(uuid, actionItem);
       if (!isApplied) return false;
 
-      if (clickRequirements != null && !clickRequirements.isEmpty()) {
+      if (clickRequirements != null && clickRequirements.exists()) {
         actionItem.extendAction(InventoryClickEvent.class, (event, objectConsumer) -> {
           UUID clickUUID = event.getWhoClicked().getUniqueId();
           if (preventSpamClick && clickCheckList.contains(clickUUID)) {
             return;
           }
-          RequirementApplier clickRequirement = clickRequirements.get(ClickTypeUtils.getClickTypeFromEvent(event, BetterGUI.getInstance().get(MainConfig.class).isModernClickType()));
+          RequirementApplier clickRequirement = clickRequirements.getRequirementApplier(ClickTypeUtils.getClickTypeFromEvent(event, BetterGUI.getInstance().get(MainConfig.class).isModernClickType()));
           if (clickRequirement == null) {
             objectConsumer.accept(event);
             return;

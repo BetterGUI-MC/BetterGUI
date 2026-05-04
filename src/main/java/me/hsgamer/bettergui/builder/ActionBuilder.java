@@ -3,8 +3,7 @@ package me.hsgamer.bettergui.builder;
 import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.type.*;
-import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.api.menu.MenuElement;
+import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.hscore.action.builder.ActionInput;
 import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.bukkit.action.PlayerAction;
@@ -29,8 +28,8 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
     BukkitActionBuilder.register(this, plugin);
     register(OpenMenuAction::new, "open-menu", "open", "menu", "open-menu");
     register(BackAction::new, "back-menu", "backmenu");
-    register(input -> new CloseMenuAction(input.getMenu()), "close-menu", "closemenu");
-    register(input -> new UpdateMenuAction(input.getMenu()), "update-menu", "updatemenu");
+    register(input -> new CloseMenuAction(input.getMenuElement().getMenu()), "close-menu", "closemenu");
+    register(input -> new UpdateMenuAction(input.getMenuElement().getMenu()), "update-menu", "updatemenu");
     register(input -> new SoundAction(input.getValue()), "sound", "raw-sound");
   }
 
@@ -42,21 +41,21 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
   /**
    * Build a list of actions
    *
-   * @param menu   the menu involved in
-   * @param object the object
+   * @param menuElement the menu element involved in
+   * @param object      the object
    *
    * @return the list of actions
    */
-  public List<Action> build(Menu menu, Object object) {
+  public List<Action> build(MenuElement menuElement, Object object) {
     List<Input> inputs = CollectionUtils.createStringListFromObject(object, true)
       .stream()
-      .map(input -> Input.create(menu, input))
+      .map(input -> Input.create(menuElement, input))
       .collect(Collectors.toList());
     return build(inputs, input -> new PlayerAction(BetterGUI.getInstance(), input.getOriginalValue()));
   }
 
-  public interface Input extends ActionInput, MenuElement {
-    static Input create(Menu menu, String input) {
+  public interface Input extends ActionInput {
+    static Input create(MenuElement element, String input) {
       ActionInput actionInput = ActionInput.create(input);
       return new Input() {
         @Override
@@ -75,8 +74,8 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
         }
 
         @Override
-        public Menu getMenu() {
-          return menu;
+        public MenuElement getMenuElement() {
+          return element;
         }
 
         @Override
@@ -86,9 +85,7 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
       };
     }
 
-    static Input create(MenuElement menuElement, String input) {
-      return create(menuElement.getMenu(), input);
-    }
+    MenuElement getMenuElement();
 
     String getOriginalValue();
   }

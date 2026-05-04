@@ -17,7 +17,7 @@ public class BackAction implements Action {
   private final boolean bypass;
 
   public BackAction(ActionBuilder.Input input) {
-    this.menu = input.getMenu();
+    this.menu = input.getMenuElement().getMenu();
     this.value = input.getValue();
     this.bypass = input.getOption().equalsIgnoreCase("bypassChecks");
   }

@@ -1,8 +1,8 @@
 package me.hsgamer.bettergui.util;
 
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.api.menu.MenuElement;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;

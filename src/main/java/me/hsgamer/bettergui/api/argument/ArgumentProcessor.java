@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.api.argument;
 
-import me.hsgamer.bettergui.api.menu.MenuElement;
+import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.hscore.common.Pair;
 
 import java.util.List;
@@ -20,16 +20,6 @@ public interface ArgumentProcessor extends MenuElement {
    * @return the remaining arguments, or empty if the arguments are invalid
    */
   Optional<String[]> process(UUID uuid, String[] args);
-
-  /**
-   * Get the value
-   *
-   * @param query the query
-   * @param uuid  the UUID of the player
-   *
-   * @return the value
-   */
-  String getValue(String query, UUID uuid);
 
   /**
    * Get the tab complete for the arguments

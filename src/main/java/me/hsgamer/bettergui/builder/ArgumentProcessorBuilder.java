@@ -2,7 +2,7 @@ package me.hsgamer.bettergui.builder;
 
 import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.bettergui.api.argument.ArgumentProcessor;
-import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.bettergui.argument.type.*;
 import me.hsgamer.hscore.builder.FunctionalMassBuilder;
 import me.hsgamer.hscore.common.MapUtils;
@@ -41,19 +41,19 @@ public final class ArgumentProcessorBuilder extends FunctionalMassBuilder<Argume
    * The input for the argument processor builder
    */
   public static class Input {
-    public final Menu menu;
+    public final MenuElement parent;
     public final String name;
     public final Map<String, Object> options;
 
     /**
      * Create a new input
      *
-     * @param menu    the menu
+     * @param parent  the parent element
      * @param name    the name of the button
      * @param options the options of the button
      */
-    public Input(Menu menu, String name, Map<String, Object> options) {
-      this.menu = menu;
+    public Input(MenuElement parent, String name, Map<String, Object> options) {
+      this.parent = parent;
       this.name = name;
       this.options = options;
     }

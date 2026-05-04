@@ -5,6 +5,8 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.task.BatchRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,7 +57,7 @@ public abstract class SingleArgumentProcessor<T> extends BaseActionArgumentProce
   }
 
   @Override
-  public String getValue(String query, UUID uuid) {
+  public @Nullable String replace(@NotNull String query, @NotNull UUID uuid) {
     if (query.equalsIgnoreCase("raw")) {
       return rawMap.getOrDefault(uuid, "");
     }

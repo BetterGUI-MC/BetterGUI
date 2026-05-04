@@ -2,7 +2,8 @@ package me.hsgamer.bettergui.requirement;
 
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
-import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.element.MenuElement;
+import me.hsgamer.bettergui.api.element.WithElementLookupStringReplacer;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.api.requirement.Requirement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
@@ -16,9 +17,9 @@ import java.util.stream.Stream;
 /**
  * The requirement set
  */
-public class RequirementSet implements Requirement {
+public class RequirementSet implements Requirement, WithElementLookupStringReplacer<Requirement> {
   private final String name;
-  private final Menu menu;
+  private final MenuElement parent;
   private final List<Requirement> requirements;
   private final ActionApplier successActionApplier;
   private final ActionApplier failActionApplier;
@@ -26,35 +27,26 @@ public class RequirementSet implements Requirement {
   /**
    * Create a new requirement set
    *
-   * @param menu    the menu
+   * @param parent  the parent element
    * @param name    the name
    * @param section the section
    */
-  public RequirementSet(Menu menu, String name, Map<String, Object> section) {
+  public RequirementSet(MenuElement parent, String name, Map<String, Object> section) {
     this.name = name;
-    this.menu = menu;
+    this.parent = parent;
     this.requirements = section.entrySet().stream().flatMap(entry -> {
       String type = entry.getKey();
       Object value = entry.getValue();
-      return BetterGUI.getInstance().get(RequirementBuilder.class).build(new RequirementBuilder.Input(menu, type, name + "_" + type, value)).map(Stream::of).orElse(Stream.empty());
+      return BetterGUI.getInstance().get(RequirementBuilder.class).build(new RequirementBuilder.Input(parent, type, value)).map(Stream::of).orElse(Stream.empty());
     }).collect(Collectors.toList());
 
     Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
     this.successActionApplier = Optional.ofNullable(MapUtils.getIfFound(keys, "success-command", "success-action"))
-      .map(o -> new ActionApplier(menu, o))
+      .map(o -> new ActionApplier(parent, o))
       .orElse(ActionApplier.EMPTY);
     this.failActionApplier = Optional.ofNullable(MapUtils.getIfFound(keys, "fail-command", "fail-action"))
-      .map(o -> new ActionApplier(menu, o))
+      .map(o -> new ActionApplier(parent, o))
       .orElse(ActionApplier.EMPTY);
-  }
-
-  /**
-   * Get the requirements
-   *
-   * @return the requirements
-   */
-  public List<Requirement> getRequirements() {
-    return requirements;
   }
 
   /**
@@ -100,12 +92,17 @@ public class RequirementSet implements Requirement {
   }
 
   @Override
+  public MenuElement getParent() {
+    return parent;
+  }
+
+  @Override
   public String getName() {
     return name;
   }
 
   @Override
-  public Menu getMenu() {
-    return menu;
+  public List<Requirement> getElements() {
+    return requirements;
   }
 }

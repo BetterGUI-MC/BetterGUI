@@ -17,6 +17,7 @@ import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,8 +41,8 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 public abstract class BaseMenu extends StandardMenu {
   protected final ActionApplier openActionApplier;
   protected final ActionApplier closeActionApplier;
-  protected final RequirementApplier viewRequirementApplier;
-  protected final RequirementApplier closeRequirementApplier;
+  protected final @Nullable RequirementApplier viewRequirementApplier;
+  protected final @Nullable RequirementApplier closeRequirementApplier;
   protected final List<Permission> permissions;
   protected final ArgumentHandler argumentHandler;
 
@@ -55,12 +56,12 @@ public abstract class BaseMenu extends StandardMenu {
       .orElse(ActionApplier.EMPTY);
     viewRequirementApplier = Optional.ofNullable(menuSettings.get("view-requirement"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .map(m -> new RequirementApplier(this, getName() + "_view", m))
-      .orElse(RequirementApplier.EMPTY);
+      .map(m -> new RequirementApplier(this, m))
+      .orElseGet(() -> RequirementApplier.empty(this));
     closeRequirementApplier = Optional.ofNullable(menuSettings.get("close-requirement"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .map(m -> new RequirementApplier(this, getName() + "_close", m))
-      .orElse(RequirementApplier.EMPTY);
+      .map(m -> new RequirementApplier(this, m))
+      .orElseGet(() -> RequirementApplier.empty(this));
     permissions = Optional.ofNullable(menuSettings.get("permission"))
       .map(o -> CollectionUtils.createStringListFromObject(o, true))
       .map(l -> l.stream().map(Permission::new).collect(Collectors.toList()))

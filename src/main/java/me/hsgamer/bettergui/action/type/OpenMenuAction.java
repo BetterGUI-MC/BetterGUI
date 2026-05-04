@@ -24,7 +24,7 @@ public class OpenMenuAction implements Action {
   private final boolean bypass;
 
   public OpenMenuAction(ActionBuilder.Input input) {
-    this.menu = input.getMenu();
+    this.menu = input.getMenuElement().getMenu();
     this.value = input.getValue();
     this.bypass = input.getOption().equalsIgnoreCase("bypassChecks");
   }

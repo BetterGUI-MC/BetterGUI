@@ -1,7 +1,7 @@
 package me.hsgamer.bettergui.action;
 
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
@@ -39,11 +39,11 @@ public class ActionApplier implements ProcessApplier {
   /**
    * Create a new action applier
    *
-   * @param menu  the menu
-   * @param value the value
+   * @param menuElement the menu element
+   * @param value       the value
    */
-  public ActionApplier(Menu menu, Object value) {
-    this(BetterGUI.getInstance().get(ActionBuilder.class).build(menu, value), StringReplacer.of((original, uuid) -> StringReplacerApplier.replace(original, uuid, menu)));
+  public ActionApplier(MenuElement menuElement, Object value) {
+    this(BetterGUI.getInstance().get(ActionBuilder.class).build(menuElement, value), StringReplacer.of((original, uuid) -> StringReplacerApplier.replace(original, uuid, menuElement)));
   }
 
   /**

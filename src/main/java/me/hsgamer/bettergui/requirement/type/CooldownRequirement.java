@@ -6,9 +6,10 @@ import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
 import org.apache.commons.lang.time.DurationFormatUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -22,28 +23,30 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
 
   public CooldownRequirement(RequirementBuilder.Input input) {
     super(input);
-    getMenu().getVariableManager().register(getName(), StringReplacer.of((original, uuid) -> {
-      long millis = getCooldown(uuid);
-      millis = millis > 0 ? millis : 0;
+  }
 
-      if (original.toLowerCase().startsWith("_format_")) {
-        return DurationFormatUtils.formatDuration(millis, original.substring("_format_".length()));
-      }
+  @Override
+  public @Nullable String replace(@NotNull String arguments, @NotNull UUID uuid) {
+    long millis = getCooldown(uuid);
+    millis = millis > 0 ? millis : 0;
 
-      switch (original.toLowerCase()) {
-        case "_s":
-        case "_seconds":
-          return String.valueOf(millis / 1000);
-        case "_m":
-        case "_minutes":
-          return String.valueOf(millis / 60000);
-        case "_h":
-        case "_hours":
-          return String.valueOf(millis / 3600000);
-        default:
-          return String.valueOf(millis);
-      }
-    }));
+    if (arguments.toLowerCase().startsWith("_format_")) {
+      return DurationFormatUtils.formatDuration(millis, arguments.substring("_format_".length()));
+    }
+
+    switch (arguments.toLowerCase()) {
+      case "_s":
+      case "_seconds":
+        return String.valueOf(millis / 1000);
+      case "_m":
+      case "_minutes":
+        return String.valueOf(millis / 60000);
+      case "_h":
+      case "_hours":
+        return String.valueOf(millis / 3600000);
+      default:
+        return String.valueOf(millis);
+    }
   }
 
   @Override

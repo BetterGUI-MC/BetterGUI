@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.api.requirement;
 
-import me.hsgamer.bettergui.api.menu.MenuElement;
+import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.bettergui.api.process.ProcessApplier;
 
 import java.util.UUID;
@@ -18,13 +18,6 @@ public interface Requirement extends MenuElement {
    * @return the result
    */
   Result check(UUID uuid);
-
-  /**
-   * Get the name of the requirement
-   *
-   * @return the name
-   */
-  String getName();
 
   /**
    * The result of the requirement

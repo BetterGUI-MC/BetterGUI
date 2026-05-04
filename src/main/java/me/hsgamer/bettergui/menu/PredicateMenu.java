@@ -67,7 +67,7 @@ public class PredicateMenu extends StandardMenu {
       String args = Optional.ofNullable(MapUtils.getIfFound(values, "args", "arguments", "arg", "argument")).map(Object::toString).orElse("");
       Map<String, Object> requirementValue = MapUtils.castOptionalStringObjectMap(values.get("requirement")).orElseGet(Collections::emptyMap);
       menuPredicateList.add(Pair.of(
-        new RequirementApplier(this, getName() + "_" + key + "_requirement", requirementValue),
+        new RequirementApplier(this, requirementValue),
         new MenuProcess(menu, args)
       ));
     });

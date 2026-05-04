@@ -3,8 +3,8 @@ package me.hsgamer.bettergui.api.button;
 import io.github.projectunified.craftux.common.ActionItem;
 import io.github.projectunified.craftux.common.Button;
 import io.github.projectunified.craftux.common.Element;
+import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.bettergui.api.menu.Menu;
-import me.hsgamer.bettergui.api.menu.MenuElement;
 import me.hsgamer.bettergui.builder.ButtonBuilder;
 import org.jetbrains.annotations.NotNull;
 

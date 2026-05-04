@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.api.requirement;
 
-import me.hsgamer.bettergui.api.menu.Menu;
+import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
 
 import java.util.UUID;
@@ -11,9 +11,9 @@ import java.util.UUID;
  * @param <V> the type of the final value
  */
 public abstract class BaseRequirement<V> implements Requirement {
-  private final String name;
   private final Object value;
-  private final Menu menu;
+  private final String type;
+  private final MenuElement parent;
 
   /**
    * Create a new requirement
@@ -21,8 +21,8 @@ public abstract class BaseRequirement<V> implements Requirement {
    * @param input the input
    */
   protected BaseRequirement(RequirementBuilder.Input input) {
-    this.name = input.name;
-    this.menu = input.menu;
+    this.type = input.type;
+    this.parent = input.parent;
     this.value = handleValue(input.value);
   }
 
@@ -73,12 +73,12 @@ public abstract class BaseRequirement<V> implements Requirement {
   }
 
   @Override
-  public Menu getMenu() {
-    return menu;
+  public MenuElement getParent() {
+    return parent;
   }
 
   @Override
   public String getName() {
-    return name;
+    return type;
   }
 }
