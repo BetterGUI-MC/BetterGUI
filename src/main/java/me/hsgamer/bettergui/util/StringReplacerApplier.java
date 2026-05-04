@@ -37,17 +37,17 @@ public final class StringReplacerApplier {
   }
 
   /**
-   * Get the operator to replace the string
+   * Create the map template based on the unique id
    *
    * @param uuid        the unique id
    * @param menuElement the menu element
    *
-   * @return the item builder
+   * @return the map template
    */
-  public static UnaryOperator<String> getReplaceOperator(UUID uuid, MenuElement menuElement) {
+  public static MapTemplate createMapTemplate(UUID uuid, MenuElement menuElement) {
     VariableManager variableManager = BetterGUI.getInstance().get(VariableManager.class);
 
-    MapTemplate mapTemplate = MapTemplate.builder()
+    return MapTemplate.builder()
       .setVariableFunction(s -> {
         MenuElement currentMenuElement = menuElement;
         while (currentMenuElement != null) {
@@ -61,6 +61,18 @@ public final class StringReplacerApplier {
         return variableManager.tryReplace(s, uuid);
       })
       .build();
+  }
+
+  /**
+   * Get the operator to replace the string
+   *
+   * @param uuid        the unique id
+   * @param menuElement the menu element
+   *
+   * @return the item builder
+   */
+  public static UnaryOperator<String> getReplaceOperator(UUID uuid, MenuElement menuElement) {
+    MapTemplate mapTemplate = createMapTemplate(uuid, menuElement);
 
     List<StringReplacer> replacers = new ArrayList<>(STRING_REPLACERS);
     replacers.add(COLORIZE);
@@ -93,22 +105,7 @@ public final class StringReplacerApplier {
    * @return the replaced string
    */
   public static String replace(String string, UUID uuid, MenuElement menuElement) {
-    VariableManager variableManager = BetterGUI.getInstance().get(VariableManager.class);
-
-    MapTemplate mapTemplate = MapTemplate.builder()
-      .setVariableFunction(s -> {
-        MenuElement currentMenuElement = menuElement;
-        while (currentMenuElement != null) {
-          String replaced = currentMenuElement.getStringReplacer().tryReplace(s, uuid);
-          if (replaced != null) {
-            return replaced;
-          }
-          currentMenuElement = currentMenuElement.getParent();
-        }
-
-        return variableManager.tryReplace(s, uuid);
-      })
-      .build();
+    MapTemplate mapTemplate = createMapTemplate(uuid, menuElement);
 
     string = Objects.toString(mapTemplate.apply(string));
 
