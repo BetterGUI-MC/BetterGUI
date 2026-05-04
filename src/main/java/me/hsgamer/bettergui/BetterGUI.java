@@ -22,13 +22,10 @@ import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
 import me.hsgamer.hscore.config.proxy.ConfigGenerator;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
-import org.bstats.charts.DrilldownPie;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The main class of the plugin
@@ -97,12 +94,6 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
     get(AddonManager.class).call(PostEnable.class, PostEnable::postEnable);
 
     Metrics metrics = new Metrics(this, 6609);
-    metrics.addCustomChart(new DrilldownPie("addon", () -> {
-      Map<String, Map<String, Integer>> map = new HashMap<>();
-      Map<String, Integer> addons = get(AddonManager.class).getExpansionCount();
-      map.put(String.valueOf(addons.size()), addons);
-      return map;
-    }));
     metrics.addCustomChart(new AdvancedPie("addon_count", get(AddonManager.class)::getExpansionCount));
 
     if (getDescription().getVersion().contains("SNAPSHOT")) {
