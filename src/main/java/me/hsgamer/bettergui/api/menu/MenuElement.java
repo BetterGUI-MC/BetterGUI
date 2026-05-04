@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.api.menu;
 
-import me.hsgamer.hscore.variable.VariableManager;
+import me.hsgamer.hscore.common.StringReplacer;
 
 /**
  * The element of the menu
@@ -27,12 +27,12 @@ public interface MenuElement {
   }
 
   /**
-   * Get the variable manager of the element
+   * Get the string replacer of the element
    *
-   * @return the variable manager
+   * @return the string replacer
    */
   // TODO: Implement
-  default VariableManager getVariableManager() {
+  default StringReplacer getStringReplacer() {
     return null;
   }
 

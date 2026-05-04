@@ -47,8 +47,12 @@ public abstract class Menu implements MenuElement {
     return config.getName();
   }
 
-  @Override
   public VariableManager getVariableManager() {
+    return variableManager;
+  }
+
+  @Override
+  public StringReplacer getStringReplacer() {
     return variableManager;
   }
 
