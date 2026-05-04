@@ -16,7 +16,9 @@ import me.hsgamer.hscore.expansion.extra.manager.DependableExpansionSortAndFilte
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class AddonManager extends ExpansionManager implements Loadable, PostEnable {
