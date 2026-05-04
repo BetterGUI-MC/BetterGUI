@@ -69,7 +69,6 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
         new MainCommand(this),
         new GetAddonsCommand(this),
         new ReloadCommand(this),
-        new GetVariablesCommand(this),
         new GetTemplateButtonsCommand(this)
       ),
 
