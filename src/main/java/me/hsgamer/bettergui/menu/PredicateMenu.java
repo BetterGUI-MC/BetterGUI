@@ -101,7 +101,8 @@ public class PredicateMenu extends StandardMenu {
       if (result.isSuccess) {
         MenuProcess menuProcess = pair.getValue();
         String[] finalArgs = StringReplacerApplier.replace(menuProcess.args, uuid, this).split("\\s+");
-        BetterGUI.getInstance().get(MenuManager.class).openMenu(menuProcess.menu, player, finalArgs, getParentMenu(uuid).orElse(null), bypass);
+        MenuManager menuManager = BetterGUI.getInstance().get(MenuManager.class);
+        menuManager.openMenu(menuProcess.menu, player, finalArgs, menuManager.getParentMenu(uuid, this).orElse(null), bypass);
         isSuccessful = true;
         break;
       }

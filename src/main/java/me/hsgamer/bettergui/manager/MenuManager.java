@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
@@ -19,6 +20,7 @@ import java.util.logging.Level;
 public final class MenuManager implements Loadable, PostEnable {
 
   private final Map<String, Menu> menuMap = new HashMap<>();
+  private final Map<UUID, Map<Menu, Menu>> parentMenuMap = new ConcurrentHashMap<>();
   private final BetterGUI plugin;
   private final File menusFolder;
 
@@ -128,8 +130,20 @@ public final class MenuManager implements Loadable, PostEnable {
    */
   public void openMenu(String name, Player player, String[] args, Menu parentMenu, boolean bypass) {
     Menu menu = menuMap.get(name);
-    menu.setParentMenu(player.getUniqueId(), parentMenu);
+    parentMenuMap.computeIfAbsent(player.getUniqueId(), k -> new ConcurrentHashMap<>()).put(menu, parentMenu);
     menu.create(player, args, bypass);
+  }
+
+  /**
+   * Get the parent menu of the menu
+   *
+   * @param uuid the unique id
+   * @param menu the menu
+   *
+   * @return the parent menu
+   */
+  public Optional<Menu> getParentMenu(UUID uuid, Menu menu) {
+    return Optional.ofNullable(parentMenuMap.get(uuid)).map(map -> map.get(menu));
   }
 
   /**

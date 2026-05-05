@@ -1,7 +1,9 @@
 package me.hsgamer.bettergui.action.type;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
+import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.common.StringReplacer;
@@ -34,7 +36,7 @@ public class BackAction implements Action {
       ? stringReplacer.replaceOrOriginal(value, uuid).split(" ")
       : new String[0];
 
-    Runnable runnable = menu.getParentMenu(uuid)
+    Runnable runnable = BetterGUI.getInstance().get(MenuManager.class).getParentMenu(uuid, menu)
       .<Runnable>map(parentMenu -> () -> parentMenu.create(player, args, bypass))
       .orElse(player::closeInventory);
     SchedulerUtil.entity(player)

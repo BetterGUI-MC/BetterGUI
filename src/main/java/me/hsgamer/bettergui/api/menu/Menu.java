@@ -1,6 +1,8 @@
 package me.hsgamer.bettergui.api.menu;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.element.MenuElement;
+import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
@@ -19,7 +21,6 @@ public abstract class Menu implements MenuElement {
   public static final String MENU_SETTINGS_PATH = "menu-settings";
 
   protected final Config config;
-  private final Map<UUID, Menu> parentMenu = new HashMap<>();
 
   /**
    * Create a new menu
@@ -63,7 +64,7 @@ public abstract class Menu implements MenuElement {
       @Override
       public @Nullable String replace(@NotNull String original, @NotNull UUID uuid) {
         if (original.equalsIgnoreCase("parent-menu")) {
-          return getParentMenu(uuid).map(Menu::getName).orElse(null);
+          return BetterGUI.getInstance().get(MenuManager.class).getParentMenu(uuid, Menu.this).map(Menu::getName).orElse(null);
         }
         return replace(original);
       }
@@ -116,29 +117,4 @@ public abstract class Menu implements MenuElement {
    * Close/Clear all inventories of the type
    */
   public abstract void closeAll();
-
-  /**
-   * Get the former menu that opened this menu
-   *
-   * @param uuid the unique id
-   *
-   * @return the former menu
-   */
-  public Optional<Menu> getParentMenu(UUID uuid) {
-    return Optional.ofNullable(parentMenu.get(uuid));
-  }
-
-  /**
-   * Set the former menu
-   *
-   * @param uuid the unique id
-   * @param menu the former menu
-   */
-  public void setParentMenu(UUID uuid, Menu menu) {
-    if (menu == null) {
-      parentMenu.remove(uuid);
-    } else {
-      parentMenu.put(uuid, menu);
-    }
-  }
 }
