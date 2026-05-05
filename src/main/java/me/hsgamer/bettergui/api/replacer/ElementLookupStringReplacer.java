@@ -5,7 +5,7 @@ import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.StringReplacer;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * An extension of {@link StringReplacer} for cases where we want to choose replacers based on {@link MenuElement}'s name
@@ -16,7 +16,7 @@ public interface ElementLookupStringReplacer<T extends MenuElement> extends Look
    *
    * @return the elements
    */
-  List<T> getElements();
+  Collection<T> getElements();
 
   /**
    * Get the prefix of the lookup string. This is for backward compatibility.
