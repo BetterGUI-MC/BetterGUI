@@ -187,10 +187,10 @@ public class WrappedPredicateButton extends MenuButton {
             return Pair.of(((MenuButton) button).getStringReplacer(), original.substring("fallback".length()));
           }
         }
-        if (original.startsWith("click") && getClickRequirements() != null) {
+        if (getClickRequirements() != null && original.startsWith("click")) {
           return Pair.of(getClickRequirements().getStringReplacer(), original.substring("click".length()));
         }
-        if (original.startsWith("view") && getViewRequirement() != null) {
+        if (getViewRequirement() != null && original.startsWith("view")) {
           return Pair.of(getViewRequirement().getStringReplacer(), original.substring("view".length()));
         }
         return null;
