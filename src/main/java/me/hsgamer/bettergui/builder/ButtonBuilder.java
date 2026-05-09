@@ -1,11 +1,9 @@
 package me.hsgamer.bettergui.builder;
 
 import io.github.projectunified.minelib.plugin.base.Loadable;
-import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.bettergui.button.*;
-import me.hsgamer.bettergui.config.MainConfig;
 import me.hsgamer.hscore.builder.FunctionalMassBuilder;
 import me.hsgamer.hscore.common.MapUtils;
 
@@ -32,12 +30,7 @@ public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Inp
     register(WrappedListButton::new, "list");
     register(WrappedAnimatedButton::new, "animated", "animate", "anim");
     register(WrappedNullButton::new, "null", "none");
-    register(input ->
-        BetterGUI.getInstance().get(MainConfig.class).isUseLegacyButton()
-          ? new LegacyMenuButton(input)
-          : new WrappedSimpleButton(input),
-      "simple"
-    );
+    register(WrappedSimpleButton::new, "simple");
   }
 
   @Override

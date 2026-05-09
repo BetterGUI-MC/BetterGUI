@@ -3,7 +3,6 @@ package me.hsgamer.bettergui.button;
 import io.github.projectunified.craftux.button.PredicateButton;
 import io.github.projectunified.craftux.common.ActionItem;
 import io.github.projectunified.craftux.common.Button;
-import io.github.projectunified.craftux.common.Element;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
@@ -29,50 +28,16 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class WrappedPredicateButton extends MenuButton {
-  private final Set<UUID> checked = new ConcurrentSkipListSet<>();
-
   public WrappedPredicateButton(ButtonBuilder.Input input) {
     super(input);
-  }
-
-  public static PredicateClickButton getPredicateButton(Map<String, Object> section, MenuButton wrappedButton, Set<UUID> checked, PredicateButton predicateButton) {
-    boolean checkOnlyOnCreation = Optional.ofNullable(section.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
-    boolean preventSpamClick = Optional.ofNullable(section.get("prevent-spam-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(true);
-    RequirementApplier viewRequirement = Optional.ofNullable(section.get("view-requirement"))
-      .flatMap(MapUtils::castOptionalStringObjectMap)
-      .map(subSection -> new RequirementApplier(wrappedButton, subSection))
-      .orElse(null);
-    if (viewRequirement != null) {
-      predicateButton.setViewPredicate(uuid -> {
-        if (checkOnlyOnCreation && checked.contains(uuid)) {
-          return true;
-        }
-        Requirement.Result result = viewRequirement.getResult(uuid);
-        if (result.isSuccess) {
-          checked.add(uuid);
-        }
-        BatchRunnable batchRunnable = new BatchRunnable();
-        batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
-          result.applier.accept(uuid, process);
-          process.next();
-        });
-        SchedulerUtil.async().run(batchRunnable);
-        return result.isSuccess;
-      });
-    }
-    ClickRequirementApplier clickRequirements = Optional.ofNullable(section.get("click-requirement"))
-      .flatMap(MapUtils::castOptionalStringObjectMap)
-      .map(map -> new ClickRequirementApplier(wrappedButton, map))
-      .orElse(null);
-
-    return new PredicateClickButton(predicateButton, viewRequirement, clickRequirements, preventSpamClick);
   }
 
   @Override
   protected PredicateClickButton createButton(Map<String, Object> section) {
     Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);
 
-    PredicateButton predicateButton = new PredicateButton();
+    PredicateClickButtonContext context = new PredicateClickButtonContext(keys, this);
+    PredicateClickButton predicateButton = new PredicateClickButton(context);
     Optional.ofNullable(keys.get("button"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
       .flatMap(subsection -> BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "button", subsection)))
@@ -82,81 +47,87 @@ public class WrappedPredicateButton extends MenuButton {
       .flatMap(subsection -> BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "fallback", subsection)))
       .ifPresent(predicateButton::setFallbackButton);
 
-    return getPredicateButton(keys, this, checked, predicateButton);
+    return predicateButton;
   }
 
   @Override
   public void refresh(UUID uuid) {
-    checked.remove(uuid);
     if (this.button == null) {
       return;
     }
-    PredicateButton predicateButton = ((PredicateClickButton) this.button).getPredicateButton();
-    Button tempButton = predicateButton.getButton();
-    if (tempButton instanceof MenuButton) {
-      ((MenuButton) tempButton).refresh(uuid);
-    }
-    tempButton = predicateButton.getFallbackButton();
-    if (tempButton instanceof MenuButton) {
-      ((MenuButton) tempButton).refresh(uuid);
-    }
+    PredicateClickButton predicateButton = ((PredicateClickButton) this.button);
+    predicateButton.refresh(uuid);
   }
 
   @Override
   public StringReplacer getStringReplacer() {
-    return (LookupStringReplacer) original -> {
-      if (this.button == null) {
-        return null;
-      }
-      PredicateClickButton predicateButton = (PredicateClickButton) this.button;
-      if (original.startsWith("button")) {
-        Button button = predicateButton.getPredicateButton().getButton();
-        if (button instanceof MenuButton) {
-          return Pair.of(((MenuButton) button).getStringReplacer(), original.substring("button".length()));
-        }
-      }
-      if (original.startsWith("fallback")) {
-        Button button = predicateButton.getPredicateButton().getFallbackButton();
-        if (button instanceof MenuButton) {
-          return Pair.of(((MenuButton) button).getStringReplacer(), original.substring("fallback".length()));
-        }
-      }
-      if (original.startsWith("click") && predicateButton.clickRequirements != null) {
-        return Pair.of(predicateButton.clickRequirements.getStringReplacer(), original.substring("click".length()));
-      }
-      if (original.startsWith("view") && predicateButton.viewRequirement != null) {
-        return Pair.of(predicateButton.viewRequirement.getStringReplacer(), original.substring("view".length()));
-      }
-      return null;
-    };
+    if (this.button == null) return StringReplacer.DUMMY;
+    return ((PredicateClickButton) this.button).getStringReplacer();
   }
 
-  public static class PredicateClickButton implements Button, Element {
-    private final PredicateButton predicateButton;
+  public static class PredicateClickButtonContext {
+    private final boolean checkOnlyOnCreation;
+    private final boolean preventSpamClick;
     private final RequirementApplier viewRequirement;
     private final ClickRequirementApplier clickRequirements;
-    private final boolean preventSpamClick;
+
+    public PredicateClickButtonContext(Map<String, Object> section, MenuButton menuButton) {
+      checkOnlyOnCreation = Optional.ofNullable(section.get("check-only-on-creation")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
+      preventSpamClick = Optional.ofNullable(section.get("prevent-spam-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(true);
+      viewRequirement = Optional.ofNullable(section.get("view-requirement"))
+        .flatMap(MapUtils::castOptionalStringObjectMap)
+        .map(subSection -> new RequirementApplier(menuButton, subSection))
+        .orElse(null);
+      clickRequirements = Optional.ofNullable(section.get("click-requirement"))
+        .flatMap(MapUtils::castOptionalStringObjectMap)
+        .map(map -> new ClickRequirementApplier(menuButton, map))
+        .orElse(null);
+    }
+
+    public boolean exists() {
+      return viewRequirement != null || clickRequirements != null;
+    }
+  }
+
+  public static class PredicateClickButton extends PredicateButton {
+    private final PredicateClickButtonContext context;
+    private final Set<UUID> checked = new ConcurrentSkipListSet<>();
     private final Set<UUID> clickCheckList = new ConcurrentSkipListSet<>();
 
-    public PredicateClickButton(PredicateButton predicateButton, RequirementApplier viewRequirement, ClickRequirementApplier clickRequirements, boolean preventSpamClick) {
-      this.predicateButton = predicateButton;
-      this.viewRequirement = viewRequirement;
-      this.clickRequirements = clickRequirements;
-      this.preventSpamClick = preventSpamClick;
+    public PredicateClickButton(PredicateClickButtonContext context) {
+      this.context = context;
+      if (context.viewRequirement != null) {
+        setViewPredicate(uuid -> {
+          if (context.checkOnlyOnCreation && checked.contains(uuid)) {
+            return true;
+          }
+          Requirement.Result result = context.viewRequirement.getResult(uuid);
+          if (result.isSuccess) {
+            checked.add(uuid);
+          }
+          BatchRunnable batchRunnable = new BatchRunnable();
+          batchRunnable.getTaskPool(ProcessApplierConstants.REQUIREMENT_ACTION_STAGE).addLast(process -> {
+            result.applier.accept(uuid, process);
+            process.next();
+          });
+          SchedulerUtil.async().run(batchRunnable);
+          return result.isSuccess;
+        });
+      }
     }
 
     @Override
     public boolean apply(@NotNull UUID uuid, @NotNull ActionItem actionItem) {
-      boolean isApplied = predicateButton.apply(uuid, actionItem);
+      boolean isApplied = super.apply(uuid, actionItem);
       if (!isApplied) return false;
 
-      if (clickRequirements != null && clickRequirements.exists()) {
+      if (context.clickRequirements != null && context.clickRequirements.exists()) {
         actionItem.extendAction(InventoryClickEvent.class, (event, objectConsumer) -> {
           UUID clickUUID = event.getWhoClicked().getUniqueId();
-          if (preventSpamClick && clickCheckList.contains(clickUUID)) {
+          if (context.preventSpamClick && clickCheckList.contains(clickUUID)) {
             return;
           }
-          RequirementApplier clickRequirement = clickRequirements.getRequirementApplier(ClickTypeUtils.getClickTypeFromEvent(event, BetterGUI.getInstance().get(MainConfig.class).isModernClickType()));
+          RequirementApplier clickRequirement = context.clickRequirements.getRequirementApplier(ClickTypeUtils.getClickTypeFromEvent(event, BetterGUI.getInstance().get(MainConfig.class).isModernClickType()));
           if (clickRequirement == null) {
             objectConsumer.accept(event);
             return;
@@ -182,26 +153,53 @@ public class WrappedPredicateButton extends MenuButton {
       return true;
     }
 
-    public PredicateButton getPredicateButton() {
-      return predicateButton;
-    }
-
     public ClickRequirementApplier getClickRequirements() {
-      return clickRequirements;
+      return context.clickRequirements;
     }
 
     public RequirementApplier getViewRequirement() {
-      return viewRequirement;
+      return context.viewRequirement;
     }
 
-    @Override
-    public void init() {
-      predicateButton.init();
+    public void refresh(UUID uuid) {
+      checked.remove(uuid);
+      Button tempButton = getButton();
+      if (tempButton instanceof MenuButton) {
+        ((MenuButton) tempButton).refresh(uuid);
+      }
+      tempButton = getFallbackButton();
+      if (tempButton instanceof MenuButton) {
+        ((MenuButton) tempButton).refresh(uuid);
+      }
+    }
+
+    public StringReplacer getStringReplacer() {
+      return (LookupStringReplacer) original -> {
+        if (original.startsWith("button")) {
+          Button button = getButton();
+          if (button instanceof MenuButton) {
+            return Pair.of(((MenuButton) button).getStringReplacer(), original.substring("button".length()));
+          }
+        }
+        if (original.startsWith("fallback")) {
+          Button button = getFallbackButton();
+          if (button instanceof MenuButton) {
+            return Pair.of(((MenuButton) button).getStringReplacer(), original.substring("fallback".length()));
+          }
+        }
+        if (original.startsWith("click") && getClickRequirements() != null) {
+          return Pair.of(getClickRequirements().getStringReplacer(), original.substring("click".length()));
+        }
+        if (original.startsWith("view") && getViewRequirement() != null) {
+          return Pair.of(getViewRequirement().getStringReplacer(), original.substring("view".length()));
+        }
+        return null;
+      };
     }
 
     @Override
     public void stop() {
-      predicateButton.stop();
+      super.stop();
       clickCheckList.clear();
     }
   }

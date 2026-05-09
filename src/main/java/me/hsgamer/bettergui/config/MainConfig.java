@@ -14,11 +14,6 @@ public interface MainConfig {
     return false;
   }
 
-  @ConfigPath("use-legacy-button")
-  default boolean isUseLegacyButton() {
-    return true;
-  }
-
   @ConfigPath("relative-menu-name")
   default boolean isRelativeMenuName() {
     return false;
