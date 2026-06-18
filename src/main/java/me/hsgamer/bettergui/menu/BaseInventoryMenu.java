@@ -14,6 +14,7 @@ import me.hsgamer.bettergui.util.ProcessApplierConstants;
 import me.hsgamer.bettergui.util.SchedulerUtil;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.bettergui.util.TickUtil;
+import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.StringReplacer;
@@ -110,9 +111,9 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
       BiFunction<UUID, InventoryHolder, Inventory> creator = optionalCreator.get();
       this.inventoryFunction = uuid -> new InternalInventoryUI(uuid, holder -> creator.apply(uuid, holder));
     } else if (inventoryType == InventoryType.CHEST) {
-      this.inventoryFunction = uuid -> new InternalInventoryUI(uuid, StringReplacerApplier.replace(title, uuid, this), this.size);
+      this.inventoryFunction = uuid -> new InternalInventoryUI(uuid, ColorUtils.colorize(StringReplacerApplier.replace(title, uuid, this)), this.size);
     } else {
-      this.inventoryFunction = uuid -> new InternalInventoryUI(uuid, StringReplacerApplier.replace(title, uuid, this), inventoryType);
+      this.inventoryFunction = uuid -> new InternalInventoryUI(uuid, ColorUtils.colorize(StringReplacerApplier.replace(title, uuid, this)), inventoryType);
     }
 
     Button defaultButton = null;
