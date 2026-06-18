@@ -3,7 +3,6 @@ package me.hsgamer.bettergui.util;
 import io.github.projectunified.maptemplate.MapTemplate;
 import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.element.MenuElement;
-import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 
@@ -17,10 +16,6 @@ import java.util.function.UnaryOperator;
  * A utility class to apply StringReplacer
  */
 public final class StringReplacerApplier {
-  /**
-   * A replacer to colorize the string
-   */
-  public static final StringReplacer COLORIZE = ColorUtils::colorize;
   private static final List<StringReplacer> STRING_REPLACERS = new ArrayList<>();
 
   private StringReplacerApplier() {
@@ -73,10 +68,7 @@ public final class StringReplacerApplier {
    */
   public static UnaryOperator<String> getReplaceOperator(UUID uuid, MenuElement menuElement) {
     MapTemplate mapTemplate = createMapTemplate(uuid, menuElement);
-
-    List<StringReplacer> replacers = new ArrayList<>(STRING_REPLACERS);
-    replacers.add(COLORIZE);
-    StringReplacer combined = StringReplacer.combine(replacers);
+    StringReplacer combined = StringReplacer.combine(STRING_REPLACERS);
 
     return s -> {
       s = Objects.toString(mapTemplate.apply(s));
@@ -115,7 +107,6 @@ public final class StringReplacerApplier {
         string = newString;
       }
     }
-    string = COLORIZE.tryReplace(string, uuid);
     return string;
   }
 

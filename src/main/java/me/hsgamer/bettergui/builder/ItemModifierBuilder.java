@@ -8,6 +8,7 @@ import io.github.projectunified.craftitem.spigot.nbt.NBTModifier;
 import io.github.projectunified.craftitem.spigot.skull.SkullModifier;
 import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.hscore.builder.FunctionalMassBuilder;
+import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.bukkit.utils.VersionUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 
@@ -26,8 +27,16 @@ public class ItemModifierBuilder extends FunctionalMassBuilder<Map.Entry<String,
 
   @Override
   public void load() {
-    register(entry -> new NameModifier(Objects.toString(entry.getValue())), "name");
-    register(entry -> new LoreModifier(CollectionUtils.createStringListFromObject(entry.getValue())), "lore");
+    register(entry -> {
+      NameModifier nameModifier = new NameModifier(Objects.toString(entry.getValue()));
+      nameModifier.setTransformer(ColorUtils::colorize);
+      return nameModifier;
+    }, "name");
+    register(entry -> {
+      LoreModifier loreModifier = new LoreModifier(CollectionUtils.createStringListFromObject(entry.getValue()));
+      loreModifier.setTransformer(ColorUtils::colorize);
+      return loreModifier;
+    }, "lore");
     register(entry -> new AmountModifier(Objects.toString(entry.getValue())), "amount");
     register(entry -> new DurabilityModifier(Objects.toString(entry.getValue())), "durability", "damage");
     register(entry -> new MaterialModifier(CollectionUtils.createStringListFromObject(entry.getValue(), true)), "material", "id", "mat", "raw-material", "raw-id", "raw-mat");

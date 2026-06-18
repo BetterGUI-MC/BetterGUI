@@ -9,7 +9,6 @@ import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.downloader.AdditionalInfoKeys;
 import me.hsgamer.bettergui.downloader.AddonDownloader;
 import me.hsgamer.bettergui.manager.AddonManager;
-import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.config.Config;
@@ -91,15 +90,12 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
 
     AddonButton(DownloadInfo downloadInfo) {
       this.downloadInfo = downloadInfo;
-      this.translator = s -> {
-        s = s
-          .replace("{status}", status)
-          .replace("{name}", downloadInfo.getName())
-          .replace("{version}", downloadInfo.getVersion())
-          .replace("{description}", AdditionalInfoKeys.DESCRIPTION.get(downloadInfo))
-          .replace("{author}", AdditionalInfoKeys.AUTHORS.get(downloadInfo).toString());
-        return StringReplacerApplier.COLORIZE.replace(s);
-      };
+      this.translator = s -> s
+        .replace("{status}", status)
+        .replace("{name}", downloadInfo.getName())
+        .replace("{version}", downloadInfo.getVersion())
+        .replace("{description}", AdditionalInfoKeys.DESCRIPTION.get(downloadInfo))
+        .replace("{author}", AdditionalInfoKeys.AUTHORS.get(downloadInfo).toString());
     }
 
     private void updateStatus() {
