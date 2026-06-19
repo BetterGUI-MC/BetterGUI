@@ -116,7 +116,7 @@ public abstract class BaseMenu extends StandardMenu {
     }
 
     // Check Requirement
-    if (!bypass) {
+    if (!bypass && viewRequirementApplier != null && !viewRequirementApplier.isEmpty()) {
       Requirement.Result result = viewRequirementApplier.getResult(uuid);
 
       BatchRunnable batchRunnable = new BatchRunnable();

@@ -29,7 +29,7 @@ public class PlayerArgumentProcessor extends SingleArgumentProcessor<OfflinePlay
       return Optional.ofNullable(Bukkit.getPlayer(name));
     } else {
       //noinspection deprecation
-      return Optional.ofNullable(Bukkit.getOfflinePlayer(name));
+      return Optional.of(Bukkit.getOfflinePlayer(name));
     }
   }
 

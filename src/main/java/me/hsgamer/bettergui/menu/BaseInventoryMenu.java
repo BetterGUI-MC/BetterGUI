@@ -308,7 +308,7 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
         SchedulerUtil.async().run(batchRunnable);
       }
 
-      if (!closeRequirementApplier.isEmpty()) {
+      if (closeRequirementApplier != null && !closeRequirementApplier.isEmpty()) {
         if (forceClose.contains(uuid)) {
           forceClose.remove(uuid);
           return;
