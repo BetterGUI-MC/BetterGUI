@@ -20,7 +20,6 @@ import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,8 +43,8 @@ import static me.hsgamer.bettergui.BetterGUI.getInstance;
 public abstract class BaseMenu extends StandardMenu {
   protected final ActionApplier openActionApplier;
   protected final ActionApplier closeActionApplier;
-  protected final @Nullable RequirementApplier viewRequirementApplier;
-  protected final @Nullable RequirementApplier closeRequirementApplier;
+  protected final RequirementApplier viewRequirementApplier;
+  protected final RequirementApplier closeRequirementApplier;
   protected final List<Permission> permissions;
   protected final ArgumentHandler argumentHandler;
 
@@ -116,7 +115,7 @@ public abstract class BaseMenu extends StandardMenu {
     }
 
     // Check Requirement
-    if (!bypass && viewRequirementApplier != null && !viewRequirementApplier.isEmpty()) {
+    if (!bypass && !viewRequirementApplier.isEmpty()) {
       Requirement.Result result = viewRequirementApplier.getResult(uuid);
 
       BatchRunnable batchRunnable = new BatchRunnable();
@@ -147,10 +146,10 @@ public abstract class BaseMenu extends StandardMenu {
   public StringReplacer getStringReplacer() {
     return StringReplacer.either(
       (LookupStringReplacer) original -> {
-        if (original.startsWith("view") && viewRequirementApplier != null) {
+        if (original.startsWith("view") && !viewRequirementApplier.isEmpty()) {
           return Pair.of(viewRequirementApplier.getStringReplacer(), original.substring("view".length()));
         }
-        if (original.startsWith("close") && closeRequirementApplier != null) {
+        if (original.startsWith("close") && !closeRequirementApplier.isEmpty()) {
           return Pair.of(closeRequirementApplier.getStringReplacer(), original.substring("close".length()));
         }
         if (original.startsWith("arg")) {
