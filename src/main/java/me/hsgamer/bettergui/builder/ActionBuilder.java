@@ -31,7 +31,6 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
     register(BackAction::new, "back-menu", "backmenu");
     register(input -> new CloseMenuAction(input.getMenuElement().getMenu()), "close-menu", "closemenu");
     register(input -> new UpdateMenuAction(input.getMenuElement().getMenu()), "update-menu", "updatemenu");
-    register(input -> new SoundAction(input.getValue()), "sound", "raw-sound");
   }
 
   @Override
