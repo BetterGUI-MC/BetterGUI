@@ -6,6 +6,7 @@ import me.hsgamer.bettergui.manager.MenuManager;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,7 +67,7 @@ public abstract class Menu implements MenuElement {
       @Override
       public @Nullable String replace(@NotNull String original, @NotNull UUID uuid) {
         if (original.equalsIgnoreCase("parent-menu")) {
-          return BetterGUI.getInstance().get(MenuManager.class).getParentMenu(uuid, Menu.this).map(Menu::getName).orElse(null);
+          return JavaPlugin.getPlugin(BetterGUI.class).get(MenuManager.class).getParentMenu(uuid, Menu.this).map(Menu::getName).orElse(null);
         }
         return replace(original);
       }

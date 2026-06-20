@@ -10,6 +10,7 @@ import me.hsgamer.bettergui.builder.RequirementBuilder;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskPool;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,7 +39,7 @@ public class RequirementSet implements Requirement {
     this.requirements = section.entrySet().stream().flatMap(entry -> {
       String type = entry.getKey();
       Object value = entry.getValue();
-      return BetterGUI.getInstance().get(RequirementBuilder.class).build(new RequirementBuilder.Input(parent, type, value)).map(Stream::of).orElse(Stream.empty());
+      return JavaPlugin.getPlugin(BetterGUI.class).get(RequirementBuilder.class).build(new RequirementBuilder.Input(parent, type, value)).map(Stream::of).orElse(Stream.empty());
     }).collect(Collectors.toList());
 
     Map<String, Object> keys = MapUtils.createLowercaseStringObjectMap(section);

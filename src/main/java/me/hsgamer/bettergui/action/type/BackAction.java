@@ -14,11 +14,13 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class BackAction implements Action {
+  private final BetterGUI plugin;
   private final Menu menu;
   private final String value;
   private final boolean bypass;
 
-  public BackAction(ActionBuilder.Input input) {
+  public BackAction(BetterGUI plugin, ActionBuilder.Input input) {
+    this.plugin = plugin;
     this.menu = input.getMenuElement().getMenu();
     this.value = input.getValue();
     this.bypass = input.getOption().equalsIgnoreCase("bypassChecks");
@@ -36,7 +38,7 @@ public class BackAction implements Action {
       ? stringReplacer.replaceOrOriginal(value, uuid).split(" ")
       : new String[0];
 
-    Runnable runnable = BetterGUI.getInstance().get(MenuManager.class).getParentMenu(uuid, menu)
+    Runnable runnable = plugin.get(MenuManager.class).getParentMenu(uuid, menu)
       .<Runnable>map(parentMenu -> () -> parentMenu.create(player, args, bypass))
       .orElse(player::closeInventory);
     SchedulerUtil.entity(player)

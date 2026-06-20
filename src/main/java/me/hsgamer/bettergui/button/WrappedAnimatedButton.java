@@ -16,8 +16,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class WrappedAnimatedButton extends MenuButton {
-  public WrappedAnimatedButton(ButtonBuilder.Input input) {
+  private final BetterGUI plugin;
+
+  public WrappedAnimatedButton(BetterGUI plugin, ButtonBuilder.Input input) {
     super(input);
+    this.plugin = plugin;
   }
 
   @Override
@@ -40,7 +43,7 @@ public class WrappedAnimatedButton extends MenuButton {
 
     List<MenuButton> frames = Optional.ofNullable(keys.get("child"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .map(o -> BetterGUI.getInstance().get(ButtonBuilder.class).getChildButtons(this, o))
+      .map(o -> plugin.get(ButtonBuilder.class).getChildButtons(this, o))
       .orElse(Collections.emptyList());
     frames = CollectionUtils.rotate(frames, shift);
     if (reverse) {

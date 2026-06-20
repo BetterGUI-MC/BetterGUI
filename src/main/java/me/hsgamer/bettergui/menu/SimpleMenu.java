@@ -18,8 +18,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
-  public SimpleMenu(Config config) {
+  private final BetterGUI plugin;
+
+  public SimpleMenu(BetterGUI plugin, Config config) {
     super(config);
+    this.plugin = plugin;
   }
 
   @Override
@@ -32,7 +35,7 @@ public class SimpleMenu extends BaseInventoryMenu<SimpleButtonMask> {
         continue;
       }
       Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
-      Optional<MenuButton> optionalButton = BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, key, values));
+      Optional<MenuButton> optionalButton = plugin.get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, key, values));
       if (!optionalButton.isPresent()) {
         continue;
       }

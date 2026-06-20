@@ -18,13 +18,16 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public class WrappedSimpleButton extends ActionButton {
-  public WrappedSimpleButton(ButtonBuilder.Input input) {
+  private final BetterGUI plugin;
+
+  public WrappedSimpleButton(BetterGUI plugin, ButtonBuilder.Input input) {
     super(input);
+    this.plugin = plugin;
   }
 
   @Override
   protected Function<Consumer<InventoryClickEvent>, Button> getButtonFunction(Map<String, Object> section) {
-    List<ItemModifier> itemModifiers = BetterGUI.getInstance().get(ItemModifierBuilder.class).build(section);
+    List<ItemModifier> itemModifiers = plugin.get(ItemModifierBuilder.class).build(section);
     return buttonConsumer -> {
       Button button = (uuid, actionItem) -> {
         UnaryOperator<String> replacer = StringReplacerApplier.getReplaceOperator(uuid, this);

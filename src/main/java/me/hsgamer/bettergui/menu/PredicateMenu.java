@@ -24,29 +24,29 @@ import org.bukkit.permissions.Permission;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
-
 public class PredicateMenu extends StandardMenu {
+  private final BetterGUI plugin;
   private final List<Pair<RequirementApplier, MenuProcess>> menuPredicateList;
   private final List<Permission> permissions;
   private final ArgumentHandler argumentHandler;
 
-  public PredicateMenu(Config config) {
+  public PredicateMenu(BetterGUI plugin, Config config) {
     super(config);
+    this.plugin = plugin;
 
     permissions = Optional.ofNullable(menuSettings.get("permission"))
       .map(o -> CollectionUtils.createStringListFromObject(o, true))
       .map(l -> l.stream().map(Permission::new).collect(Collectors.toList()))
-      .orElse(Collections.singletonList(new Permission(getInstance().getName().toLowerCase() + "." + getName())));
+      .orElse(Collections.singletonList(new Permission(plugin.getName().toLowerCase() + "." + getName())));
 
     Optional.ofNullable(menuSettings.get("command"))
       .map(o -> CollectionUtils.createStringListFromObject(o, true))
       .ifPresent(list -> {
         for (String s : list) {
           if (s.contains(" ")) {
-            getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
+            plugin.getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
           } else {
-            getInstance().get(MenuCommandManager.class).registerMenuCommand(s, this);
+            plugin.get(MenuCommandManager.class).registerMenuCommand(s, this);
           }
         }
       });
@@ -101,7 +101,7 @@ public class PredicateMenu extends StandardMenu {
       if (result.isSuccess) {
         MenuProcess menuProcess = pair.getValue();
         String[] finalArgs = StringReplacerApplier.replace(menuProcess.args, uuid, this).split("\\s+");
-        MenuManager menuManager = BetterGUI.getInstance().get(MenuManager.class);
+        MenuManager menuManager = plugin.get(MenuManager.class);
         menuManager.openMenu(menuProcess.menu, player, finalArgs, menuManager.getParentMenu(uuid, this).orElse(null), bypass);
         isSuccessful = true;
         break;

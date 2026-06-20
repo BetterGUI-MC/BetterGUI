@@ -14,10 +14,12 @@ import java.util.*;
  * The list of template configurations
  */
 public class TemplateConfig implements Loadable, PostEnable {
+  private final BetterGUI plugin;
   private final File templateFolder;
   private final Map<String, Map<String, Object>> templateMap = new HashMap<>();
 
   public TemplateConfig(BetterGUI plugin) {
+    this.plugin = plugin;
     this.templateFolder = new File(plugin.getDataFolder(), "template");
     if (!templateFolder.exists() && templateFolder.mkdirs()) {
       plugin.saveResource("template" + File.separator + "example-template.yml", false);
@@ -39,7 +41,7 @@ public class TemplateConfig implements Loadable, PostEnable {
       return;
     }
     if (file.isFile()) {
-      BetterGUI.getInstance().get(ConfigBuilder.class).build(file).ifPresent(config -> {
+      plugin.get(ConfigBuilder.class).build(file).ifPresent(config -> {
         config.setup();
         for (Map.Entry<String[], Object> entry : config.getNormalizedValues(false).entrySet()) {
           String key = entry.getKey()[0];
@@ -47,8 +49,8 @@ public class TemplateConfig implements Loadable, PostEnable {
           if (!optionalValues.isPresent()) {
             continue;
           }
-          if (BetterGUI.getInstance().get(MainConfig.class).isIncludeMenuInTemplate()) {
-            key = BetterGUI.getInstance().get(MainConfig.class).getFileName(templateFolder, file) + "/" + key;
+          if (plugin.get(MainConfig.class).isIncludeMenuInTemplate()) {
+            key = plugin.get(MainConfig.class).getFileName(templateFolder, file) + "/" + key;
           }
           templateMap.put(key, optionalValues.get());
         }

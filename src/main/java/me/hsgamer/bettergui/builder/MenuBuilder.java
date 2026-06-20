@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.builder;
 
 import io.github.projectunified.minelib.plugin.base.Loadable;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.menu.AddonMenu;
 import me.hsgamer.bettergui.menu.PredicateMenu;
@@ -15,14 +16,17 @@ import java.util.Objects;
  * The menu builder
  */
 public final class MenuBuilder extends FunctionalMassBuilder<Config, Menu> implements Loadable {
-  public MenuBuilder() {
+  private final BetterGUI plugin;
+
+  public MenuBuilder(BetterGUI plugin) {
+    this.plugin = plugin;
   }
 
   @Override
   public void load() {
-    register(SimpleMenu::new, "simple");
-    register(AddonMenu::new, "addon");
-    register(PredicateMenu::new, "predicate");
+    register(input -> new SimpleMenu(plugin, input), "simple");
+    register(input -> new AddonMenu(plugin, input), "addon");
+    register(input -> new PredicateMenu(plugin, input), "predicate");
   }
 
   @Override

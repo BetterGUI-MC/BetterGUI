@@ -8,6 +8,7 @@ import me.hsgamer.bettergui.builder.ArgumentProcessorBuilder;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.StringReplacer;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
@@ -30,7 +31,7 @@ public class ArgumentHandler implements ArgumentProcessor {
       if (value instanceof Map) {
         //noinspection unchecked
         Map<String, Object> map = (Map<String, Object>) value;
-        BetterGUI.getInstance().get(ArgumentProcessorBuilder.class)
+        JavaPlugin.getPlugin(BetterGUI.class).get(ArgumentProcessorBuilder.class)
           .build(new ArgumentProcessorBuilder.Input(menuElement, key, map))
           .ifPresent(processors::add);
       }

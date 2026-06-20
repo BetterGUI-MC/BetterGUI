@@ -22,7 +22,6 @@ import me.hsgamer.hscore.checker.spigotmc.SpigotVersionChecker;
 import me.hsgamer.hscore.config.proxy.ConfigGenerator;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,15 +32,6 @@ import java.util.Map;
  * The main class of the plugin
  */
 public final class BetterGUI extends BasePlugin implements PostEnable {
-  /**
-   * Get the instance of the plugin
-   *
-   * @return the instance
-   */
-  public static BetterGUI getInstance() {
-    return JavaPlugin.getPlugin(BetterGUI.class);
-  }
-
   @Override
   protected List<Object> getComponents() {
     return Arrays.asList(
@@ -55,11 +45,11 @@ public final class BetterGUI extends BasePlugin implements PostEnable {
 
       new ActionBuilder(this),
       new ArgumentProcessorBuilder(),
-      new ButtonBuilder(),
+      new ButtonBuilder(this),
       new ConfigBuilder(),
       new InventoryBuilder(),
       new ItemModifierBuilder(),
-      new MenuBuilder(),
+      new MenuBuilder(this),
       new RequirementBuilder(),
 
       new Permissions(this),

@@ -1,5 +1,6 @@
 package me.hsgamer.bettergui.menu;
 
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.action.ActionApplier;
 import me.hsgamer.bettergui.api.menu.StandardMenu;
 import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
@@ -20,14 +21,13 @@ import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 /**
  * A {@link StandardMenu} with some basic features.
@@ -67,7 +67,7 @@ public abstract class BaseMenu extends StandardMenu {
     permissions = Optional.ofNullable(menuSettings.get("permission"))
       .map(o -> CollectionUtils.createStringListFromObject(o, true))
       .map(l -> l.stream().map(Permission::new).collect(Collectors.toList()))
-      .orElseGet(() -> Collections.singletonList(new Permission(getInstance().getName().toLowerCase() + "." + getName())));
+      .orElseGet(() -> Collections.singletonList(new Permission(JavaPlugin.getPlugin(BetterGUI.class).getName().toLowerCase() + "." + getName())));
     argumentHandler = Optional.ofNullable(MapUtils.getIfFound(menuSettings, "argument-processor", "arg-processor", "argument", "arg"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
       .map(m -> new ArgumentHandler(this, m))
@@ -78,9 +78,9 @@ public abstract class BaseMenu extends StandardMenu {
       .ifPresent(list -> {
         for (String s : list) {
           if (s.contains(" ")) {
-            getInstance().getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
+            JavaPlugin.getPlugin(BetterGUI.class).getLogger().warning("Illegal characters in command '" + s + "'" + "in the menu '" + getName() + "'. Ignored");
           } else {
-            getInstance().get(MenuCommandManager.class).registerMenuCommand(s, this);
+            JavaPlugin.getPlugin(BetterGUI.class).get(MenuCommandManager.class).registerMenuCommand(s, this);
           }
         }
       });
@@ -110,7 +110,7 @@ public abstract class BaseMenu extends StandardMenu {
 
     // Check Permission
     if (!bypass && !PermissionUtils.hasAnyPermission(player, permissions)) {
-      MessageUtils.sendMessage(player, getInstance().get(MessageConfig.class).getNoPermission());
+      MessageUtils.sendMessage(player, JavaPlugin.getPlugin(BetterGUI.class).get(MessageConfig.class).getNoPermission());
       return false;
     }
 

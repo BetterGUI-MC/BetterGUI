@@ -12,6 +12,7 @@ import me.hsgamer.hscore.bukkit.clicktype.ClickTypeUtils;
 import me.hsgamer.hscore.common.MapUtils;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
 import java.util.Map;
@@ -35,7 +36,7 @@ public abstract class ActionButton extends MenuButton {
       Optional.ofNullable(keys.get("close-on-click")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false)
     );
     return getButtonFunction(section).apply(clickEvent -> {
-      BukkitClickType clickType = ClickTypeUtils.getClickTypeFromEvent(clickEvent, BetterGUI.getInstance().get(MainConfig.class).isModernClickType());
+      BukkitClickType clickType = ClickTypeUtils.getClickTypeFromEvent(clickEvent, JavaPlugin.getPlugin(BetterGUI.class).get(MainConfig.class).isModernClickType());
       BatchRunnable batchRunnable = new BatchRunnable();
       clickActionHandler.apply(clickEvent.getWhoClicked().getUniqueId(), clickType, batchRunnable);
       SchedulerUtil.async().run(batchRunnable);

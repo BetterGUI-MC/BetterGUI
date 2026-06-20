@@ -9,6 +9,7 @@ import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
 import org.apache.commons.lang.time.DurationFormatUtils;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -30,7 +31,7 @@ public class CooldownRequirement extends BaseRequirement<Duration> {
     return Validate.getNumber(replaced)
       .map(bigDecimal -> Duration.ofMillis((long) bigDecimal.doubleValue() * 1000))
       .orElseGet(() -> {
-        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().get(MessageConfig.class).getInvalidNumber(replaced));
+        MessageUtils.sendMessage(uuid, JavaPlugin.getPlugin(BetterGUI.class).get(MessageConfig.class).getInvalidNumber(replaced));
         return Duration.ZERO;
       });
   }

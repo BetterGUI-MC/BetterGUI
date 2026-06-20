@@ -14,13 +14,16 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 public class WrappedDummyButton extends MenuButton {
-  public WrappedDummyButton(ButtonBuilder.Input input) {
+  private final BetterGUI plugin;
+
+  public WrappedDummyButton(BetterGUI plugin, ButtonBuilder.Input input) {
     super(input);
+    this.plugin = plugin;
   }
 
   @Override
   protected Button createButton(Map<String, Object> section) {
-    List<ItemModifier> itemModifiers = BetterGUI.getInstance().get(ItemModifierBuilder.class).build(section);
+    List<ItemModifier> itemModifiers = plugin.get(ItemModifierBuilder.class).build(section);
     return (uuid, actionItem) -> {
       UnaryOperator<String> replacer = StringReplacerApplier.getReplaceOperator(uuid, this);
       SpigotItem spigotItem = new SpigotItem(uuid);

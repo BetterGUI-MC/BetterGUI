@@ -9,6 +9,7 @@ import me.hsgamer.hscore.action.common.Action;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.element.TaskPool;
 import me.hsgamer.hscore.task.element.TaskProcess;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +44,7 @@ public class ActionApplier implements ProcessApplier {
    * @param value       the value
    */
   public ActionApplier(MenuElement menuElement, Object value) {
-    this(BetterGUI.getInstance().get(ActionBuilder.class).build(menuElement, value), StringReplacer.of((original, uuid) -> StringReplacerApplier.replace(original, uuid, menuElement)));
+    this(JavaPlugin.getPlugin(BetterGUI.class).get(ActionBuilder.class).build(menuElement, value), StringReplacer.of((original, uuid) -> StringReplacerApplier.replace(original, uuid, menuElement)));
   }
 
   /**

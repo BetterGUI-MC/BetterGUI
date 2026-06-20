@@ -16,14 +16,14 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
-
 public class OpenMenuAction implements Action {
+  private final BetterGUI plugin;
   private final Menu menu;
   private final String value;
   private final boolean bypass;
 
-  public OpenMenuAction(ActionBuilder.Input input) {
+  public OpenMenuAction(BetterGUI plugin, ActionBuilder.Input input) {
+    this.plugin = plugin;
     this.menu = input.getMenuElement().getMenu();
     this.value = input.getValue();
     this.bypass = input.getOption().equalsIgnoreCase("bypassChecks");
@@ -46,20 +46,19 @@ public class OpenMenuAction implements Action {
     }
 
     // Open menu
-    if (getInstance().get(MenuManager.class).contains(menu)) {
+    if (plugin.get(MenuManager.class).contains(menu)) {
       String[] finalArgs = args;
       Menu parentMenu = this.menu;
       SchedulerUtil.entity(player)
         .run(() -> {
           try {
-            getInstance().get(MenuManager.class).openMenu(menu, player, finalArgs, parentMenu, bypass);
+            plugin.get(MenuManager.class).openMenu(menu, player, finalArgs, parentMenu, bypass);
           } finally {
             process.next();
           }
         }, process::next);
     } else {
-      BetterGUI betterGUI = getInstance();
-      MessageUtils.sendMessage(player, betterGUI.get(MessageConfig.class).getMenuNotFound());
+      MessageUtils.sendMessage(player, plugin.get(MessageConfig.class).getMenuNotFound());
       process.next();
     }
   }

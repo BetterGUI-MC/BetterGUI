@@ -1,6 +1,7 @@
 package me.hsgamer.bettergui.builder;
 
 import io.github.projectunified.minelib.plugin.base.Loadable;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.bettergui.button.*;
@@ -17,20 +18,23 @@ import java.util.stream.Stream;
  * The button builder
  */
 public final class ButtonBuilder extends FunctionalMassBuilder<ButtonBuilder.Input, MenuButton> implements Loadable {
-  public ButtonBuilder() {
+  private final BetterGUI plugin;
+
+  public ButtonBuilder(BetterGUI plugin) {
+    this.plugin = plugin;
   }
 
   @Override
   public void load() {
-    register(TemplateButton::new, "template");
-    register(WrappedDummyButton::new, "dummy", "raw");
+    register(input -> new TemplateButton(plugin, input), "template");
+    register(input -> new WrappedDummyButton(plugin, input), "dummy", "raw");
     register(EmptyButton::new, "empty");
     register(WrappedAirButton::new, "air");
-    register(WrappedPredicateButton::new, "predicate", "requirement");
-    register(WrappedListButton::new, "list");
-    register(WrappedAnimatedButton::new, "animated", "animate", "anim");
+    register(input -> new WrappedPredicateButton(plugin, input), "predicate", "requirement");
+    register(input -> new WrappedListButton(plugin, input), "list");
+    register(input -> new WrappedAnimatedButton(plugin, input), "animated", "animate", "anim");
     register(WrappedNullButton::new, "null", "none");
-    register(WrappedSimpleButton::new, "simple");
+    register(input -> new WrappedSimpleButton(plugin, input), "simple");
   }
 
   @Override

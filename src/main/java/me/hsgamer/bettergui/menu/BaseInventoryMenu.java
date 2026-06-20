@@ -5,6 +5,7 @@ import io.github.projectunified.craftux.common.Element;
 import io.github.projectunified.craftux.common.Mask;
 import io.github.projectunified.craftux.spigot.SpigotInventoryUI;
 import io.github.projectunified.minelib.scheduler.common.task.Task;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.button.MenuButton;
 import me.hsgamer.bettergui.api.replacer.LookupStringReplacer;
 import me.hsgamer.bettergui.api.requirement.Requirement;
@@ -30,6 +31,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -38,8 +40,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
 
 /**
  * A {@link BaseMenu} for menus using {@link SpigotInventoryUI}
@@ -68,7 +68,7 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
         try {
           return InventoryType.valueOf(s.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
-          getInstance().getLogger().warning(() -> "The menu \"" + getName() + "\" contains an illegal inventory type");
+          JavaPlugin.getPlugin(BetterGUI.class).getLogger().warning(() -> "The menu \"" + getName() + "\" contains an illegal inventory type");
           return null;
         }
       })
@@ -106,7 +106,7 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
 
     Optional<BiFunction<UUID, InventoryHolder, Inventory>> optionalCreator = Optional.ofNullable(menuSettings.get("creator"))
       .map(String::valueOf)
-      .flatMap(s -> getInstance().get(InventoryBuilder.class).build(s, Pair.of(this, menuSettings)));
+      .flatMap(s -> JavaPlugin.getPlugin(BetterGUI.class).get(InventoryBuilder.class).build(s, Pair.of(this, menuSettings)));
     if (optionalCreator.isPresent()) {
       BiFunction<UUID, InventoryHolder, Inventory> creator = optionalCreator.get();
       this.inventoryFunction = uuid -> new InternalInventoryUI(uuid, holder -> creator.apply(uuid, holder));
@@ -127,7 +127,7 @@ public abstract class BaseInventoryMenu<M extends Mask> extends BaseMenu {
       }
       Map<String, Object> values = MapUtils.createLowercaseStringObjectMap((Map<?, ?>) value);
       if (key.equalsIgnoreCase("default-icon") || key.equalsIgnoreCase("default-button")) {
-        defaultButton = getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, key, values)).orElse(null);
+        defaultButton = JavaPlugin.getPlugin(BetterGUI.class).get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, key, values)).orElse(null);
         if (defaultButton != null) {
           Element.handleIfElement(defaultButton, Element::init);
         }

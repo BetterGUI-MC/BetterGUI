@@ -2,7 +2,10 @@ package me.hsgamer.bettergui.builder;
 
 import io.github.projectunified.minelib.plugin.base.Loadable;
 import me.hsgamer.bettergui.BetterGUI;
-import me.hsgamer.bettergui.action.type.*;
+import me.hsgamer.bettergui.action.type.BackAction;
+import me.hsgamer.bettergui.action.type.CloseMenuAction;
+import me.hsgamer.bettergui.action.type.OpenMenuAction;
+import me.hsgamer.bettergui.action.type.UpdateMenuAction;
 import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.hscore.action.builder.ActionInput;
 import me.hsgamer.hscore.action.common.Action;
@@ -10,6 +13,7 @@ import me.hsgamer.hscore.bukkit.action.PlayerAction;
 import me.hsgamer.hscore.bukkit.action.builder.BukkitActionBuilder;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,8 +31,8 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
   @Override
   public void load() {
     BukkitActionBuilder.register(this, plugin, ColorUtils::colorize);
-    register(OpenMenuAction::new, "open-menu", "open", "menu", "open-menu");
-    register(BackAction::new, "back-menu", "backmenu");
+    register(input -> new OpenMenuAction(plugin, input), "open-menu", "open", "menu", "open-menu");
+    register(input -> new BackAction(plugin, input), "back-menu", "backmenu");
     register(input -> new CloseMenuAction(input.getMenuElement().getMenu()), "close-menu", "closemenu");
     register(input -> new UpdateMenuAction(input.getMenuElement().getMenu()), "update-menu", "updatemenu");
   }
@@ -51,7 +55,7 @@ public final class ActionBuilder extends me.hsgamer.hscore.action.builder.Action
       .stream()
       .map(input -> Input.create(menuElement, input))
       .collect(Collectors.toList());
-    return build(inputs, input -> new PlayerAction(BetterGUI.getInstance(), input.getOriginalValue()));
+    return build(inputs, input -> new PlayerAction(JavaPlugin.getPlugin(BetterGUI.class), input.getOriginalValue()));
   }
 
   public interface Input extends ActionInput {

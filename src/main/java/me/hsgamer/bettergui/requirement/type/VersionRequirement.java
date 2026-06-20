@@ -8,6 +8,7 @@ import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.bukkit.utils.VersionUtils;
 import me.hsgamer.hscore.common.Validate;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -41,7 +42,7 @@ public class VersionRequirement extends BaseRequirement<VersionRequirement.Versi
         .map(BigDecimal::intValue)
         .map(Version::new)
         .orElseGet(() -> {
-          MessageUtils.sendMessage(uuid, BetterGUI.getInstance().get(MessageConfig.class).getInvalidNumber(replaced));
+          MessageUtils.sendMessage(uuid, JavaPlugin.getPlugin(BetterGUI.class).get(MessageConfig.class).getInvalidNumber(replaced));
           return new Version(0);
         });
     }

@@ -9,22 +9,19 @@ import me.hsgamer.hscore.common.StringReplacer;
 import java.util.Map;
 
 public class TemplateButton extends MenuButton {
+  private final BetterGUI plugin;
   private Map<String, Object> finalOptions;
 
-  /**
-   * Create a new button
-   *
-   * @param input the input
-   */
-  public TemplateButton(ButtonBuilder.Input input) {
+  public TemplateButton(BetterGUI plugin, ButtonBuilder.Input input) {
     super(input);
+    this.plugin = plugin;
     finalOptions = input.options;
   }
 
   @Override
   protected MenuButton createButton(Map<String, Object> section) {
-    finalOptions = BetterGUI.getInstance().get(TemplateConfig.class).getValues(section, "type");
-    return BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, getName(), finalOptions)).orElse(null);
+    finalOptions = plugin.get(TemplateConfig.class).getValues(section, "type");
+    return plugin.get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, getName(), finalOptions)).orElse(null);
   }
 
   @Override

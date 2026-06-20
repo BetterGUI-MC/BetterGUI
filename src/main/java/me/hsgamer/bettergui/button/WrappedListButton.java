@@ -12,8 +12,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class WrappedListButton extends MenuButton {
-  public WrappedListButton(ButtonBuilder.Input input) {
+  private final BetterGUI plugin;
+
+  public WrappedListButton(BetterGUI plugin, ButtonBuilder.Input input) {
     super(input);
+    this.plugin = plugin;
   }
 
   @Override
@@ -22,7 +25,7 @@ public class WrappedListButton extends MenuButton {
     boolean keepCurrentIndex = Optional.ofNullable(keys.get("keep-current-index")).map(String::valueOf).map(Boolean::parseBoolean).orElse(false);
     List<MenuButton> childButtons = Optional.ofNullable(keys.get("child"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .map(o -> BetterGUI.getInstance().get(ButtonBuilder.class).getChildButtons(this, o))
+      .map(o -> plugin.get(ButtonBuilder.class).getChildButtons(this, o))
       .orElseGet(Collections::emptyList);
 
     ListButton button = new ListButton();

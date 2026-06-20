@@ -19,6 +19,7 @@ import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.task.BatchRunnable;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -28,8 +29,11 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class WrappedPredicateButton extends MenuButton {
-  public WrappedPredicateButton(ButtonBuilder.Input input) {
+  private final BetterGUI plugin;
+
+  public WrappedPredicateButton(BetterGUI plugin, ButtonBuilder.Input input) {
     super(input);
+    this.plugin = plugin;
   }
 
   @Override
@@ -40,11 +44,11 @@ public class WrappedPredicateButton extends MenuButton {
     PredicateClickButton predicateButton = new PredicateClickButton(context);
     Optional.ofNullable(keys.get("button"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .flatMap(subsection -> BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "button", subsection)))
+      .flatMap(subsection -> plugin.get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "button", subsection)))
       .ifPresent(predicateButton::setButton);
     Optional.ofNullable(keys.get("fallback"))
       .flatMap(MapUtils::castOptionalStringObjectMap)
-      .flatMap(subsection -> BetterGUI.getInstance().get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "fallback", subsection)))
+      .flatMap(subsection -> plugin.get(ButtonBuilder.class).build(new ButtonBuilder.Input(this, "fallback", subsection)))
       .ifPresent(predicateButton::setFallbackButton);
 
     return predicateButton;
@@ -127,7 +131,7 @@ public class WrappedPredicateButton extends MenuButton {
           if (context.preventSpamClick && clickCheckList.contains(clickUUID)) {
             return;
           }
-          RequirementApplier clickRequirement = context.clickRequirements.getRequirementApplier(ClickTypeUtils.getClickTypeFromEvent(event, BetterGUI.getInstance().get(MainConfig.class).isModernClickType()));
+          RequirementApplier clickRequirement = context.clickRequirements.getRequirementApplier(ClickTypeUtils.getClickTypeFromEvent(event, JavaPlugin.getPlugin(BetterGUI.class).get(MainConfig.class).isModernClickType()));
           if (clickRequirement == null) {
             objectConsumer.accept(event);
             return;

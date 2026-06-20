@@ -5,6 +5,7 @@ import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.api.element.MenuElement;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public final class StringReplacerApplier {
    * @return the map template
    */
   public static MapTemplate createMapTemplate(UUID uuid, MenuElement menuElement) {
-    VariableManager variableManager = BetterGUI.getInstance().get(VariableManager.class);
+    VariableManager variableManager = JavaPlugin.getPlugin(BetterGUI.class).get(VariableManager.class);
 
     return MapTemplate.builder()
       .setVariableFunction(s -> {

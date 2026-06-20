@@ -10,6 +10,7 @@ import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
       if (level > 0 && player.getLevel() < level) {
         return String.valueOf(level);
       }
-      return BetterGUI.getInstance().get(MessageConfig.class).getHaveMetRequirementPlaceholder();
+      return JavaPlugin.getPlugin(BetterGUI.class).get(MessageConfig.class).getHaveMetRequirementPlaceholder();
     });
   }
 
@@ -40,7 +41,7 @@ public class LevelRequirement extends TakableRequirement<Integer> {
     return Validate.getNumber(replaced)
       .map(BigDecimal::intValue)
       .orElseGet(() -> {
-        MessageUtils.sendMessage(uuid, BetterGUI.getInstance().get(MessageConfig.class).getInvalidNumber(replaced));
+        MessageUtils.sendMessage(uuid, JavaPlugin.getPlugin(BetterGUI.class).get(MessageConfig.class).getInvalidNumber(replaced));
         return 0;
       });
   }

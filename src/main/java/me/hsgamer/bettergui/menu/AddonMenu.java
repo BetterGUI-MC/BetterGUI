@@ -4,6 +4,7 @@ import io.github.projectunified.craftitem.core.ItemModifier;
 import io.github.projectunified.craftitem.spigot.core.SpigotItem;
 import io.github.projectunified.craftux.common.*;
 import io.github.projectunified.craftux.spigot.SpigotInventoryUtil;
+import me.hsgamer.bettergui.BetterGUI;
 import me.hsgamer.bettergui.builder.ItemModifierBuilder;
 import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.downloader.AdditionalInfoKeys;
@@ -16,6 +17,7 @@ import me.hsgamer.hscore.downloader.core.object.DownloadInfo;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -23,13 +25,12 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 
-import static me.hsgamer.bettergui.BetterGUI.getInstance;
-
 public class AddonMenu extends BaseInventoryMenu<Mask> {
   private static final String MESSAGE_PATH = "message";
   private static final String STATUS_PATH = "status";
   private static final String BUTTON_PATH = "button";
 
+  private final BetterGUI plugin;
   private final String upToDateMessage;
   private final String downloadingMessage;
   private final String stillDownloadingMessage;
@@ -39,8 +40,9 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
   private final String outdatedStatus;
   private final List<ItemModifier> itemModifiers;
 
-  public AddonMenu(Config config) {
+  public AddonMenu(BetterGUI plugin, Config config) {
     super(config);
+    this.plugin = plugin;
     upToDateMessage = Objects.toString(config.get("&cIt's already up-to-date", new String[]{MESSAGE_PATH, "up-to-date"}));
     downloadingMessage = Objects.toString(config.get("&eDownloading {addon}", new String[]{MESSAGE_PATH, "downloading"}));
     stillDownloadingMessage = Objects.toString(config.get("&cIt's still downloading", new String[]{MESSAGE_PATH, "still-downloading"}));
@@ -49,7 +51,7 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
     availableStatus = Objects.toString(config.get("&aAvailable", new String[]{STATUS_PATH, "available"}));
     outdatedStatus = Objects.toString(config.get("&cOutdated", new String[]{STATUS_PATH, "outdated"}));
     Map<String, Object> itemMap = MapUtils.castOptionalStringObjectMap(configSettings.get(BUTTON_PATH)).orElseThrow(() -> new IllegalStateException("The button map must be a map"));
-    itemModifiers = getInstance().get(ItemModifierBuilder.class).build(itemMap);
+    itemModifiers = plugin.get(ItemModifierBuilder.class).build(itemMap);
   }
 
   @Override
@@ -63,7 +65,7 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
     @Override
     public @NotNull Map<Position, Consumer<ActionItem>> apply(@NotNull UUID uuid) {
       Map<Position, Consumer<ActionItem>> buttonMap = new HashMap<>();
-      Collection<DownloadInfo> downloadInfos = getInstance().get(AddonDownloader.class).getDownloader().getLoadedDownloadInfo().values();
+      Collection<DownloadInfo> downloadInfos = JavaPlugin.getPlugin(BetterGUI.class).get(AddonDownloader.class).getDownloader().getLoadedDownloadInfo().values();
       int slot = 0;
       for (DownloadInfo info : downloadInfos) {
         AddonButton button = addonButtonMap.computeIfAbsent(info, downloadInfo -> {
@@ -99,7 +101,7 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
     }
 
     private void updateStatus() {
-      status = getInstance().get(AddonManager.class).getExpansionClassLoader(downloadInfo.getName())
+      status = plugin.get(AddonManager.class).getExpansionClassLoader(downloadInfo.getName())
         .map(addon -> addon.getDescription().getVersion().equals(downloadInfo.getVersion()) ? upToDateStatus : outdatedStatus)
         .orElse(availableStatus);
     }
@@ -132,13 +134,13 @@ public class AddonMenu extends BaseInventoryMenu<Mask> {
             MessageUtils.sendMessage(humanEntity, downloadingMessage.replace("{addon}", downloadInfo.getName()));
             downloadInfo.download().whenComplete((file, throwable) -> {
               if (throwable != null) {
-                getInstance().getLogger().log(Level.WARNING, throwable, () -> "Unexpected issue when downloading " + downloadInfo.getName());
+                JavaPlugin.getPlugin(BetterGUI.class).getLogger().log(Level.WARNING, throwable, () -> "Unexpected issue when downloading " + downloadInfo.getName());
                 MessageUtils.sendMessage(humanEntity, "&cAn unexpected issue occurs when downloading. Check the console");
                 return;
               }
               MessageUtils.sendMessage(humanEntity, downloadFinishedMessage);
             });
-            MessageUtils.sendMessage(humanEntity, getInstance().get(MessageConfig.class).getSuccess());
+            MessageUtils.sendMessage(humanEntity, JavaPlugin.getPlugin(BetterGUI.class).get(MessageConfig.class).getSuccess());
           }
         } else if (clickType.isRightClick()) {
           MessageUtils.sendMessage(humanEntity, "&bLink: &f" + AdditionalInfoKeys.SOURCE_CODE.get(downloadInfo));
