@@ -6,7 +6,7 @@
 
   <groupId>me.hsgamer</groupId>
   <artifactId>bettergui</artifactId>
-  <version>10.6</version>
+  <version>10.7</version>
   <packaging>jar</packaging>
 
   <name>BetterGUI</name>
@@ -17,7 +17,7 @@
     <java.version>1.8</java.version>
     <core.version>4.5.7</core.version>
     <minelib.version>1.2.3</minelib.version>
-    <crftitem.version>1.5.0</crftitem.version>
+    <crftitem.version>1.6.1</crftitem.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
